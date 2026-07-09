@@ -56,20 +56,26 @@ export default async function WoodworksPage({
   const showTextures = true;
 
   return (
+    // Outer: the dark charcoal fills the FULL viewport width (the mockup's
+    // #0d0f12 letterbox), edge-to-edge — no cream Stark body showing at the
+    // sides on wide screens.
     <div
       data-theme="element"
-      className="relative mx-auto w-full max-w-[1200px] overflow-hidden bg-[color:var(--el-bg)] font-body text-[color:var(--el-text-body)]"
+      className="w-full bg-[color:var(--el-bg)] font-body text-[color:var(--el-text-body)]"
     >
       <ScrollProgress />
-      <ElHero showTextures={showTextures} />
-      <ElMarquee />
-      <ElProducts showTextures={showTextures} />
-      <ElStats />
-      <ElMaterials />
-      <ElProcess />
-      <ElTestimonials />
-      <ElContact showTextures={showTextures} />
-      <ElFooter />
+      {/* Inner: the mockup's fixed 1200px canvas, centered. */}
+      <div className="relative mx-auto w-full max-w-[1200px] overflow-hidden">
+        <ElHero showTextures={showTextures} />
+        <ElMarquee />
+        <ElProducts showTextures={showTextures} />
+        <ElStats />
+        <ElMaterials />
+        <ElProcess />
+        <ElTestimonials />
+        <ElContact showTextures={showTextures} />
+        <ElFooter />
+      </div>
     </div>
   );
 }
