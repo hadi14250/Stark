@@ -113,18 +113,22 @@ export async function FeatureBands() {
         </defs>
       </svg>
 
-      {/* Dark block: bands 1 & 2. Mobile = simple top-angled polygon; desktop =
-          the design's curved-shoulder SVG clip. */}
-      <div className="relative rtl:-scale-x-100">
-        <div className="bg-[color:var(--green-deep-2)] [clip-path:polygon(0_34px,100%_0,100%_100%,0_100%)] nav:[clip-path:url(#feature-band-clip)]">
-          {/* Un-mirror the inner content so text/images read normally in RTL. */}
-          <div className="rtl:-scale-x-100">
-            <Container className="flex flex-col gap-[52px] pt-[74px] pb-14 nav:gap-24 nav:py-32">
-              <FeatureBand item={items[0]} image={landingImages.bands[0]} imageStart onDark />
-              <FeatureBand item={items[1]} image={landingImages.bands[1]} imageStart={false} onDark />
-            </Container>
-          </div>
-        </div>
+      {/* Bands 1 & 2. The dark wedge is a SEPARATE background LAYER (clipped);
+          the content sits on top and is NOT clipped, so the rounded image cards
+          float over the green with all corners + cream ring visible — matching
+          the design (where the wedge SVG and the band images are independent
+          layers). Clipping the content directly would slice the image edges. */}
+      <div className="relative isolate">
+        {/* Background wedge: mobile = simple top-angle; desktop = curved shoulder.
+            RTL-mirrored so the shoulder lands on the correct side. */}
+        <div
+          aria-hidden
+          className="absolute inset-0 -z-10 bg-[color:var(--green-deep-2)] [clip-path:polygon(0_34px,100%_0,100%_100%,0_100%)] rtl:-scale-x-100 nav:[clip-path:url(#feature-band-clip)]"
+        />
+        <Container className="flex flex-col gap-[52px] pt-[74px] pb-14 nav:gap-24 nav:py-32">
+          <FeatureBand item={items[0]} image={landingImages.bands[0]} imageStart onDark />
+          <FeatureBand item={items[1]} image={landingImages.bands[1]} imageStart={false} onDark />
+        </Container>
       </div>
 
       {/* Band 3 on cream. */}
