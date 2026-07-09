@@ -3,6 +3,7 @@ import { setRequestLocale, getTranslations } from "next-intl/server";
 import { alternates } from "@/lib/seo";
 import { routing, type Locale } from "@/i18n/routing";
 import { ScrollProgress } from "@/components/woodworks/ScrollProgress";
+import { WoodworksNav } from "@/components/woodworks/WoodworksNav";
 import { ElHero } from "@/components/woodworks/ElHero";
 import { ElMarquee } from "@/components/woodworks/ElMarquee";
 import { ElProducts } from "@/components/woodworks/ElProducts";
@@ -64,8 +65,12 @@ export default async function WoodworksPage({
       className="w-full bg-[color:var(--el-bg)] font-body text-[color:var(--el-text-body)]"
     >
       <ScrollProgress />
-      {/* Inner: the mockup's fixed 1200px canvas, centered. */}
-      <div className="relative mx-auto w-full max-w-[1200px] overflow-hidden">
+      {/* The Stark nav (same links/logo/CTA as the landing) restyled dark — it's
+          fixed, so the canvas below is offset by its height (strip 40 + bar
+          64/76 = 104/116), matching the rest of the site. */}
+      <WoodworksNav />
+      {/* Inner: the mockup's fixed 1200px canvas, centered, cleared of the nav. */}
+      <div className="relative mx-auto w-full max-w-[1200px] overflow-hidden pt-[104px] nav:pt-[116px]">
         <ElHero showTextures={showTextures} />
         <ElMarquee />
         <ElProducts showTextures={showTextures} />

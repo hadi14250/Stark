@@ -1,5 +1,4 @@
 import { getTranslations } from "next-intl/server";
-import { ElementNav } from "./ElementNav";
 import { ElementMark } from "./icons";
 import { Reveal } from "@/components/motion/Reveal";
 import { ClipReveal } from "./motion";
@@ -29,11 +28,6 @@ export async function ElHero({ showTextures = true }: { showTextures?: boolean }
 
   return (
     <section id="top" className="relative">
-      {/* Element nav — mobile bar (logo + hamburger) renders above the hero;
-          desktop right-aligned links overlay the hero stage (absolute). One
-          instance serves both breakpoints via its internal nav:/nav:hidden. */}
-      <ElementNav />
-
       {/* ---------- MOBILE ---------- */}
       <div className="relative overflow-hidden px-6 pb-10 pt-4 nav:hidden">
         {showTextures && (
