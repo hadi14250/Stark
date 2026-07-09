@@ -55,10 +55,10 @@ export default async function LocaleLayout({
           <Providers>
             <JsonLd />
             <Nav />
-            {/* Offset the fixed header: 76px bar on mobile, +40px utility strip on desktop.
+            {/* Offset the fixed header: utility strip (40) + bar (64 mobile / 76 desktop).
                 overflow-x-clip contains decorative bleed (diagonal bands, collage) without
                 affecting vertical scroll or the fixed header (which sits outside <main>). */}
-            <main className="flex-1 overflow-x-clip pt-[76px] nav:pt-[116px]">{children}</main>
+            <main className="flex-1 overflow-x-clip pt-[104px] nav:pt-[116px]">{children}</main>
             <Footer />
           </Providers>
         </NextIntlClientProvider>

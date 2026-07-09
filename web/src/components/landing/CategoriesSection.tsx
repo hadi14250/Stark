@@ -32,34 +32,37 @@ export function CategoriesSection() {
   function page(forward: boolean) {
     const track = trackRef.current;
     if (!track) return;
-    // Advance by roughly one card. `dir` (-1 in RTL) flips the sign so the
-    // arrows always move in the visual/reading direction.
-    const amount = track.clientWidth * 0.34 * dir * (forward ? 1 : -1);
-    track.scrollBy({ left: amount, behavior: "smooth" });
+    // Advance by one card + gap (measured from the first tile so it's exact on
+    // mobile's fixed-width cards and desktop's fractional widths alike). `dir`
+    // (-1 in RTL) flips the sign so arrows move in the reading direction.
+    const first = track.firstElementChild as HTMLElement | null;
+    const gap = parseFloat(getComputedStyle(track).columnGap || "0") || 0;
+    const step = first ? first.offsetWidth + gap : track.clientWidth * 0.34;
+    track.scrollBy({ left: step * dir * (forward ? 1 : -1), behavior: "smooth" });
   }
 
   return (
-    <section className="bg-[color:var(--color-surface)] py-20 nav:py-28">
+    <section className="bg-[color:var(--color-surface)] py-[52px] nav:py-28">
       <Container>
         <Reveal className="mx-auto max-w-[62ch] text-center">
-          <h2 className="font-display text-[clamp(2rem,4vw,2.75rem)] font-bold tracking-[-0.02em] text-[color:var(--color-ink)]">
+          <h2 className="font-display text-[30px] font-bold tracking-[-0.02em] text-[color:var(--color-ink)] nav:text-[clamp(2rem,4vw,2.75rem)]">
             {t("heading")}
           </h2>
-          <p className="mt-4 text-base leading-7 text-[color:var(--color-ink-body)]">
+          <p className="mt-3 text-[15px] leading-6 text-[color:var(--color-ink-body)] nav:mt-4 nav:text-base nav:leading-7">
             {t("sub")}
           </p>
         </Reveal>
 
-        <div className="relative mt-12">
+        <div className="relative mt-[26px] nav:mt-12">
           {/* Track */}
           <div
             ref={trackRef}
-            className="flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-2 nav:gap-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           >
             {items.map((item, i) => (
               <div
                 key={i}
-                className="w-[85%] shrink-0 snap-start sm:w-[calc((100%-1.5rem)/2)] nav:w-[calc((100%-3rem)/3)]"
+                className="w-[292px] shrink-0 snap-center nav:w-[calc((100%-3rem)/3)]"
               >
                 <Reveal y={24} delay={i * 0.06} className="h-full">
                   <Card image={landingImages.categories[i]} alt={item.alt} title={item.title} body={item.body}>
@@ -76,13 +79,13 @@ export function CategoriesSection() {
           </div>
 
           {/* Arrows */}
-          <div className="mt-8 flex items-center justify-center gap-4">
+          <div className="mt-[22px] flex items-center justify-center gap-4 nav:mt-8">
             <Arrow label={t("prev")} onClick={() => page(false)} pointsForward={false} />
             <Arrow label={t("next")} onClick={() => page(true)} pointsForward />
           </div>
         </div>
 
-        <Reveal className="mt-10 flex justify-center">
+        <Reveal className="mt-[26px] flex justify-center nav:mt-10">
           <Pill variant="forest" href="/gallery" className="px-12">
             {t("viewMore")}
           </Pill>
@@ -112,7 +115,7 @@ function Arrow({
       type="button"
       onClick={onClick}
       aria-label={label}
-      className="grid h-[68px] w-[68px] place-items-center rounded-[22px] bg-[color:var(--color-accent)] text-[color:var(--green-forest)] transition-colors hover:bg-[color:var(--color-accent-2)]"
+      className="grid h-[46px] w-[46px] place-items-center rounded-[16px] bg-[color:var(--color-accent)] text-[color:var(--green-forest)] transition-colors hover:bg-[color:var(--color-accent-2)] nav:h-[68px] nav:w-[68px] nav:rounded-[22px]"
     >
       {/* Base glyph is a start-pointing arrow; forward mirrors it. In RTL the
           whole meaning flips, handled by the extra rtl:-scale-x-100. */}

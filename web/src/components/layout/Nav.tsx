@@ -75,22 +75,22 @@ export function Nav() {
       }`}
     >
       {/* Utility strip — desktop only (mobile keeps a compact header). */}
-      <div className="hidden bg-[color:var(--green-forest)] text-[color:var(--ink-green-strong)] nav:block">
-        <Container className="flex h-10 items-center justify-between">
+      <div className="bg-[color:var(--green-forest)] text-[color:var(--ink-green-strong)]">
+        <Container className="flex h-10 items-center justify-between !px-5 nav:!px-[clamp(24px,5vw,72px)]">
           <a
             href={`mailto:${email}`}
-            className="inline-flex items-center gap-2 text-xs transition-colors hover:text-accent"
+            className="inline-flex items-center gap-2 text-[11px] transition-colors hover:text-accent nav:text-xs"
           >
-            <EnvelopeIcon width={16} height={16} />
+            <EnvelopeIcon width={15} height={15} />
             <span>{email}</span>
           </a>
-          <SocialLinks labels={socialLabels} size={15} />
+          <SocialLinks labels={socialLabels} size={14} className="nav:[&_svg]:h-[15px] nav:[&_svg]:w-[15px]" />
         </Container>
       </div>
 
       {/* Main nav bar. */}
       <div className="bg-[color:var(--color-nav-bg)]">
-        <Container className="flex h-[76px] items-center justify-between">
+        <Container className="flex h-16 items-center justify-between nav:h-[76px]">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3" aria-label="STARK">
             <Image src={logoWhite} alt="STARK" width={44} height={28} priority />
@@ -121,30 +121,35 @@ export function Nav() {
             </Pill>
           </nav>
 
-          {/* Burger (mobile only) */}
-          <button
-            type="button"
-            onClick={() => setOpen((v) => !v)}
-            aria-label={open ? t("closeMenu") : t("openMenu")}
-            aria-expanded={open}
-            className="grid h-11 w-11 place-items-center rounded-md border border-[color:var(--color-line)] text-[color:var(--ink-green-body)] nav:hidden"
-          >
-            <span className="sr-only">{open ? t("closeMenu") : t("openMenu")}</span>
-            <div className="flex flex-col gap-1.5">
-              <span
-                className={`block h-px w-5 bg-current transition-transform ${open ? "translate-y-[3.5px] rotate-45" : ""}`}
-              />
-              <span
-                className={`block h-px w-5 bg-current transition-transform ${open ? "-translate-y-[3.5px] -rotate-45" : ""}`}
-              />
-            </div>
-          </button>
+          {/* Mobile cluster: Contact Us pill + burger. */}
+          <div className="flex items-center gap-3 nav:hidden">
+            <Pill variant="tan" href="/#contact" className="px-4 py-2 text-[12.5px]">
+              {t("cta")}
+            </Pill>
+            <button
+              type="button"
+              onClick={() => setOpen((v) => !v)}
+              aria-label={open ? t("closeMenu") : t("openMenu")}
+              aria-expanded={open}
+              className="grid h-11 w-11 place-items-center rounded-md border border-[color:var(--color-line)] text-[color:var(--ink-green-body)]"
+            >
+              <span className="sr-only">{open ? t("closeMenu") : t("openMenu")}</span>
+              <div className="flex flex-col gap-1.5">
+                <span
+                  className={`block h-px w-5 bg-current transition-transform ${open ? "translate-y-[3.5px] rotate-45" : ""}`}
+                />
+                <span
+                  className={`block h-px w-5 bg-current transition-transform ${open ? "-translate-y-[3.5px] -rotate-45" : ""}`}
+                />
+              </div>
+            </button>
+          </div>
         </Container>
       </div>
 
       {/* Mobile overlay */}
       {open && (
-        <div className="fixed inset-0 top-[76px] z-40 bg-[color:var(--color-nav-bg)]/97 backdrop-blur-lg nav:hidden">
+        <div className="fixed inset-0 top-[104px] z-40 bg-[color:var(--color-nav-bg)]/97 backdrop-blur-lg nav:hidden">
           <Container className="flex flex-col gap-6 py-10">
             {LINKS.map((l) => (
               <Link

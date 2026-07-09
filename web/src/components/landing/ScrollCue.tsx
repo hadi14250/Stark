@@ -22,9 +22,9 @@ export function ScrollCue({ targetId, label }: { targetId: string; label: string
       type="button"
       onClick={onClick}
       aria-label={label}
-      className="grid h-[74px] w-[74px] place-items-center rounded-full bg-[color:var(--color-hero-bg)] text-[color:var(--ink-green-strong)] shadow-[0_18px_24px_0_rgba(17,39,28,0.22)] transition-transform hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+      className="grid h-14 w-14 place-items-center rounded-full bg-[color:var(--color-hero-bg)] text-[color:var(--ink-green-strong)] shadow-[0_12px_20px_0_rgba(17,39,28,0.28)] transition-transform hover:-translate-y-0.5 nav:h-[74px] nav:w-[74px] nav:shadow-[0_18px_24px_0_rgba(17,39,28,0.22)] motion-reduce:transition-none motion-reduce:hover:translate-y-0"
     >
-      <svg viewBox="0 0 42 42" width="34" height="34" fill="none" aria-hidden>
+      <svg viewBox="0 0 42 42" width="30" height="30" fill="none" aria-hidden>
         <path
           d="M21 10 L21 31 M12.5 23 L21 31.5 L29.5 23"
           stroke="currentColor"

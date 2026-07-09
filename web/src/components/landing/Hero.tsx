@@ -7,21 +7,39 @@ import { landingImages } from "./assets";
 import { ScrollCue } from "./ScrollCue";
 
 /**
- * Landing hero — design §3–6. A full-bleed furniture photo band with the serif
- * (Sora display) headline + tan rule + "Start a project" pill centered over it,
- * a torn-paper SVG masking the photo's bottom into the cream page, and a
- * scroll-cue button on the seam.
+ * Landing hero. Responsive per the two design handoffs:
+ * - Mobile (<nav): a cream block with the serif (Sora) headline + tan rule +
+ *   "Start a project" pill ABOVE a full-bleed photo band (h330) whose bottom is
+ *   masked by the torn-paper SVG, with the scroll-cue straddling the seam.
+ * - Desktop (≥nav): the headline overlays the taller photo (with a legibility
+ *   scrim), matching the desktop handoff.
  *
- * RTL: content is centered (symmetric); the torn-paper edge is mirrored via
- * `[dir=rtl]:-scale-x-100` so the tear reads correctly in Arabic.
+ * RTL: content is centered (symmetric); the torn-paper edge mirrors via
+ * `rtl:-scale-x-100`.
  */
 export async function Hero() {
   const t = await getTranslations("landing.hero");
 
   return (
     <section className="relative bg-[color:var(--color-surface)]">
-      {/* Image band + overlaid headline. */}
-      <div className="relative min-h-[clamp(460px,64vh,644px)] w-full overflow-hidden">
+      {/* Mobile cream header block (hidden on desktop). */}
+      <Container className="flex flex-col items-center gap-6 px-6 pt-10 pb-8 text-center nav:hidden">
+        <Reveal y={20}>
+          <h1 className="max-w-[18ch] font-display text-[33px] font-light leading-[1.18] tracking-[-0.02em] text-[color:var(--color-ink)]">
+            {t("line1")}
+            <span className="mx-auto my-3 block h-px w-14 bg-[color:var(--color-accent)]" />
+            <span className="font-semibold">{t("line2")}</span>
+          </h1>
+        </Reveal>
+        <Reveal y={16} delay={0.1}>
+          <Pill variant="forest" href="/#contact">
+            {t("cta")}
+          </Pill>
+        </Reveal>
+      </Container>
+
+      {/* Photo band: h330 on mobile, tall overlay band on desktop. */}
+      <div className="relative h-[330px] w-full overflow-hidden nav:min-h-[clamp(460px,64vh,644px)]">
         <Image
           src={landingImages.hero}
           alt={t("alt")}
@@ -29,15 +47,15 @@ export async function Hero() {
           priority
           sizes="100vw"
           className="object-cover"
-          style={{ objectPosition: "50% 82%" }}
-        />
-        {/* Legibility scrim behind the headline (top-weighted). */}
-        <div
-          aria-hidden
-          className="absolute inset-0 bg-gradient-to-b from-[color:var(--color-surface)]/85 via-[color:var(--color-surface)]/25 to-transparent"
+          style={{ objectPosition: "50% 72%" }}
         />
 
-        <Container className="relative flex min-h-[clamp(460px,64vh,644px)] flex-col items-center pt-[clamp(2.5rem,7vh,4.5rem)] text-center">
+        {/* Desktop-only legibility scrim + overlaid headline. */}
+        <div
+          aria-hidden
+          className="absolute inset-0 hidden bg-gradient-to-b from-[color:var(--color-surface)]/85 via-[color:var(--color-surface)]/25 to-transparent nav:block"
+        />
+        <Container className="relative hidden min-h-[clamp(460px,64vh,644px)] flex-col items-center pt-[clamp(2.5rem,7vh,4.5rem)] text-center nav:flex">
           <Reveal y={20}>
             <p className="font-mono text-xs uppercase tracking-[0.28em] text-[color:var(--color-accent-2)]">
               {t("eyebrow")}
@@ -75,7 +93,7 @@ export async function Hero() {
       </div>
 
       {/* Scroll cue straddling the seam. */}
-      <div className="relative z-10 -mt-9 flex justify-center">
+      <div className="relative z-10 -mt-7 flex justify-center nav:-mt-9">
         <ScrollCue targetId="about" label={t("scrollCue")} />
       </div>
     </section>

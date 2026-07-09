@@ -29,8 +29,9 @@ stark-website-clutter/**/node_modules
 
 stark-website-clutter
 
-# ---- Design source + handoff (kept locally, not versioned) ----
-# The 18MB Figma source and the reference HTML prototype aren't needed to build
-# the app — the assets the site serves live in web/public/landing/.
+# ---- Design source + handoffs (kept locally, not versioned) ----
+# The Figma source and the reference HTML prototypes aren't needed to build the
+# app — the assets the site serves live in web/public/landing/.
 *.fig
 design_handoff_furniture_landing/
+design_handoff_furniture_landing_mobile/

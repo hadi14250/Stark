@@ -20,23 +20,51 @@ export async function AboutSection() {
   const ring = "shadow-[0_0_0_6px_var(--cream)]";
 
   return (
-    <section id="about" className="scroll-mt-[132px] bg-[color:var(--color-surface)] py-20 nav:py-28">
+    <section id="about" className="scroll-mt-[132px] bg-[color:var(--color-surface)] py-[52px] nav:py-28">
       <Container>
-        <div className="grid items-center gap-12 nav:grid-cols-2 nav:gap-16">
+        <div className="grid items-center gap-8 nav:grid-cols-2 nav:gap-16">
           {/* Text column */}
           <Reveal x={-24}>
-            <h2 className="font-display text-[clamp(2.25rem,5vw,3.5rem)] font-bold leading-[1.05] tracking-[-0.02em] text-[color:var(--color-ink)]">
+            <h2 className="font-display text-[36px] font-bold leading-none tracking-[-0.02em] text-[color:var(--color-ink)] nav:text-[clamp(2.25rem,5vw,3.5rem)] nav:leading-[1.05]">
               {t("heading")}
             </h2>
-            <div className="mt-6 space-y-4 text-base leading-[1.9] text-[color:var(--color-ink-body)]">
+            <div className="mt-4 space-y-4 text-[15px] leading-[26px] text-[color:var(--color-ink-body)] nav:mt-6 nav:text-base nav:leading-[1.9]">
               {paragraphs.map((p, i) => (
                 <p key={i}>{p}</p>
               ))}
             </div>
           </Reveal>
 
-          {/* Collage column */}
-          <Reveal x={24} delay={0.1}>
+          {/* Mobile collage: 1 tall + 2 stacked (flex). */}
+          <Reveal x={24} delay={0.1} className="nav:hidden">
+            <div className="flex gap-3">
+              <div className={`relative h-[230px] flex-[1.3] overflow-hidden rounded-[36px] ${ring}`}>
+                <Image
+                  src={landingImages.collage[0]}
+                  alt={collageAlt[0]}
+                  fill
+                  sizes="55vw"
+                  className="object-cover"
+                />
+              </div>
+              <div className="flex flex-1 flex-col gap-3">
+                {[1, 2].map((n) => (
+                  <div key={n} className={`relative flex-1 overflow-hidden rounded-[28px] ${ring}`}>
+                    <Image
+                      src={landingImages.collage[n]}
+                      alt={collageAlt[n]}
+                      fill
+                      sizes="40vw"
+                      className="object-cover"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Reveal>
+
+          {/* Desktop collage column */}
+          <Reveal x={24} delay={0.1} className="hidden nav:block">
             <div className="grid grid-cols-2 grid-rows-[repeat(5,minmax(0,1fr))] gap-5">
               {/* tall left */}
               <div
