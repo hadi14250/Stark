@@ -17,6 +17,10 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
+# ---- Playwright MCP scratch (screenshots/snapshots from local verification) ----
+.playwright-mcp/
+web/.playwright-mcp/
+
 # ---- Heavy reference binaries (kept in stark-website-clutter, not versioned) ----
 # Keep the curated image set (extracted-images) but skip multi-MB source docs.
 stark-website-clutter/**/*.pdf

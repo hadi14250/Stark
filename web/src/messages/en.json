@@ -157,6 +157,47 @@
       "instagram": "STARK on Instagram",
       "youtube": "STARK on YouTube",
       "x": "STARK on X (Twitter)"
+    },
+    "stats": {
+      "eyebrow": "By the numbers",
+      "heading": "Built to last, trusted at scale.",
+      "items": [
+        { "label": "Years of craft" },
+        { "label": "Pieces delivered" },
+        { "label": "On-time delivery" },
+        { "label": "Skilled artisans" }
+      ]
+    },
+    "process": {
+      "heading": "Our Process",
+      "sub": "From first drawing to final handover — four considered steps behind every project we deliver.",
+      "steps": [
+        {
+          "title": "Design",
+          "body": "We shape each piece around the space and the brief, balancing form, function, and proportion."
+        },
+        {
+          "title": "Source",
+          "body": "Responsibly sourced solid hardwoods and materials, selected for durability and finish."
+        },
+        {
+          "title": "Craft",
+          "body": "Our workshop cuts, joins, and finishes every surface to a repeatable production standard."
+        },
+        {
+          "title": "Deliver",
+          "body": "Coordinated delivery and installation, so your space is ready the moment it arrives."
+        }
+      ]
+    },
+    "marquee": {
+      "label": "Stark brand values",
+      "words": [
+        "Precision Manufacturing",
+        "Turnkey Delivery",
+        "Saudi Built",
+        "Built to Spec"
+      ]
     }
   },
   "contact": {

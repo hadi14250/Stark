@@ -7,6 +7,9 @@ import { AboutSection } from "@/components/landing/AboutSection";
 import { FeatureBands } from "@/components/landing/FeatureBands";
 import { CategoriesSection } from "@/components/landing/CategoriesSection";
 import { GallerySection } from "@/components/landing/GallerySection";
+import { StatsBand } from "@/components/landing/StatsBand";
+import { ProcessSection } from "@/components/landing/ProcessSection";
+import { Marquee } from "@/components/landing/Marquee";
 import { ContactSection } from "@/components/contact/ContactSection";
 
 export function generateStaticParams() {
@@ -39,6 +42,9 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
       <FeatureBands />
       <CategoriesSection />
       <GallerySection />
+      <StatsBand />
+      <ProcessSection />
+      <Marquee />
       <ContactSection />
     </>
   );

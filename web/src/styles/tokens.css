@@ -118,6 +118,42 @@
 
   /* Custom breakpoint → enables `nav:` variant for the 860px burger switch */
   --breakpoint-nav: 860px;
+
+  /* Ambient animations (landing set-pieces). Registering the --animate-* var
+     generates the `animate-<name>` utility; the @keyframes are defined below,
+     at the stylesheet top level. All are decorative loops — each consumer also
+     carries `motion-reduce:animate-none`, and the reduced-motion block further
+     neutralizes duration as a safety net. */
+  --animate-glow-pulse: glow-pulse 7s ease-in-out infinite;
+  --animate-spin-slow: spin-slow 26s linear infinite;
+  --animate-floaty: floaty 6s ease-in-out infinite;
+}
+
+/* Keyframes for the ambient landing animations (see --animate-* above). */
+@keyframes glow-pulse {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.18);
+  }
+}
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes floaty {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
 }
 
 /* ---------------------------------------------------------------------------
