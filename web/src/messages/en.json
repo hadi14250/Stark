@@ -1,0 +1,209 @@
+{
+  "meta": {
+    "siteName": "STARK",
+    "tagline": "Complete environments. Fully delivered.",
+    "defaultDescription": "STARK — a Saudi manufacturer of integrated woodworks, mattresses and turnkey hospitality environments."
+  },
+  "nav": {
+    "home": "Home",
+    "woodworks": "Woodworks",
+    "mattresses": "Mattresses",
+    "gallery": "Gallery",
+    "cta": "Start a project",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "switchTo": "العربية"
+  },
+  "footer": {
+    "tagline": "Complete environments. Fully delivered.",
+    "divisions": "Divisions",
+    "company": "Company",
+    "contact": "Contact",
+    "woodworks": "Woodworks",
+    "mattresses": "Mattresses",
+    "blue": "blue mattress · B2C",
+    "siesta": "siesta · B2B",
+    "gallery": "Gallery",
+    "email": "hello@stark-ksa.net",
+    "location": "Jeddah, Saudi Arabia",
+    "rights": "All rights reserved.",
+    "power": "SAUDI BASED POWER."
+  },
+  "pages": {
+    "home": {
+      "title": "Complete environments. Fully delivered.",
+      "description": "A Saudi manufacturer delivering integrated woodworks, mattresses and turnkey hospitality environments, fully in-house.",
+      "heading": "Complete environments. Fully delivered.",
+      "placeholder": "Landing page — built in Phase 3."
+    },
+    "woodworks": {
+      "title": "Woodworks",
+      "description": "Engineered in wood, down to the joint. Custom woodworks, interior fit-outs and bespoke furniture.",
+      "heading": "Engineered in wood, down to the joint.",
+      "placeholder": "Woodworks page — built in Phase 4."
+    },
+    "mattresses": {
+      "title": "Mattresses",
+      "description": "Engineered comfort. blue mattress for retail, siesta mattresses for hospitality.",
+      "heading": "Engineered comfort.",
+      "placeholder": "Mattresses page — built in Phase 5."
+    },
+    "gallery": {
+      "title": "Gallery",
+      "description": "Selected woodworks and mattress work across our divisions.",
+      "heading": "Selected work.",
+      "placeholder": "Gallery page — built in Phase 6."
+    }
+  },
+  "states": {
+    "loading": "Loading…",
+    "notFoundTitle": "Page not found",
+    "notFoundBody": "The page you are looking for does not exist.",
+    "notFoundCta": "Back to home",
+    "errorTitle": "Something went wrong",
+    "errorBody": "An unexpected error occurred. Please try again.",
+    "errorCta": "Try again"
+  },
+  "landing": {
+    "hero": {
+      "eyebrow": "Saudi Based Power.",
+      "line1": "Complete environments.",
+      "line2": "Fully delivered.",
+      "sub": "Saudi-based manufacturing of woodworks, furniture, and mattresses — from raw materials to finished interiors, under one partner.",
+      "cta": "Start a project",
+      "scrollCue": "Scroll to explore",
+      "alt": "STARK — complete environments, fully delivered."
+    },
+    "about": {
+      "heading": "About Stark",
+      "paragraphs": [
+        "Stark is a Saudi manufacturer of integrated environments — woodworks, furniture, and mattresses — delivered from raw material to finished interior under one partner.",
+        "We are more than a manufacturer: a trusted solutions partner that brings design, manufacturing, and on-site execution into a single, accountable process. Every piece is engineered for durability and finished to a standard that hospitality demands.",
+        "From bespoke wood elements and full interior fit-outs to comfort-engineered mattresses, our work is built to last and made to measure — with fair, quality-first practices at every stage."
+      ],
+      "collageAlt": [
+        "Crafted wood interior detail.",
+        "Finished furniture in a styled interior.",
+        "Sculptural wood piece in a light-filled space."
+      ]
+    },
+    "features": {
+      "heading": "Built to global standard.",
+      "sub": "The capabilities behind every environment we deliver.",
+      "items": [
+        {
+          "title": "European machinery",
+          "body": "Precision equipment across the production line, so every component is cut, shaped, and finished to a repeatable standard — at the scale major projects require.",
+          "alt": "Precision woodworking machinery on the production floor."
+        },
+        {
+          "title": "Large-scale capacity",
+          "body": "Engineered for major project volume. Our facility is built to take on complete interiors and multi-unit hospitality work without compromising on finish.",
+          "alt": "Large-scale manufacturing facility interior."
+        },
+        {
+          "title": "Strict quality control",
+          "body": "Checked at every stage — from raw material to final install — so what leaves the factory is what arrives on site: complete, durable, and ready.",
+          "alt": "Finished interior demonstrating quality of finish."
+        }
+      ]
+    },
+    "categories": {
+      "heading": "What we deliver",
+      "sub": "Two divisions and full turnkey execution — one standard across everything we make.",
+      "viewMore": "View gallery",
+      "prev": "Previous",
+      "next": "Next",
+      "items": [
+        {
+          "title": "Woodworks",
+          "body": "Everything wood — design, fit-out, furniture, turnkey. Custom wood elements from concept to production.",
+          "cta": "Explore Woodworks",
+          "alt": "Woodworks interior environment."
+        },
+        {
+          "title": "Mattresses",
+          "body": "Comfort, engineered — for homes and for hospitality. Delivered through two focused brands.",
+          "cta": "Explore Mattresses",
+          "alt": "Mattress and bedroom environment."
+        },
+        {
+          "title": "Turnkey Projects",
+          "body": "Design, manufacture, deliver, install — one partner for complete, made-to-measure interiors.",
+          "cta": "Start a project",
+          "alt": "Complete turnkey interior environment."
+        }
+      ]
+    },
+    "gallery": {
+      "heading": "Our Gallery",
+      "sub": "Explore selected environments across our divisions — woodworks, furniture, and mattress work in real settings.",
+      "viewMore": "View gallery",
+      "tilesAlt": [
+        "Styled seating in a finished interior.",
+        "Custom cabinetry and storage detail.",
+        "Upholstered furniture in a living space.",
+        "Contemporary interior with soft furnishings.",
+        "Lounge seating in a hospitality setting.",
+        "Fit-out detail in a modern interior.",
+        "Full room interior with custom furniture.",
+        "Furniture detail against a coloured wall.",
+        "Warm interior with wood and textile finishes.",
+        "Accent furniture in a finished room."
+      ]
+    },
+    "social": {
+      "facebook": "STARK on Facebook",
+      "instagram": "STARK on Instagram",
+      "youtube": "STARK on YouTube",
+      "x": "STARK on X (Twitter)"
+    }
+  },
+  "contact": {
+    "heading": "Let's build complete environments together.",
+    "sub": "Tell us about your project and we'll get back to you.",
+    "fields": {
+      "name": { "label": "Name", "placeholder": "Your full name" },
+      "company": { "label": "Company", "placeholder": "Company name (optional)" },
+      "email": { "label": "Email", "placeholder": "you@company.com" },
+      "phone": { "label": "Phone", "placeholder": "Phone number (optional)" },
+      "division": { "label": "Division of interest" },
+      "projectType": { "label": "Project type" },
+      "message": { "label": "Message", "placeholder": "Tell us about your project…" }
+    },
+    "placeholders": {
+      "select": "Please select…"
+    },
+    "options": {
+      "division": {
+        "woodworks": "Woodworks",
+        "blue": "blue mattress (B2C)",
+        "siesta": "siesta mattresses (B2B)",
+        "turnkey": "Turnkey",
+        "other": "Other"
+      },
+      "projectType": {
+        "hotel": "Hotel",
+        "resort": "Resort",
+        "villa": "Villa",
+        "restaurant": "Restaurant",
+        "residential": "Residential",
+        "retail": "Retail"
+      }
+    },
+    "states": {
+      "submit": "Send",
+      "sending": "Sending…",
+      "success": "Thank you — we'll be in touch shortly.",
+      "error": "Something went wrong. Please try again or email us directly.",
+      "required": "This field is required.",
+      "invalidEmail": "Please enter a valid email address."
+    },
+    "optionalHint": "optional",
+    "details": {
+      "email": "hello@stark-ksa.net",
+      "phone": "",
+      "location": "Jeddah, Saudi Arabia"
+    }
+  }
+}

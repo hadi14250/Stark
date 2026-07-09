@@ -1,0 +1,19 @@
+import type { MetadataRoute } from "next";
+import { routing } from "@/i18n/routing";
+import { SITE_URL } from "@/lib/seo";
+
+const PATHS = ["", "/woodworks", "/mattresses", "/gallery"];
+
+/** One entry per page × locale, with hreflang alternates on each URL. */
+export default function sitemap(): MetadataRoute.Sitemap {
+  return PATHS.flatMap((path) =>
+    routing.locales.map((locale) => ({
+      url: `${SITE_URL}/${locale}${path}`,
+      alternates: {
+        languages: Object.fromEntries(
+          routing.locales.map((l) => [l, `${SITE_URL}/${l}${path}`]),
+        ),
+      },
+    })),
+  );
+}

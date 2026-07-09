@@ -1,0 +1,173 @@
+/* ============================================================================
+   STARK — 3-TIER DESIGN TOKENS  (the convergence contract)
+   ----------------------------------------------------------------------------
+   TIER 1  Primitives  → raw brand values. Plain :root vars, NOT in @theme,
+                         so Tailwind generates NO utilities for them.
+   TIER 2  Semantics   → role aliases in @theme inline (Tailwind utilities
+                         reference the *variable*, so runtime overrides work).
+   TIER 3  Overrides   → [data-theme], [data-brand], [dir], reduced-motion,
+                         [lang=ar] re-point the SEMANTIC vars only.
+
+   NOTE: the primitive hex VALUES here are a reasonable brand-palette
+   PLACEHOLDER. The real design comes from Claude Design (Phase 1 briefs) and
+   is applied later by re-mapping these values — components never change.
+   ============================================================================ */
+
+/* ---------------------------------------------------------------------------
+   TIER 1 — PRIMITIVES  (no utilities generated; consumed only by semantics)
+   --------------------------------------------------------------------------- */
+:root {
+  /* Greens */
+  --green-forest: #1c3c2d; /* primary brand/UI green */
+  --green-logo: #1c3d2e; /* logo lockup green — kept distinct so logos never drift */
+  --green-deep-1: #142c21;
+  --green-deep-2: #11271c;
+  --green-deep-3: #0c1a13;
+  --green-panel-1: #0e2118;
+  --green-panel-2: #16271e;
+
+  /* Creams */
+  --cream: #f3efe6;
+  --cream-card: #ece7da;
+
+  /* Tan / gold ramp */
+  --tan-1: #c2a878;
+  --tan-2: #dbc9ac;
+  --tan-3: #b79a6a;
+  --tan-4: #9a7b45;
+
+  /* Ink on cream */
+  --ink-cream-strong: #1c3c2d;
+  --ink-cream-body: #4e5c51;
+  --ink-cream-muted: #6e7c70;
+
+  /* Ink on green */
+  --ink-green-strong: #f3efe6;
+  --ink-green-body: #c2cfc4;
+  --ink-green-muted: #9fb0a2;
+
+  /* Hairlines (as rgba so they layer over any surface) */
+  --line-on-cream: rgba(28, 60, 45, 0.16);
+  --line-on-green: rgba(219, 201, 172, 0.22);
+
+  /* Feedback */
+  --red-error: #a4361c; /* validation / error — placeholder, tune with design */
+
+  /* Form field surfaces (placeholder; the sage focus glow lands with design) */
+  --field-surface: #ffffff;
+  --field-border: rgba(28, 60, 45, 0.22);
+  --field-ring: rgba(28, 60, 45, 0.35);
+
+  /* Sub-brand (mattress division) — contained to their card subtrees only */
+  --brand-blue: #0e5c8d; /* blue mattress · B2C · retail */
+  --brand-blue-tint: #5ea8d6;
+  --brand-siesta: #5c2482; /* siesta mattresses · B2B · hospitality */
+  --brand-siesta-tint: #a877c9;
+  --brand-siesta-accent: #db8132;
+
+  /* Easing curves */
+  --ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-wood: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-wipe: cubic-bezier(0.76, 0, 0.24, 1);
+  --ease-line: cubic-bezier(0.7, 0, 0.2, 1);
+  --ease-cushion: cubic-bezier(0.34, 1.3, 0.64, 1);
+
+  /* Motion durations */
+  --dur-fast: 0.2s;
+  --dur-reveal: 0.9s;
+  --dur-wipe: 1.15s;
+
+  /* Motion control tokens (read by CSS-only transforms) */
+  --motion-scale: 1; /* 1 = motion on · 0 = reduced-motion (see below) */
+  --dir: 1; /* 1 = LTR · -1 = RTL — horizontal multiplier (see below) */
+}
+
+/* ---------------------------------------------------------------------------
+   TIER 2 — SEMANTICS
+   Plain @theme (NOT inline): Tailwind generates utilities that reference the
+   *variable* — e.g. `.border-accent { border-color: var(--color-accent) }` —
+   so Tier-3 [data-theme]/[data-brand]/[lang] overrides take effect at runtime
+   with no recompile. (`@theme inline` would substitute the value and defeat
+   runtime theming — verified: it froze utilities to var(--tan-1).)
+   --------------------------------------------------------------------------- */
+@theme {
+  /* Colors — components consume ONLY these */
+  --color-surface: var(--cream);
+  --color-surface-2: var(--cream-card);
+  --color-ink: var(--ink-cream-strong);
+  --color-ink-body: var(--ink-cream-body);
+  --color-ink-muted: var(--ink-cream-muted);
+  --color-accent: var(--tan-1);
+  --color-accent-2: var(--tan-3);
+  --color-hero-bg: var(--green-forest);
+  --color-nav-bg: var(--green-deep-1); /* main nav bar — one step darker than hero */
+  --color-footer-bg: var(--green-deep-3); /* footer surface — darkest green */
+  --color-line: var(--line-on-cream);
+  --color-error: var(--red-error);
+
+  /* Form fields — components consume these, never raw field primitives */
+  --color-field-surface: var(--field-surface);
+  --color-field-border: var(--field-border);
+  --color-field-ring: var(--field-ring);
+
+  /* Fonts — fed by next/font variables (see fonts.ts) */
+  --font-display: var(--font-sora);
+  --font-body: var(--font-roboto);
+  --font-mono: var(--font-roboto-mono);
+  --font-arabic: var(--font-plex-arabic);
+
+  /* Custom breakpoint → enables `nav:` variant for the 860px burger switch */
+  --breakpoint-nav: 860px;
+}
+
+/* ---------------------------------------------------------------------------
+   TIER 3 — OVERRIDES  (re-point semantics only; components untouched)
+   --------------------------------------------------------------------------- */
+
+/* Page/section themes */
+[data-theme="woodworks"] {
+  --color-surface: var(--cream-card);
+  --color-surface-2: var(--green-deep-1);
+  --color-accent: var(--tan-3);
+  --color-accent-2: var(--tan-4);
+  --color-hero-bg: var(--green-deep-2);
+  --ease-theme: var(--ease-wood);
+}
+
+[data-theme="mattresses"] {
+  --color-surface: var(--cream);
+  --color-surface-2: var(--cream-card);
+  --color-accent: var(--tan-2);
+  --color-hero-bg: var(--green-forest);
+  --ease-theme: var(--ease-cushion);
+}
+
+/* Contained sub-brand colors — scoped to their card containers, never a page */
+[data-brand="blue"] {
+  --color-accent: var(--brand-blue);
+  --color-hero-bg: var(--brand-blue);
+}
+
+[data-brand="siesta"] {
+  --color-accent: var(--brand-siesta);
+  --color-accent-2: var(--brand-siesta-accent);
+  --color-hero-bg: var(--brand-siesta);
+}
+
+/* RTL — flip the horizontal multiplier for CSS-only transforms */
+[dir="rtl"] {
+  --dir: -1;
+}
+
+/* Arabic — Sora has no Arabic coverage; re-point display+body to Plex Arabic */
+[lang="ar"] {
+  --font-display: var(--font-plex-arabic);
+  --font-body: var(--font-plex-arabic);
+}
+
+/* Reduced motion — collapse CSS-driven travel to zero at the token level */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-scale: 0;
+  }
+}
