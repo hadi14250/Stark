@@ -65,6 +65,33 @@
   --brand-siesta-tint: #a877c9;
   --brand-siesta-accent: #db8132;
 
+  /* --------------------------------------------------------------------------
+     ELEMENT (Woodworks page) — a self-contained dark/tan palette from the
+     `design_handoff_element_wood` handoff. Disjoint from the Stark greens; the
+     values are the mockup's exact hexes. Consumed only under
+     [data-theme="element"] (below) — either re-pointed into the semantic tokens
+     or read directly (--el-*) for the page's many bespoke colors.
+     -------------------------------------------------------------------------- */
+  --el-bg: #191d22; /* page background (warm-dark charcoal) */
+  --el-bg-outer: #0d0f12; /* letterbox behind the canvas */
+  --el-surface-card: #1e232a; /* hero card */
+  --el-surface-panel: #1c2026; /* contact/stats panel, process nodes */
+  --el-surface-marquee: #171b20; /* marquee ribbon band */
+  --el-control: #2a3039; /* buttons rest */
+  --el-control-hover: #333a45; /* buttons hover */
+  --el-input: #23282f; /* form field fill */
+  --el-input-focus: #272d35; /* form field fill on focus */
+  --el-text-strong: #f4f7fa; /* headings / white text */
+  --el-text-body: #c3c8cd; /* body copy */
+  --el-text-body-2: #a7adb3; /* process step descriptions */
+  --el-text-muted: #8a8f94; /* labels, copyright, social icons */
+  --el-text-nav-idle: #7f858b; /* inactive nav links */
+  --el-text-quote: #e7eaed; /* testimonial quote text */
+  --el-text-disc: #f7f4ef; /* wood-disc labels */
+  --el-accent: #c3a06a; /* wood-tan accent */
+  --el-accent-hover: #d8b981; /* link hover */
+  --el-accent-bright: #e6ca92; /* progress-bar gradient end */
+
   /* Easing curves */
   --ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
   --ease-wood: cubic-bezier(0.16, 1, 0.3, 1);
@@ -127,6 +154,16 @@
   --animate-glow-pulse: glow-pulse 7s ease-in-out infinite;
   --animate-spin-slow: spin-slow 26s linear infinite;
   --animate-floaty: floaty 6s ease-in-out infinite;
+
+  /* Element (Woodworks) ambient loops — from the handoff's <style> block. The
+     per-element dur/delay for float and the marquee travel are set inline where
+     they vary; these register the base utilities. Each consumer also carries
+     `motion-reduce:animate-none`. (The marquee runs via GSAP for RTL + hover;
+     `animate-el-marquee` is its reduced-motion/no-JS CSS fallback.) */
+  --animate-el-sway: el-sway 7.5s ease-in-out infinite alternate;
+  --animate-el-float: el-float 5s ease-in-out infinite alternate;
+  --animate-el-mist: el-mist 24s ease-in-out infinite;
+  --animate-el-marquee: el-marquee 34s linear infinite;
 }
 
 /* Keyframes for the ambient landing animations (see --animate-* above). */
@@ -156,6 +193,45 @@
   }
 }
 
+/* Element (Woodworks) keyframes — verbatim from the handoff's <style> block. */
+@keyframes el-sway {
+  from {
+    transform: rotate(-1.2deg);
+  }
+  to {
+    transform: rotate(1.7deg);
+  }
+}
+@keyframes el-float {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-12px);
+  }
+}
+@keyframes el-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes el-mist {
+  0% {
+    transform: translate3d(-4%, 0, 0) scale(1.05);
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate3d(5%, -3%, 0) scale(1.18);
+    opacity: 0.4;
+  }
+}
+
 /* ---------------------------------------------------------------------------
    TIER 3 — OVERRIDES  (re-point semantics only; components untouched)
    --------------------------------------------------------------------------- */
@@ -176,6 +252,27 @@
   --color-accent: var(--tan-2);
   --color-hero-bg: var(--green-forest);
   --ease-theme: var(--ease-cushion);
+}
+
+/* Element (Woodworks) — the dark/tan handoff page. Re-points the semantic
+   tokens so shared primitives (Container/Reveal/Field/Input) behave on the dark
+   surface, and swaps display+body to the handoff fonts. The page also reads the
+   raw --el-* primitives directly for its many bespoke colors. Scoped to the
+   page via <div data-theme="element"> — does NOT affect the rest of the site. */
+[data-theme="element"] {
+  --color-surface: var(--el-bg);
+  --color-surface-2: var(--el-surface-card);
+  --color-ink: var(--el-text-strong);
+  --color-ink-body: var(--el-text-body);
+  --color-ink-muted: var(--el-text-muted);
+  --color-accent: var(--el-accent);
+  --color-accent-2: var(--el-accent-hover);
+  --color-hero-bg: var(--el-bg);
+  --color-line: var(--el-hairline, rgba(240, 244, 248, 0.1));
+  --color-field-surface: var(--el-input);
+  --font-display: var(--font-pt-serif);
+  --font-body: var(--font-mulish);
+  --ease-theme: var(--ease-wood);
 }
 
 /* Contained sub-brand colors — scoped to their card containers, never a page */

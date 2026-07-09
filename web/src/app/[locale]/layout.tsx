@@ -8,8 +8,7 @@ import { routing, type Locale } from "@/i18n/routing";
 import { fontVariables } from "@/styles/fonts";
 import { SITE_URL, alternates } from "@/lib/seo";
 import { Providers } from "@/components/motion/Providers";
-import { Nav } from "@/components/layout/Nav";
-import { Footer } from "@/components/layout/Footer";
+import { SiteChrome } from "@/components/layout/SiteChrome";
 import { JsonLd } from "@/components/seo/JsonLd";
 import "../globals.css";
 
@@ -54,12 +53,10 @@ export default async function LocaleLayout({
         <NextIntlClientProvider>
           <Providers>
             <JsonLd />
-            <Nav />
-            {/* Offset the fixed header: utility strip (40) + bar (64 mobile / 76 desktop).
-                overflow-x-clip contains decorative bleed (diagonal bands, collage) without
-                affecting vertical scroll or the fixed header (which sits outside <main>). */}
-            <main className="flex-1 overflow-x-clip pt-[104px] nav:pt-[116px]">{children}</main>
-            <Footer />
+            {/* SiteChrome renders the shared green Nav/Footer + header offset —
+                except on standalone segments (the Woodworks "Element" page),
+                which supply their own chrome and render full-bleed. */}
+            <SiteChrome>{children}</SiteChrome>
           </Providers>
         </NextIntlClientProvider>
         <Analytics />

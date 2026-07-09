@@ -246,5 +246,140 @@
       "phone": "",
       "location": "Jeddah, Saudi Arabia"
     }
+  },
+  "element": {
+    "nav": {
+      "home": "Home",
+      "about": "About Us",
+      "shop": "Shop",
+      "blog": "Blog",
+      "contact": "Contact",
+      "openMenu": "Open menu",
+      "closeMenu": "Close menu",
+      "brand": "Element"
+    },
+    "hero": {
+      "line1": "Specialty",
+      "line2": "Wood",
+      "line3": "Products",
+      "body": "Element brings extraordinary, natural wood flooring, distinctive furniture and unique, wooden features . We features wood products and handcrafted home accessories and gift. Each piece of wood has its own story that started long before it got to us.",
+      "cta": "Contact Us",
+      "thumbAlt": [
+        "Live-edge wooden table",
+        "Rustic wooden vanity",
+        "Modern wooden vanity"
+      ],
+      "branchAlt": "Bare wooden branch"
+    },
+    "marquee": {
+      "label": "Brand values",
+      "words": [
+        "Handcrafted",
+        "Sustainable",
+        "Live Edge",
+        "Solid Hardwood",
+        "Heirloom Quality",
+        "Naturally Sourced"
+      ]
+    },
+    "products": {
+      "title": "Our Products",
+      "cta": "Shop Online",
+      "items": [
+        {
+          "title": "Furniture",
+          "body": "No matter what your personal style, we have just the right furniture for your living environment. Element brings extraordinary, natural wood flooring, distinctive furniture and unique, wooden features. Furniture collections that blend classic style with heirloom quality.",
+          "alt": "Rustic reclaimed-wood armchair"
+        },
+        {
+          "title": "Features",
+          "body": "Wooden walls can add spiritual simplicity to that space behind the bed, the one we see every night right before we go to sleep, warm the living room or separate two different areas in the dining room.  Natural wood connect the interiors to the peace-giving outdoors.",
+          "alt": "Live-edge wooden headboard"
+        },
+        {
+          "title": "Flooring",
+          "body": "Solid hardwood adds character, warmth and value to any room in your house.  We offer exceptional wood floors that will help you enhance the look of your home. You can get wood floors that look shiny and new, or you can buy brand new wood that looks like an antique.",
+          "alt": "Reclaimed hardwood plank flooring"
+        }
+      ]
+    },
+    "stats": {
+      "eyebrow": "Craft in Numbers",
+      "items": [
+        { "label": "Years of Craft" },
+        { "label": "Wood Species" },
+        { "label": "Pieces Crafted" },
+        { "label": "Sustainably Sourced" }
+      ]
+    },
+    "materials": {
+      "title": "Materials",
+      "items": [
+        { "label": "Maple" },
+        { "label": "Walnut" },
+        { "label": "Cherry" },
+        { "label": "Pine" },
+        { "label": "Oak" },
+        { "label": "Cedar" }
+      ]
+    },
+    "process": {
+      "eyebrow": "Our Process",
+      "title": "From Forest to Home",
+      "steps": [
+        {
+          "title": "Sourced",
+          "body": "Reclaimed and responsibly felled timber, hand-picked for grain and character."
+        },
+        {
+          "title": "Milled",
+          "body": "Cut and slow-dried to reveal each board's live edge and natural figure."
+        },
+        {
+          "title": "Crafted",
+          "body": "Joined by hand in our workshop, built to outlast trends and generations."
+        },
+        {
+          "title": "Finished",
+          "body": "Hand-oiled to protect the wood and deepen its natural, living tone."
+        }
+      ]
+    },
+    "testimonials": {
+      "eyebrow": "Kind Words",
+      "items": [
+        {
+          "quote": "They didn't sell me furniture — they handed me a piece of a forest, with a hundred years of story already living in the grain.",
+          "author": "Mara H.  ·  Portland"
+        },
+        {
+          "quote": "The grain runs like a river across our table. Ten years in, it still stops guests mid-sentence when they walk in.",
+          "author": "Daniel O.  ·  Asheville"
+        },
+        {
+          "quote": "Every knot and live edge was left exactly where the tree put it. That kind of honesty is the whole reason we chose Element.",
+          "author": "Lena & Co.  ·  Boulder"
+        }
+      ],
+      "dotLabel": "Show testimonial"
+    },
+    "contact": {
+      "title": "Contact Us",
+      "name": "Your Name",
+      "email": "Email",
+      "message": "Message",
+      "send": "Send",
+      "sending": "Sending…",
+      "success": "Thank you — we'll be in touch shortly.",
+      "error": "Something went wrong. Please try again or email us directly."
+    },
+    "footer": {
+      "copyright": "© 2016 Element Inc. All Rights Reserved.",
+      "social": {
+        "facebook": "Facebook",
+        "pinterest": "Pinterest",
+        "twitter": "Twitter"
+      }
+    }
   }
 }
