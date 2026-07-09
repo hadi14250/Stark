@@ -12,20 +12,21 @@ type StatLabel = { label: string };
 
 /**
  * The four stats, in the design's order. `value`/`suffix` are the count-up
- * targets. They are `null` for now: the design's figures (25+/12k+/98%/40+) are
- * template placeholders and Stark's real numbers (year founded, piece counts,
- * etc.) are NOT client-confirmed yet — shipping them would publish a fake claim.
- * A null value renders a styled "—" placeholder; the count-up + label wiring is
- * fully in place, so confirming a fact is a one-line swap here.
+ * targets.
  *
- * TODO(F-facts): once the client confirms figures, set { value, suffix } per
- * stat (e.g. { value: 25, suffix: "+" }) — nothing else needs to change.
+ * ⚠ PLACEHOLDER FIGURES — NOT CLIENT-CONFIRMED. These are plausible stand-ins
+ * (the template's numbers) so the band reads as complete; Stark's real figures
+ * (years, pieces, on-time %, artisan count) are still pending F-facts sign-off
+ * and MUST be corrected before real launch. Set a `value` to null to fall back
+ * to a "—" dash placeholder for any stat we can't stand behind.
+ *
+ * TODO(F-facts): replace each { value, suffix } with the confirmed figure.
  */
 const STATS: Array<{ value: number | null; suffix: string }> = [
-  { value: null, suffix: "+" }, // Years of Craft
-  { value: null, suffix: "k+" }, // Pieces Delivered
-  { value: null, suffix: "%" }, // On-time Delivery
-  { value: null, suffix: "+" }, // Skilled Artisans
+  { value: 25, suffix: "+" }, // Years of Craft — PLACEHOLDER
+  { value: 12, suffix: "k+" }, // Pieces Delivered — PLACEHOLDER
+  { value: 98, suffix: "%" }, // On-time Delivery — PLACEHOLDER
+  { value: 40, suffix: "+" }, // Skilled Artisans — PLACEHOLDER
 ];
 
 /**
