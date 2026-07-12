@@ -13,6 +13,7 @@ import {
   IBM_Plex_Sans_Arabic,
   PT_Serif,
   Mulish,
+  Poppins,
 } from "next/font/google";
 
 export const sora = Sora({
@@ -64,6 +65,20 @@ export const mulish = Mulish({
   display: "swap",
 });
 
+/**
+ * Mattresses ("Dreamzy") page font — Poppins (all weights + italics), the
+ * handoff's single family for headings, body, nav and labels. Consumed ONLY
+ * under `[data-theme="dreamzy"]` (see tokens.css), which re-points
+ * --font-display/--font-body to it; the rest of the site keeps Sora/Roboto.
+ */
+export const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  style: ["normal", "italic"],
+  variable: "--font-poppins",
+  display: "swap",
+});
+
 /** Space-joined className to apply all font variables on <html>. */
 export const fontVariables = [
   sora.variable,
@@ -72,4 +87,5 @@ export const fontVariables = [
   plexArabic.variable,
   ptSerif.variable,
   mulish.variable,
+  poppins.variable,
 ].join(" ");

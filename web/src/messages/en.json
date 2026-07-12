@@ -381,5 +381,141 @@
         "twitter": "Twitter"
       }
     }
+  },
+  "dreamzy": {
+    "hero": {
+      "h1": "Better sleep, built to last",
+      "subLine1": "Mattresses engineered and finished in Saudi Arabia",
+      "subLine2": "Comfort made for every body.",
+      "cta": "Explore mattresses",
+      "reviewsTab": "STARK REVIEWS",
+      "photoAlt": "A STARK mattress styled in a bright bedroom"
+    },
+    "features": {
+      "items": [
+        {
+          "title": "Breathable Fibers",
+          "caption": "Layered materials that support airflow for a fresher night's sleep"
+        },
+        {
+          "title": "Cooling Surface",
+          "caption": "A top layer designed to sleep cooler through the night"
+        },
+        {
+          "title": "Flippable Comfort",
+          "caption": "Choose your feel — a firmer or a softer side"
+        },
+        {
+          "title": "Quality Checked",
+          "caption": "Every mattress inspected before it leaves our facility"
+        },
+        {
+          "title": "Built to Last",
+          "caption": "Made to hold its shape and support season after season"
+        }
+      ]
+    },
+    "trust": {
+      "items": [
+        { "label": "Long-term warranty" },
+        { "label": "Risk-free home trial" },
+        { "label": "Delivered across the Kingdom" }
+      ]
+    },
+    "featuredEyebrow": "FEATURED PRODUCTS",
+    "products": {
+      "cta": "Learn more",
+      "items": [
+        {
+          "eyebrow": "STARK®",
+          "title": "Mattress",
+          "body": "Built from carefully selected foams and fibers, our mattresses deliver lasting comfort and support at a fair price. Cooling layers help you sleep cooler than conventional foam, and the construction is made to keep its shape for years.",
+          "alt": "STARK mattress product shot",
+          "chips": [
+            "Warranty",
+            "Full thickness",
+            "For all weights",
+            "Finished in-house",
+            "Flippable",
+            "Cool / warm feel",
+            "Quality materials"
+          ]
+        },
+        {
+          "eyebrow": "STARK®",
+          "title": "Pillow",
+          "body": "A pillow should do more than feel soft — it should contour to your neck and hold its support through the night. Our pillows pair breathable fibers with a cover made for a cool, comfortable feel.",
+          "alt": "STARK pillow product shot",
+          "chips": ["Warranty", "Orthopedic", "Low-allergen", "Natural feel"]
+        },
+        {
+          "eyebrow": "STARK®",
+          "title": "Comforter",
+          "body": "Everyone prefers a different warmth. Our comforter is designed for both — a cooler side for warmer nights and a softer, warmer side for when you want to stay cozy.",
+          "alt": "STARK comforter product shot",
+          "chips": ["Warranty", "Orthopedic", "Low-allergen", "Natural feel", "Cool side"]
+        }
+      ]
+    },
+    "buyset": {
+      "title": "Buy a set for the complete STARK experience",
+      "save": "Bundle and save",
+      "cta": "Explore sets",
+      "alt": "A STARK mattress, comforter and pillow set"
+    },
+    "why": {
+      "title": "Why our products?",
+      "items": [
+        {
+          "title": "Proven craftsmanship",
+          "body": "We stand behind the quality of everything we make."
+        },
+        {
+          "title": "Low-allergen",
+          "body": "Our materials are chosen to suit sensitive and allergy-prone sleepers."
+        },
+        {
+          "title": "Natural feel",
+          "body": "Breathable, comfortable materials that work with your body through the night."
+        },
+        {
+          "title": "For all weights",
+          "body": "Support designed to work for every kind of sleeper."
+        },
+        {
+          "title": "Orthopedic support",
+          "body": "Developed with orthopedic comfort in mind."
+        },
+        {
+          "title": "Cooling materials",
+          "body": "A cooler sleeping surface than standard foam."
+        }
+      ]
+    },
+    "guarantee": {
+      "wordmark": "STARK",
+      "sub": "satisfaction guarantee",
+      "title": "Try it at home. We think you'll fall in love with it.",
+      "closing": "If it's not right for you, we'll make it right."
+    },
+    "testimonial": {
+      "items": [
+        {
+          "quote": "A real customer testimonial will appear here once approved by the client.",
+          "author": "Customer name pending"
+        }
+      ],
+      "prev": "Previous testimonial",
+      "next": "Next testimonial"
+    },
+    "footer": {
+      "menuHeading": "MENU",
+      "addressHeading": "ADDRESS",
+      "subscribeHeading": "SUBSCRIBE",
+      "emailPlaceholder": "Enter your e-mail",
+      "subscribe": "Subscribe",
+      "subscribeSuccess": "Thanks — you're on the list.",
+      "subscribeError": "Something went wrong. Please try again."
+    }
   }
 }

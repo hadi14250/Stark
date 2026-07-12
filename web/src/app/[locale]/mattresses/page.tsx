@@ -2,9 +2,17 @@ import type { Metadata } from "next";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { alternates } from "@/lib/seo";
 import { routing, type Locale } from "@/i18n/routing";
-import { PlaceholderHero } from "@/components/ui/PlaceholderHero";
-import { Container } from "@/components/ui/Container";
-import { Reveal } from "@/components/motion/Reveal";
+import { MattressesNav } from "@/components/mattresses/MattressesNav";
+import { MzHero } from "@/components/mattresses/MzHero";
+import { MzFeatures } from "@/components/mattresses/MzFeatures";
+import { MzTrustBar } from "@/components/mattresses/MzTrustBar";
+import { MzFeaturedEyebrow } from "@/components/mattresses/MzFeaturedEyebrow";
+import { MzProduct } from "@/components/mattresses/MzProduct";
+import { MzBuySet } from "@/components/mattresses/MzBuySet";
+import { MzWhy } from "@/components/mattresses/MzWhy";
+import { MzGuarantee } from "@/components/mattresses/MzGuarantee";
+import { MzTestimonial } from "@/components/mattresses/MzTestimonial";
+import { MzFooter } from "@/components/mattresses/MzFooter";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -25,57 +33,49 @@ export async function generateMetadata({
   };
 }
 
+/**
+ * Mattresses — the "Dreamzy" page, reproduced pixel-for-pixel from
+ * `design_handoff_dreamzy_mattress` (a light/mint D2C sleep-brand comp).
+ *
+ * It is a STANDALONE page: SiteChrome (in the locale layout) suppresses the
+ * shared green Stark Nav/Footer for the `mattresses` segment, so this page owns
+ * the full viewport. Per the client's directive the DESIGN is Dreamzy's but the
+ * CONTENT is Stark's — the nav is the Stark nav restyled to the Dreamzy palette
+ * (same links/logo/CTA), the footer uses the Dreamzy layout with real Stark
+ * content, and the body copy follows the comp's structure with Stark's real
+ * facts (invented specifics are `TODO(F-facts)` placeholders, not shipped).
+ *
+ * `data-theme="dreamzy"` re-points the semantic tokens + fonts to the handoff's
+ * white / mint / teal / Poppins palette (see tokens.css). The page canvas is
+ * fluid: full-bleed photo bands + centered 1200px content columns.
+ */
 export default async function MattressesPage({
   params,
 }: PageProps<"/[locale]/mattresses">) {
   const { locale } = await params;
   setRequestLocale(locale as Locale);
-  const t = await getTranslations("pages.mattresses");
-  const nav = await getTranslations("nav");
-  const footer = await getTranslations("footer");
 
   return (
-    <div data-theme="mattresses">
-      <PlaceholderHero
-        eyebrow={nav("mattresses")}
-        heading={t("heading")}
-        note={t("placeholder")}
-      />
-
-      {/* Contained sub-brand cards — data-brand recolors --color-accent ONLY
-          within each card's subtree, proving sub-brand colors stay scoped.
-          data-brand is on the SAME element that consumes `border-accent`/
-          `text-accent`, so the containment is real. */}
-      <section className="bg-[color:var(--color-surface)]">
-        <Container className="grid gap-6 py-20 nav:grid-cols-2">
-          <Reveal x={-32}>
-            <div
-              data-brand="blue"
-              className="rounded-md border-t-4 border-accent bg-[color:var(--color-surface-2)] p-8"
-            >
-              <p className="font-mono text-xs uppercase tracking-[0.24em] text-accent">
-                {footer("blue")}
-              </p>
-              <p className="mt-3 text-[color:var(--color-ink-body)]">
-                Contained accent = blue. Retail.
-              </p>
-            </div>
-          </Reveal>
-          <Reveal x={32} delay={0.08}>
-            <div
-              data-brand="siesta"
-              className="rounded-md border-t-4 border-accent bg-[color:var(--color-surface-2)] p-8"
-            >
-              <p className="font-mono text-xs uppercase tracking-[0.24em] text-accent">
-                {footer("siesta")}
-              </p>
-              <p className="mt-3 text-[color:var(--color-ink-body)]">
-                Contained accent = siesta purple. Hospitality.
-              </p>
-            </div>
-          </Reveal>
-        </Container>
-      </section>
+    <div
+      data-theme="dreamzy"
+      className="w-full bg-white font-body text-[color:var(--dz-ink)]"
+    >
+      <MattressesNav />
+      {/* Offset the fixed Stark nav: utility strip (40) + bar (64/76) = 104/116. */}
+      <div className="pt-[104px] nav:pt-[116px]">
+        <MzHero />
+        <MzFeatures />
+        <MzTrustBar />
+        <MzFeaturedEyebrow />
+        <MzProduct variant="mattress" />
+        <MzProduct variant="pillow" />
+        <MzProduct variant="comforter" />
+        <MzBuySet />
+        <MzWhy />
+        <MzGuarantee />
+        <MzTestimonial />
+        <MzFooter />
+      </div>
     </div>
   );
 }

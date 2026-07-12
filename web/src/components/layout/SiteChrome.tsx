@@ -14,10 +14,11 @@ import { Footer } from "./Footer";
  * Route groups can't remove a parent layout in the App Router (a nested group
  * shares it; only multiple root layouts escape it — a whole-app refactor). So
  * the opt-out is done here, by reading the active child segment one level below
- * the locale layout: `/woodworks` (the "Element" page) renders bare; every
- * other route keeps today's chrome, byte-for-byte.
+ * the locale layout: `/woodworks` (the "Element" page) and `/mattresses` (the
+ * "Dreamzy" page) render bare; every other route keeps today's chrome,
+ * byte-for-byte.
  */
-const STANDALONE_SEGMENTS = new Set(["woodworks"]);
+const STANDALONE_SEGMENTS = new Set(["woodworks", "mattresses"]);
 
 export function SiteChrome({ children }: { children: ReactNode }) {
   const segment = useSelectedLayoutSegment();

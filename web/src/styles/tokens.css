@@ -92,6 +92,37 @@
   --el-accent-hover: #d8b981; /* link hover */
   --el-accent-bright: #e6ca92; /* progress-bar gradient end */
 
+  /* --------------------------------------------------------------------------
+     DREAMZY (Mattresses page) — a self-contained light/mint palette from the
+     `design_handoff_dreamzy_mattress` handoff. Disjoint from the Stark greens;
+     the values are the mockup's exact hexes (README token table). Consumed only
+     under [data-theme="dreamzy"] (below) — either re-pointed into the semantic
+     tokens or read directly (--dz-*) for the page's many bespoke colors.
+     -------------------------------------------------------------------------- */
+  --dz-green: #5de3b0; /* brand mint — logo, CTA accents, badges, dots, submit */
+  --dz-teal: #00a58c; /* deep teal — buy-set button, testimonial card, links */
+  --dz-yellow: #ffc10f; /* amber — reviews tab, year badges, stars */
+  --dz-mint: #a0f1d1; /* mint background — 100-night section */
+  --dz-ink: #202a35; /* primary text */
+  --dz-navy: #28323d; /* "Why" section headings */
+  --dz-muted: #5b6167; /* body / caption text */
+  --dz-label: #c5cacf; /* "Dreamzy®"/eyebrow label */
+  --dz-bg: #f2f2f2; /* featured-products / product-block background */
+  --dz-hero-1: #efefef; /* hero gradient top */
+  --dz-hero-2: #eaeaea; /* hero gradient bottom */
+  --dz-trust-bg: #f6f6f6; /* trust bar background */
+  --dz-trust-border: #ececec; /* trust bar top border */
+  --dz-subtext: #4c5258; /* hero subtext */
+  --dz-nav-idle: #8b9198; /* inactive nav links */
+  --dz-nav-hover: #202a35; /* nav link hover */
+  --dz-trust-label: #3a4149; /* trust-bar labels */
+  --dz-stroke: #2b323a; /* line-icon stroke */
+  --dz-on-green: #16351f; /* dark-green text on green badges */
+  --dz-on-mint: #2f3b3c; /* text on mint section */
+  --dz-copyright: #c2c6ca; /* footer copyright */
+  --dz-input-border: #e0e0e0; /* newsletter input border */
+  --dz-placeholder: #b7bcc1; /* input placeholder */
+
   /* Easing curves */
   --ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
   --ease-wood: cubic-bezier(0.16, 1, 0.3, 1);
@@ -273,6 +304,41 @@
   --font-display: var(--font-pt-serif);
   --font-body: var(--font-mulish);
   --ease-theme: var(--ease-wood);
+}
+
+/* Dreamzy (Mattresses) — the light/mint handoff page. Re-points the semantic
+   tokens so shared primitives (Container/Reveal/Field) behave on the light
+   surface, and swaps display+body to Poppins. The page also reads the raw
+   --dz-* primitives directly for its many bespoke colors (badges, dots, the
+   teal testimonial card, the mint band). Scoped to the page via
+   <div data-theme="dreamzy"> — does NOT affect the rest of the site. */
+[data-theme="dreamzy"] {
+  --color-surface: #ffffff;
+  --color-surface-2: var(--dz-bg);
+  --color-ink: var(--dz-ink);
+  --color-ink-body: var(--dz-muted);
+  --color-ink-muted: var(--dz-label);
+  --color-accent: var(--dz-green);
+  --color-accent-2: var(--dz-teal);
+  --color-hero-bg: var(--dz-bg);
+  --color-line: var(--dz-input-border);
+  --color-field-surface: #ffffff;
+  --font-display: var(--font-poppins);
+  --font-body: var(--font-poppins);
+  --ease-theme: var(--ease-cushion);
+}
+/* Page-scoped text selection (handoff: mint bg / ink text). */
+[data-theme="dreamzy"] ::selection {
+  background: var(--dz-mint);
+  color: var(--dz-ink);
+}
+/* Arabic has no Poppins coverage. The theme block above re-declares the font
+   vars on the page <div>, which shadows the inherited [lang="ar"] override on
+   <html> — so restore Plex Arabic explicitly for the Dreamzy subtree under AR.
+   (lang lives on the ancestor <html>, hence the descendant selector.) */
+[lang="ar"] [data-theme="dreamzy"] {
+  --font-display: var(--font-plex-arabic);
+  --font-body: var(--font-plex-arabic);
 }
 
 /* Contained sub-brand colors — scoped to their card containers, never a page */
