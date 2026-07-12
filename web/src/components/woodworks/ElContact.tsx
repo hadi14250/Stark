@@ -53,12 +53,14 @@ export function ElContact({ showTextures = true }: { showTextures?: boolean }) {
       )}
 
       <Reveal className="relative z-[4] nav:absolute nav:left-[243px] nav:top-0 nav:w-[714px]">
-        <div className="rounded-[4px] bg-[color:var(--el-surface-panel)] px-[22px] pb-[26px] pt-[34px] shadow-[0_30px_70px_rgba(0,0,0,0.45)] nav:h-[555px] nav:rounded-[3px] nav:px-0 nav:py-0 nav:shadow-[0_44px_100px_rgba(0,0,0,0.45)]">
-          <h2 className="mb-[26px] text-center font-display text-[34px] font-bold text-[color:var(--el-text-strong)] nav:mb-0 nav:pt-[143px] nav:text-[44px]">
+        <div className="rounded-[4px] bg-[color:var(--el-surface-panel)] px-[22px] pb-[26px] pt-[34px] shadow-[0_30px_70px_rgba(0,0,0,0.45)] nav:relative nav:h-[555px] nav:rounded-[3px] nav:px-0 nav:py-0 nav:shadow-[0_44px_100px_rgba(0,0,0,0.45)]">
+          {/* Desktop: title + fields are absolutely positioned from the PANEL's
+              origin (the handoff's exact coords). On mobile they stack in flow. */}
+          <h2 className="mb-[26px] text-center font-display text-[34px] font-bold text-[color:var(--el-text-strong)] nav:absolute nav:inset-x-0 nav:top-[143px] nav:mb-0 nav:text-[44px]">
             {t("title")}
           </h2>
 
-          <form ref={formRef} action={formAction} noValidate className="nav:relative">
+          <form ref={formRef} action={formAction} noValidate>
             <input type="hidden" name="locale" value={locale} />
             <input type="hidden" name="division" value="woodworks" />
             <StartedAt />
