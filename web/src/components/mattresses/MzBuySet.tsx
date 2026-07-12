@@ -14,16 +14,16 @@ export async function MzBuySet() {
   const t = await getTranslations("dreamzy.buyset");
 
   const card = (
-    <div className="bg-white p-[clamp(24px,2.6vw,44px)] pb-[clamp(30px,3.4vw,58px)] shadow-[0_30px_60px_rgba(0,0,0,0.10)] nav:absolute nav:start-[9.5%] nav:top-[5.2%] nav:w-[33.2%] nav:min-h-[73%]">
-      <h2 className="font-display text-[clamp(22px,2.86vw,40px)] font-bold leading-[1.12] tracking-[-0.5px] text-[color:var(--dz-ink)]">
+    <div className="relative bg-white p-[30px] pb-[34px] shadow-[0_26px_50px_rgba(0,0,0,0.12)] nav:absolute nav:start-[9.5%] nav:top-[5.2%] nav:w-[33.2%] nav:min-h-[73%] nav:p-[clamp(24px,2.6vw,44px)] nav:pb-[clamp(30px,3.4vw,58px)] nav:shadow-[0_30px_60px_rgba(0,0,0,0.10)]">
+      <h2 className="font-display text-[27px] font-bold leading-[1.14] tracking-[-0.5px] text-[color:var(--dz-ink)] nav:text-[clamp(22px,2.86vw,40px)] nav:leading-[1.12]">
         {t("title")}
       </h2>
-      <div className="mt-[clamp(16px,2vw,26px)] text-[clamp(17px,1.85vw,26px)] font-semibold text-[color:var(--dz-teal)]">
+      <div className="mt-[18px] text-[21px] font-semibold text-[color:var(--dz-teal)] nav:mt-[clamp(16px,2vw,26px)] nav:text-[clamp(17px,1.85vw,26px)]">
         {t("save")}
       </div>
       <Link
         href="/#contact"
-        className="mt-[clamp(22px,2.6vw,34px)] inline-flex items-center gap-10 rounded-[40px] bg-[color:var(--dz-teal)] px-[30px] py-[18px] text-[16px] font-semibold text-white transition-[transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:shadow-[0_18px_40px_rgba(0,120,100,0.35)] motion-reduce:hover:translate-y-0"
+        className="mt-6 flex w-full items-center justify-between gap-6 rounded-[40px] bg-[color:var(--dz-teal)] px-7 py-[18px] text-[16px] font-semibold text-white transition-[transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:shadow-[0_18px_40px_rgba(0,120,100,0.35)] motion-reduce:hover:translate-y-0 nav:mt-[clamp(22px,2.6vw,34px)] nav:inline-flex nav:w-auto nav:justify-start nav:gap-10 nav:px-[30px]"
       >
         {t("cta")}
         <ArrowRightIcon width={22} height={22} strokeWidth={1.9} className="rtl:-scale-x-100" />
@@ -32,7 +32,8 @@ export async function MzBuySet() {
   );
 
   return (
-    <section className="relative overflow-hidden">
+    <section className="relative overflow-hidden bg-[color:var(--dz-bg)] pb-12 nav:bg-transparent nav:pb-0">
+      {/* Desktop: full photo with the card floating over it. */}
       <Image
         src={bedImages.buyset}
         alt={t("alt")}
@@ -41,19 +42,18 @@ export async function MzBuySet() {
         sizes="100vw"
         className="hidden h-auto w-full nav:block"
       />
-      {/* Desktop: card floats over the photo. */}
       <div className="absolute inset-0 hidden nav:block">{card}</div>
-      {/* Mobile: photo then a full-width card. */}
+      {/* Mobile: card-free crop then a card pulled up over the photo's bottom. */}
       <div className="nav:hidden">
         <Image
-          src={bedImages.buyset}
+          src={bedImages.buysetMobile}
           alt={t("alt")}
-          width={2800}
+          width={1560}
           height={1420}
           sizes="100vw"
           className="h-auto w-full"
         />
-        <div className="px-6 py-8">{card}</div>
+        <div className="mx-[22px] -mt-14">{card}</div>
       </div>
     </section>
   );

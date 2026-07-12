@@ -25,12 +25,16 @@ const SOCIAL_KEYS: readonly SocialKey[] = ["facebook", "instagram", "youtube", "
  * is suppressed for this segment by SiteChrome), which is why navigating
  * Stark → Mattresses keeps the same nav content while the colors + style change.
  *
- * Two tiers: a thin utility strip (email + socials) on the light grey surface,
- * then the main bar (green logo, links, locale, mint CTA) on white. Below the
- * `nav` (860px) breakpoint a burger toggles a full-screen overlay; body scroll
- * locks while open.
+ * Desktop (≥ nav): two tiers — a thin utility strip (email + socials) on the
+ * light grey surface, then the main bar (green logo, links, locale, mint CTA) on
+ * white. Mobile (< nav): the utility strip is dropped and the bar collapses to
+ * the mobile comp's proportions (green logo left; a 44px hamburger right that
+ * swaps to an X), toggling a full-width dropdown panel that drops below the bar
+ * (white, soft shadow, 17px rows divided by hairlines) — mirroring the comp's
+ * `<details>` menu but carrying STARK's links + email/socials/CTA. Body scroll
+ * locks while the panel is open.
  *
- * The comp's own nav extras (phone number, shopping-bag badge, `dreamzy`
+ * The comp's own nav extras (phone number, shopping-bag/cart badge, `dreamzy`
  * wordmark, Sleep System / About us links) are intentionally dropped — this is
  * the Stark nav wearing Dreamzy colors.
  */
@@ -77,7 +81,7 @@ export function MattressesNav() {
       }`}
     >
       {/* Utility strip — desktop only. */}
-      <div className="border-b border-[color:var(--dz-input-border)] bg-[color:var(--dz-bg)] text-[color:var(--dz-muted)]">
+      <div className="hidden border-b border-[color:var(--dz-input-border)] bg-[color:var(--dz-bg)] text-[color:var(--dz-muted)] nav:block">
         <div className="mx-auto flex h-10 max-w-[1280px] items-center justify-between px-6 nav:px-10">
           <a
             href={`mailto:${email}`}
@@ -96,8 +100,8 @@ export function MattressesNav() {
       </div>
 
       {/* Main nav bar. */}
-      <div className="bg-white">
-        <div className="mx-auto flex h-16 max-w-[1280px] items-center justify-between px-6 nav:h-[76px] nav:px-10">
+      <div className="relative bg-white">
+        <div className="mx-auto flex h-14 max-w-[1280px] items-center justify-between px-[22px] nav:h-[76px] nav:px-10">
           <Link href="/" className="flex items-center gap-3" aria-label="STARK">
             <Image src={logoGreen} alt="STARK" width={116} height={30} priority className="h-[26px] w-auto nav:h-[30px]" />
           </Link>
@@ -130,61 +134,64 @@ export function MattressesNav() {
             </Link>
           </nav>
 
-          {/* Mobile cluster: CTA + burger. */}
-          <div className="flex items-center gap-3 nav:hidden">
-            <Link
-              href="/#contact"
-              className="inline-flex items-center justify-center rounded-full bg-[color:var(--dz-green)] px-4 py-2 text-[12.5px] font-semibold text-[color:var(--dz-on-green)]"
-            >
-              {t("cta")}
-            </Link>
-            <button
-              type="button"
-              onClick={() => setOpen((v) => !v)}
-              aria-label={open ? t("closeMenu") : t("openMenu")}
-              aria-expanded={open}
-              className="grid h-11 w-11 place-items-center rounded-md border border-[color:var(--dz-input-border)] text-[color:var(--dz-ink)]"
-            >
-              <span className="sr-only">{open ? t("closeMenu") : t("openMenu")}</span>
-              <div className="flex flex-col gap-1.5">
-                <span
-                  className={`block h-0.5 w-5 bg-current transition-transform ${open ? "translate-y-[4px] rotate-45" : ""}`}
-                />
-                <span
-                  className={`block h-0.5 w-5 bg-current transition-transform ${open ? "-translate-y-[4px] -rotate-45" : ""}`}
-                />
-              </div>
-            </button>
-          </div>
+          {/* Mobile: a 44px hamburger that swaps to an X while the panel is open. */}
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            aria-label={open ? t("closeMenu") : t("openMenu")}
+            aria-expanded={open}
+            className="-me-2.5 grid h-11 w-11 place-items-center text-[color:var(--dz-ink)] nav:hidden"
+          >
+            <span className="sr-only">{open ? t("closeMenu") : t("openMenu")}</span>
+            {open ? (
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" aria-hidden>
+                <line x1="5" y1="5" x2="19" y2="19" />
+                <line x1="19" y1="5" x2="5" y2="19" />
+              </svg>
+            ) : (
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" aria-hidden>
+                <line x1="3" y1="7" x2="21" y2="7" />
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="17" x2="21" y2="17" />
+              </svg>
+            )}
+          </button>
         </div>
-      </div>
 
-      {/* Mobile overlay */}
-      {open && (
-        <div className="fixed inset-0 top-[104px] z-40 bg-white/98 backdrop-blur-lg nav:hidden">
-          <div className="mx-auto flex max-w-[1280px] flex-col gap-6 px-6 py-10">
-            {LINKS.map((l) => (
-              <Link
-                key={l.key}
-                href={l.href}
-                className="font-display text-3xl font-bold text-[color:var(--dz-ink)]"
-              >
-                {t(l.key)}
-              </Link>
-            ))}
-            <div className="mt-4 flex items-center gap-6">
+        {/* Mobile dropdown panel — drops below the bar (comp behavior), carrying
+            STARK links + locale/CTA + email/socials instead of Dreamzy's menu. */}
+        {open && (
+          <div className="absolute inset-x-0 top-full z-50 flex flex-col bg-white px-[22px] pb-6 pt-2.5 shadow-[0_22px_40px_rgba(0,0,0,0.14)] nav:hidden">
+            {LINKS.map((l) => {
+              const active = pathname === l.href;
+              return (
+                <Link
+                  key={l.key}
+                  href={l.href}
+                  aria-current={active ? "page" : undefined}
+                  className={`border-b border-[#efefef] py-3.5 text-[17px] ${
+                    active
+                      ? "font-semibold text-[color:var(--dz-ink)]"
+                      : "font-medium text-[color:var(--dz-muted)]"
+                  }`}
+                >
+                  {t(l.key)}
+                </Link>
+              );
+            })}
+            <div className="flex items-center justify-between gap-4 pt-[18px]">
               <LocaleSwitcher className="!text-[color:var(--dz-nav-idle)] hover:!text-[color:var(--dz-teal)]" />
               <Link
                 href="/#contact"
-                className="inline-flex items-center justify-center rounded-full bg-[color:var(--dz-green)] px-5 py-2 text-sm font-semibold text-[color:var(--dz-on-green)]"
+                className="inline-flex items-center justify-center rounded-full bg-[color:var(--dz-green)] px-5 py-2.5 text-[14px] font-semibold text-[color:var(--dz-on-green)]"
               >
                 {t("cta")}
               </Link>
             </div>
-            <div className="mt-6 flex items-center gap-6 border-t border-[color:var(--dz-input-border)] pt-6">
+            <div className="mt-5 flex items-center justify-between gap-4 border-t border-[#efefef] pt-5">
               <a
                 href={`mailto:${email}`}
-                className="inline-flex items-center gap-2 text-sm text-[color:var(--dz-muted)] transition-colors hover:text-[color:var(--dz-teal)]"
+                className="inline-flex items-center gap-2 text-[14px] text-[color:var(--dz-muted)] transition-colors hover:text-[color:var(--dz-teal)]"
               >
                 <EnvelopeIcon width={16} height={16} />
                 <span>{email}</span>
@@ -196,8 +203,8 @@ export function MattressesNav() {
               />
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </header>
   );
 }

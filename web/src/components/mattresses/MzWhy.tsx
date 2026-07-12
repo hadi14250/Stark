@@ -28,26 +28,26 @@ export async function MzWhy() {
   const items = t.raw("items") as { title: string; body: string }[];
 
   return (
-    <section className="bg-white py-[100px]">
-      <div className="mx-auto flex max-w-[1200px] flex-col gap-14 px-6 nav:flex-row nav:gap-14 nav:px-10">
+    <section className="bg-white px-6 pb-[60px] pt-14 nav:px-0 nav:py-[100px]">
+      <div className="mx-auto flex max-w-[1200px] flex-col nav:flex-row nav:gap-14 nav:px-10">
         <Reveal x={-24} className="nav:flex-[1_1_280px]">
-          <h2 className="font-display text-[clamp(34px,3.7vw,52px)] font-bold leading-[1.05] tracking-[-1px] text-[color:var(--dz-navy)]">
+          <h2 className="mb-[34px] font-display text-[32px] font-bold leading-[1.08] tracking-[-1px] text-[color:var(--dz-navy)] nav:mb-0 nav:text-[clamp(34px,3.7vw,52px)] nav:leading-[1.05]">
             {t("title")}
           </h2>
         </Reveal>
-        <div className="grid grid-cols-1 gap-x-10 gap-y-14 nav:flex-[2_1_560px] nav:grid-cols-3">
+        <div className="grid grid-cols-1 gap-x-10 gap-y-[34px] nav:flex-[2_1_560px] nav:grid-cols-3 nav:gap-y-14">
           {items.map((item, i) => {
             const { Icon, dot, sw } = CELLS[i];
             return (
               <Reveal key={item.title} y={24} delay={(i % 3) * 0.06}>
                 <span className="relative inline-flex">
                   <span className={`absolute rounded-full bg-[color:var(--dz-green)] ${dot}`} aria-hidden />
-                  <Icon width={32} height={32} strokeWidth={sw} className="relative text-[color:var(--dz-stroke)]" />
+                  <Icon width={30} height={30} strokeWidth={sw} className="relative text-[color:var(--dz-stroke)] nav:h-8 nav:w-8" />
                 </span>
-                <div className="mt-[22px] text-[20px] font-bold text-[color:var(--dz-navy)]">
+                <div className="mt-4 text-[19px] font-bold text-[color:var(--dz-navy)] nav:mt-[22px] nav:text-[20px]">
                   {item.title}
                 </div>
-                <div className="mt-3 text-[16px] leading-[1.6] text-[color:var(--dz-muted)]">
+                <div className="mt-2 text-[15px] leading-[1.6] text-[color:var(--dz-muted)] nav:mt-3 nav:text-[16px]">
                   {item.body}
                 </div>
               </Reveal>

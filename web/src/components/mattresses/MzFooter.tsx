@@ -55,16 +55,16 @@ export function MzFooter() {
   const email = tFooter("email");
 
   return (
-    <footer className="bg-white pb-[46px] pt-[78px]">
-      <div className="mx-auto flex max-w-[1200px] flex-wrap justify-between gap-x-[30px] gap-y-10 px-6 nav:px-10">
+    <footer className="bg-white px-6 pb-[34px] pt-2 nav:px-0 nav:pb-[46px] nav:pt-[78px]">
+      <div className="mx-auto flex max-w-[1200px] flex-col gap-9 nav:flex-row nav:flex-wrap nav:justify-between nav:gap-x-[30px] nav:gap-y-10 nav:px-10">
         {/* Brand wordmark */}
-        <div className="flex-[0_0_200px]">
-          <Image src={logoGreen} alt="STARK" width={155} height={40} className="h-[34px] w-auto" />
+        <div className="nav:flex-[0_0_200px]">
+          <Image src={logoGreen} alt="STARK" width={155} height={40} className="h-[30px] w-auto nav:h-[34px]" />
         </div>
 
         {/* MENU — Stark routes */}
         <div>
-          <div className="text-[15px] font-bold uppercase tracking-[2px] text-[color:var(--dz-ink)]">
+          <div className="text-[14px] font-bold uppercase tracking-[2px] text-[color:var(--dz-ink)] nav:text-[15px]">
             {t("menuHeading")}
           </div>
           <div className="mt-7 flex flex-col gap-3.5 text-[16px]">
@@ -82,7 +82,7 @@ export function MzFooter() {
 
         {/* ADDRESS — Stark (Jeddah) */}
         <div>
-          <div className="text-[15px] font-bold uppercase tracking-[2px] text-[color:var(--dz-ink)]">
+          <div className="text-[14px] font-bold uppercase tracking-[2px] text-[color:var(--dz-ink)] nav:text-[15px]">
             {t("addressHeading")}
           </div>
           <div className="mt-7 text-[16px] leading-[2.35] text-[color:var(--dz-muted)]">
@@ -91,8 +91,8 @@ export function MzFooter() {
         </div>
 
         {/* SUBSCRIBE — wired to submitContact */}
-        <div className="flex-[0_1_420px]">
-          <div className="text-[15px] font-bold uppercase tracking-[2px] text-[color:var(--dz-ink)]">
+        <div className="nav:flex-[0_1_420px]">
+          <div className="text-[14px] font-bold uppercase tracking-[2px] text-[color:var(--dz-ink)] nav:text-[15px]">
             {t("subscribeHeading")}
           </div>
           <form ref={formRef} action={formAction} noValidate className="relative mt-[26px] max-w-[430px]">
@@ -145,9 +145,10 @@ export function MzFooter() {
         </div>
       </div>
 
-      {/* Bottom bar — Stark copyright + Stark socials */}
-      <div className="mx-auto mt-[66px] flex max-w-[1200px] flex-wrap items-center justify-between gap-5 px-6 nav:px-10">
-        <div className="text-[14px] text-[color:var(--dz-copyright)]">
+      {/* Bottom bar — Stark copyright + Stark socials. Mobile: centered column
+          (socials above copyright), hairline top border. Desktop: a row. */}
+      <div className="mx-auto mt-9 flex max-w-[1200px] flex-col-reverse items-center gap-[18px] border-t border-[#eee] px-6 pt-6 text-center nav:mt-[66px] nav:flex-row nav:flex-wrap nav:justify-between nav:gap-5 nav:border-t-0 nav:pt-0 nav:text-start nav:px-10">
+        <div className="text-[13px] text-[color:var(--dz-copyright)] nav:text-[14px]">
           © {year} STARK. {tFooter("rights")}
         </div>
         <SocialLinks

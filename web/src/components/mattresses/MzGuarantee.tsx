@@ -13,16 +13,16 @@ export async function MzGuarantee() {
   const t = await getTranslations("dreamzy.guarantee");
 
   return (
-    <section className="bg-[color:var(--dz-mint)] px-6 pb-20 pt-[66px] text-center">
+    <section className="bg-[color:var(--dz-mint)] px-6 pb-[58px] pt-[52px] text-center nav:pb-20 nav:pt-[66px]">
       <Reveal y={24}>
-        <div className="font-display text-[clamp(28px,2.4vw,34px)] font-bold tracking-[-0.5px] text-[color:var(--dz-ink)]">
+        <div className="font-display text-[28px] font-bold tracking-[-0.5px] text-[color:var(--dz-ink)] nav:text-[clamp(28px,2.4vw,34px)]">
           {t("wordmark")}
         </div>
-        <div className="mt-0.5 text-[15px] text-[color:var(--dz-on-mint)]">{t("sub")}</div>
-        <h2 className="mx-auto mt-12 max-w-[820px] font-display text-[clamp(28px,3.15vw,44px)] font-bold leading-[1.28] tracking-[-0.5px] text-[color:var(--dz-ink)]">
+        <div className="mt-0.5 text-[14px] text-[color:var(--dz-on-mint)] nav:text-[15px]">{t("sub")}</div>
+        <h2 className="mx-auto mt-[34px] max-w-[820px] font-display text-[26px] font-bold leading-[1.3] tracking-[-0.3px] text-[color:var(--dz-ink)] nav:mt-12 nav:text-[clamp(28px,3.15vw,44px)] nav:leading-[1.28] nav:tracking-[-0.5px]">
           {t("title")}
         </h2>
-        <p className="mt-10 text-[18px] font-medium text-[color:var(--dz-on-mint)]">{t("closing")}</p>
+        <p className="mt-7 text-[16px] font-medium text-[color:var(--dz-on-mint)] nav:mt-10 nav:text-[18px]">{t("closing")}</p>
       </Reveal>
     </section>
   );

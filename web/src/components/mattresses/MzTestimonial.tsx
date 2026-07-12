@@ -39,51 +39,51 @@ export function MzTestimonial() {
   const active = quotes[i];
 
   const card = (
-    <div className="flex flex-col bg-[color:var(--dz-teal)] p-[clamp(24px,2.8vw,44px)] pb-[clamp(20px,2.4vw,38px)] shadow-[0_30px_60px_rgba(0,0,0,0.14)] nav:absolute nav:start-[9.5%] nav:top-[5.3%] nav:h-[87.6%] nav:w-[34%]">
-      <div className="font-serif text-[clamp(80px,9vw,120px)] leading-[0.7] text-white" aria-hidden>
+    <div className="flex flex-col bg-[color:var(--dz-teal)] p-[28px] pb-[30px] shadow-[0_26px_50px_rgba(0,0,0,0.16)] nav:absolute nav:start-[9.5%] nav:top-[5.3%] nav:h-[87.6%] nav:w-[34%] nav:p-[clamp(24px,2.8vw,44px)] nav:pb-[clamp(20px,2.4vw,38px)] nav:shadow-[0_30px_60px_rgba(0,0,0,0.14)]">
+      <div className="h-[58px] font-serif text-[96px] leading-[0.7] text-white nav:h-auto nav:text-[clamp(80px,9vw,120px)]" aria-hidden>
         &ldquo;
       </div>
-      <div className="mt-[22px] flex gap-1.5">
+      <div className="mt-[18px] flex gap-1.5 nav:mt-[22px]">
         {Array.from({ length: 5 }).map((_, s) => (
-          <StarIcon key={s} width={22} height={22} fill="var(--dz-yellow)" stroke="none" />
+          <StarIcon key={s} width={20} height={20} fill="var(--dz-yellow)" stroke="none" className="nav:h-[22px] nav:w-[22px]" />
         ))}
       </div>
-      <p className="mt-[22px] text-[clamp(16px,1.7vw,24px)] italic leading-[1.5] text-white">
+      <p className="mt-[18px] text-[18px] italic leading-[1.5] text-white nav:mt-[22px] nav:text-[clamp(16px,1.7vw,24px)]">
         {active.quote}
       </p>
-      <div className="mt-7 flex items-center gap-4">
+      <div className="mt-6 flex items-center gap-3.5 nav:mt-7 nav:gap-4">
         <Image
           src={bedImages.avatar}
           alt={active.author}
           width={56}
           height={56}
-          className="h-14 w-14 rounded-full border-2 border-white object-cover"
+          className="h-[52px] w-[52px] rounded-full border-2 border-white object-cover nav:h-14 nav:w-14"
         />
-        <span className="text-[18px] font-bold text-white">{active.author}</span>
+        <span className="text-[17px] font-bold text-white nav:text-[18px]">{active.author}</span>
       </div>
-      <div className="mt-auto flex gap-5 pt-[26px]">
+      <div className="mt-7 flex gap-4 nav:mt-auto nav:gap-5 nav:pt-[26px]">
         <button
           type="button"
           onClick={() => go(-1)}
           aria-label={t("prev")}
-          className="flex h-[50px] w-[50px] items-center justify-center rounded-full border-[1.5px] border-white/55 text-white/75 transition-colors hover:text-white"
+          className="flex h-[46px] w-[46px] items-center justify-center rounded-full border-[1.5px] border-white/55 text-white/75 transition-colors hover:text-white nav:h-[50px] nav:w-[50px]"
         >
-          <ArrowLeftIcon width={22} height={22} strokeWidth={1.8} className="rtl:-scale-x-100" />
+          <ArrowLeftIcon width={20} height={20} strokeWidth={1.8} className="rtl:-scale-x-100 nav:h-[22px] nav:w-[22px]" />
         </button>
         <button
           type="button"
           onClick={() => go(1)}
           aria-label={t("next")}
-          className="flex h-[50px] w-[50px] items-center justify-center rounded-full border-[1.5px] border-white text-white"
+          className="flex h-[46px] w-[46px] items-center justify-center rounded-full border-[1.5px] border-white text-white nav:h-[50px] nav:w-[50px]"
         >
-          <ArrowRightIcon width={22} height={22} strokeWidth={1.8} className="rtl:-scale-x-100" />
+          <ArrowRightIcon width={20} height={20} strokeWidth={1.8} className="rtl:-scale-x-100 nav:h-[22px] nav:w-[22px]" />
         </button>
       </div>
     </div>
   );
 
   return (
-    <section className="relative overflow-hidden">
+    <section className="relative overflow-hidden bg-white pb-11 nav:pb-0">
       {/* Desktop: photo with the card floating over it. */}
       <div className="relative hidden nav:block">
         <Image
@@ -96,17 +96,17 @@ export function MzTestimonial() {
         />
         <div className="absolute inset-0">{card}</div>
       </div>
-      {/* Mobile: photo then full-width card. */}
+      {/* Mobile: card-free crop then a card pulled up over the photo's bottom. */}
       <div className="nav:hidden">
         <Image
-          src={bedImages.testimonial}
+          src={bedImages.testimonialMobile}
           alt=""
-          width={2800}
+          width={1540}
           height={1650}
           sizes="100vw"
           className="h-auto w-full"
         />
-        <div className="px-6 py-8">{card}</div>
+        <div className="mx-[22px] -mt-[60px]">{card}</div>
       </div>
     </section>
   );

@@ -61,8 +61,9 @@ export default async function MattressesPage({
       className="w-full bg-white font-body text-[color:var(--dz-ink)]"
     >
       <MattressesNav />
-      {/* Offset the fixed Stark nav: utility strip (40) + bar (64/76) = 104/116. */}
-      <div className="pt-[104px] nav:pt-[116px]">
+      {/* Offset the fixed Stark nav. Mobile: bar only (56). Desktop: utility
+          strip (40) + bar (76) = 116. */}
+      <div className="pt-[56px] nav:pt-[116px]">
         <MzHero />
         <MzFeatures />
         <MzTrustBar />
