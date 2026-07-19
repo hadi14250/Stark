@@ -5,11 +5,28 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ease, duration as dur } from "@/styles/tokens";
 import { useMotionConfig } from "./useMotionConfig";
 import { useEntrance } from "./EntranceGate";
-import { LogoTrace } from "./LogoTrace";
+import { LogoLoader } from "./LogoLoader";
+import "@/styles/logo-loader.css";
 
 const SESSION_KEY = "stark-preloaded";
-/** Compressed from the prototype's ~2.6s. Ceremony, not a toll booth. */
-const HOLD_MS = 1200;
+
+/**
+ * Which of the handoff's twelve designed loading animations to run.
+ *
+ * "assemble" — the five blades fly in from the directions they actually sit in
+ * and lock around the core. It is the one that says what the mark means (brand
+ * book p.8: five elements of one ecosystem interlocking into a closed
+ * structure), which makes it the right default for a first impression. Swap
+ * the constant to try any of the other eleven; they are all implemented.
+ */
+const VARIANT = "assemble" as const;
+/**
+ * Long enough to see one full cycle of the animation, short enough not to be a
+ * toll booth. "assemble" runs 3s; holding for 1.2s as before would have lifted
+ * the curtain while the mark was still flying together, which looks like a
+ * glitch rather than an entrance.
+ */
+const HOLD_MS = 2100;
 
 /**
  * The mark traces itself, then the curtain lifts.
@@ -74,7 +91,7 @@ export function Preloader() {
           transition={{ duration: dur.curtain, ease: [...ease.curtain] }}
           aria-hidden
         >
-          <LogoTrace size={140} duration={HOLD_MS / 1000} />
+          <LogoLoader variant={VARIANT} size={150} color="var(--sand-500)" />
         </motion.div>
       )}
     </AnimatePresence>

@@ -39,9 +39,11 @@ export function LogoDefs() {
   return (
     <svg width="0" height="0" style={{ position: "absolute" }} aria-hidden="true">
       <defs>
-        {/* pathLength="100" on every blade so a stroke-dashoffset trace runs on
-            a 0-100 scale regardless of the path's true length — LogoTrace
-            (preloader / route curtain) depends on this. */}
+        {/* pathLength="100" on every blade so a stroke-dashoffset trace runs
+            on a 0-100 scale regardless of each path's true length. The
+            handoff's "trace" loading animation pairs this with
+            stroke-dasharray:100, which is why all five blades draw at the same
+            visual rate despite being very different lengths. */}
         <path
           id="lg-b1"
           pathLength="100"

@@ -2,7 +2,8 @@ import { setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/i18n/routing";
 import { LogoDefs, DIVISION_ELEMENT, type DivisionKey } from "@/components/brand/LogoDefs";
 import { BladeField, MarkGlyph, MarkTexture, PentagonClip } from "@/components/brand/geometry";
-import { LogoTrace } from "@/components/motion/LogoTrace";
+import { LogoLoader, type LoaderVariant } from "@/components/motion/LogoLoader";
+import "@/styles/logo-loader.css";
 import { CountUp } from "@/components/motion/CountUp";
 import { LiveContrast, TokenProbe } from "@/components/specimen/LiveContrast";
 
@@ -31,6 +32,12 @@ const COLUMNS = [
 ] as const;
 
 const STEPS = [500, 400, 300, 200] as const;
+
+const LOADER_VARIANTS: LoaderVariant[] = [
+  "assemble", "sequence", "pulse", "cascade",
+  "pinwheel", "shutter", "wave", "bloom",
+  "trace", "unfold", "swing", "vortex",
+];
 
 const TYPE_ROLES = [
   { token: "display", cls: "text-display", sample: { en: "Complete environments.", ar: "بيئات متكاملة." } },
@@ -249,10 +256,21 @@ export default async function SpecimenPage({ params }: PageProps<"/[locale]/spec
 
         <div className="mt-10">
           <p className="mb-3 font-mono text-[11px] uppercase tracking-eyebrow text-[color:var(--color-ink-muted)]">
-            Trace — preloader and route curtain only. The one place the real lockup animates.
+            Loading animations — all twelve from the handoff. The preloader runs
+            &ldquo;assemble&rdquo;; swap VARIANT in Preloader.tsx to change it.
           </p>
-          <div className="grid place-items-center rounded-[var(--radius-card)] p-10" style={{ background: "var(--green-900)" }}>
-            <LogoTrace size={110} />
+          <div
+            className="grid gap-4 rounded-[var(--radius-card)] p-8 sm:grid-cols-3 nav:grid-cols-4"
+            style={{ background: "var(--green-900)" }}
+          >
+            {LOADER_VARIANTS.map((v) => (
+              <figure key={v} className="grid place-items-center gap-3">
+                <LogoLoader variant={v} size={78} color="var(--sand-500)" />
+                <figcaption className="font-mono text-[11px] uppercase tracking-eyebrow text-[color:var(--green-300)]">
+                  {v}
+                </figcaption>
+              </figure>
+            ))}
           </div>
         </div>
       </Section>
