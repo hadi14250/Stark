@@ -57,6 +57,22 @@ export function exitOffset(dir: PushDir) {
   }
 }
 
+/**
+ * Mirror a push direction across the inline axis, for RTL.
+ *
+ * The bento is flexbox, so the LAYOUT mirrors for free under `dir="rtl"`. The
+ * MOTION does not: `PushDir` is physical, so without this the cards push the
+ * same absolute direction in both languages and stop agreeing with the
+ * mirrored layout — "Next" pushes content the way an Arabic reader reads
+ * BACKWARDS. Measured under dir=rtl in the A0a spike.
+ *
+ * Only the horizontal pair flips; up/down are unaffected by writing mode.
+ */
+export function mirrorDir(dir: PushDir, rtl: boolean): PushDir {
+  if (!rtl) return dir;
+  return dir === "left" ? "right" : dir === "right" ? "left" : dir;
+}
+
 export function opposite(dir: PushDir): PushDir {
   switch (dir) {
     case "up":

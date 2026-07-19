@@ -129,7 +129,7 @@ export function CuisineCard({ slide }: { slide: Slide }) {
       <div className="cuisine-text">
         <div className="tmask">
           <motion.div className="card-label" {...mLabel}>
-            Cuisine
+            {slide.cuisineLabel}
           </motion.div>
         </div>
         <div className="tmask">

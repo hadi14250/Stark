@@ -83,7 +83,7 @@ export default function SlideGrid({
             "down",
             "explore",
             "cell-explore",
-            <TextCard className="explore" label="Explore" line={slide.exploreLine} />
+            <TextCard className="explore" label={slide.exploreLabel} line={slide.exploreLine} />
           )}
           {P(
             "right",
@@ -95,7 +95,7 @@ export default function SlideGrid({
             "up",
             "stay",
             "cell-stay",
-            <TextCard className="stay" label="Stay" line={slide.stayLine} />
+            <TextCard className="stay" label={slide.stayLabel} line={slide.stayLine} />
           )}
         </div>
 

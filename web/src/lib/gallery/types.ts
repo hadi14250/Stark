@@ -91,7 +91,12 @@ export interface Slide {
   blossom: string; // large center portrait (desktop col2 middle)
   portraitB: string; // top-right tall image (desktop col3 top)
 
-  /** small info cards */
+  /** small info cards. Stark added the *Label fields: the handoff hardcoded
+      "Explore"/"Stay"/"Cuisine" in the markup, which is travel-demo
+      vocabulary that has no business on a manufacturer's project page. */
+  exploreLabel: string;
+  stayLabel: string;
+  cuisineLabel: string;
   exploreLine: string;
   stayLine: string;
   cuisineLine: string;

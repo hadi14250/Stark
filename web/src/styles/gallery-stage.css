@@ -104,6 +104,12 @@
   fills the canvas, not the screen, leaving the editor panel usable. */
   .stage-viewport {
     container: stage / size;
+    /* Size comes from the chrome's .canvas, which fills the shell. The
+       container query root MUST have a definite size or `container: stage /
+       size` never resolves and every cqw/cqh inside collapses to zero. */
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
   }
   .stage-viewport .stage {
     position: relative;
@@ -1129,4 +1135,14 @@
     .stage-viewport .ov-cta {
       border-radius: 8px;
     }
-  }}
+  }
+  .stage-viewport .stage-empty {
+    display: grid;
+    place-items: center;
+    height: 100%;
+    padding: 24px;
+    text-align: center;
+    color: var(--subtext, #bac4bf);
+    font-size: 14px;
+  }
+}

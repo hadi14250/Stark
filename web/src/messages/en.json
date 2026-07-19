@@ -552,5 +552,200 @@
       "sub": "Most hospitality buyers are not just buying beds. STARK's woodworks and fit-out divisions deliver the rest of the room under the same contract.",
       "cta": "Explore turnkey"
     }
+  },
+  "gallery": {
+    "heading": "Gallery",
+    "categories": {
+      "woodworks": "Woodworks",
+      "mattresses": "Mattresses"
+    },
+    "panelTitle": "Projects",
+    "projects": "Projects",
+    "close": "Close panel",
+    "open": "Open panel",
+    "empty": "Projects in this division are coming soon.",
+    "startProject": "Start a project",
+    "cta": "View details",
+    "overlayEyebrow": "Selected work",
+    "overlayCta": "Start a project",
+    "hospitalityFitOut": {
+      "title": "Hospitality Fit-Out",
+      "subtitle": "Hotel · Public areas",
+      "headline": "Every surface a guest touches",
+      "paragraph": "Reception, lobby joinery and public-area panelling delivered as one package, coordinated against a live site programme.",
+      "scope": "Joinery, panelling, reception",
+      "delivery": "Phased against site access",
+      "materials": "Veneer, solid edging, PU lacquer",
+      "overlayTitle": "A full public-area package",
+      "overlaySummary": "Reception desk, wall panelling, ceiling details and back-of-house doors, produced on our lines and installed by our team.",
+      "overlaySpecs": [
+        {
+          "label": "Scope",
+          "value": "Public areas and circulation"
+        },
+        {
+          "label": "Substrate",
+          "value": "Engineered panel with solid edging"
+        },
+        {
+          "label": "Finish",
+          "value": "Sprayed PU to an approved sheen"
+        },
+        {
+          "label": "Install",
+          "value": "Our own team, snag list closed on site"
+        }
+      ]
+    },
+    "joineryPackage": {
+      "title": "Joinery Package",
+      "subtitle": "Residential · Villa",
+      "headline": "Fitted where nothing is square",
+      "paragraph": "Wardrobes, dressing rooms and a library wall, cut to a specified tolerance so the assemblies close cleanly against walls that never are.",
+      "scope": "Wardrobes, dressing, library",
+      "delivery": "Dry-assembled before dispatch",
+      "materials": "Veneer, lacquer, rated hardware",
+      "overlayTitle": "Built for the room it is in",
+      "overlaySummary": "Each run was set out from a site survey rather than a drawing, then dry-assembled in the factory before anything shipped.",
+      "overlaySpecs": [
+        {
+          "label": "Scope",
+          "value": "Wardrobes, dressing room, library wall"
+        },
+        {
+          "label": "Method",
+          "value": "Set out from site survey"
+        },
+        {
+          "label": "Check",
+          "value": "Dry-assembled before dispatch"
+        },
+        {
+          "label": "Hardware",
+          "value": "Specified to a cycle rating"
+        }
+      ]
+    },
+    "fittedFurniture": {
+      "title": "Fitted Furniture",
+      "subtitle": "Commercial · Workplace",
+      "headline": "Furniture that is part of the building",
+      "paragraph": "Reception, meeting and storage casegoods produced as one programme, so a floor reads as one decision rather than a procurement history.",
+      "scope": "Reception, meeting, storage",
+      "delivery": "One programme, one dispatch",
+      "materials": "HPL, solid edging, engineered panel",
+      "overlayTitle": "One programme, one standard",
+      "overlaySummary": "Producing a floor's furniture as a single programme is what keeps the finish consistent across pieces that arrive months apart.",
+      "overlaySpecs": [
+        {
+          "label": "Scope",
+          "value": "Reception, meeting rooms, storage"
+        },
+        {
+          "label": "Surface",
+          "value": "HPL for traffic, solid edging"
+        },
+        {
+          "label": "Consistency",
+          "value": "Single batch across the floor"
+        },
+        {
+          "label": "Install",
+          "value": "Coordinated with the fit-out"
+        }
+      ]
+    },
+    "hotelBedding": {
+      "title": "Hotel Bedding Programme",
+      "subtitle": "Hospitality · siesta",
+      "headline": "Two hundred rooms, one mattress",
+      "paragraph": "A full-property specification under the siesta brand, built for a replacement cycle and delivered against a programme rather than a promise.",
+      "scope": "Full property specification",
+      "delivery": "Phased by floor",
+      "materials": "Specified foam, spring, ticking",
+      "overlayTitle": "Consistent at volume",
+      "overlaySummary": "The discipline is not making a good mattress once. It is making the same one two hundred times, and being able to show that you did.",
+      "overlaySpecs": [
+        {
+          "label": "Brand",
+          "value": "siesta · B2B hospitality"
+        },
+        {
+          "label": "Scope",
+          "value": "Full property, phased by floor"
+        },
+        {
+          "label": "Build",
+          "value": "Specified for a replacement cycle"
+        },
+        {
+          "label": "Record",
+          "value": "Inputs traceable per batch"
+        }
+      ]
+    },
+    "servicedResidences": {
+      "title": "Serviced Residences",
+      "subtitle": "Hospitality · Long stay",
+      "headline": "Built for people who actually live there",
+      "paragraph": "Long-stay properties are slept in every night by the same guest. The specification changes accordingly — durability over first impression.",
+      "scope": "Long-stay specification",
+      "delivery": "Rolling by unit type",
+      "materials": "Higher-durability build",
+      "overlayTitle": "A different specification",
+      "overlaySummary": "A mattress in a long-stay residence does a different job from one in a transit hotel, and pretending otherwise shortens its life.",
+      "overlaySpecs": [
+        {
+          "label": "Use",
+          "value": "Long-stay, single occupant"
+        },
+        {
+          "label": "Priority",
+          "value": "Durability over first impression"
+        },
+        {
+          "label": "Delivery",
+          "value": "Rolling, by unit type"
+        },
+        {
+          "label": "Cover",
+          "value": "Specified for frequent cleaning"
+        }
+      ]
+    },
+    "retailProgramme": {
+      "title": "Retail Programme",
+      "subtitle": "Retail · blue mattress",
+      "headline": "Explained, not marketed",
+      "paragraph": "A retail range under the blue mattress brand, built so the construction can be explained on the shop floor rather than hidden behind a name.",
+      "scope": "Retail range",
+      "delivery": "Continuous supply",
+      "materials": "Comfort range across firmness",
+      "overlayTitle": "Sold by being understood",
+      "overlaySummary": "People keep a mattress for years. Explaining what is inside it turns out to be a better sales argument than a proprietary name.",
+      "overlaySpecs": [
+        {
+          "label": "Brand",
+          "value": "blue mattress · B2C retail"
+        },
+        {
+          "label": "Range",
+          "value": "Multiple firmness options"
+        },
+        {
+          "label": "Approach",
+          "value": "Construction explained, not hidden"
+        },
+        {
+          "label": "Supply",
+          "value": "Continuous, to retail partners"
+        }
+      ]
+    },
+    "labels": {
+      "scope": "Scope",
+      "delivery": "Delivery",
+      "materials": "Materials"
+    }
   }
 }

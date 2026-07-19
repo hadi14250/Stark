@@ -1,0 +1,323 @@
+/* =============================================================================
+   GALLERY CHROME — the rail + panel around the stage.
+   =============================================================================
+
+   Transcribed from the push-slitra handoff's editor.css. That file is 1243
+   lines and 176 blocks, most of it editor CONTROLS (sliders, swatches, bezier
+   editors, font pickers) for a tool Stark does not ship. What is kept is the
+   chrome's visual language, which is genuinely good and worth inheriting:
+
+     • separation by background SHADE, not borders. One divider weight, used
+       only between sections.
+     • ONE accent, used exclusively for active / selected / focus — never
+       decoration.
+     • 8px rhythm, 11–12px labels, tabular numerals.
+
+   TWO DELIBERATE DEPARTURES FROM THE HANDOFF:
+
+   1. THE BACKGROUNDS ARE STARK GREENS, not the tool's neutral darks. The whole
+      point of this project is that the site stopped reading as four different
+      products; shipping the gallery on #121215 would reintroduce exactly that.
+
+   2. INSET RINGS ONLY, never outside rings or outlines. `.ed-sec-inner` has
+      `overflow: hidden`, so an outside ring or a standard focus outline gets
+      shaved off at the container edge and the user sees half a focus
+      indicator. Every focus style here is `box-shadow: inset`.
+
+   Scoped to `.gallery-chrome` and layered after `utilities` for the same
+   reason gallery-stage.css is — see the header there.
+   ========================================================================== */
+
+@layer theme, base, components, utilities, gallery;
+
+@layer gallery {
+  .gallery-chrome {
+    /* Re-pointed to Stark. The geometry, rhythm and motion below are the
+       handoff's; only these colours moved. */
+    --ed-rail-bg: var(--green-900);
+    --ed-panel: var(--green-800);
+    --ed-input: var(--green-panel);
+    --ed-hover: var(--green-700);
+    --ed-border: rgb(250 245 239 / 0.1);
+    --ed-text: var(--white-500);
+    --ed-dim: var(--green-200);
+    --ed-faint: var(--green-300);
+    /* The handoff's accent was #6a8dff — a periwinkle that appears nowhere in
+       the official palette and sits close to --brand-blue, which is reserved
+       for the `blue mattress` sub-brand. Using it here would give the one page
+       whose job is showing finished work a fourth design language. Sand is the
+       site's accent and reads correctly on these greens (11.1:1). */
+    --ed-accent: var(--sand-500);
+    --ed-accent-soft: rgb(219 202 173 / 0.16);
+    --ed-panel-w: 300px;
+  }
+
+  /* ---------- shell: [rail][panel][canvas] ----------
+     Height comes from the parent, NOT 100svh as in the handoff: Stark's
+     gallery sits under a fixed header, so the shell must fill what is left
+     (`100svh - var(--header-h)`), not the whole viewport. */
+  .gallery-chrome .shell {
+    display: flex;
+    height: 100%;
+    background: var(--ed-rail-bg);
+    overflow: hidden;
+  }
+  .gallery-chrome .canvas {
+    position: relative;
+    flex: 1 1 auto;
+    min-width: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  /* ---------- icon rail ---------- */
+  .gallery-chrome .ed-rail {
+    flex: 0 0 56px;
+    width: 56px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 0;
+    background: var(--ed-rail-bg);
+    z-index: 5;
+  }
+  .gallery-chrome .ed-railbtn {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ed-dim);
+    background: none;
+    border: 0;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+  .gallery-chrome .ed-railbtn:hover {
+    background: var(--ed-hover);
+    color: var(--ed-text);
+  }
+  .gallery-chrome .ed-railbtn[aria-selected="true"] {
+    background: var(--ed-accent-soft);
+    color: var(--ed-accent);
+  }
+  /* 2px accent edge on the rail side of the active tab */
+  .gallery-chrome .ed-railbtn[aria-selected="true"]::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: -8px;
+    top: 9px;
+    bottom: 9px;
+    width: 2px;
+    border-radius: 1px;
+    background: var(--ed-accent);
+  }
+  /* delayed tooltip, on the inline-end side so it mirrors under RTL */
+  .gallery-chrome .ed-railbtn::after {
+    content: attr(data-tip);
+    position: absolute;
+    inset-inline-start: 50px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--green-panel);
+    color: var(--ed-text);
+    padding: 5px 9px;
+    border-radius: 6px;
+    font-size: 11px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.12s ease 0.45s;
+    z-index: 30;
+  }
+  .gallery-chrome .ed-railbtn:hover::after,
+  .gallery-chrome .ed-railbtn:focus-visible::after {
+    opacity: 1;
+  }
+
+  /* ---------- panel slot (the width that squeezes the canvas) ---------- */
+  .gallery-chrome .ed-panel-slot {
+    flex: 0 0 auto;
+    width: 0;
+    overflow: hidden;
+    background: var(--ed-panel);
+    transition: width 200ms ease;
+  }
+  .gallery-chrome .ed-panel-slot.open {
+    width: var(--ed-panel-w);
+  }
+
+  /* ---------- panel ---------- */
+  .gallery-chrome .ed-panel {
+    width: var(--ed-panel-w); /* fixed, so content doesn't reflow mid-slide */
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: var(--ed-panel);
+    color: var(--ed-text);
+    font-size: 12px;
+  }
+  .gallery-chrome .ed-panel-head {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 14px 16px 13px;
+    border-bottom: 1px solid var(--ed-border);
+    box-shadow: 0 6px 12px -8px rgb(0 0 0 / 0.55); /* scroll shadow */
+    position: relative;
+    z-index: 2;
+  }
+  .gallery-chrome .ed-panel-head h2 {
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  .gallery-chrome .ed-panel-body {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .gallery-chrome .ed-panel-body::-webkit-scrollbar {
+    width: 8px;
+  }
+  .gallery-chrome .ed-panel-body::-webkit-scrollbar-thumb {
+    background: rgb(250 245 239 / 0.14);
+    border-radius: 4px;
+  }
+  .gallery-chrome .ed-panel-body::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  /* INSET focus rings, always. `.ed-sec-inner` clips, so an outline or an
+     outside ring is shaved at the container edge. */
+  .gallery-chrome :focus-visible {
+    outline: none;
+    box-shadow: inset 0 0 0 2px var(--ed-accent);
+  }
+
+  .gallery-chrome .ed-section {
+    border-bottom: 1px solid var(--ed-border);
+  }
+  .gallery-chrome .ed-sec-head {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    color: var(--ed-dim);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: none;
+    border: 0;
+  }
+  .gallery-chrome .ed-sec-inner {
+    /* Both of these are load-bearing: overflow clips the section during the
+       open/close transition, min-height:0 lets it actually shrink inside the
+       flex column. Removing either breaks the collapse. */
+    overflow: hidden;
+    min-height: 0;
+    padding: 4px 10px 12px;
+  }
+
+  /* ---------- project rows ----------
+     NOT the handoff's `.ed-chip-btn`, which ellipsizes in a fixed 3-column
+     grid at ~95px per column. Project names are NAVIGATION, so they wrap. */
+  .gallery-chrome .ed-projectrow {
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    text-align: start;
+    color: var(--ed-dim);
+    background: none;
+    border: 0;
+    cursor: pointer;
+    line-height: 1.4;
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+  .gallery-chrome .ed-projectrow:hover {
+    background: var(--ed-hover);
+    color: var(--ed-text);
+  }
+  .gallery-chrome .ed-projectrow[aria-current="true"] {
+    background: var(--ed-accent-soft);
+    color: var(--ed-text);
+    box-shadow: inset 0 0 0 1px var(--ed-accent);
+  }
+  .gallery-chrome .ed-projectrow-meta {
+    display: block;
+    color: var(--ed-faint);
+    font-size: 11px;
+    margin-top: 2px;
+  }
+
+  /* ---------- mobile ----------
+     The handoff hid the rail below 760px and left a gear FAB as the only way
+     in. Correct for an editor; wrong for a gallery, where moving between
+     projects IS the page. Below 760 the rail and panel become a horizontal
+     strip above the stage instead. */
+  .gallery-chrome .ed-mobilebar {
+    display: none;
+  }
+  @media (max-width: 759px) {
+    .gallery-chrome .ed-rail,
+    .gallery-chrome .ed-panel-slot {
+      display: none;
+    }
+    .gallery-chrome .shell {
+      flex-direction: column;
+    }
+    .gallery-chrome .ed-mobilebar {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 10px 12px;
+      background: var(--ed-rail-bg);
+      border-bottom: 1px solid var(--ed-border);
+    }
+    .gallery-chrome .ed-mobilescroll {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .gallery-chrome .ed-mobilescroll::-webkit-scrollbar {
+      display: none;
+    }
+    .gallery-chrome .ed-mobilechip {
+      flex: 0 0 auto;
+      padding: 7px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      color: var(--ed-dim);
+      background: var(--ed-input);
+      border: 0;
+      white-space: nowrap;
+    }
+    .gallery-chrome .ed-mobilechip[aria-current="true"],
+    .gallery-chrome .ed-mobilechip[aria-selected="true"] {
+      background: var(--ed-accent-soft);
+      color: var(--ed-accent);
+      box-shadow: inset 0 0 0 1px var(--ed-accent);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gallery-chrome .ed-panel-slot,
+    .gallery-chrome .ed-railbtn,
+    .gallery-chrome .ed-projectrow {
+      transition-duration: 0.001ms;
+    }
+  }
+}
