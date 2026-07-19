@@ -279,6 +279,14 @@
   --animate-spin-slow: spin-slow 26s linear infinite;
   --animate-floaty: floaty 6s ease-in-out infinite;
   --animate-marquee: marquee 30s linear infinite;
+  /* The client wall reuses the `marquee` keyframe at two much slower speeds,
+     one per row, running against each other. Slower because a logo has to be
+     READ, not just registered as passing texture — 30s makes a wordmark hard
+     to fix on. The second row's `reverse` composes correctly with --dir: RTL
+     flips the keyframe, reverse flips it again, so both rows mirror as a pair
+     rather than one of them ending up travelling the wrong way. */
+  --animate-logos: marquee 52s linear infinite;
+  --animate-logos-alt: marquee 64s linear infinite reverse;
   --animate-ken-burns: ken-burns 18s ease-in-out infinite alternate;
 
 }

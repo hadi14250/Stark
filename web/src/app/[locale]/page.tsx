@@ -6,6 +6,7 @@ import { HomeHero } from "@/components/home/HomeHero";
 import { About } from "@/components/home/About";
 import { Capabilities } from "@/components/home/Capabilities";
 import { Divisions } from "@/components/home/Divisions";
+import { Clients } from "@/components/home/Clients";
 import { Turnkey } from "@/components/home/Turnkey";
 import { GalleryTeaser } from "@/components/home/GalleryTeaser";
 import { Marquee } from "@/components/landing/Marquee";
@@ -40,6 +41,11 @@ export async function generateMetadata({
  * a palate cleanser between the centred hero and the editorial About, and
  * Process sits AFTER the gallery teaser because "how we work" only becomes
  * interesting once someone has seen what the work looks like.
+ *
+ * Clients lands straight after Divisions — "here is what we deliver" is the
+ * claim, and "here is who we delivered it to" is the evidence, so they belong
+ * adjacent. It also keeps the surface rhythm alternating (surface-2, surface,
+ * surface-2, dark) rather than putting two identical bands back to back.
  */
 export default async function HomePage({ params }: PageProps<"/[locale]">) {
   const { locale } = await params;
@@ -52,6 +58,7 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
       <About />
       <Capabilities />
       <Divisions />
+      <Clients />
       <Turnkey />
       <GalleryTeaser />
       <ProcessSection />

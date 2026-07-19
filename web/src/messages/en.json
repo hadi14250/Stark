@@ -149,6 +149,45 @@
       ],
       "eyebrowLabel": "Our divisions"
     },
+    "clients": {
+      "eyebrow": "Clients",
+      "heading": "The people we build for",
+      "sub": "Developers, hospitality groups and contractors who bring us their interiors and let us deliver them end to end.",
+      "logos": [
+        {
+          "key": "northvale",
+          "alt": "Northvale"
+        },
+        {
+          "key": "atlasGroup",
+          "alt": "Atlas Group"
+        },
+        {
+          "key": "meridian",
+          "alt": "Meridian"
+        },
+        {
+          "key": "kawkab",
+          "alt": "Kawkab"
+        },
+        {
+          "key": "summitCo",
+          "alt": "Summit Co."
+        },
+        {
+          "key": "halcyon",
+          "alt": "Halcyon"
+        },
+        {
+          "key": "vertex",
+          "alt": "Vertex"
+        },
+        {
+          "key": "rawabi",
+          "alt": "Rawabi"
+        }
+      ]
+    },
     "gallery": {
       "heading": "Our Gallery",
       "sub": "Explore selected environments across our divisions — woodworks, furniture, and mattress work in real settings.",
