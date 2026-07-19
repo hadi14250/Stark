@@ -3,9 +3,14 @@
 import { useEffect, useRef } from "react";
 
 /**
- * Fixed 3px tan scroll-progress bar at the very top of the viewport, width =
- * page scroll %. Matches the handoff's `[data-progress]` element. Writes width
- * imperatively (no per-frame React state) off a passive scroll listener.
+ * Fixed 3px scroll-progress bar at the very top of the viewport, width = page
+ * scroll %. Writes width imperatively (no per-frame React state) off a passive
+ * scroll listener.
+ *
+ * Site-wide, so it consumes SEMANTIC tokens: it was previously hardcoded to
+ * `--el-accent`/`--el-accent-bright`, primitives that belong to the Element
+ * page and are deleted in Phase C. Reading `--color-accent` instead means the
+ * bar picks up whichever theme it is rendered under, for free.
  */
 export function ScrollProgress() {
   const ref = useRef<HTMLDivElement>(null);
@@ -28,7 +33,7 @@ export function ScrollProgress() {
     <div
       ref={ref}
       aria-hidden
-      className="fixed inset-x-0 top-0 z-[9999] h-[3px] w-0 bg-[linear-gradient(90deg,var(--el-accent),var(--el-accent-bright))] shadow-[0_0_12px_rgba(195,160,106,0.5)]"
+      className="fixed inset-x-0 top-0 z-[9999] h-[3px] w-0 bg-[linear-gradient(to_right,var(--color-accent-2),var(--color-accent))] shadow-[0_0_12px_rgb(219_202_173/0.5)]"
       style={{ insetInlineStart: 0 }}
     />
   );

@@ -11,7 +11,7 @@ import { DIVISION_ELEMENT, LOGO_VIEWBOX, type DivisionKey } from "./LogoDefs";
  *
  * BUDGET, per page — countable by a reviewer, unlike "tasteful":
  *   G1 PentagonClip  max 2 pairs      G3 MarkTexture  max 2
- *   G2 BladeField    max 1            G4 MarkGlyph    unlimited at eyebrow scale
+ *   G2 BladeField    max 1            G4 MarkGlyph    see the A0c note below
  *
  * Rules that hold everywhere:
  *   - all of it is decorative: aria-hidden + pointer-events:none, never the
@@ -19,6 +19,15 @@ import { DIVISION_ELEMENT, LOGO_VIEWBOX, type DivisionKey } from "./LogoDefs";
  *   - G4 does NOT replace functional icons. Contact rows and spec grids need
  *     identification — an abstract rotated wedge cannot say "phone";
  *   - a derived shape never appears near a real lockup at similar size/colour.
+ *
+ * WHAT THE A0c COMPS CORRECTED (all four are load-bearing):
+ *   - G3 "tile" reads as WALLPAPER on light surfaces — a 300px repeating
+ *     pattern at 4% competes with the copy instead of receding. Prefer "mark".
+ *   - G1 pentagons must OVERLAP, not stack: two of the same silhouette in a
+ *     column, pointing the same way, read as repetition and leave a void.
+ *   - the photo ring needs a colour the section does NOT use, or it vanishes.
+ *   - G4 at 14px is too abstract to register as a division signature; it reads
+ *     as a stray mark. MIN_GLYPH below enforces the floor the comps found.
  */
 
 /* ------------------------------------------------------------------ */
@@ -218,6 +227,14 @@ export function MarkTexture({
 /* G4 — Glyph: one element at icon scale                               */
 /* ------------------------------------------------------------------ */
 
+/**
+ * Below this the blade stops reading as a division signature and becomes a
+ * stray mark — the five blades are rotations of one wedge around a shared
+ * centre, which is what makes them indistinguishable when small. Found in the
+ * A0c comps at 14px, where the Woodworks eyebrow glyph read as a smudge.
+ */
+const MIN_GLYPH = 20;
+
 type MarkGlyphProps = {
   /** Which division this slot belongs to. Never chosen for looks. */
   division: DivisionKey;
@@ -229,11 +246,18 @@ type MarkGlyphProps = {
 
 export function MarkGlyph({
   division,
-  size = 16,
+  size = 24,
   color = "var(--color-accent)",
   className,
   style,
 }: MarkGlyphProps) {
+  if (process.env.NODE_ENV !== "production" && size < MIN_GLYPH) {
+    console.warn(
+      `MarkGlyph: size ${size} is below the ${MIN_GLYPH}px legibility floor — ` +
+        `the blade will read as a stray mark rather than the ${division} signature. ` +
+        `Either give it room or leave it out.`,
+    );
+  }
   return (
     <svg
       aria-hidden

@@ -1,6 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { Reveal } from "@/components/motion/Reveal";
-import { DrawLine, DrawLineY } from "./motion";
+import { DrawLine, DrawLineY } from "@/components/motion/reveals";
 
 type Step = { title: string; body: string };
 

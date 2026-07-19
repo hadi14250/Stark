@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { alternates } from "@/lib/seo";
 import { routing, type Locale } from "@/i18n/routing";
-import { ScrollProgress } from "@/components/woodworks/ScrollProgress";
+import { ScrollProgress } from "@/components/motion/ScrollProgress";
 import { WoodworksNav } from "@/components/woodworks/WoodworksNav";
 import { ElHero } from "@/components/woodworks/ElHero";
 import { ElMarquee } from "@/components/woodworks/ElMarquee";

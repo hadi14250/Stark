@@ -1,7 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { ElementMark } from "./icons";
 import { Reveal } from "@/components/motion/Reveal";
-import { ClipReveal } from "./motion";
+import { ClipReveal } from "@/components/motion/reveals";
 import { woodImages } from "./assets";
 
 /**

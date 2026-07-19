@@ -1,6 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { Reveal } from "@/components/motion/Reveal";
-import { DrawLine } from "./motion";
+import { DrawLine } from "@/components/motion/reveals";
 import { woodImages } from "./assets";
 
 type Product = { title: string; body: string; alt: string };
