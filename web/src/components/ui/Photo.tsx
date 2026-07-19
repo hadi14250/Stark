@@ -26,6 +26,18 @@ const RATIO = {
 
 export type PhotoRatio = keyof typeof RATIO;
 
+/**
+ * `height` is for the case a ratio cannot express: a full-bleed band that must
+ * span the viewport but be no taller than a given height.
+ *
+ * Do NOT solve that with `ratio="band"` plus a `max-h-*` class. `aspect-ratio`
+ * and `max-height` together make the box shrink its WIDTH to preserve the
+ * ratio — the hero band came out 928px wide inside a 1440px viewport, leaving
+ * 512px of empty page beside it. Setting an explicit height and dropping the
+ * ratio is the only combination that gives a full-width, height-capped band.
+ */
+export type PhotoHeight = string;
+
 type PhotoProps = Omit<ImageProps, "alt" | "width" | "height"> & {
   /**
    * Required, and required to be meaningful. Decorative photography passes
@@ -33,6 +45,8 @@ type PhotoProps = Omit<ImageProps, "alt" | "width" | "height"> & {
    */
   alt: string;
   ratio?: PhotoRatio;
+  /** Explicit height (e.g. "58vh"). Overrides `ratio` — see PhotoHeight above. */
+  height?: PhotoHeight;
   /** Slow zoom on the image, for hero bands. Paused under reduced motion. */
   kenBurns?: boolean;
   className?: string;
@@ -41,6 +55,7 @@ type PhotoProps = Omit<ImageProps, "alt" | "width" | "height"> & {
 export function Photo({
   alt,
   ratio = "band",
+  height,
   kenBurns = false,
   className,
   ...rest
@@ -48,7 +63,8 @@ export function Photo({
   return (
     <div
       className={`relative overflow-hidden ${className ?? ""}`}
-      style={{ aspectRatio: RATIO[ratio] }}
+      // Never both: aspect-ratio plus a height constraint shrinks the width.
+      style={height ? { height } : { aspectRatio: RATIO[ratio] }}
     >
       <Image
         alt={alt}

@@ -86,11 +86,10 @@ export async function HomeHero() {
         <Photo
           src={landingImages.hero}
           alt={t("alt")}
-          ratio="band"
+          height="min(62vh, 680px)"
           kenBurns
           priority
           sizes="100vw"
-          className="max-h-[62vh]"
         />
         <div
           aria-hidden

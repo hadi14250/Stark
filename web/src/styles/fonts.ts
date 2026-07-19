@@ -3,18 +3,17 @@
  *
  * Each font exposes a CSS variable that the token layer (@theme in tokens.css)
  * maps to a semantic --font-* alias. Arabic (IBM Plex Sans Arabic) replaces
- * DIN Next (which is a paid commercial license). Sora has no Arabic coverage,
- * so [lang="ar"] re-points --font-display/-body to Plex Arabic in tokens.css.
+ * DIN Next, which the brand book specifies but which is a paid commercial
+ * licence. Sora has no Arabic coverage, so [lang="ar"] re-points
+ * --font-display/-body to Plex Arabic in tokens.css.
+ *
+ * FOUR families, down from seven. PT Serif, Mulish and Poppins were loaded for
+ * the Element and Dreamzy page themes, which Phases C and D deleted — three
+ * unused webfont families on every page load, for themes that no longer exist.
+ * Adding a family here costs every visitor on every route, so the bar is that
+ * the brand book names it.
  */
-import {
-  Sora,
-  Roboto,
-  Roboto_Mono,
-  IBM_Plex_Sans_Arabic,
-  PT_Serif,
-  Mulish,
-  Poppins,
-} from "next/font/google";
+import { Sora, Roboto, Roboto_Mono, IBM_Plex_Sans_Arabic } from "next/font/google";
 
 export const sora = Sora({
   subsets: ["latin"],
@@ -44,48 +43,10 @@ export const plexArabic = IBM_Plex_Sans_Arabic({
   display: "swap",
 });
 
-/**
- * Woodworks ("Element") page fonts — PT Serif (display/headings, incl. italics
- * for quotes + marquee) and Mulish (body/nav/labels). These are consumed ONLY
- * under `[data-theme="element"]` (see tokens.css), which re-points
- * --font-display/--font-body to them; the rest of the site keeps Sora/Roboto.
- */
-export const ptSerif = PT_Serif({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  style: ["normal", "italic"],
-  variable: "--font-pt-serif",
-  display: "swap",
-});
-
-export const mulish = Mulish({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-mulish",
-  display: "swap",
-});
-
-/**
- * Mattresses ("Dreamzy") page font — Poppins (all weights + italics), the
- * handoff's single family for headings, body, nav and labels. Consumed ONLY
- * under `[data-theme="dreamzy"]` (see tokens.css), which re-points
- * --font-display/--font-body to it; the rest of the site keeps Sora/Roboto.
- */
-export const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
-  style: ["normal", "italic"],
-  variable: "--font-poppins",
-  display: "swap",
-});
-
 /** Space-joined className to apply all font variables on <html>. */
 export const fontVariables = [
   sora.variable,
   roboto.variable,
   robotoMono.variable,
   plexArabic.variable,
-  ptSerif.variable,
-  mulish.variable,
-  poppins.variable,
 ].join(" ");

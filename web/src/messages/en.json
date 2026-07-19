@@ -313,159 +313,6 @@
       "location": "Jeddah, Saudi Arabia"
     }
   },
-  "dreamzy": {
-    "hero": {
-      "h1": "Better sleep, built to last",
-      "subLine1": "Mattresses engineered and finished in Saudi Arabia",
-      "subLine2": "Comfort made for every body.",
-      "cta": "Explore mattresses",
-      "reviewsTab": "STARK REVIEWS",
-      "photoAlt": "A STARK mattress styled in a bright bedroom"
-    },
-    "features": {
-      "items": [
-        {
-          "title": "Breathable Fibers",
-          "caption": "Layered materials that support airflow for a fresher night's sleep"
-        },
-        {
-          "title": "Cooling Surface",
-          "caption": "A top layer designed to sleep cooler through the night"
-        },
-        {
-          "title": "Flippable Comfort",
-          "caption": "Choose your feel — a firmer or a softer side"
-        },
-        {
-          "title": "Quality Checked",
-          "caption": "Every mattress inspected before it leaves our facility"
-        },
-        {
-          "title": "Built to Last",
-          "caption": "Made to hold its shape and support season after season"
-        }
-      ]
-    },
-    "trust": {
-      "items": [
-        {
-          "label": "Long-term warranty"
-        },
-        {
-          "label": "Risk-free home trial"
-        },
-        {
-          "label": "Delivered across the Kingdom"
-        }
-      ]
-    },
-    "featuredEyebrow": "FEATURED PRODUCTS",
-    "products": {
-      "cta": "Learn more",
-      "items": [
-        {
-          "eyebrow": "STARK®",
-          "title": "Mattress",
-          "body": "Built from carefully selected foams and fibers, our mattresses deliver lasting comfort and support at a fair price. Cooling layers help you sleep cooler than conventional foam, and the construction is made to keep its shape for years.",
-          "alt": "STARK mattress product shot",
-          "chips": [
-            "Warranty",
-            "Full thickness",
-            "For all weights",
-            "Finished in-house",
-            "Flippable",
-            "Cool / warm feel",
-            "Quality materials"
-          ]
-        },
-        {
-          "eyebrow": "STARK®",
-          "title": "Pillow",
-          "body": "A pillow should do more than feel soft — it should contour to your neck and hold its support through the night. Our pillows pair breathable fibers with a cover made for a cool, comfortable feel.",
-          "alt": "STARK pillow product shot",
-          "chips": [
-            "Warranty",
-            "Orthopedic",
-            "Low-allergen",
-            "Natural feel"
-          ]
-        },
-        {
-          "eyebrow": "STARK®",
-          "title": "Comforter",
-          "body": "Everyone prefers a different warmth. Our comforter is designed for both — a cooler side for warmer nights and a softer, warmer side for when you want to stay cozy.",
-          "alt": "STARK comforter product shot",
-          "chips": [
-            "Warranty",
-            "Orthopedic",
-            "Low-allergen",
-            "Natural feel",
-            "Cool side"
-          ]
-        }
-      ]
-    },
-    "buyset": {
-      "title": "Buy a set for the complete STARK experience",
-      "save": "Bundle and save",
-      "cta": "Explore sets",
-      "alt": "A STARK mattress, comforter and pillow set"
-    },
-    "why": {
-      "title": "Why our products?",
-      "items": [
-        {
-          "title": "Proven craftsmanship",
-          "body": "We stand behind the quality of everything we make."
-        },
-        {
-          "title": "Low-allergen",
-          "body": "Our materials are chosen to suit sensitive and allergy-prone sleepers."
-        },
-        {
-          "title": "Natural feel",
-          "body": "Breathable, comfortable materials that work with your body through the night."
-        },
-        {
-          "title": "For all weights",
-          "body": "Support designed to work for every kind of sleeper."
-        },
-        {
-          "title": "Orthopedic support",
-          "body": "Developed with orthopedic comfort in mind."
-        },
-        {
-          "title": "Cooling materials",
-          "body": "A cooler sleeping surface than standard foam."
-        }
-      ]
-    },
-    "guarantee": {
-      "wordmark": "STARK",
-      "sub": "satisfaction guarantee",
-      "title": "Try it at home. We think you'll fall in love with it.",
-      "closing": "If it's not right for you, we'll make it right."
-    },
-    "testimonial": {
-      "items": [
-        {
-          "quote": "A real customer testimonial will appear here once approved by the client.",
-          "author": "Customer name pending"
-        }
-      ],
-      "prev": "Previous testimonial",
-      "next": "Next testimonial"
-    },
-    "footer": {
-      "menuHeading": "MENU",
-      "addressHeading": "ADDRESS",
-      "subscribeHeading": "SUBSCRIBE",
-      "emailPlaceholder": "Enter your e-mail",
-      "subscribe": "Subscribe",
-      "subscribeSuccess": "Thanks — you're on the list.",
-      "subscribeError": "Something went wrong. Please try again."
-    }
-  },
   "woodworks": {
     "eyebrow": "Woodworks",
     "hero": {
@@ -610,6 +457,100 @@
       "heading": "Delivered projects.",
       "sub": "Fit-outs, joinery packages and furniture programmes across hospitality and residential work.",
       "cta": "View woodworks projects"
+    }
+  },
+  "mattresses": {
+    "eyebrow": "Mattresses",
+    "hero": {
+      "line1": "Comfort,",
+      "line2": "engineered.",
+      "sub": "STARK manufactures mattresses for two very different customers, through two focused brands — one built for the home, one built for hotels that replace a floor at a time.",
+      "cta": "Talk to us",
+      "ctaSecondary": "See our work",
+      "alt": "Finished bedroom interior with a STARK mattress."
+    },
+    "brands": {
+      "eyebrowLabel": "Two brands",
+      "heading": "One factory, two very different buyers.",
+      "sub": "A family choosing a bed once a decade and a hotel replacing two hundred of them need different products, different warranties and different conversations. Pretending otherwise is how one of them ends up badly served.",
+      "items": [
+        {
+          "name": "blue mattress",
+          "audience": "For the home · B2C",
+          "body": "Sold to people who will sleep on it for years and want to understand what they are buying. Comfort options across firmness, with the construction explained rather than hidden behind a marketing name.",
+          "points": [
+            "Firmness range",
+            "Explained construction",
+            "Retail support"
+          ],
+          "cta": "Talk to us",
+          "alt": "Bedroom with a blue mattress product."
+        },
+        {
+          "name": "siesta",
+          "audience": "For hospitality · B2B",
+          "body": "Specified for hotels and serviced residences: consistent across a large order, built for a replacement cycle, and delivered against a programme rather than a promise.",
+          "points": [
+            "Volume consistency",
+            "Contract specification",
+            "Programme delivery"
+          ],
+          "cta": "Request a specification",
+          "alt": "Hotel room with siesta mattresses."
+        }
+      ]
+    },
+    "engineering": {
+      "eyebrowLabel": "How they are built",
+      "heading": "What is actually inside.",
+      "sub": "A mattress is a stack of decisions about support, pressure and heat. These are the ones we make deliberately.",
+      "items": [
+        {
+          "title": "Support layer",
+          "body": "The part that decides whether your spine stays in line. Specified against the sleeper's weight range rather than a single 'medium' that suits nobody in particular."
+        },
+        {
+          "title": "Comfort layer",
+          "body": "Where pressure at the shoulder and hip is dealt with. Too little and you feel the support layer; too much and you sink into it."
+        },
+        {
+          "title": "Airflow",
+          "body": "Heat is the most common reason people stop liking a mattress they once loved. Structure and cover are chosen to move it away rather than trap it."
+        },
+        {
+          "title": "Edge and cover",
+          "body": "The edge decides whether the usable area matches the size on the label. The cover decides how it survives being cleaned."
+        }
+      ]
+    },
+    "credentials": {
+      "eyebrowLabel": "Manufacturing",
+      "heading": "Made here, to a stated standard.",
+      "sub": "The claims a manufacturer can actually make. Certifications and figures are confirmed per specification rather than asserted on a web page.",
+      "items": [
+        {
+          "title": "Own production",
+          "body": "Made on our own lines in the Kingdom, not assembled from imported finished goods with a label applied."
+        },
+        {
+          "title": "Material traceability",
+          "body": "Foam, spring and textile inputs are specified and recorded, so a contract order is repeatable and a warranty claim is answerable."
+        },
+        {
+          "title": "Batch consistency",
+          "body": "A two-hundred-unit hotel order has to be the same mattress two hundred times. That is a production discipline, not a promise."
+        },
+        {
+          "title": "Testing",
+          "body": "Durability and firmness verified against the specification a project was sold on, before it ships."
+        }
+      ]
+    },
+    "turnkey": {
+      "eyebrowLabel": "Beyond the mattress",
+      "heading": "The rest of the room, too.",
+      "sub": "Most hospitality buyers are not just buying beds. STARK's woodworks and fit-out divisions deliver the rest of the room under the same contract.",
+      "cta": "Explore turnkey"
     }
   }
 }

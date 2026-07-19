@@ -101,7 +101,7 @@ export function PageOpener({
         <Container>
           <div className="pt-[clamp(48px,7vw,88px)] pb-[clamp(40px,6vw,72px)]">{copy}</div>
         </Container>
-        <Photo src={image} alt={imageAlt} ratio="band" kenBurns priority sizes="100vw" className="max-h-[58vh]" />
+        <Photo src={image} alt={imageAlt} height="min(58vh, 620px)" kenBurns priority sizes="100vw" />
       </section>
     );
   }

@@ -5,6 +5,9 @@ import { contactSchema, toFieldErrors } from "@/lib/contact/schema";
 import {
   HONEYPOT_FIELD,
   STARTED_AT_FIELD,
+  SHORT_FORM_FIELD,
+  MIN_FILL_MS,
+  MIN_FILL_MS_SHORT,
   isHoneypotTripped,
   isTooFast,
 } from "@/lib/contact/spam";
@@ -37,7 +40,13 @@ export async function submitContact(
   }
 
   // 2. Timing gate — implausibly fast fills are bots. Fails open for no-JS.
-  if (isTooFast(formData.get(STARTED_AT_FIELD), Date.now())) {
+  //    The threshold depends on how much there was to fill in: 2.5s is right
+  //    for the full form and WRONG for a one-field email capture, where a real
+  //    person pasting an address beats it easily. Since the response to "too
+  //    fast" is a fake success, getting this wrong silently discards genuine
+  //    submissions and tells the sender it worked.
+  const minFill = formData.get(SHORT_FORM_FIELD) ? MIN_FILL_MS_SHORT : MIN_FILL_MS;
+  if (isTooFast(formData.get(STARTED_AT_FIELD), Date.now(), minFill)) {
     return { status: "success" };
   }
 
