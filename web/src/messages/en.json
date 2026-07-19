@@ -313,161 +313,6 @@
       "location": "Jeddah, Saudi Arabia"
     }
   },
-  "element": {
-    "nav": {
-      "home": "Home",
-      "about": "About Us",
-      "shop": "Shop",
-      "blog": "Blog",
-      "contact": "Contact",
-      "openMenu": "Open menu",
-      "closeMenu": "Close menu",
-      "brand": "Element"
-    },
-    "hero": {
-      "line1": "Specialty",
-      "line2": "Wood",
-      "line3": "Products",
-      "body": "Element brings extraordinary, natural wood flooring, distinctive furniture and unique, wooden features . We features wood products and handcrafted home accessories and gift. Each piece of wood has its own story that started long before it got to us.",
-      "cta": "Contact Us",
-      "thumbAlt": [
-        "Live-edge wooden table",
-        "Rustic wooden vanity",
-        "Modern wooden vanity"
-      ],
-      "branchAlt": "Bare wooden branch"
-    },
-    "marquee": {
-      "label": "Brand values",
-      "words": [
-        "Handcrafted",
-        "Sustainable",
-        "Live Edge",
-        "Solid Hardwood",
-        "Heirloom Quality",
-        "Naturally Sourced"
-      ]
-    },
-    "products": {
-      "title": "Our Products",
-      "cta": "Shop Online",
-      "items": [
-        {
-          "title": "Furniture",
-          "body": "No matter what your personal style, we have just the right furniture for your living environment. Element brings extraordinary, natural wood flooring, distinctive furniture and unique, wooden features. Furniture collections that blend classic style with heirloom quality.",
-          "alt": "Rustic reclaimed-wood armchair"
-        },
-        {
-          "title": "Features",
-          "body": "Wooden walls can add spiritual simplicity to that space behind the bed, the one we see every night right before we go to sleep, warm the living room or separate two different areas in the dining room.  Natural wood connect the interiors to the peace-giving outdoors.",
-          "alt": "Live-edge wooden headboard"
-        },
-        {
-          "title": "Flooring",
-          "body": "Solid hardwood adds character, warmth and value to any room in your house.  We offer exceptional wood floors that will help you enhance the look of your home. You can get wood floors that look shiny and new, or you can buy brand new wood that looks like an antique.",
-          "alt": "Reclaimed hardwood plank flooring"
-        }
-      ]
-    },
-    "stats": {
-      "eyebrow": "Craft in Numbers",
-      "items": [
-        {
-          "label": "Years of Craft"
-        },
-        {
-          "label": "Wood Species"
-        },
-        {
-          "label": "Pieces Crafted"
-        },
-        {
-          "label": "Sustainably Sourced"
-        }
-      ]
-    },
-    "materials": {
-      "title": "Materials",
-      "items": [
-        {
-          "label": "Maple"
-        },
-        {
-          "label": "Walnut"
-        },
-        {
-          "label": "Cherry"
-        },
-        {
-          "label": "Pine"
-        },
-        {
-          "label": "Oak"
-        },
-        {
-          "label": "Cedar"
-        }
-      ]
-    },
-    "process": {
-      "eyebrow": "Our Process",
-      "title": "From Forest to Home",
-      "steps": [
-        {
-          "title": "Sourced",
-          "body": "Reclaimed and responsibly felled timber, hand-picked for grain and character."
-        },
-        {
-          "title": "Milled",
-          "body": "Cut and slow-dried to reveal each board's live edge and natural figure."
-        },
-        {
-          "title": "Crafted",
-          "body": "Joined by hand in our workshop, built to outlast trends and generations."
-        },
-        {
-          "title": "Finished",
-          "body": "Hand-oiled to protect the wood and deepen its natural, living tone."
-        }
-      ]
-    },
-    "testimonials": {
-      "eyebrow": "Kind Words",
-      "items": [
-        {
-          "quote": "They didn't sell me furniture — they handed me a piece of a forest, with a hundred years of story already living in the grain.",
-          "author": "Mara H.  ·  Portland"
-        },
-        {
-          "quote": "The grain runs like a river across our table. Ten years in, it still stops guests mid-sentence when they walk in.",
-          "author": "Daniel O.  ·  Asheville"
-        },
-        {
-          "quote": "Every knot and live edge was left exactly where the tree put it. That kind of honesty is the whole reason we chose Element.",
-          "author": "Lena & Co.  ·  Boulder"
-        }
-      ],
-      "dotLabel": "Show testimonial"
-    },
-    "contact": {
-      "title": "Contact Us",
-      "name": "Your Name",
-      "email": "Email",
-      "message": "Message",
-      "send": "Send",
-      "sending": "Sending…",
-      "success": "Thank you — we'll be in touch shortly.",
-      "error": "Something went wrong. Please try again or email us directly."
-    },
-    "footer": {
-      "copyright": "© 2016 Element Inc. All Rights Reserved.",
-      "social": {
-        "facebook": "Facebook",
-        "pinterest": "Pinterest",
-        "twitter": "Twitter"
-      }
-    }
-  },
   "dreamzy": {
     "hero": {
       "h1": "Better sleep, built to last",
@@ -619,6 +464,152 @@
       "subscribe": "Subscribe",
       "subscribeSuccess": "Thanks — you're on the list.",
       "subscribeError": "Something went wrong. Please try again."
+    }
+  },
+  "woodworks": {
+    "eyebrow": "Woodworks",
+    "hero": {
+      "line1": "Where materials",
+      "line2": "become spaces",
+      "sub": "STARK's woodworks division takes a project from raw panel to installed interior — engineered joinery, fitted furniture and full interior fit-outs, produced on our own lines and installed by our own teams.",
+      "cta": "Start a project",
+      "ctaSecondary": "See our work",
+      "meta": [
+        "Automated lines",
+        "Engineered tolerances",
+        "In-house finishing"
+      ],
+      "alt": "Machined timber on the production line."
+    },
+    "capabilities": {
+      "eyebrowLabel": "What we run",
+      "heading": "Built like a factory, finished like a workshop.",
+      "sub": "Volume production and bespoke joinery are usually different businesses. Running both on the same lines is what lets a single project keep one standard from the lobby to the last guest room.",
+      "items": [
+        {
+          "title": "Automated production lines",
+          "body": "Panel processing, edge work and boring run on programmed equipment, so the four-hundredth component matches the first. Repeatability is what makes a large fit-out possible without a drop in finish.",
+          "meta": [
+            "Panel processing",
+            "Edge banding",
+            "CNC boring"
+          ],
+          "alt": "Automated panel processing line."
+        },
+        {
+          "title": "Engineered tolerances",
+          "body": "Components are cut to a specified tolerance rather than to a fitter's judgement on site, which is why our assemblies close cleanly against walls that are never quite square.",
+          "meta": [
+            "Specified tolerance",
+            "Dry-fit verified",
+            "Documented"
+          ],
+          "alt": "Precision joinery detail."
+        },
+        {
+          "title": "Finishing in-house",
+          "body": "Spray, lacquer and hand finishing happen under our roof, on our schedule. Nothing waits in a queue at a third-party shop, and nothing arrives on site with a finish nobody signed off.",
+          "meta": [
+            "Spray booth",
+            "Hand finishing",
+            "Sign-off before dispatch"
+          ],
+          "alt": "Finished wood surface detail."
+        }
+      ]
+    },
+    "services": {
+      "eyebrowLabel": "What we deliver",
+      "heading": "Four services, one contract.",
+      "sub": "Most interiors are assembled from separate suppliers who each own a piece and none of the outcome. These sit under one name.",
+      "items": [
+        {
+          "title": "Joinery & wood elements",
+          "body": "Wall panelling, ceilings, screens, doors and the bespoke wood elements that give a space its character."
+        },
+        {
+          "title": "Interior fit-outs",
+          "body": "Complete interiors delivered as one package — from partition to final finish, coordinated against the site programme."
+        },
+        {
+          "title": "Fitted furniture",
+          "body": "Wardrobes, vanities, reception desks and casegoods, built for the space rather than adapted to it."
+        },
+        {
+          "title": "Turnkey execution",
+          "body": "Design, manufacture, deliver, install. One contract, one standard, one name on the result."
+        }
+      ]
+    },
+    "materials": {
+      "eyebrowLabel": "Materials",
+      "heading": "Specified, not improvised.",
+      "sub": "Substrate and finish are chosen against how a surface will actually be used — humidity, traffic, cleaning regime — and recorded so a repair in year five matches the original.",
+      "items": [
+        {
+          "label": "Engineered panel",
+          "body": "Dimensionally stable substrates for large flat surfaces that must stay flat."
+        },
+        {
+          "label": "Solid hardwood",
+          "body": "Where an edge will be touched, seen close, or has to take a knock."
+        },
+        {
+          "label": "Veneer",
+          "body": "Book-matched and sequenced across a run so a wall reads as one piece."
+        },
+        {
+          "label": "Laminate & HPL",
+          "body": "High-traffic and wet areas where the cleaning regime is unforgiving."
+        },
+        {
+          "label": "Lacquer & PU",
+          "body": "Sprayed finishes, matched to a specified sheen rather than an approximate one."
+        },
+        {
+          "label": "Hardware",
+          "body": "Specified to a cycle rating — the hinge is what fails first on a cheap job."
+        }
+      ]
+    },
+    "standards": {
+      "eyebrowLabel": "How we work",
+      "heading": "What a specification actually gets you.",
+      "sub": "These are the checks a project passes through. Figures are confirmed per project against the specification, not claimed here.",
+      "rows": [
+        {
+          "stage": "Shop drawings",
+          "check": "Approved before any material is cut"
+        },
+        {
+          "stage": "Material release",
+          "check": "Substrate and finish verified against the specification"
+        },
+        {
+          "stage": "Machining",
+          "check": "First-off inspected, then sampled through the run"
+        },
+        {
+          "stage": "Dry assembly",
+          "check": "Assembled and checked in the factory before it ships"
+        },
+        {
+          "stage": "Finish",
+          "check": "Sheen and colour signed off against an approved sample"
+        },
+        {
+          "stage": "Installation",
+          "check": "Snag list closed by our own team, not handed over"
+        }
+      ],
+      "colStage": "Stage",
+      "colCheck": "What is checked"
+    },
+    "projects": {
+      "eyebrowLabel": "Selected work",
+      "heading": "Delivered projects.",
+      "sub": "Fit-outs, joinery packages and furniture programmes across hospitality and residential work.",
+      "cta": "View woodworks projects"
     }
   }
 }
