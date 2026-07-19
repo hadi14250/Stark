@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
+import { WordsReveal, LineReveal } from "@/components/motion/WordsReveal";
 
 /**
  * A page section: vertical rhythm, an optional surface, and the theme's
@@ -54,6 +55,13 @@ export function Section({
  * the A0c comps found does more perceptual work than the entire colour swap —
  * so it is a token read here, never a per-call-site prop. A page cannot
  * accidentally centre a heading on the left-aligned theme.
+ *
+ * THIS IS ALSO WHERE THE SITE'S HEADING MOTION LIVES. Thirteen sections across
+ * three pages render through here, so the header resolving in sequence —
+ * eyebrow, then the heading word by word, then the intro — is one edit rather
+ * than thirteen, and no page can end up with a section that does not animate.
+ * A string heading gets the word mask; a ReactNode one falls back to a plain
+ * <h2>, because there is nothing safe to split.
  */
 export function SectionHeader({
   eyebrow,
@@ -66,6 +74,9 @@ export function SectionHeader({
   intro?: ReactNode;
   className?: string;
 }) {
+  const headingClass =
+    "max-w-[18ch] font-display text-h2 font-bold leading-h2 tracking-display text-[color:var(--color-ink)]";
+
   return (
     <div
       className={`flex flex-col gap-4 ${className ?? ""}`}
@@ -74,14 +85,18 @@ export function SectionHeader({
         textAlign: "var(--align-axis)" as CSSProperties["textAlign"],
       }}
     >
-      {eyebrow}
-      <h2 className="max-w-[18ch] font-display text-h2 font-bold leading-h2 tracking-display text-[color:var(--color-ink)]">
-        {heading}
-      </h2>
+      {eyebrow && <LineReveal>{eyebrow}</LineReveal>}
+
+      {typeof heading === "string" ? (
+        <WordsReveal text={heading} as="h2" className={headingClass} delay={0.08} />
+      ) : (
+        <h2 className={headingClass}>{heading}</h2>
+      )}
+
       {intro && (
-        <p className="max-w-[58ch] text-lead leading-lead text-[color:var(--color-ink-body)]">
-          {intro}
-        </p>
+        <LineReveal delay={0.26} className="max-w-[58ch]">
+          <p className="text-lead leading-lead text-[color:var(--color-ink-body)]">{intro}</p>
+        </LineReveal>
       )}
     </div>
   );

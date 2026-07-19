@@ -39,3 +39,5 @@ stark-website-clutter
 *.fig
 design_handoff_furniture_landing/
 design_handoff_furniture_landing_mobile/
+# ---- stray root-level node_modules (npx/vitest caches) ----
+node_modules/
