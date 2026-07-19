@@ -101,7 +101,7 @@ export function PageOpener({
         <Container>
           <div className="pt-[clamp(48px,7vw,88px)] pb-[clamp(40px,6vw,72px)]">{copy}</div>
         </Container>
-        <Photo src={image} alt={imageAlt} height="min(58vh, 620px)" kenBurns priority sizes="100vw" />
+        <Photo src={image} alt={imageAlt} height="clamp(240px, 42vh, 460px)" kenBurns priority sizes="100vw" />
       </section>
     );
   }
@@ -133,7 +133,7 @@ export function PageOpener({
               className="overflow-hidden rounded-s-[var(--radius-card)]"
               style={{ marginInlineEnd: "calc(-1 * var(--gutter))", boxShadow: "var(--shadow-card)" }}
             >
-              <Photo src={image} alt={imageAlt} ratio="portrait" priority sizes="(max-width: 860px) 100vw, 46vw" />
+              <Photo src={image} alt={imageAlt} height="clamp(280px, 52vh, 520px)" priority sizes="(max-width: 860px) 100vw, 46vw" />
             </div>
           </Reveal>
         </div>

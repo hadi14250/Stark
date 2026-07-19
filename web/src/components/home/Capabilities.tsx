@@ -15,10 +15,15 @@ const META: string[][] = [
   ["Stage-gated QC", "Raw material to install", "Site-ready on arrival"],
 ];
 
-const PANELS = ["Saudi precision.", "Built for project scale.", "Checked at every stage."];
-
 /**
  * The section the client cared most about.
+ *
+ * NO OVERLAY PANELS. There were pentagon plates reading "Saudi precision." and
+ * so on, sitting on top of the photographs. They did not work: the pentagon
+ * needs size to read as the brand shape, but the copy in it was three words,
+ * so it came out as a large empty green shape with text jammed into one corner
+ * — and it covered the product it was sitting on. It was decoration carrying a
+ * line the body copy already makes. The photograph is stronger without it.
  *
  * Three alternating photo/copy bands, numbered. G2 STRUCTURAL blades bleed off
  * the section edges behind them — this is Home's one structural field, which is
@@ -57,7 +62,6 @@ export async function Capabilities() {
               heading={item.title}
               body={item.body}
               meta={META[i]}
-              panel={PANELS[i]}
               image={landingImages.bands[i]}
               imageAlt={item.alt}
               /*

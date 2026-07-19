@@ -4,7 +4,6 @@ import type { ReactNode } from "react";
 import { useSelectedLayoutSegment } from "next/navigation";
 import { Nav } from "./Nav";
 import { Footer } from "./Footer";
-import { Preloader } from "@/components/motion/Preloader";
 import { ScrollProgress } from "@/components/motion/ScrollProgress";
 import { LogoDefs } from "@/components/brand/LogoDefs";
 
@@ -23,6 +22,12 @@ import { LogoDefs } from "@/components/brand/LogoDefs";
  * The gallery is the single special case, and it is a LAYOUT difference rather
  * than a chrome one: the stage sizes itself to the viewport, so the page must
  * not add its own vertical rhythm or a footer beneath it.
+ *
+ * NO PRELOADER. There was one, and it was actively harmful: a 1.2s full-screen
+ * curtain that sat over the hero WHILE the hero's entrance animation played
+ * underneath it. The single best piece of motion on the site was happening
+ * behind an opaque panel, every time. A loading screen that hides your
+ * entrance is strictly worse than no loading screen.
  */
 const FULL_BLEED_SEGMENTS = new Set(["gallery"]);
 
@@ -45,7 +50,6 @@ export function SiteChrome({ children }: { children: ReactNode }) {
   return (
     <>
       <LogoDefs />
-      <Preloader />
       <ScrollProgress />
       <Nav />
       {/* Offset the fixed header. The height comes from --header-h (tokens.css)

@@ -3,7 +3,7 @@ import { Container } from "@/components/ui/Container";
 import { Section, SectionHeader } from "@/components/ui/Section";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Pill } from "@/components/ui/Pill";
-import { MarkTexture, MarkGlyph } from "@/components/brand/geometry";
+import { MarkTexture } from "@/components/brand/geometry";
 import { Reveal } from "@/components/motion/Reveal";
 
 type Feature = { title: string; body: string };
@@ -40,10 +40,14 @@ export async function Turnkey() {
             "radial-gradient(60% 50% at 50% 0%, rgb(219 202 173 / 0.16), transparent 70%)",
         }}
       />
+      {/* One large mark bleeding off the edge, not a repeating tile. A 300px
+          tile at this scale reads as wallpaper competing with the copy (A0c). */}
       <MarkTexture
-        variant="tile"
+        variant="mark"
         color="var(--white-500)"
-        opacity={0.035}
+        opacity={0.05}
+        size={620}
+        style={{ bottom: "-200px", insetInlineEnd: "-180px" }}
       />
 
       <Container className="relative z-[1]">
@@ -53,29 +57,53 @@ export async function Turnkey() {
           intro={t("sub")}
         />
 
-        <div className="mt-[clamp(40px,5vw,64px)] grid gap-5 nav:grid-cols-2">
+        {/*
+          WAS four bordered boxes in a 2x2 grid — the most generic possible
+          treatment, and it read that way. Now a numbered ledger: a large ghost
+          numeral, a hairline between rows rather than a box around each, and
+          the rows offset so the eye travels down a diagonal instead of
+          bouncing between four equal rectangles. Same content, same tokens.
+        */}
+        <ol className="mt-[clamp(44px,6vw,72px)]">
           {features.map((f, i) => (
-            <Reveal key={f.title} delay={i * 0.07}>
-              <div
-                className="flex h-full gap-4 rounded-[var(--radius-card)] p-6 nav:p-8"
+            <Reveal key={f.title} delay={i * 0.08} y={32} className="block">
+              <li
+                className="group relative grid items-baseline gap-x-6 gap-y-2 border-t py-7 nav:grid-cols-[auto_minmax(0,22ch)_minmax(0,1fr)] nav:py-9"
                 style={{
-                  background: "var(--color-surface-2)",
-                  border: "1px solid var(--color-line)",
+                  borderColor: "var(--color-line)",
+                  // Each row steps further in, so the column reads as a
+                  // descent rather than a stack.
+                  paddingInlineStart: `calc(${i} * clamp(0px, 2.2vw, 34px))`,
                 }}
               >
-                <MarkGlyph division="stark" size={26} color="var(--color-accent)" />
-                <div>
-                  <h3 className="font-display text-h4 font-semibold text-[color:var(--color-ink)]">
-                    {f.title}
-                  </h3>
-                  <p className="mt-2 text-body-sm leading-body text-[color:var(--color-ink-body)]">
-                    {f.body}
-                  </p>
-                </div>
-              </div>
+                <span
+                  aria-hidden
+                  className="font-mono text-[clamp(30px,4vw,52px)] font-light leading-none tabular-nums"
+                  style={{ color: "var(--color-accent)", opacity: 0.35 }}
+                >
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+
+                <h3 className="font-display text-h3 font-semibold leading-h3 tracking-display text-[color:var(--color-ink)]">
+                  {f.title}
+                </h3>
+
+                <p className="text-body leading-body text-[color:var(--color-ink-body)]">
+                  {f.body}
+                </p>
+
+                {/* The rule under a row draws itself in as the row arrives —
+                    the only motion in the section, so it reads as emphasis
+                    rather than decoration. */}
+                <span
+                  aria-hidden
+                  className="absolute inset-x-0 bottom-0 h-px origin-left scale-x-0 transition-transform duration-700 group-hover:scale-x-100 motion-reduce:transition-none"
+                  style={{ background: "var(--color-accent)" }}
+                />
+              </li>
             </Reveal>
           ))}
-        </div>
+        </ol>
 
         <div className="mt-10 flex" style={{ justifyContent: "var(--align-axis)" }}>
           <Pill variant="tan" href="/#contact">

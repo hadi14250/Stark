@@ -5,6 +5,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Pill } from "@/components/ui/Pill";
 import { Photo } from "@/components/ui/Photo";
 import { Reveal } from "@/components/motion/Reveal";
+import { ParallaxImage } from "@/components/motion/Parallax";
 import { landingImages } from "@/components/landing/assets";
 import type { DivisionKey } from "@/components/brand/LogoDefs";
 
@@ -46,17 +47,20 @@ export async function Divisions() {
           {items.map((item, i) => (
             <Reveal key={item.title} delay={0.05}>
               <article className="relative">
-                <div
-                  className="overflow-hidden rounded-[var(--radius-card)]"
-                  style={{ boxShadow: "var(--shadow-card)" }}
+                {/* HEIGHT-CAPPED, not ratio-driven. At 1180px wide a 16/9
+                    band is 664px tall — with a 116px header and the copy plate
+                    below it, a single division could not fit on screen. */}
+                <ParallaxImage
+                  className="rounded-[var(--radius-card)]"
+                  // eslint-disable-next-line react/forbid-dom-props
                 >
                   <Photo
                     src={landingImages.categories[i]}
                     alt={item.alt}
-                    ratio="band"
+                    height="clamp(240px, 38vh, 400px)"
                     sizes="(max-width: 860px) 100vw, 1180px"
                   />
-                </div>
+                </ParallaxImage>
 
                 {/* The copy plate overlaps the photo's lower edge, alternating
                     which side it hangs off so the stack has rhythm without

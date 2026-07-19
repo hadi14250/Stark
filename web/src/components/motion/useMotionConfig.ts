@@ -14,9 +14,9 @@ export type MotionConfig = {
 };
 
 /**
- * The single source of motion truth, read by BOTH the Framer <Reveal> primitive
- * and the GSAP scroll hooks. Deciding `dir` and `reduce` at creation time is
- * what keeps RTL mirroring and reduced-motion out of every call site.
+ * The single source of motion truth, read by <Reveal>, <Parallax> and the
+ * gallery stage. Deciding `dir` and `reduce` once, here, is what keeps RTL
+ * mirroring and reduced-motion handling out of every call site.
  */
 export function useMotionConfig(): MotionConfig {
   const locale = useLocale();

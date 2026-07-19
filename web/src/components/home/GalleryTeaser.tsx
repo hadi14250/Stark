@@ -39,10 +39,12 @@ export async function GalleryTeaser() {
               className="h-full overflow-hidden rounded-[var(--radius-card)]"
               style={{ boxShadow: "var(--shadow-card)" }}
             >
+              {/* Capped: a 4/5 portrait at this column width is ~737px tall,
+                  which is taller than the viewport under the header. */}
               <Photo
                 src={landingImages.gallery[0]}
                 alt={alts[0]}
-                ratio="portrait"
+                height="clamp(280px, 46vh, 460px)"
                 className="h-full"
               />
             </div>
@@ -51,7 +53,7 @@ export async function GalleryTeaser() {
           {landingImages.gallery.slice(1, 5).map((src, i) => (
             <Reveal key={src} delay={0.06 * (i + 1)}>
               <div className="overflow-hidden rounded-[var(--radius-image)]">
-                <Photo src={src} alt={alts[i + 1]} ratio="square" />
+                <Photo src={src} alt={alts[i + 1]} height="clamp(130px, 22vh, 220px)" />
               </div>
             </Reveal>
           ))}

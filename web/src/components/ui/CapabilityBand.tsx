@@ -3,6 +3,7 @@ import { Container } from "./Container";
 import { Photo } from "./Photo";
 import { PentagonClip } from "@/components/brand/geometry";
 import { Reveal } from "@/components/motion/Reveal";
+import { ParallaxImage } from "@/components/motion/Parallax";
 
 /**
  * A full-width alternating band: a pentagon-clipped photograph on one side,
@@ -142,12 +143,13 @@ export function CapabilityBand({
             </div>
           ) : (
             <div className="relative">
-              <div
-                className="overflow-hidden rounded-[var(--radius-card)]"
-                style={{ boxShadow: "var(--shadow-card)" }}
-              >
-                <Photo src={image} alt={imageAlt} ratio="band" />
-              </div>
+              <ParallaxImage className="rounded-[var(--radius-card)]">
+                <Photo
+                  src={image}
+                  alt={imageAlt}
+                  height="clamp(220px, 34vh, 380px)"
+                />
+              </ParallaxImage>
 
               {/* The rect variant's panel is a flat plate tucked under the
                   photo's leading corner — same job as the pentagon panel,
