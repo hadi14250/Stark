@@ -90,7 +90,7 @@ function Stat({ value, suffix }: { value: number | null; suffix: string }) {
     if (!willAnimate || !inView) return;
     const controls = animate(0, value, {
       duration: 1.8,
-      ease: [...ease.wood],
+      ease: [...ease.zoom],
       onUpdate: (v) => setFrame(Math.round(v)),
     });
     return () => controls.stop();

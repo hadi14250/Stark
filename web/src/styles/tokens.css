@@ -3,71 +3,134 @@
    ----------------------------------------------------------------------------
    TIER 1  Primitives  → raw brand values. Plain :root vars, NOT in @theme,
                          so Tailwind generates NO utilities for them.
-   TIER 2  Semantics   → role aliases in @theme inline (Tailwind utilities
-                         reference the *variable*, so runtime overrides work).
+   TIER 2  Semantics   → role aliases in @theme (plain, NOT inline).
    TIER 3  Overrides   → [data-theme], [data-brand], [dir], reduced-motion,
                          [lang=ar] re-point the SEMANTIC vars only.
 
-   NOTE: the primitive hex VALUES here are a reasonable brand-palette
-   PLACEHOLDER. The real design comes from Claude Design (Phase 1 briefs) and
-   is applied later by re-mapping these values — components never change.
+   The palette is no longer a placeholder. It is the OFFICIAL brand palette,
+   sampled from STARK-Brand-Guidelines.pdf p.22 at 300dpi — the text extraction
+   dropped every colour page, so the values had to come off the pixels. It is a
+   6-column x 4-step grid.
+
+   SCALE CONVENTION: HIGHER NUMBER = DARKER, in every column. --green-500 is
+   the brand green and --green-200 its lightest tint; --white-500 is the
+   off-white base and --white-200 its lightest step.
+
+   IMPORTANT — this file is UNLAYERED, and unlayered declarations outrank every
+   @layer rule regardless of specificity. That is deliberate (Tier 3 must beat
+   component CSS) but it means EVERY Tier-3 theme block has to live here. A
+   theme block written in @layer components elsewhere will silently lose to the
+   blocks below no matter how specific it is. Verified the hard way in A0c.
    ============================================================================ */
 
 /* ---------------------------------------------------------------------------
    TIER 1 — PRIMITIVES  (no utilities generated; consumed only by semantics)
    --------------------------------------------------------------------------- */
 :root {
-  /* Greens */
-  --green-forest: #1c3c2d; /* primary brand/UI green */
-  --green-logo: #1c3d2e; /* logo lockup green — kept distinct so logos never drift */
-  --green-deep-1: #142c21;
-  --green-deep-2: #11271c;
-  --green-deep-3: #0c1a13;
-  --green-panel-1: #0e2118;
-  --green-panel-2: #16271e;
+  /* ======================= THE OFFICIAL 6 x 4 GRID ======================= */
 
-  /* Creams */
-  --cream: #f3efe6;
-  --cream-card: #ece7da;
+  /* Brand Green — the primary. */
+  --green-500: #1c3d2e;
+  --green-400: #496357;
+  --green-300: #8d9d96;
+  --green-200: #bac4bf;
 
-  /* Tan / gold ramp */
-  --tan-1: #c2a878;
-  --tan-2: #dbc9ac;
-  --tan-3: #b79a6a;
-  --tan-4: #9a7b45;
+  /* Neutral — the graphite ramp. This is what makes the Woodworks direction
+     brand-sanctioned rather than invented: it is an official column. */
+  --neutral-500: #1d1d1b;
+  --neutral-400: #4a4a48;
+  --neutral-300: #8d8d8c;
+  --neutral-200: #bababa;
 
-  /* Ink on cream */
-  --ink-cream-strong: #1c3c2d;
-  --ink-cream-body: #4e5c51;
-  /* Was #6e7c70 — 3.83:1 on --color-surface and 3.56:1 on --color-surface-2,
-     i.e. failing WCAG AA (4.5:1) on the live site, not just in theory. This is
-     the official brand palette's Brand Green tint 1, which the redesign adopts
-     as muted ink anyway: 5.71:1 and 5.31:1. Enforced by contrast.test.ts. */
-  --ink-cream-muted: #496357;
+  /* Sage. See --color-interactive in Tier 3 for what this may and may not do:
+     sage-500 is 2.94:1 on off-white, which fails even the 3:1 NON-TEXT floor,
+     so it can never be a mark, border or ring on a light surface. */
+  --sage-500: #679b83;
+  --sage-400: #85af9b;
+  --sage-300: #b2ccc0;
+  --sage-200: #d1e0d9;
 
-  /* Ink on green */
-  --ink-green-strong: #f3efe6;
-  --ink-green-body: #c2cfc4;
-  --ink-green-muted: #9fb0a2;
+  /* Warm Gray — the second official grey column, Woodworks' surfaces. */
+  --warm-500: #b0b6aa;
+  --warm-400: #bfc4bb;
+  --warm-300: #d7dad4;
+  --warm-200: #e7e8e5;
 
-  /* Hairlines (as rgba so they layer over any surface) */
-  --line-on-cream: rgba(28, 60, 45, 0.16);
-  --line-on-green: rgba(219, 201, 172, 0.22);
+  /* Off-White — the page. */
+  --white-500: #faf5ef;
+  --white-400: #fbf7f2;
+  --white-300: #fcf9f6;
+  --white-200: #fdfbfa;
 
-  /* Feedback */
-  --red-error: #a4361c; /* validation / error — placeholder, tune with design */
+  /* Sand — the accent. */
+  --sand-500: #dbcaad;
+  --sand-400: #e2d4bd;
+  --sand-300: #ece4d5;
+  --sand-200: #f4eee6;
 
-  /* Form field surfaces (placeholder; the sage focus glow lands with design) */
+  /* ======================= DOCUMENTED EXTENSIONS ========================= */
+  /* The book stops at one brand green, but the nav / footer / panel ladder
+     needs three steps below it. These are OURS, not official — never present
+     them to the client as brand values. */
+  --green-700: #142c21;
+  --green-800: #11271c;
+  --green-900: #0c1a13;
+  --green-panel: #16271e;
+
+  /* Feedback. Not in the palette; tuned to sit beside it. */
+  --red-error: #a4361c;
+
+  /* Hairlines, as rgba so they layer over any surface. */
+  --line-on-light: rgb(28 61 46 / 0.14);
+  --line-on-graphite: rgb(29 29 27 / 0.16);
+  --line-on-dark: rgb(219 202 173 / 0.22);
+
+  /* Form field surfaces. */
   --field-surface: #ffffff;
-  --field-border: rgba(28, 60, 45, 0.22);
-  --field-ring: rgba(28, 60, 45, 0.35);
+  --field-border: rgb(28 61 46 / 0.22);
+  --field-ring: rgb(103 155 131 / 0.55); /* sage — a ring is not text */
 
-  /* Sub-brand (mattress division) — contained to their card subtrees only */
-  --brand-blue: #0e5c8d; /* blue mattress · B2C · retail */
+  /* Sub-brands (mattress division). Contained to their own subtrees, never
+     site chrome — `blue mattress` is B2C retail, `siesta` is B2B hospitality. */
+  --brand-blue: #0e5c8d;
   --brand-blue-tint: #5ea8d6;
-  --brand-siesta: #5c2482; /* siesta mattresses · B2B · hospitality */
+  --brand-siesta: #5c2482;
   --brand-siesta-tint: #a877c9;
   --brand-siesta-accent: #db8132;
+
+  /* ==================== LEGACY ALIASES — SCHEDULED DEATH =================
+     The pre-redesign primitive names, re-pointed onto official values so the
+     not-yet-rebuilt pages pick up the real palette instead of breaking. Each
+     one dies with its last consumer:
+       Phase B  → the --cream / --tan / --ink-cream / --ink-green families
+       Phase C  → --el-*   (with the 13 El* components)
+       Phase D  → --dz-*   (with the 11 Mz* components)
+     token-consumers.test.ts fails the build if one is deleted early.
+
+     Note the near-misses these correct: the prototypes shipped #1C3C2D for the
+     brand green (official #1C3D2E), #F3EFE6 for off-white (official #FAF5EF)
+     and #DBC9AC for sand (official #DBCAAD). Official wins everywhere. */
+  --green-forest: var(--green-500);
+  --green-logo: var(--green-500);
+  --green-deep-1: var(--green-700);
+  --green-deep-2: var(--green-800);
+  --green-deep-3: var(--green-900);
+  --green-panel-1: var(--green-900);
+  --green-panel-2: var(--green-panel);
+  --cream: var(--white-500);
+  --cream-card: var(--sand-200);
+  --tan-1: var(--sand-500);
+  --tan-2: var(--sand-500);
+  --tan-3: var(--sand-400);
+  --tan-4: var(--sand-400);
+  --ink-cream-strong: var(--green-500);
+  --ink-cream-body: var(--green-400);
+  --ink-cream-muted: var(--green-400);
+  --ink-green-strong: var(--white-500);
+  --ink-green-body: var(--green-200);
+  --ink-green-muted: var(--green-300);
+  --line-on-cream: var(--line-on-light);
+  --line-on-green: var(--line-on-dark);
 
   /* --------------------------------------------------------------------------
      ELEMENT (Woodworks page) — a self-contained dark/tan palette from the
@@ -128,16 +191,34 @@
   --dz-placeholder: #b7bcc1; /* input placeholder */
 
   /* Easing curves */
-  --ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
-  --ease-wood: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-wipe: cubic-bezier(0.76, 0, 0.24, 1);
-  --ease-line: cubic-bezier(0.7, 0, 0.2, 1);
+  --ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1); /* reveals, fades */
+  --ease-zoom: cubic-bezier(0.16, 1, 0.3, 1); /* image zoom, card lift */
+  --ease-curtain: cubic-bezier(0.76, 0, 0.24, 1); /* preloader, route change */
+  --ease-line: cubic-bezier(0.7, 0, 0.2, 1); /* line draws */
+  /* Aliases kept while the Element/Dreamzy pages still reference them. */
+  --ease-wood: var(--ease-zoom);
+  --ease-wipe: var(--ease-curtain);
   --ease-cushion: cubic-bezier(0.34, 1.3, 0.64, 1);
 
-  /* Motion durations */
-  --dur-fast: 0.2s;
-  --dur-reveal: 0.9s;
-  --dur-wipe: 1.15s;
+  /* Motion durations. The route curtain is .6s, NOT the 1.15s the first draft
+     specified: three internal navigations on a four-page site should not each
+     cost over a second. The ceremony argument justifies the preloader once per
+     session; it does not justify a tax on every click. */
+  --dur-instant: 0.15s;
+  --dur-fast: 0.25s;
+  --dur-base: 0.45s;
+  --dur-reveal: 0.85s;
+  --dur-curtain: 0.6s;
+  --dur-wipe: var(--dur-curtain); /* legacy alias */
+
+  /* Stagger + travel */
+  --stagger-card: 70ms;
+  --stagger-process: 110ms;
+  --stagger-hero: 120ms;
+  --travel-y-sm: 18px;
+  --travel-y: 24px;
+  --travel-y-lg: 30px;
+  --travel-x: 28px;
 
   /* Motion control tokens (read by CSS-only transforms) */
   --motion-scale: 1; /* 1 = motion on · 0 = reduced-motion (see below) */
@@ -153,18 +234,25 @@
    runtime theming — verified: it froze utilities to var(--tan-1).)
    --------------------------------------------------------------------------- */
 @theme {
-  /* Colors — components consume ONLY these */
-  --color-surface: var(--cream);
-  --color-surface-2: var(--cream-card);
-  --color-ink: var(--ink-cream-strong);
-  --color-ink-body: var(--ink-cream-body);
-  --color-ink-muted: var(--ink-cream-muted);
-  --color-accent: var(--tan-1);
-  --color-accent-2: var(--tan-3);
-  --color-hero-bg: var(--green-forest);
-  --color-nav-bg: var(--green-deep-1); /* main nav bar — one step darker than hero */
-  --color-footer-bg: var(--green-deep-3); /* footer surface — darkest green */
-  --color-line: var(--line-on-cream);
+  /* Colors — components consume ONLY these. Every role gets a value in EVERY
+     Tier-3 theme; leaving one unassigned is how a theme "leaks" (draft 1 left
+     --color-line and --color-field-* out, so hairlines and form borders stayed
+     green on the graphite page). */
+  --color-surface: var(--white-500);
+  --color-surface-2: var(--sand-200);
+  --color-ink: var(--green-500);
+  --color-ink-body: var(--green-400);
+  --color-ink-muted: var(--green-400);
+  --color-accent: var(--sand-500);
+  --color-accent-2: var(--sand-400);
+  /* Interactive is theme-aware because sage cannot carry it on light surfaces
+     (2.94:1). On light it is the ink green; on dark it becomes sage. */
+  --color-interactive: var(--green-500);
+  --color-hero-bg: var(--green-500);
+  --color-nav-bg: var(--green-700);
+  --color-footer-bg: var(--green-900);
+  --color-panel: var(--green-800);
+  --color-line: var(--line-on-light);
   --color-error: var(--red-error);
 
   /* Form fields — components consume these, never raw field primitives */
@@ -177,6 +265,56 @@
   --font-body: var(--font-roboto);
   --font-mono: var(--font-roboto-mono);
   --font-arabic: var(--font-plex-arabic);
+
+  /* ---------------------------------------------------------------------
+     TYPE SCALE — seven roles.
+     Draft 1 had eight; its h1 and h2 were the same role twice (same family,
+     same weight, 5-13% apart) and were indistinguishable below 900px. h1 is
+     gone; page openers use `display` at a reduced clamp.
+     --------------------------------------------------------------------- */
+  --text-display: clamp(48px, 6.4vw, 88px);
+  --text-h2: clamp(28px, 3.8vw, 46px); /* mobile floor 32→28: 32 shouted next
+                                          to a 72px section gap */
+  --text-h3: clamp(23px, 2.3vw, 31px);
+  --text-h4: clamp(18px, 1.6vw, 22px);
+  --text-lead: clamp(17px, 1.4vw, 19px);
+  --text-body: 16px;
+  --text-body-sm: 14px;
+  --text-eyebrow: 12px;
+
+  --leading-display: 1.04;
+  --leading-h2: 1.12;
+  --leading-h3: 1.2;
+  --leading-lead: 1.75;
+  --leading-body: 1.85;
+
+  --tracking-display: -0.02em;
+  --tracking-eyebrow: 0.3em;
+  --eyebrow-transform: uppercase;
+
+  /* ---------------------------------------------------------------------
+     SPACING & SHAPE
+     --------------------------------------------------------------------- */
+  --space-section: clamp(72px, 9vw, 110px);
+  --density: 1; /* per-theme multiplier — see Tier 3 */
+  --container-max: 1180px;
+  --container-wide: 1440px;
+  --gutter: 32px;
+
+  /* Three radii, not six. 28-vs-32 and 14/16/18 are imperceptible differences
+     that read as inconsistency rather than variety — nobody remembers which of
+     three values in a 4px band an element takes. */
+  --radius-pill: 999px;
+  --radius-card: 24px;
+  --radius-image: 12px;
+
+  /* Four shadows, none pure black on the brand shape. The pentagon is the
+     mark's core element and the brand's Don'ts include "no drop shadow" on the
+     lockup — so every shadow is tinted with the brand green instead. */
+  --shadow-pentagon: 0 30px 44px rgb(28 61 46 / 0.28);
+  --shadow-card: 0 24px 48px -24px rgb(28 61 46 / 0.45);
+  --shadow-panel: 0 30px 60px -40px rgb(28 61 46 / 0.5);
+  --shadow-nav: 0 12px 30px -18px rgb(0 0 0 / 0.55);
 
   /* Custom breakpoint → enables `nav:` variant for the 860px burger switch */
   --breakpoint-nav: 860px;
@@ -198,12 +336,15 @@
   --animate-glow-pulse: glow-pulse 7s ease-in-out infinite;
   --animate-spin-slow: spin-slow 26s linear infinite;
   --animate-floaty: floaty 6s ease-in-out infinite;
+  --animate-marquee: marquee 30s linear infinite;
+  --animate-ken-burns: ken-burns 18s ease-in-out infinite alternate;
 
   /* Element (Woodworks) ambient loops — from the handoff's <style> block. The
      per-element dur/delay for float and the marquee travel are set inline where
      they vary; these register the base utilities. Each consumer also carries
      `motion-reduce:animate-none`. (The marquee runs via GSAP for RTL + hover;
-     `animate-el-marquee` is its reduced-motion/no-JS CSS fallback.) */
+     `animate-el-marquee` is its reduced-motion/no-JS CSS fallback.)
+     DELETED IN PHASE C together with the --el-* primitives. */
   --animate-el-sway: el-sway 7.5s ease-in-out infinite alternate;
   --animate-el-float: el-float 5s ease-in-out infinite alternate;
   --animate-el-mist: el-mist 24s ease-in-out infinite;
@@ -286,26 +427,123 @@
   }
 }
 
-/* ---------------------------------------------------------------------------
-   TIER 3 — OVERRIDES  (re-point semantics only; components untouched)
-   --------------------------------------------------------------------------- */
-
-/* Page/section themes */
-[data-theme="woodworks"] {
-  --color-surface: var(--cream-card);
-  --color-surface-2: var(--green-deep-1);
-  --color-accent: var(--tan-3);
-  --color-accent-2: var(--tan-4);
-  --color-hero-bg: var(--green-deep-2);
-  --ease-theme: var(--ease-wood);
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-50% * var(--dir)));
+  }
+}
+@keyframes ken-burns {
+  from {
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.08) translate3d(1.5%, -1.5%, 0);
+  }
 }
 
+/* ---------------------------------------------------------------------------
+   TIER 3 — OVERRIDES  (re-point semantics only; components untouched)
+
+   Per-page differentiation works on FOUR axes, not one. Varying only colour and
+   holding spacing, type, components and motion constant reads as "one template
+   recoloured", which is the exact failure this redesign exists to fix. Every
+   axis below is a token override on the same mechanism — ZERO new components.
+
+     axis          Home                Woodworks              Mattresses
+     ----------------------------------------------------------------------
+     ink ramp      green               neutral (graphite)     green
+     surface-2     sand-200            warm-200               white-300
+     panel         green-800           neutral-400            green-800
+     alignment     centred/symmetric   hard-left + rule       centred/bands
+     density       1.0                 0.8 (spec-sheet)       1.15 (airy)
+     image         mixed, poster       close-crop, contrast   wide, high-key
+
+   A0c verified this reads as authored, and found that the ALIGNMENT axis does
+   more perceptual work than the entire ink-ramp swap.
+   --------------------------------------------------------------------------- */
+
+/* Home is the default (the :root/@theme values above). Declared explicitly so
+   a nested [data-theme] can be reset back to it. */
+[data-theme="home"] {
+  --color-surface: var(--white-500);
+  --color-surface-2: var(--sand-200);
+  --color-ink: var(--green-500);
+  --color-ink-body: var(--green-400);
+  --color-ink-muted: var(--green-400);
+  --color-accent: var(--sand-500);
+  --color-accent-2: var(--sand-400);
+  --color-interactive: var(--green-500);
+  --color-panel: var(--green-800);
+  --color-line: var(--line-on-light);
+  --color-field-surface: var(--field-surface);
+  --color-field-border: var(--field-border);
+  --align-axis: center;
+  --density: 1;
+  --image-filter: saturate(0.96) brightness(1.01);
+  --ease-theme: var(--ease-standard);
+}
+
+/* Woodworks — the graphite theme. This REPLACES the old cream/green block of
+   the same name rather than sitting beside it. */
+[data-theme="woodworks"] {
+  --color-surface: var(--white-500);
+  --color-surface-2: var(--warm-200);
+  --color-ink: var(--neutral-500);
+  --color-ink-body: var(--neutral-400);
+  --color-ink-muted: var(--neutral-400);
+  --color-accent: var(--sand-500);
+  --color-accent-2: var(--sand-400);
+  --color-interactive: var(--neutral-500);
+  /* --neutral-500 at panel scale reads as a hole punched in the page (A0c).
+     The 400 step carries the same graphite intent at a weight layouts hold. */
+  --color-panel: var(--neutral-400);
+  --color-line: var(--line-on-graphite);
+  --color-field-surface: var(--field-surface);
+  --color-field-border: rgb(29 29 27 / 0.22);
+  --align-axis: start;
+  --density: 0.8;
+  --image-filter: contrast(1.12) saturate(0.92) brightness(0.98);
+  --ease-theme: var(--ease-zoom);
+}
+
+/* Mattresses — brand colours, airier. */
 [data-theme="mattresses"] {
-  --color-surface: var(--cream);
-  --color-surface-2: var(--cream-card);
-  --color-accent: var(--tan-2);
-  --color-hero-bg: var(--green-forest);
+  --color-surface: var(--white-500);
+  --color-surface-2: var(--white-300);
+  --color-ink: var(--green-500);
+  --color-ink-body: var(--green-400);
+  --color-ink-muted: var(--green-400);
+  --color-accent: var(--sand-500);
+  --color-accent-2: var(--sand-400);
+  --color-interactive: var(--green-500);
+  --color-panel: var(--green-800);
+  --color-line: var(--line-on-light);
+  --color-field-surface: var(--field-surface);
+  --color-field-border: var(--field-border);
+  --align-axis: center;
+  --density: 1.15;
+  --image-filter: saturate(0.94) brightness(1.04);
   --ease-theme: var(--ease-cushion);
+}
+
+/* Dark surfaces — nav, footer, panels, the turnkey slab. This is the ONLY
+   place sage may carry text or a mark: it is 4.95:1 on --green-800 and 5.62:1
+   on --green-900, but 2.94:1 on off-white, which fails even the 3:1 non-text
+   floor for borders and rings. Sage on a light surface may only ever be a FILL
+   at the 300 step with green-500 ink on it (7.0:1). */
+[data-surface="dark"] {
+  --color-surface: var(--green-900);
+  --color-surface-2: var(--green-800);
+  --color-ink: var(--white-500);
+  --color-ink-body: var(--green-200);
+  --color-ink-muted: var(--green-300);
+  --color-interactive: var(--sage-500);
+  --color-line: var(--line-on-dark);
+  --color-field-surface: rgb(250 245 239 / 0.06);
+  --color-field-border: var(--line-on-dark);
 }
 
 /* Element (Woodworks) — the dark/tan handoff page. Re-points the semantic
@@ -368,6 +606,7 @@
   --font-body: var(--font-plex-arabic);
 }
 
+
 /* Contained sub-brand colors — scoped to their card containers, never a page */
 [data-brand="blue"] {
   --color-accent: var(--brand-blue);
@@ -385,15 +624,58 @@
   --dir: -1;
 }
 
-/* Arabic — Sora has no Arabic coverage; re-point display+body to Plex Arabic */
+/* ---------------------------------------------------------------------------
+   ARABIC — a typography block, not just a font swap.
+
+   Draft 1 broke this in two ways that only show up on the rendered page:
+
+   1. letter-spacing PULLS APART ARABIC CURSIVE JOINS. Arabic letterforms
+      connect; adding tracking visibly fragments a word into loose glyphs. It
+      is a rendering defect, not a style degradation, so every tracking token
+      is zeroed here.
+   2. text-transform: uppercase is a SILENT NO-OP in Arabic. The eyebrow's only
+      differentiator was tracking + caps, so under AR it would have rendered as
+      unstyled 12px body text.
+
+   With both unavailable, the Arabic eyebrow gets a NATIVE treatment instead —
+   weight, accent colour and a rule — applied in globals.css. Sizes and leading
+   also move: Plex Arabic reads smaller than Sora at equal px, and Arabic
+   ascenders plus diacritic stacks need more line box than Latin (verified on
+   مُنفَّذة, which collides with the line above at 1.04).
+   --------------------------------------------------------------------------- */
 [lang="ar"] {
   --font-display: var(--font-plex-arabic);
   --font-body: var(--font-plex-arabic);
+
+  --tracking-display: 0;
+  --tracking-eyebrow: 0;
+  --eyebrow-transform: none;
+
+  --text-eyebrow: 14px;
+  --text-body-sm: 15px;
+
+  --leading-display: 1.35;
+  --leading-h2: 1.3;
+  --leading-h3: 1.35;
 }
 
-/* Reduced motion — collapse CSS-driven travel to zero at the token level */
+/* ---------------------------------------------------------------------------
+   REDUCED MOTION — layer 3 of 3.
+   Layer 1 is Framer's reducedMotion="user" (Providers); layer 2 is useGsap
+   no-opping its setup. This is the CSS safety net: it neutralises ambient
+   loops and zeroes the transform multiplier for CSS-only motion, so anything
+   that slipped past the other two still comes to rest.
+   --------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
   :root {
     --motion-scale: 0;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
   }
 }

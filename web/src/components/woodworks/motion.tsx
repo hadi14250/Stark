@@ -13,10 +13,10 @@ import { useMotionConfig } from "@/components/motion/useMotionConfig";
  * reduced motion, and mirror their origin for RTL.
  *
  * Timings match the handoff's `.dc.html` (clip 1.5s, draw 1s, drawy 1.1s),
- * easing `cubic-bezier(.22,.7,.2,1)` ≈ our `ease.line`/`ease.wood`.
+ * easing `cubic-bezier(.22,.7,.2,1)` ≈ our `ease.line`/`ease.zoom`.
  */
 
-const EASE = [...ease.wood] as [number, number, number, number];
+const EASE = [...ease.zoom] as [number, number, number, number];
 
 /** `clip` — the hero branch "grows" in from its trailing edge. */
 export function ClipReveal({

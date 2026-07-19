@@ -55,7 +55,7 @@ export function ProcessSection() {
             initial={reduce ? false : { scaleX: 0 }}
             whileInView={reduce ? undefined : { scaleX: 1 }}
             viewport={{ once: true, amount: 0.6 }}
-            transition={{ duration: duration.wipe + 0.25, ease: [...ease.line], delay: 0.2 }}
+            transition={{ duration: duration.curtain + 0.25, ease: [...ease.line], delay: 0.2 }}
           />
 
           <div className="flex flex-col gap-10 nav:flex-row nav:gap-0">

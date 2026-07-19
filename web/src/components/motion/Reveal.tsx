@@ -36,7 +36,7 @@ export function Reveal({
   x = 0,
   y = 24,
   delay = 0,
-  easeName = "wood",
+  easeName = "zoom",
   className,
   as = "div",
 }: RevealProps) {

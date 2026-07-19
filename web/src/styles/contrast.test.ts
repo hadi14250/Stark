@@ -88,14 +88,53 @@ const AA_TEXT = 4.5;
 
 type Pair = { ink: string; on: string; scope?: string; label: string };
 
+/** The three ink roles against both surfaces, for one theme. */
+function inkPairs(scope: string | undefined, name: string): Pair[] {
+  const out: Pair[] = [];
+  for (const surface of ["--color-surface", "--color-surface-2"]) {
+    for (const ink of ["--color-ink", "--color-ink-body", "--color-ink-muted"]) {
+      out.push({
+        label: `${name}: ${ink.replace("--color-", "")} on ${surface.replace("--color-", "")}`,
+        ink,
+        on: surface,
+        scope,
+      });
+    }
+  }
+  return out;
+}
+
 const PAIRS: Pair[] = [
-  // Global (green) theme — the site default.
-  { label: "ink on surface", ink: "--color-ink", on: "--color-surface" },
-  { label: "body ink on surface", ink: "--color-ink-body", on: "--color-surface" },
-  { label: "muted ink on surface", ink: "--color-ink-muted", on: "--color-surface" },
-  { label: "ink on surface-2", ink: "--color-ink", on: "--color-surface-2" },
-  { label: "body ink on surface-2", ink: "--color-ink-body", on: "--color-surface-2" },
-  { label: "muted ink on surface-2", ink: "--color-ink-muted", on: "--color-surface-2" },
+  ...inkPairs(undefined, "default"),
+  ...inkPairs('[data-theme="home"]', "home"),
+  ...inkPairs('[data-theme="woodworks"]', "woodworks"),
+  ...inkPairs('[data-theme="mattresses"]', "mattresses"),
+  ...inkPairs('[data-surface="dark"]', "dark"),
+
+  // Accent surfaces carrying text — the pill, the footer, the panel.
+  {
+    label: "ink on accent fill (pills)",
+    ink: "--color-ink",
+    on: "--color-accent",
+  },
+  {
+    label: "dark: interactive (sage) on surface-2",
+    ink: "--color-interactive",
+    on: "--color-surface-2",
+    scope: '[data-surface="dark"]',
+  },
+  {
+    label: "home: interactive on surface",
+    ink: "--color-interactive",
+    on: "--color-surface",
+    scope: '[data-theme="home"]',
+  },
+  {
+    label: "woodworks: interactive on surface-2",
+    ink: "--color-interactive",
+    on: "--color-surface-2",
+    scope: '[data-theme="woodworks"]',
+  },
 ];
 
 describe("WCAG AA contrast on text roles", () => {
@@ -117,5 +156,19 @@ describe("WCAG AA contrast on text roles", () => {
     expect(contrastRatio("#ffffff", "#ffffff")).toBeCloseTo(1, 5);
     // The exact failure this file exists to prevent.
     expect(contrastRatio("#8D9D96", "#FAF5EF")).toBeLessThan(AA_TEXT);
+  });
+
+  it("documents why sage is not the interactive colour on light surfaces", () => {
+    const sage = resolve("--sage-500");
+    const offWhite = resolve("--white-500");
+    // 2.94:1 — fails AA text (4.5) AND the non-text UI floor (3.0), so sage can
+    // be neither a link, nor a border, nor a focus ring on a light surface.
+    expect(contrastRatio(sage, offWhite)).toBeLessThan(3.0);
+    // It works on dark, which is where Tier 3 assigns it.
+    expect(contrastRatio(sage, resolve("--green-800"))).toBeGreaterThanOrEqual(AA_TEXT);
+    // And as a light FILL with ink on top, at the 300 step.
+    expect(contrastRatio(resolve("--green-500"), resolve("--sage-300"))).toBeGreaterThanOrEqual(
+      AA_TEXT,
+    );
   });
 });
