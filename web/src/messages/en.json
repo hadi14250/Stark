@@ -72,10 +72,11 @@
       "sub": "Saudi-based manufacturing of woodworks, furniture, and mattresses — from raw materials to finished interiors, under one partner.",
       "cta": "Start a project",
       "scrollCue": "Scroll to explore",
-      "alt": "STARK — complete environments, fully delivered."
+      "alt": "STARK — complete environments, fully delivered.",
+      "ctaSecondary": "View our work"
     },
     "about": {
-      "heading": "About Stark",
+      "heading": "More than a manufacturer.",
       "paragraphs": [
         "Stark is a Saudi manufacturer of integrated environments — woodworks, furniture, and mattresses — delivered from raw material to finished interior under one partner.",
         "We are more than a manufacturer: a trusted solutions partner that brings design, manufacturing, and on-site execution into a single, accountable process. Every piece is engineered for durability and finished to a standard that hospitality demands.",
@@ -85,6 +86,17 @@
         "Crafted wood interior detail.",
         "Finished furniture in a styled interior.",
         "Sculptural wood piece in a light-filled space."
+      ],
+      "eyebrowLabel": "Who we are",
+      "pillars": [
+        {
+          "title": "Vision",
+          "body": "To be the Gulf's most trusted partner for complete, delivered environments — not a supplier of parts, but the single accountable name behind a finished space."
+        },
+        {
+          "title": "Mission",
+          "body": "To build the invisible foundation of every great space: engineered, manufactured and installed to one standard, from raw material to handover."
+        }
       ]
     },
     "features": {
@@ -106,7 +118,8 @@
           "body": "Checked at every stage — from raw material to final install — so what leaves the factory is what arrives on site: complete, durable, and ready.",
           "alt": "Finished interior demonstrating quality of finish."
         }
-      ]
+      ],
+      "eyebrowLabel": "What we run"
     },
     "categories": {
       "heading": "What we deliver",
@@ -133,7 +146,8 @@
           "cta": "Start a project",
           "alt": "Complete turnkey interior environment."
         }
-      ]
+      ],
+      "eyebrowLabel": "Our divisions"
     },
     "gallery": {
       "heading": "Our Gallery",
@@ -150,7 +164,8 @@
         "Furniture detail against a coloured wall.",
         "Warm interior with wood and textile finishes.",
         "Accent furniture in a finished room."
-      ]
+      ],
+      "eyebrowLabel": "Selected work"
     },
     "social": {
       "facebook": "STARK on Facebook",
@@ -162,10 +177,18 @@
       "eyebrow": "By the numbers",
       "heading": "Built to last, trusted at scale.",
       "items": [
-        { "label": "Years of craft" },
-        { "label": "Pieces delivered" },
-        { "label": "On-time delivery" },
-        { "label": "Skilled artisans" }
+        {
+          "label": "Years of craft"
+        },
+        {
+          "label": "Pieces delivered"
+        },
+        {
+          "label": "On-time delivery"
+        },
+        {
+          "label": "Skilled artisans"
+        }
       ]
     },
     "process": {
@@ -198,19 +221,62 @@
         "Saudi Built",
         "Built to Spec"
       ]
+    },
+    "turnkey": {
+      "eyebrow": "One partner",
+      "heading": "Design, manufacture, deliver, install.",
+      "sub": "Most projects are assembled from four suppliers and one long argument about whose fault it is. Turnkey execution removes the seams — one contract, one standard, one name on the outcome.",
+      "cta": "Start a project",
+      "features": [
+        {
+          "title": "One accountable partner",
+          "body": "Design, production and site work sit under a single contract, so nothing falls into a gap between trades."
+        },
+        {
+          "title": "Made to measure",
+          "body": "Every element is built for the space it is going into, rather than specified from a catalogue and made to fit on site."
+        },
+        {
+          "title": "One quality standard",
+          "body": "The same stage-gated checks apply to a wood element, a piece of furniture and a mattress — because they all carry the same name."
+        },
+        {
+          "title": "Delivered, not shipped",
+          "body": "Coordinated delivery and installation. The project ends when the space is ready, not when the truck leaves."
+        }
+      ]
     }
   },
   "contact": {
     "heading": "Let's build complete environments together.",
     "sub": "Tell us about your project and we'll get back to you.",
     "fields": {
-      "name": { "label": "Name", "placeholder": "Your full name" },
-      "company": { "label": "Company", "placeholder": "Company name (optional)" },
-      "email": { "label": "Email", "placeholder": "you@company.com" },
-      "phone": { "label": "Phone", "placeholder": "Phone number (optional)" },
-      "division": { "label": "Division of interest" },
-      "projectType": { "label": "Project type" },
-      "message": { "label": "Message", "placeholder": "Tell us about your project…" }
+      "name": {
+        "label": "Name",
+        "placeholder": "Your full name"
+      },
+      "company": {
+        "label": "Company",
+        "placeholder": "Company name (optional)"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "you@company.com"
+      },
+      "phone": {
+        "label": "Phone",
+        "placeholder": "Phone number (optional)"
+      },
+      "division": {
+        "label": "Division of interest"
+      },
+      "projectType": {
+        "label": "Project type"
+      },
+      "message": {
+        "label": "Message",
+        "placeholder": "Tell us about your project…"
+      }
     },
     "placeholders": {
       "select": "Please select…"
@@ -306,21 +372,41 @@
     "stats": {
       "eyebrow": "Craft in Numbers",
       "items": [
-        { "label": "Years of Craft" },
-        { "label": "Wood Species" },
-        { "label": "Pieces Crafted" },
-        { "label": "Sustainably Sourced" }
+        {
+          "label": "Years of Craft"
+        },
+        {
+          "label": "Wood Species"
+        },
+        {
+          "label": "Pieces Crafted"
+        },
+        {
+          "label": "Sustainably Sourced"
+        }
       ]
     },
     "materials": {
       "title": "Materials",
       "items": [
-        { "label": "Maple" },
-        { "label": "Walnut" },
-        { "label": "Cherry" },
-        { "label": "Pine" },
-        { "label": "Oak" },
-        { "label": "Cedar" }
+        {
+          "label": "Maple"
+        },
+        {
+          "label": "Walnut"
+        },
+        {
+          "label": "Cherry"
+        },
+        {
+          "label": "Pine"
+        },
+        {
+          "label": "Oak"
+        },
+        {
+          "label": "Cedar"
+        }
       ]
     },
     "process": {
@@ -417,9 +503,15 @@
     },
     "trust": {
       "items": [
-        { "label": "Long-term warranty" },
-        { "label": "Risk-free home trial" },
-        { "label": "Delivered across the Kingdom" }
+        {
+          "label": "Long-term warranty"
+        },
+        {
+          "label": "Risk-free home trial"
+        },
+        {
+          "label": "Delivered across the Kingdom"
+        }
       ]
     },
     "featuredEyebrow": "FEATURED PRODUCTS",
@@ -446,14 +538,25 @@
           "title": "Pillow",
           "body": "A pillow should do more than feel soft — it should contour to your neck and hold its support through the night. Our pillows pair breathable fibers with a cover made for a cool, comfortable feel.",
           "alt": "STARK pillow product shot",
-          "chips": ["Warranty", "Orthopedic", "Low-allergen", "Natural feel"]
+          "chips": [
+            "Warranty",
+            "Orthopedic",
+            "Low-allergen",
+            "Natural feel"
+          ]
         },
         {
           "eyebrow": "STARK®",
           "title": "Comforter",
           "body": "Everyone prefers a different warmth. Our comforter is designed for both — a cooler side for warmer nights and a softer, warmer side for when you want to stay cozy.",
           "alt": "STARK comforter product shot",
-          "chips": ["Warranty", "Orthopedic", "Low-allergen", "Natural feel", "Cool side"]
+          "chips": [
+            "Warranty",
+            "Orthopedic",
+            "Low-allergen",
+            "Natural feel",
+            "Cool side"
+          ]
         }
       ]
     },

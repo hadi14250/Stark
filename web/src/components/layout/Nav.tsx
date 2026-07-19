@@ -149,7 +149,7 @@ export function Nav() {
 
       {/* Mobile overlay */}
       {open && (
-        <div className="fixed inset-0 top-[104px] z-40 bg-[color:var(--color-nav-bg)]/97 backdrop-blur-lg nav:hidden">
+        <div className="fixed inset-0 top-[var(--header-h)] z-40 bg-[color:var(--color-nav-bg)]/97 backdrop-blur-lg nav:hidden">
           <Container className="flex flex-col gap-6 py-10">
             {LINKS.map((l) => (
               <Link

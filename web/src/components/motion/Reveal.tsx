@@ -1,9 +1,19 @@
 "use client";
 
 import { motion } from "framer-motion";
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { ease, duration } from "@/styles/tokens";
 import { useMotionConfig } from "./useMotionConfig";
+
+/**
+ * How long to wait before assuming the viewport observer is never going to
+ * fire. A reveal that starts at opacity 0 and waits for an observer will leave
+ * its content PERMANENTLY INVISIBLE if that observer misbehaves — an ancestor
+ * with `content-visibility`, a display:none parent at mount, a scroll container
+ * the observer cannot see into. Losing the animation is a cosmetic problem;
+ * losing the content is not, so after this the element is shown regardless.
+ */
+const FAILSAFE_MS = 1500;
 
 type RevealProps = {
   children: ReactNode;
@@ -41,6 +51,13 @@ export function Reveal({
   as = "div",
 }: RevealProps) {
   const { dir, reduce } = useMotionConfig();
+  const [forced, setForced] = useState(false);
+
+  useEffect(() => {
+    if (reduce) return;
+    const t = window.setTimeout(() => setForced(true), FAILSAFE_MS);
+    return () => window.clearTimeout(t);
+  }, [reduce]);
 
   if (reduce) {
     const Tag = as;
@@ -48,12 +65,16 @@ export function Reveal({
   }
 
   const MotionTag = motion[as];
+  const shown = { opacity: 1, x: 0, y: 0 };
 
   return (
     <MotionTag
       className={className}
       initial={{ opacity: 0, x: x * dir, y }}
-      whileInView={{ opacity: 1, x: 0, y: 0 }}
+      // Once the fail-safe trips, `animate` takes over unconditionally. It wins
+      // over `whileInView` for anything the observer has not already revealed,
+      // and is a no-op for everything it has.
+      {...(forced ? { animate: shown } : { whileInView: shown })}
       viewport={{ once: true, amount: 0.1 }}
       transition={{
         duration: duration.reveal,
