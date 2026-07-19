@@ -142,6 +142,8 @@ export function BladeField({ blades, weight, color, className }: BladeFieldProps
           }}
         >
           <svg
+            aria-hidden
+            focusable="false"
             viewBox={LOGO_VIEWBOX}
             style={{
               display: "block",

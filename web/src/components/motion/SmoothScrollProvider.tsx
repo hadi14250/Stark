@@ -2,54 +2,43 @@
 
 import { useEffect, type ReactNode } from "react";
 import Lenis from "lenis";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 /**
- * Owns Lenis smooth-scroll and syncs it with GSAP ScrollTrigger.
+ * Owns Lenis smooth-scroll.
  *
- * The four things this gets right (each a common failure):
- *  1. Single RAF loop — Lenis is driven off gsap.ticker (seconds→ms), so there
- *     is no second requestAnimationFrame competing with GSAP.
- *  2. lenis.on('scroll', ScrollTrigger.update) keeps ScrollTrigger's cached
- *     scroll position in sync with Lenis's virtual scroll (pins don't jump).
- *  3. lagSmoothing(0) stops GSAP "catching up" with a violent jump after a tab
- *     is backgrounded.
- *  4. Full cleanup (ticker.remove + lenis.destroy + kill triggers) so React 18/19
- *     Strict-Mode double-mount doesn't leave two Lenis instances fighting.
+ * This used to drive Lenis off `gsap.ticker` and sync it with ScrollTrigger,
+ * which was the correct architecture WHEN there were GSAP scroll set-pieces to
+ * keep in sync: one RAF loop rather than two competing ones,
+ * `ScrollTrigger.update` on Lenis's virtual scroll so pins do not jump, and
+ * `lagSmoothing(0)` so GSAP does not violently catch up after a backgrounded
+ * tab.
  *
- * Reduced motion: when the user prefers reduced motion we skip Lenis entirely
- * and leave native scrolling in place (no smoothing, no ticker hijack).
+ * None of those set-pieces survived into the built pages — GSAP's only
+ * remaining consumer was the home-page marquee, which is CSS now — so GSAP was
+ * removed and this runs its own RAF. The three problems the ticker solved do
+ * not arise with a single animation source.
+ *
+ * Reduced motion: skip Lenis entirely and leave native scrolling in place. No
+ * smoothing, no RAF loop at all.
  */
 export function SmoothScrollProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
-
-    const reduce = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-
-    if (reduce) {
-      // No smooth scroll; ScrollTrigger still works off native scroll.
-      return () => {
-        ScrollTrigger.getAll().forEach((t) => t.kill());
-      };
-    }
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const lenis = new Lenis({ lerp: 0.1, smoothWheel: true });
 
-    lenis.on("scroll", ScrollTrigger.update);
-
-    const onTick = (time: number) => {
-      lenis.raf(time * 1000); // gsap ticker time is in seconds; Lenis wants ms
+    let raf = 0;
+    const loop = (time: number) => {
+      lenis.raf(time);
+      raf = requestAnimationFrame(loop);
     };
-    gsap.ticker.add(onTick);
-    gsap.ticker.lagSmoothing(0);
+    raf = requestAnimationFrame(loop);
 
+    // Full cleanup so React Strict-Mode's double mount cannot leave two Lenis
+    // instances fighting over the same scroll.
     return () => {
-      gsap.ticker.remove(onTick);
+      cancelAnimationFrame(raf);
       lenis.destroy();
-      ScrollTrigger.getAll().forEach((t) => t.kill());
     };
   }, []);
 

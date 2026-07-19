@@ -28,9 +28,9 @@ export function HeroCard({ slide }: { slide: Slide }) {
       <div className="scrim" />
       <div className="hero-copy">
         <div className="tmask">
-          <motion.h1 className="hero-title" {...title}>
+          <motion.h2 className="hero-title" {...title}>
             {slide.city}
-          </motion.h1>
+          </motion.h2>
         </div>
         <div className="tmask">
           <motion.p className="hero-sub" {...sub}>

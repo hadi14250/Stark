@@ -1,50 +1,38 @@
-"use client";
-
-import { useRef } from "react";
-import { useTranslations } from "next-intl";
-import type { gsap as Gsap } from "gsap";
-import { useGsap } from "@/components/motion/useGsap";
-
-type Tween = ReturnType<typeof Gsap.to>;
+import { getTranslations } from "next-intl/server";
 
 /**
- * Marquee ribbon — a tan full-bleed band of infinitely-scrolling Sora
- * watchwords, matching the animated handoff (index.html §Marquee). Pauses on
- * hover.
+ * Marquee ribbon — a sand full-bleed band of infinitely-scrolling watchwords.
  *
- * Motion via `useGsap`: the track holds two identical word sequences and
- * travels `-50%` so the loop is seamless. `dir` from the hook flips the travel
- * direction so it scrolls in reading order (RTL scrolls the other way); under
- * reduced motion `useGsap` never runs the setup, leaving the ribbon static and
- * fully readable. Hover pause/resume is driven from React handlers via a tween
- * ref (kept out of the GSAP setup so it doesn't close over the scope ref).
+ * WAS DRIVEN BY GSAP. It is CSS now, and that is a bundle decision rather than
+ * a style one: GSAP + ScrollTrigger is ~44KB gzipped, this was its only
+ * consumer in the whole site, and it was landing in a SHARED chunk — so
+ * /woodworks, /mattresses and /gallery were each downloading an animation
+ * engine to render one band on the home page. (The plan chose GSAP for
+ * scroll-driven set-pieces, and ScrollTrigger genuinely is the right tool for
+ * those; none of them survived into the built pages. Carrying the library for
+ * a marquee is not defensible.)
+ *
+ * The CSS does everything the tween did:
+ *   travel      `--animate-marquee` translates -50% * var(--dir), so the two
+ *               identical copies loop seamlessly and RTL scrolls the other way
+ *   hover pause `animation-play-state: paused` on hover
+ *   reduced     `motion-reduce:animate-none` plus the global duration
+ *               neutraliser — the ribbon simply sits still and stays readable
+ *
+ * It is also now a SERVER component: no client JS at all where there used to
+ * be a 44KB dependency and a tween ref.
  */
-export function Marquee() {
-  const t = useTranslations("landing.marquee");
+export async function Marquee() {
+  const t = await getTranslations("landing.marquee");
   const words = t.raw("words") as string[];
   const sequence = words.join(" ✦ ");
-  const tweenRef = useRef<Tween | null>(null);
-
-  const scope = useGsap<HTMLElement>(({ dir, gsap }) => {
-    // RTL: seed the mirrored start so travel enters from the correct edge.
-    if (dir === -1) gsap.set(".marquee-track", { xPercent: -50 });
-    tweenRef.current = gsap.to(".marquee-track", {
-      xPercent: -50 * dir,
-      duration: 30,
-      ease: "none",
-      repeat: -1,
-    });
-  });
 
   return (
     <section
-      ref={scope}
       aria-label={t("label")}
-      onMouseEnter={() => tweenRef.current?.pause()}
-      onMouseLeave={() => tweenRef.current?.play()}
-      className="flex h-[104px] w-full items-center overflow-hidden bg-[color:var(--color-accent)] nav:h-[130px]"
+      className="group flex h-[104px] w-full items-center overflow-hidden bg-[color:var(--color-accent)] nav:h-[130px]"
     >
-      <div className="marquee-track flex flex-none flex-nowrap whitespace-nowrap will-change-transform">
+      <div className="flex flex-none flex-nowrap whitespace-nowrap animate-marquee will-change-transform group-hover:[animation-play-state:paused] motion-reduce:animate-none">
         {/* Two identical copies → -50% travel loops seamlessly. */}
         {[0, 1].map((n) => (
           <span

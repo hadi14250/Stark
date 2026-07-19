@@ -283,17 +283,27 @@ ever picks a blade arbitrarily.
 - **Framer Motion 12** — component reveals, `AnimatePresence`, and the gallery
   transition engine (whose effects are framer-native `TargetAndTransition`
   producers, so this one is non-negotiable).
-- **GSAP 3 + ScrollTrigger** — scroll set-pieces: blade parallax, process line,
-  marquee, scroll progress, count-ups.
-- **Lenis** — smooth scroll, on `gsap.ticker` with `lagSmoothing(0)`, single RAF.
+- **Lenis** — smooth scroll, on its own RAF, skipped entirely under reduced
+  motion.
+- **CSS** — ambient loops (marquee, Ken Burns, float, glow) are keyframes, not
+  JS. They are the cheapest thing in the motion budget and they pause correctly
+  with `animation-play-state`.
 
-**Why GSAP rather than porting the prototype's scroll loop:** the prototype
-reads `getBoundingClientRect()` on the element it translates, so the realised
-parallax factor is `f/(1+f)`, not `f`. ScrollTrigger measures against a
-transform-independent baseline, batches reads and writes, and handles RTL.
+**GSAP was removed.** The plan chose GSAP + ScrollTrigger for scroll-driven
+set-pieces, and for genuine set-pieces it is the right tool — the prototype's
+own loop reads `getBoundingClientRect()` on the element it translates, so its
+realised parallax factor is `f/(1+f)` rather than `f`, which ScrollTrigger
+avoids by measuring against a transform-independent baseline.
 
-**Boundary rule** (`Reveal.tsx:31`): Framer owns component reveals, GSAP owns
-scroll set-pieces. Never both on the same element or property.
+None of those set-pieces survived into the built pages. GSAP's only remaining
+consumer was the home-page marquee, it was landing in a SHARED chunk, and
+/woodworks, /mattresses and /gallery were each downloading ~44KB gzipped of
+animation engine to render one band on a page they were not on. The marquee is
+CSS now. If a real scroll set-piece is ever needed, reintroduce GSAP for it
+deliberately — but do not carry it speculatively.
+
+**Boundary rule** (`Reveal.tsx`): Framer owns component reveals; CSS owns
+ambient loops. Never animate the same element or property with both.
 
 ### 6.2 The language
 
@@ -320,8 +330,8 @@ click.
 3. `tokens.css` sets `--motion-scale: 0` and neutralises animation/transition
    duration globally — the safety net for anything that slipped past 1 and 2.
 
-Plus: preloader and route curtain skipped, Lenis not instantiated, gallery
-transition forced to `crossfade`.
+Plus: preloader skipped, Lenis never instantiated, gallery transition forced to
+`crossfade`.
 
 ### 6.4 Fail-safes
 
@@ -356,6 +366,26 @@ and this has bitten the build three separate times. The rules:
 - `pnpm test` — token parity, token consumers, contrast floors, component render.
 - `pnpm build` — must pass. Vercel needs Root Directory `web` **and** Framework
   `Next.js` (framework `None` → all-404s).
+
+### Performance budget — measured, and the plan's number was wrong
+
+The plan set **JS < 250KB gzipped**. That budget was written without measuring
+the framework floor, and it is not reachable:
+
+| | gzipped |
+|---|---|
+| React 19 + Next 16 App Router runtime (shared, unavoidable) | ~229KB |
+| next-intl | ~12KB |
+| Framer Motion + Lenis | ~13KB shared + ~45KB page |
+| **Total, heaviest route (`/`)** | **~330KB** |
+| **Total, `/gallery`** | **~273KB** |
+
+229KB of that is the framework before a single line of our code, which leaves
+21KB for everything else under the stated budget. Removing GSAP took ~43KB off
+every route and is the largest win available without changing the animation
+architecture. **A realistic target is < 340KB; treat 250KB as retired.** The
+next lever, if one is needed, is Framer's `LazyMotion` + `m` on the non-gallery
+routes (~25KB), at the cost of a more awkward authoring API.
 - `/specimen` — the palette with live ratios, the type scale in EN and AR side
   by side, the geometry techniques with the division legend.
 - Reduced motion via `browser_emulate_media` on every route.
