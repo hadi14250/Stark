@@ -22,7 +22,7 @@ export const color = {
   tan4: "#9a7b45",
   inkCreamStrong: "#1c3c2d",
   inkCreamBody: "#4e5c51",
-  inkCreamMuted: "#6e7c70",
+  inkCreamMuted: "#496357",
   inkGreenStrong: "#f3efe6",
   inkGreenBody: "#c2cfc4",
   inkGreenMuted: "#9fb0a2",

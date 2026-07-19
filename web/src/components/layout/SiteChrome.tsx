@@ -32,10 +32,12 @@ export function SiteChrome({ children }: { children: ReactNode }) {
   return (
     <>
       <Nav />
-      {/* Offset the fixed header: utility strip (40) + bar (64 mobile / 76 desktop).
+      {/* Offset the fixed header. The height comes from --header-h (tokens.css)
+          rather than a literal so the gallery stage, which sizes itself as
+          `100svh - var(--header-h)`, can never disagree with this padding.
           overflow-x-clip contains decorative bleed (diagonal bands, collage) without
           affecting vertical scroll or the fixed header (which sits outside <main>). */}
-      <main className="flex-1 overflow-x-clip pt-[104px] nav:pt-[116px]">
+      <main className="flex-1 overflow-x-clip pt-[var(--header-h)]">
         {children}
       </main>
       <Footer />

@@ -39,7 +39,11 @@
   /* Ink on cream */
   --ink-cream-strong: #1c3c2d;
   --ink-cream-body: #4e5c51;
-  --ink-cream-muted: #6e7c70;
+  /* Was #6e7c70 — 3.83:1 on --color-surface and 3.56:1 on --color-surface-2,
+     i.e. failing WCAG AA (4.5:1) on the live site, not just in theory. This is
+     the official brand palette's Brand Green tint 1, which the redesign adopts
+     as muted ink anyway: 5.71:1 and 5.31:1. Enforced by contrast.test.ts. */
+  --ink-cream-muted: #496357;
 
   /* Ink on green */
   --ink-green-strong: #f3efe6;
@@ -177,6 +181,15 @@
   /* Custom breakpoint → enables `nav:` variant for the 860px burger switch */
   --breakpoint-nav: 860px;
 
+  /* Height of the fixed header: utility strip (40) + bar (64 mobile / 76 at
+     `nav:`). SiteChrome offsets <main> by this, and the gallery stage sizes
+     itself as `100svh - var(--header-h)`. It is a TOKEN rather than two
+     hardcoded paddings because those two consumers must never disagree — when
+     they did (stage assumed 104 while <main> applied 116 at ≥860px) the stage
+     overflowed the viewport by exactly 12px and the gallery gained a scrollbar
+     it is not supposed to have. Verified in the A0a spike. */
+  --header-h: 104px;
+
   /* Ambient animations (landing set-pieces). Registering the --animate-* var
      generates the `animate-<name>` utility; the @keyframes are defined below,
      at the stylesheet top level. All are decorative loops — each consumer also
@@ -195,6 +208,16 @@
   --animate-el-float: el-float 5s ease-in-out infinite alternate;
   --animate-el-mist: el-mist 24s ease-in-out infinite;
   --animate-el-marquee: el-marquee 34s linear infinite;
+}
+
+/* The header's bar grows 64 → 76 at the `nav:` breakpoint, so its total height
+   does too. Declared here at the top level rather than inside @theme because
+   @theme has no media-query form. Keep the 860px in sync with
+   --breakpoint-nav. */
+@media (min-width: 860px) {
+  :root {
+    --header-h: 116px;
+  }
 }
 
 /* Keyframes for the ambient landing animations (see --animate-* above). */
@@ -299,7 +322,11 @@
   --color-accent: var(--el-accent);
   --color-accent-2: var(--el-accent-hover);
   --color-hero-bg: var(--el-bg);
-  --color-line: var(--el-hairline, rgba(240, 244, 248, 0.1));
+  /* --el-hairline was never declared, so this always resolved to its fallback.
+     Inlined rather than declared: the whole [data-theme="element"] block is
+     deleted in Phase C, and adding a primitive to a dying family is churn.
+     (Found by token-consumers.test.ts — it predates the redesign.) */
+  --color-line: rgba(240, 244, 248, 0.1);
   --color-field-surface: var(--el-input);
   --font-display: var(--font-pt-serif);
   --font-body: var(--font-mulish);
