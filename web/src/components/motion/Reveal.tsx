@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { ease, duration } from "@/styles/tokens";
 import { useMotionConfig } from "./useMotionConfig";
+import { useEntrance } from "./EntranceGate";
 
 /**
  * How long to wait before assuming the viewport observer is never going to
@@ -71,11 +72,15 @@ export function Reveal({
   as = "div",
 }: RevealProps) {
   const { dir, reduce } = useMotionConfig();
+  // While the preloader's curtain is up, hold the initial state. Otherwise the
+  // hero's staged entrance plays behind an opaque panel and is over before the
+  // curtain lifts — which is exactly what used to happen.
+  const { ready } = useEntrance();
   const ref = useRef<HTMLElement>(null);
   const [forced, setForced] = useState(false);
 
   useEffect(() => {
-    if (reduce) return;
+    if (reduce || !ready) return;
     const t = window.setTimeout(() => {
       const el = ref.current;
       if (!el) return;
@@ -84,7 +89,7 @@ export function Reveal({
       if (isOnScreen(el.getBoundingClientRect(), window.innerHeight)) setForced(true);
     }, FAILSAFE_MS);
     return () => window.clearTimeout(t);
-  }, [reduce]);
+  }, [reduce, ready]);
 
   if (reduce) {
     const Tag = as;
@@ -113,7 +118,11 @@ export function Reveal({
         scale,
         filter: blur ? `blur(${blur}px)` : "blur(0px)",
       }}
-      {...(forced ? { animate: shown } : { whileInView: shown })}
+      {...(!ready
+        ? {} // gated: hold `initial` until the curtain is gone
+        : forced
+          ? { animate: shown }
+          : { whileInView: shown })}
       // -12% bottom margin: fire when the element is properly into the
       // viewport rather than the instant its first pixel appears, so the
       // motion is seen rather than finishing off-screen.

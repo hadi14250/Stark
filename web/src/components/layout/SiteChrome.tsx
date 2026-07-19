@@ -5,6 +5,8 @@ import { useSelectedLayoutSegment } from "next/navigation";
 import { Nav } from "./Nav";
 import { Footer } from "./Footer";
 import { ScrollProgress } from "@/components/motion/ScrollProgress";
+import { Preloader } from "@/components/motion/Preloader";
+import { EntranceProvider } from "@/components/motion/EntranceGate";
 import { LogoDefs } from "@/components/brand/LogoDefs";
 
 /**
@@ -23,11 +25,11 @@ import { LogoDefs } from "@/components/brand/LogoDefs";
  * than a chrome one: the stage sizes itself to the viewport, so the page must
  * not add its own vertical rhythm or a footer beneath it.
  *
- * NO PRELOADER. There was one, and it was actively harmful: a 1.2s full-screen
- * curtain that sat over the hero WHILE the hero's entrance animation played
- * underneath it. The single best piece of motion on the site was happening
- * behind an opaque panel, every time. A loading screen that hides your
- * entrance is strictly worse than no loading screen.
+ * The preloader and the page's entrance animations are COORDINATED through
+ * EntranceProvider. Without that they fight: the curtain is opaque and
+ * full-screen, so the hero's staged reveal used to play underneath it and be
+ * over before anyone saw it. The gate holds every <Reveal> until the curtain
+ * finishes lifting, and can only ever delay motion — never prevent it.
  */
 const FULL_BLEED_SEGMENTS = new Set(["gallery"]);
 
@@ -48,8 +50,9 @@ export function SiteChrome({ children }: { children: ReactNode }) {
   }
 
   return (
-    <>
+    <EntranceProvider>
       <LogoDefs />
+      <Preloader />
       <ScrollProgress />
       <Nav />
       {/* Offset the fixed header. The height comes from --header-h (tokens.css)
@@ -61,6 +64,6 @@ export function SiteChrome({ children }: { children: ReactNode }) {
         {children}
       </main>
       <Footer />
-    </>
+    </EntranceProvider>
   );
 }

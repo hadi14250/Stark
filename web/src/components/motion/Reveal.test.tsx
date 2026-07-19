@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { renderWithIntl as render, screen } from "@/test/render";
+import { renderWithIntl as render, screen, act } from "@/test/render";
 import { Reveal, isOnScreen } from "./Reveal";
 
 /**
@@ -85,4 +85,37 @@ describe("Reveal fail-safe", () => {
     expect(el.style.opacity).toBe("0");
   });
 
+});
+
+describe("entrance gate", () => {
+  it("animates normally with no provider", () => {
+    // The gate defaults to open. A component rendered outside the shell — a
+    // test, the specimen page, the gallery route — must never sit still
+    // waiting for a curtain that does not exist there.
+    render(<Reveal>ungated</Reveal>);
+    expect(screen.getByText("ungated")).toBeTruthy();
+  });
+
+  it("releases even if nothing ever calls release()", async () => {
+    // The deadlock guard. EntranceProvider starts closed and the Preloader is
+    // what opens it; if the Preloader errors or never mounts, MAX_GATE_MS must
+    // open it anyway. A coordination mechanism that can permanently freeze the
+    // site's motion is worse than no coordination at all.
+    const { EntranceProvider, useEntrance } = await import("./EntranceGate");
+    let seen = false;
+    function Probe() {
+      seen = useEntrance().ready;
+      return null;
+    }
+    render(
+      <EntranceProvider>
+        <Probe />
+      </EntranceProvider>,
+    );
+    expect(seen).toBe(false);
+    await act(async () => {
+      vi.advanceTimersByTime(3000);
+    });
+    expect(seen).toBe(true);
+  });
 });
