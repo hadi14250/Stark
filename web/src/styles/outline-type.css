@@ -1,0 +1,59 @@
+/* =============================================================================
+   OUTLINE TYPE — hollow lettering, with the Arabic fallback it requires.
+   =============================================================================
+
+   Used wherever display type alternates between filled and hollow: the
+   watchword marquee's every-other phrase, the Capabilities ordinals, the
+   Process step index's inactive titles. It lives in one place because the
+   Arabic rule below is the whole reason it is not just two Tailwind classes.
+
+   ARABIC DOES NOT TAKE A STROKE. Latin display faces are built from strokes
+   thick enough that hollowing them leaves a legible skeleton. Arabic here is
+   cursive with fine joins and hairline entry strokes; `-webkit-text-stroke`
+   traces every one of them, and the result is scratchy, illegible at the sizes
+   this is used at, and reads as a rendering fault rather than a treatment. The
+   locale gets low-opacity SOLID type instead — same job (this phrase recedes,
+   that one advances), executed in the way the script supports.
+
+   `color: transparent` and the stroke are set together and never separately:
+   with the stroke unsupported, transparent text is invisible text. The
+   @supports block below restores the fill in that case, so the worst outcome
+   is "no treatment", never "no words".
+   ========================================================================== */
+
+@layer components {
+  .outline-type {
+    /* Declared here rather than only read with a var() fallback, so both knobs
+       are discoverable and the token-consumer scan can see them. A call site
+       overrides either by setting it inline on the same element, which wins. */
+    --outline-w: 1.5px;
+    --outline-c: var(--color-ink);
+
+    color: transparent;
+    -webkit-text-stroke: var(--outline-w) var(--outline-c);
+  }
+
+  /* See above: cursive script gets weight, not wireframe. */
+  [lang="ar"] .outline-type {
+    color: var(--outline-c);
+    opacity: 0.35;
+    -webkit-text-stroke: 0;
+  }
+
+  @supports not (-webkit-text-stroke: 1px currentColor) {
+    .outline-type {
+      color: var(--outline-c);
+      opacity: 0.35;
+    }
+  }
+
+  /* In forced-colours mode the stroke colour is overridden but the transparent
+     fill is not, which would blank the text entirely. */
+  @media (forced-colors: active) {
+    .outline-type {
+      color: CanvasText;
+      -webkit-text-stroke: 0;
+      opacity: 0.6;
+    }
+  }
+}

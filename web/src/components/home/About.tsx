@@ -2,10 +2,10 @@ import { getTranslations } from "next-intl/server";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import { Photo } from "@/components/ui/Photo";
-import { PentagonClip, MarkGlyph } from "@/components/brand/geometry";
+import { MarkGlyph } from "@/components/brand/geometry";
 import { Reveal } from "@/components/motion/Reveal";
 import { landingImages } from "@/components/landing/assets";
+import { AboutCluster } from "./AboutCluster";
 
 type Pillar = { title: string; body: string };
 
@@ -69,29 +69,12 @@ export async function About() {
           </Reveal>
 
           <Reveal x={24} delay={0.1}>
-            <div className="relative">
-              <PentagonClip
-                variant="photo"
-                ringColor="var(--color-surface-2)"
-                style={{ boxShadow: "var(--shadow-pentagon)" }}
-              >
-                <Photo src={landingImages.collage[0]} alt={collageAlt[0]} ratio="pentagon" />
-              </PentagonClip>
-
-              {/* A small square offset behind the pentagon's trailing edge —
-                  a second silhouette here would read as repetition. */}
-              <div
-                className="absolute -z-[1] hidden overflow-hidden rounded-[var(--radius-image)] nav:block"
-                style={{
-                  width: "42%",
-                  bottom: "-10%",
-                  insetInlineEnd: "-8%",
-                  boxShadow: "var(--shadow-card)",
-                }}
-              >
-                <Photo src={landingImages.collage[1]} alt={collageAlt[1]} ratio="square" />
-              </div>
-            </div>
+            {/* The square is no longer parked behind the pentagon's corner —
+                it travels across it on scroll. See AboutCluster for why. */}
+            <AboutCluster
+              pentagon={{ src: landingImages.collage[0], alt: collageAlt[0] }}
+              card={{ src: landingImages.collage[1], alt: collageAlt[1] }}
+            />
           </Reveal>
         </div>
       </Container>

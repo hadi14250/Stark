@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { Container } from "@/components/ui/Container";
 import { Section, SectionHeader } from "@/components/ui/Section";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { ScrollDrift } from "@/components/motion/ScrollDrift";
 import { CLIENT_ROWS, SETS_PER_HALF, type ClientLogo } from "@/components/landing/clients";
 
 /**
@@ -35,12 +36,23 @@ import { CLIENT_ROWS, SETS_PER_HALF, type ClientLogo } from "@/components/landin
  * would let the rows beat against each other into a visible repeating pattern;
  * coprime-ish durations keep the composition changing for minutes.
  *
- * THE LOGOS ARE GREYED AND HELD AT 55%, lifting to full on hover. This is the
+ * THE LOGOS ARE GREYED AND HELD AT 70%, lifting to full on hover. This is the
  * one treatment that makes a wall of mixed-source logos cohere: real client
  * assets arrive in clashing brand colours at clashing weights, and left alone
  * they fight both each other and the page. It is a no-op on the current
  * monochrome placeholders, which is deliberate — the treatment is in place
  * BEFORE the messy real ones land, rather than being discovered afterwards.
+ *
+ * It was 55% at a 34px render height, which together made the marks
+ * unreadable — a wall of grey smudges argues against the company rather than
+ * for it. Both moved up in the polish round (see clients.ts for the geometry
+ * that follows from the height change).
+ *
+ * THE ROWS SHEAR AS YOU SCROLL. Each is wrapped in a ScrollDrift with the
+ * opposite sign, so scrolling pulls them apart and back together on top of
+ * their own opposing loops. It is the same band language as the watchword
+ * marquee a few sections up, which is deliberate: these are the two full-bleed
+ * ticker bands on the page and they should read as a matched pair.
  *
  * REDUCED MOTION stops the travel (`motion-reduce:animate-none`). The rows
  * then sit still, showing the first several logos of each — every logo is
@@ -70,10 +82,14 @@ export async function Clients() {
           measure reads as a widget sitting on the page. Running edge to edge
           is what makes it read as a band. */}
       <div
-        className="group relative mt-[clamp(40px,5vw,64px)] flex flex-col gap-[clamp(20px,2.5vw,34px)]"
-        // Fades both ends so logos dissolve instead of being guillotined by the
-        // viewport edge. Symmetric, so it needs no RTL variant.
+        className="group relative mt-[clamp(40px,5vw,64px)] flex flex-col gap-[clamp(20px,2.5vw,34px)] border-y py-[clamp(18px,2.2vw,30px)]"
+        // Hairlines top and bottom, matching the watchword marquee: they are
+        // what make a full-bleed strip read as a band rather than as content
+        // that happens to run off the edge.
         style={{
+          borderColor: "var(--color-line)",
+          // Fades both ends so logos dissolve instead of being guillotined by
+          // the viewport edge. Symmetric, so it needs no RTL variant.
           maskImage:
             "linear-gradient(to right, transparent, black 7%, black 93%, transparent)",
           WebkitMaskImage:
@@ -81,7 +97,12 @@ export async function Clients() {
         }}
       >
         {CLIENT_ROWS.map((row, i) => (
-          <LogoRow key={i} logos={row} alts={alts} reverse={i % 2 === 1} />
+          // Opposite drift per row — see the docblock. Modest amounts: these
+          // are already travelling on their own loops and a large drift would
+          // read as the two effects fighting rather than compounding.
+          <ScrollDrift key={i} amount={i % 2 === 0 ? 3.5 : -3.5}>
+            <LogoRow logos={row} alts={alts} reverse={i % 2 === 1} />
+          </ScrollDrift>
         ))}
       </div>
     </Section>
@@ -116,7 +137,10 @@ function LogoRow({
                 aria-hidden={copy !== 0}
                 width={logo.width}
                 height={logo.height}
-                className="h-[clamp(26px,2.6vw,34px)] w-auto opacity-55 grayscale transition-[opacity,filter] duration-500 hover:opacity-100 hover:grayscale-0 motion-reduce:transition-none"
+                // Ceiling matches LOGO_RENDER_HEIGHT in clients.ts, which is
+                // what the loop-width arithmetic is computed from — they move
+                // together or the ticker opens a gap.
+                className="h-[clamp(30px,3.2vw,44px)] w-auto opacity-70 grayscale transition-[opacity,filter] duration-500 hover:opacity-100 hover:grayscale-0 motion-reduce:transition-none"
                 // Decorative-scale asset that is on screen immediately below
                 // the fold; letting it lazy-load produces a row of holes.
                 loading="eager"

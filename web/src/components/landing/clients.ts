@@ -70,8 +70,16 @@ export const SETS_PER_HALF = 3;
 /** The widest display the ticker must stay seamless on. */
 export const WIDEST_SUPPORTED_VIEWPORT = 2560;
 
-/** Rendered logo height, and the item padding, both at their desktop ceiling. */
-export const LOGO_RENDER_HEIGHT = 34;
+/**
+ * Rendered logo height, and the item padding, both at their desktop ceiling.
+ *
+ * 34 → 44px in the polish round. At 34px against a 55% opacity these read as
+ * grey smudges on the sand surface rather than as marks anyone could identify,
+ * which defeats the only purpose a client wall has. The row heights grow with
+ * them; the loop arithmetic below is recomputed from these numbers, so the
+ * change cannot silently open a gap in the ticker.
+ */
+export const LOGO_RENDER_HEIGHT = 44;
 export const ITEM_PADDING_X = 60;
 
 /** Width one repetition of a row occupies at desktop scale, in px. */

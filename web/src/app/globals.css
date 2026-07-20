@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "../styles/tokens.css";
+@import "../styles/outline-type.css";
 
 /* Base ---------------------------------------------------------------------- */
 /* Lenis owns smooth scrolling; we deliberately do NOT set scroll-behavior:smooth
