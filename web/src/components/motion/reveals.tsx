@@ -27,6 +27,30 @@ import { useRevealPlay } from "@/components/motion/useRevealPlay";
 
 const EASE = [...ease.zoom] as [number, number, number, number];
 
+/**
+ * EVERY VALUE IN THESE IS A PERCENTAGE, INCLUDING THE ZEROES, and that is not
+ * a style preference — it is the fix for a bug that shipped three sections of
+ * blank space.
+ *
+ * The previous pair was `inset(0 100% 0 0)` -> `inset(0 0 0 0)`. Framer
+ * animates a string property like clip-path by pulling the numbers out and
+ * rebuilding the string from a TEMPLATE taken from the animate target. That
+ * target had no `%` in it anywhere, so every intermediate frame came out as
+ * `inset(0 47 0 0)` — a bare number where CSS requires a length. The browser
+ * rejects an invalid declaration and keeps the last valid one, which was the
+ * fully-clipped initial state. So the animation ran perfectly, at 60fps, and
+ * painted nothing but garbage the browser threw away, and the photographs
+ * stayed clipped to zero width forever.
+ *
+ * It survived a fail-safe, a green test suite and an SSR check because none of
+ * those look at rendered pixels: the rescue fired correctly, framer started
+ * correctly, the markup and the image URLs were all perfect. `reveals.test.tsx`
+ * now asserts the unit rule directly, since that is the actual invariant.
+ */
+const CLIP_OPEN = "inset(0% 0% 0% 0%)";
+const CLIP_FROM_START = "inset(0% 100% 0% 0%)";
+const CLIP_FROM_END = "inset(0% 0% 0% 100%)";
+
 /** `clip` — the element "grows" in from its trailing edge. */
 export function ClipReveal({
   children,
@@ -41,8 +65,8 @@ export function ClipReveal({
 }) {
   const { dir, reduce } = useMotionConfig();
   // LTR grows left→right (reveal from the right edge); RTL mirrors.
-  const from = dir === -1 ? "inset(0 0 0 100%)" : "inset(0 100% 0 0)";
-  const { ref, play } = useRevealPlay({ clipPath: "inset(0 0 0 0)" });
+  const from = dir === -1 ? CLIP_FROM_END : CLIP_FROM_START;
+  const { ref, play } = useRevealPlay({ clipPath: CLIP_OPEN });
 
   if (reduce) {
     return (

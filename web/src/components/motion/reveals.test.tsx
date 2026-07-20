@@ -130,6 +130,59 @@ describe("a reveal never gets stuck in its initial state", () => {
   });
 });
 
+describe("clip-path values can actually be interpolated", () => {
+  /**
+   * THE SECOND TIME THIS SECTION SHIPPED BLANK, and the reason the first fix
+   * did not catch it: the fail-safe above is about WHETHER the animation is
+   * told to run. This is about whether the frames it paints are valid CSS.
+   *
+   * `inset(0 100% 0 0)` -> `inset(0 0 0 0)` looks obviously correct and is
+   * completely broken. Framer animates a string property by extracting its
+   * numbers and rebuilding the string from a template taken from the TARGET —
+   * and that target has no `%` anywhere, so the frames come out as
+   * `inset(0 47 0 0)`. A bare number is not a valid length, the browser drops
+   * the whole declaration and keeps the last valid one, which is the fully
+   * clipped initial state. The animation runs at full speed and the element
+   * never changes.
+   *
+   * The rule that prevents it: every component of every inset() here carries a
+   * unit, so the target's template has one for each slot. Checked on the source
+   * because the failure is invisible to a rendered assertion in jsdom — framer's
+   * frame loop does not advance, which is exactly how it slipped through.
+   */
+  // Comments are stripped first: the docblock in reveals.tsx quotes the broken
+  // pair verbatim to explain it, and a guard that fails on its own
+  // documentation trains people to delete the documentation.
+  const src = readFileSync(join(here, "reveals.tsx"), "utf8")
+    .replace(/\/\*[\s\S]*?\*\//g, "")
+    .replace(/\/\/.*$/gm, "");
+  const insets = [...src.matchAll(/inset\(([^)]*)\)/g)].map((m) => m[1].trim());
+
+  it("has clip-path values to check", () => {
+    // Guards the guard: a regex that silently matches nothing passes forever.
+    expect(insets.length).toBeGreaterThan(0);
+  });
+
+  it("gives every inset component an explicit unit", () => {
+    const bad = insets.filter((v) =>
+      v.split(/\s+/).some((part) => !/^-?\d+(?:\.\d+)?(?:%|px|r?em)$/.test(part)),
+    );
+    expect(
+      bad,
+      `these mix unitless numbers with units, so Framer's rebuilt frames are invalid CSS: ${JSON.stringify(bad)}`,
+    ).toEqual([]);
+  });
+
+  it("uses the same unit across a whole inset", () => {
+    // Mixing px and % between slots produces frames that are valid but wrong.
+    const mixed = insets.filter((v) => {
+      const units = new Set(v.split(/\s+/).map((p) => p.replace(/^-?\d+(?:\.\d+)?/, "")));
+      return units.size > 1;
+    });
+    expect(mixed).toEqual([]);
+  });
+});
+
 describe("every holding reveal shares one play signal", () => {
   /**
    * A structural guard, because the bug was not a wrong line — it was a
