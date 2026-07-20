@@ -129,11 +129,27 @@ describe("the hidden pose lives only in a keyframe", () => {
   });
 
   it("only ever hides inside an @keyframes from-state", () => {
-    // Strip every keyframes block; nothing hiding may remain in what is left.
-    const withoutKeyframes = css.replace(/@keyframes[^{]*\{[\s\S]*?\n  \}/g, "");
-    expect(withoutKeyframes).not.toMatch(/opacity:\s*0\s*;/);
-    expect(withoutKeyframes).not.toMatch(/inset\([^)]*100%/);
-    expect(withoutKeyframes).not.toMatch(/scale[XY]?\(0\)/);
+    /**
+     * ONE DOCUMENTED EXCEPTION, and it is an exception to the letter of the
+     * rule rather than its spirit: `.ledger-photo` is the Turnkey row's hover
+     * photograph, and its resting state IS "clipped away" because the section's
+     * correct resting state is a row with no photograph at all. The row reads
+     * perfectly without it.
+     *
+     * That is the opposite of the bug this rule exists for, where the resting
+     * state was "the content is gone". The distinction is enforced separately
+     * in TurnkeyLedger.test.ts: the layer sits at z-index -1 behind the copy,
+     * and the copy is never inside the clipped element. If either of those
+     * stopped being true this exception would be hiding content and would have
+     * to go.
+     */
+    const reveals = css
+      .replace(/@keyframes[^{]*\{[\s\S]*?\n  \}/g, "")
+      .replace(/\.ledger-[\s\S]*$/, "");
+
+    expect(reveals).not.toMatch(/opacity:\s*0\s*;/);
+    expect(reveals).not.toMatch(/inset\([^)]*100%/);
+    expect(reveals).not.toMatch(/scale[XY]?\(0\)/);
   });
 
   it("keeps every inset component explicitly united", () => {

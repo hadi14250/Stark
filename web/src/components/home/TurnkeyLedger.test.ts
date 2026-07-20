@@ -5,7 +5,7 @@ import { describe, it, expect } from "vitest";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const src = readFileSync(join(here, "TurnkeyLedger.tsx"), "utf8");
-const css = readFileSync(join(here, "../../styles/ledger.css"), "utf8");
+const css = readFileSync(join(here, "../../styles/reveal.css"), "utf8");
 
 /**
  * Structural guards for the two things about this section that break silently.
