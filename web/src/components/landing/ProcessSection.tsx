@@ -248,6 +248,15 @@ function SlotLine({
   );
 }
 
+/**
+ * The transition duration. Deliberately slow for a swap of four words: the
+ * complaint this is answering is that the change was not obvious, and a fast
+ * transition is a less obvious one. At this length the eye has time to follow
+ * a word out and the next one in rather than just noticing that something
+ * flickered.
+ */
+const SWAP_S = 0.78;
+
 function StepCopy({
   step,
   i,
@@ -261,7 +270,7 @@ function StepCopy({
   const current = position === "current";
 
   if (reduce) {
-    // No slide, no blur, no stagger — just the one step that is current.
+    // No slide, no sweep, no stagger — just the one step that is current.
     return (
       <div className="col-start-1 row-start-1" style={{ opacity: current ? 1 : 0 }}>
         <StepBody step={step} i={i} />
@@ -276,16 +285,15 @@ function StepCopy({
       aria-hidden={!current}
       initial={false}
       animate={position}
-      // The cascade is the point: rule, then numeral, then title, then body,
-      // ~70ms apart. Arriving all at once is a slide; arriving in sequence is
-      // a section changing chapter, and it is the difference between motion
-      // you notice and motion you do not.
+      // The cascade is the point: ghost numeral, rule, numeral, title, body,
+      // ~90ms apart. Arriving all at once is a slide; arriving in sequence is a
+      // section changing chapter.
       variants={{
-        before: { opacity: 0, transition: { staggerChildren: 0.04, staggerDirection: -1 } },
-        current: { opacity: 1, transition: { staggerChildren: 0.07, delayChildren: 0.05 } },
-        after: { opacity: 0, transition: { staggerChildren: 0.04, staggerDirection: -1 } },
+        before: { opacity: 0, transition: { staggerChildren: 0.05, staggerDirection: -1 } },
+        current: { opacity: 1, transition: { staggerChildren: 0.09, delayChildren: 0.04 } },
+        after: { opacity: 0, transition: { staggerChildren: 0.05, staggerDirection: -1 } },
       }}
-      transition={{ duration: 0.62, ease: [...ease.zoom] }}
+      transition={{ duration: SWAP_S, ease: [...ease.zoom] }}
     >
       <StepBody step={step} i={i} animated />
     </motion.div>
@@ -295,50 +303,77 @@ function StepCopy({
 function StepBody({ step, i, animated = false }: { step: Step; i: number; animated?: boolean }) {
   const numeral = String(i + 1).padStart(2, "0");
   const { dir } = useMotionConfig();
+  const startEdge = dir === -1 ? "right center" : "left center";
+
+  const numeralClass =
+    "font-mono font-light leading-none tabular-nums text-[clamp(30px,3.4vw,46px)]";
+  const titleClass =
+    "font-display text-[clamp(34px,4.4vw,60px)] font-bold leading-[1.05] tracking-display text-[color:var(--color-ink)]";
+  const bodyClass =
+    "mt-3 max-w-[42ch] text-body-sm leading-body text-[color:var(--color-ink-body)] nav:mt-4 nav:text-lead nav:leading-lead";
 
   if (!animated) {
     return (
       <>
         <div className="flex items-baseline gap-4">
-          <span
-            aria-hidden
-            className="font-mono text-[clamp(14px,1.2vw,17px)] tracking-eyebrow"
-            style={{ color: "var(--color-accent)" }}
-          >
+          <span aria-hidden className={numeralClass} style={{ color: "var(--color-accent)" }}>
             {numeral}
           </span>
           <span aria-hidden className="h-px flex-1" style={{ background: "var(--color-line)" }} />
         </div>
-        <h3 className="mt-3 font-display text-[clamp(34px,4.4vw,60px)] font-bold leading-[1.05] tracking-display text-[color:var(--color-ink)]">
-          {step.title}
-        </h3>
-        <p className="mt-3 max-w-[42ch] text-body-sm leading-body text-[color:var(--color-ink-body)] nav:mt-4 nav:text-lead nav:leading-lead">
-          {step.body}
-        </p>
+        <h3 className={`mt-3 ${titleClass}`}>{step.title}</h3>
+        <p className={bodyClass}>{step.body}</p>
       </>
     );
   }
 
   return (
     <>
-      <div className="flex items-baseline gap-4">
-        <SlotLine
-          className="font-mono text-[clamp(14px,1.2vw,17px)] tracking-eyebrow"
-          distance="150%"
-        >
+      {/*
+        THE GIANT NUMERAL. The single biggest thing on the copy side, and it
+        exists purely so the step change is impossible to miss: four words
+        swapping at 60px is a detail you can scroll past, a 200px numeral
+        rolling over is an event. Sand on off-white is quiet enough to sit
+        behind the column without competing with the headline for the eye.
+
+        1180px, NOT the 860px `nav:` breakpoint, and the number is a contrast
+        requirement rather than a taste call. The numeral is pinned to the
+        column's end edge and the body runs to 42ch from the start edge; those
+        two only clear each other once the column is wide enough. Measured, the
+        crossover is around 1100px — at 900px the numeral laps ~56px of running
+        text, and body ink on sand is 4.19:1, under the 4.5:1 floor. So it
+        appears only where it cannot land behind a paragraph.
+      */}
+      <motion.span
+        aria-hidden
+        className="pointer-events-none absolute hidden select-none font-display text-[clamp(120px,13vw,210px)] font-light leading-none tabular-nums min-[1180px]:block"
+        style={{
+          color: "var(--color-accent)",
+          insetInlineEnd: 0,
+          top: "50%",
+          marginTop: "-0.5em",
+        }}
+        variants={{
+          before: { y: -70, opacity: 0, scale: 0.9 },
+          current: { y: 0, opacity: 1, scale: 1 },
+          after: { y: 70, opacity: 0, scale: 0.9 },
+        }}
+      >
+        {numeral}
+      </motion.span>
+
+      <div className="relative flex items-baseline gap-4">
+        <SlotLine className={numeralClass} distance="130%">
           <span aria-hidden style={{ color: "var(--color-accent)" }}>
             {numeral}
           </span>
         </SlotLine>
-        {/* The rule wipes in from the reading edge — the first thing to move,
-            so the eye is already on the row when the numeral lands. */}
+        {/* The rule wipes in from the reading edge — first to move, so the eye
+            is already on the row when the numeral lands. */}
         <motion.span
           aria-hidden
           className="h-px flex-1"
-          style={{
-            background: "var(--color-line)",
-            transformOrigin: dir === -1 ? "right center" : "left center",
-          }}
+          style={{ background: "var(--color-line)", transformOrigin: startEdge }}
           variants={{
             before: { scaleX: 0, opacity: 0 },
             current: { scaleX: 1, opacity: 1 },
@@ -347,23 +382,51 @@ function StepBody({ step, i, animated = false }: { step: Step; i: number; animat
         />
       </div>
 
-      <SlotLine
-        as="h3"
-        className="mt-3 font-display text-[clamp(34px,4.4vw,60px)] font-bold leading-[1.05] tracking-display text-[color:var(--color-ink)]"
-      >
-        {step.title}
-      </SlotLine>
+      {/*
+        THE SWEEP. A band of sand wipes across the title's own width as the new
+        word lands, then clears. It is the colour cue — a flash tied to the
+        moment of change rather than a permanent tint, so the section does not
+        end up with a highlighted headline sitting there afterwards.
 
-      {/* Not clipped: the body wraps to two or three lines, and a mask sized
-          for one would crop it. It gets the softer treatment — a shorter lift
-          plus a blur, which reads as depth behind the headline rather than
-          competing with it. */}
+        It is keyframed on scaleX/opacity of a solid background rather than
+        animated as a colour, because Framer cannot interpolate between two
+        `var()` values — a token-to-token colour tween silently snaps instead
+        of animating, which is precisely the "nothing seems to happen" failure
+        being fixed here.
+
+        `w-fit` on the wrapper is what makes the band the width of the WORD
+        rather than the column. A sweep spanning the full measure reads as a
+        loading bar; one that fits "Deliver" reads as emphasis.
+      */}
+      <div className="relative mt-3 w-fit">
+        <motion.span
+          aria-hidden
+          className="absolute -inset-x-3 inset-y-0 -z-10 rounded-[4px]"
+          style={{ background: "var(--color-accent)", transformOrigin: startEdge }}
+          variants={{
+            before: { scaleX: 0, opacity: 0 },
+            after: { scaleX: 0, opacity: 0 },
+            current: {
+              scaleX: [0, 1, 1],
+              opacity: [0.85, 0.85, 0],
+              transition: { duration: SWAP_S * 1.5, times: [0, 0.42, 1], ease: [...ease.zoom] },
+            },
+          }}
+        />
+        <SlotLine as="h3" className={titleClass}>
+          {step.title}
+        </SlotLine>
+      </div>
+
+      {/* Not clipped: the body wraps to two or three lines and a mask sized for
+          one would crop it. It gets the softer treatment — a lift plus a blur,
+          which reads as depth behind the headline rather than competing. */}
       <motion.p
-        className="mt-3 max-w-[42ch] text-body-sm leading-body text-[color:var(--color-ink-body)] nav:mt-4 nav:text-lead nav:leading-lead"
+        className={bodyClass}
         variants={{
-          before: { y: -26, opacity: 0, filter: "blur(7px)" },
+          before: { y: -30, opacity: 0, filter: "blur(8px)" },
           current: { y: 0, opacity: 1, filter: "blur(0px)" },
-          after: { y: 26, opacity: 0, filter: "blur(7px)" },
+          after: { y: 30, opacity: 0, filter: "blur(8px)" },
         }}
       >
         {step.body}
@@ -416,30 +479,42 @@ function StepRail({
         />
       </div>
       <ol className="mt-3 flex justify-between gap-2 nav:mt-4 nav:gap-3">
-        {steps.map((step, i) => (
-          <li key={step.title} className="relative">
-            <span
-              aria-current={i === index ? "step" : undefined}
-              className="block font-mono text-[10px] tracking-eyebrow transition-[color,opacity] duration-500 nav:text-[11px]"
-              style={{
-                textTransform: "var(--eyebrow-transform)" as "uppercase",
-                color: i === index ? "var(--color-ink)" : "var(--color-ink-muted)",
-                opacity: i === index ? 1 : 0.5,
-              }}
-            >
-              {step.title}
-            </span>
-            {i === index && !reduce && (
-              <motion.span
-                aria-hidden
-                layoutId="process-rail-marker"
-                className="absolute -bottom-2 start-0 h-[2px] w-full"
-                style={{ background: "var(--color-accent)" }}
-                transition={{ duration: 0.5, ease: [...ease.zoom] }}
-              />
-            )}
-          </li>
-        ))}
+        {steps.map((step, i) => {
+          const active = i === index;
+          const done = i < index;
+          return (
+            <li key={step.title} className="relative">
+              {/*
+                Three states, not two. A step you have PASSED reads differently
+                from one you have not reached — done steps stay in the ink ramp
+                at low opacity, upcoming ones sit in muted grey. Without that,
+                the rail says "here" but not "how far", and the section loses
+                the one thing a pinned chapter has to communicate.
+              */}
+              <span
+                aria-current={active ? "step" : undefined}
+                className="block font-mono text-[10px] tracking-eyebrow transition-[color,opacity,font-weight] duration-500 nav:text-[11px]"
+                style={{
+                  textTransform: "var(--eyebrow-transform)" as "uppercase",
+                  color: active || done ? "var(--color-ink)" : "var(--color-ink-muted)",
+                  opacity: active ? 1 : done ? 0.55 : 0.4,
+                  fontWeight: active ? 700 : 400,
+                }}
+              >
+                {step.title}
+              </span>
+              {active && !reduce && (
+                <motion.span
+                  aria-hidden
+                  layoutId="process-rail-marker"
+                  className="absolute -bottom-2 start-0 h-[2px] w-full"
+                  style={{ background: "var(--color-accent)" }}
+                  transition={{ duration: 0.5, ease: [...ease.zoom] }}
+                />
+              )}
+            </li>
+          );
+        })}
       </ol>
     </div>
   );

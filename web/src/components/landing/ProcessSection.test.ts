@@ -62,12 +62,15 @@ describe("the process section stays usable when motion is off", () => {
   it("renders ONE tree, so mobile gets the mark too", () => {
     // The section used to fork into a pinned desktop version and a plain
     // stacked list below `nav:` — which meant the assembling mark, the whole
-    // point of the section, did not exist on a phone at all. There must be no
-    // breakpoint that hides a whole branch.
-    expect(src).not.toMatch(/hidden nav:block/);
-    expect(src).not.toMatch(/className="nav:hidden"/);
-    // Exactly one mark, not one per branch.
+    // point of the section, did not exist on a phone at all.
+    //
+    // Guarded by structure rather than by class strings: individual decorative
+    // elements ARE allowed to be desktop-only (the giant numeral is), so the
+    // rule is that the section renders one of everything, not that no element
+    // ever carries a breakpoint.
+    expect(src).not.toMatch(/function StackedProcess/);
     expect(src.match(/<AssemblingMark/g) ?? []).toHaveLength(1);
+    expect(src.match(/<StepRail/g) ?? []).toHaveLength(1);
   });
 
   it("sizes the mark off viewport HEIGHT as well as width", () => {
@@ -105,6 +108,20 @@ describe("the step transition is directional", () => {
     expect(src).toMatch(/overflow-hidden/);
     // …and the descender fix that has to come with any text mask.
     expect(src).toMatch(/paddingBottom: "0\.16em", marginBottom: "-0\.16em"/);
+  });
+
+  it("never tries to tween between two token colours", () => {
+    // Framer cannot interpolate `var()` values. A colour tween written as
+    // `color: "var(--color-accent)" -> "var(--color-ink)"` does not animate,
+    // it snaps — which looks like nothing happening, the exact failure the
+    // sweep exists to fix. Colour cues here must be opacity/scale on a solid
+    // background instead.
+    expect(src).not.toMatch(/(?:color|background(?:Color)?):\s*\[/);
+    expect(src).not.toMatch(/color: "var\(--[^"]+\)",\s*\n?\s*(?:before|after|current):/);
+  });
+
+  it("gives the rail three states so it says how far, not just where", () => {
+    expect(src).toMatch(/const done = i < index/);
   });
 });
 
