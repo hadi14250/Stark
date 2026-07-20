@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { describe, it, expect } from "vitest";
-import { stepIndexAt, STEP_PARTS, CLOSING_PARTS } from "./ProcessSection";
+import { stepIndexAt, stepPositionOf, STEP_PARTS, CLOSING_PARTS } from "./ProcessSection";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const src = readFileSync(join(here, "ProcessSection.tsx"), "utf8");
@@ -59,11 +59,52 @@ describe("the process section stays usable when motion is off", () => {
     expect(src).toMatch(/height:\s*reduce\s*\?\s*["']auto["']/);
   });
 
-  it("ships a non-pinned branch for small viewports", () => {
-    // Hijacking 288vh of scroll is a fair trade on a desktop viewport and a
-    // bad one on a phone.
-    expect(src).toMatch(/nav:hidden/);
-    expect(src).toMatch(/hidden nav:block/);
+  it("renders ONE tree, so mobile gets the mark too", () => {
+    // The section used to fork into a pinned desktop version and a plain
+    // stacked list below `nav:` — which meant the assembling mark, the whole
+    // point of the section, did not exist on a phone at all. There must be no
+    // breakpoint that hides a whole branch.
+    expect(src).not.toMatch(/hidden nav:block/);
+    expect(src).not.toMatch(/className="nav:hidden"/);
+    // Exactly one mark, not one per branch.
+    expect(src.match(/<AssemblingMark/g) ?? []).toHaveLength(1);
+  });
+
+  it("sizes the mark off viewport HEIGHT as well as width", () => {
+    // On a phone the mark shares a fixed-height pinned stage with a heading, a
+    // step and the rail. Sized off `vw` alone it is ~180px tall on any phone,
+    // which pushes the rail off the bottom of a short screen. Taking the min
+    // with an `svh` term makes it shrink on whichever axis is actually scarce.
+    const markClass = src.match(/className="relative w-\[([^"]+)"/)?.[1] ?? "";
+    expect(markClass).toContain("svh");
+    expect(markClass).toContain("vw");
+  });
+});
+
+describe("the step transition is directional", () => {
+  it("parks read steps above and unread steps below", () => {
+    // With a two-state active/inactive boolean, every inactive step has to sit
+    // in the same place — so a step not yet reached drops DOWN into view,
+    // which is backwards, and scrolling up looks identical to scrolling down.
+    expect(stepPositionOf(0, 2)).toBe("before");
+    expect(stepPositionOf(1, 2)).toBe("before");
+    expect(stepPositionOf(2, 2)).toBe("current");
+    expect(stepPositionOf(3, 2)).toBe("after");
+  });
+
+  it("has exactly one current step at every index", () => {
+    for (let index = 0; index < 4; index++) {
+      const positions = [0, 1, 2, 3].map((i) => stepPositionOf(i, index));
+      expect(positions.filter((p) => p === "current")).toHaveLength(1);
+    }
+  });
+
+  it("clips the sliding lines so type is dealt rather than dissolved", () => {
+    // A crossfade between two headlines shows two overlapping words and
+    // neither is readable. The mask is what gives the swap a hard edge.
+    expect(src).toMatch(/overflow-hidden/);
+    // …and the descender fix that has to come with any text mask.
+    expect(src).toMatch(/paddingBottom: "0\.16em", marginBottom: "-0\.16em"/);
   });
 });
 
