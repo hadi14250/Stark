@@ -2,6 +2,7 @@
 @import "../styles/tokens.css";
 @import "../styles/outline-type.css";
 @import "../styles/field.css";
+@import "../styles/reveal.css";
 
 /* Base ---------------------------------------------------------------------- */
 /* Lenis owns smooth scrolling; we deliberately do NOT set scroll-behavior:smooth

@@ -1,0 +1,171 @@
+/* =============================================================================
+   SCROLL REVEALS — the hidden state lives in a keyframe, never on the element.
+   =============================================================================
+
+   THIS FILE EXISTS BECAUSE THE OTHER APPROACH SHIPPED BLANK SECTIONS TWICE.
+
+   The pattern everyone reaches for is: give the element a hidden initial state,
+   then animate it to visible when it scrolls into view. It has one failure mode
+   and that failure mode is catastrophic — if the thing meant to un-hide it does
+   not run, for ANY reason, the content is gone. Not degraded, not unanimated.
+   Gone. And it is gone in a way that looks like broken images or an empty
+   section rather than like a stalled animation, so nobody reads it as a motion
+   bug.
+
+   On this codebase it happened for three unrelated reasons in a row: a reveal
+   with no fail-safe for an observer that never fired; clip-path frames that
+   were invalid CSS so the browser discarded every one of them; and a play
+   signal withheld behind an entrance gate. Each fix was correct. The sections
+   were still blank, because the ARCHITECTURE made "something went wrong" and
+   "hide this content forever" the same outcome.
+
+   So the hidden state is no longer a state an element can be in. It exists only
+   inside a keyframe's `from`:
+
+     No JS?                   Content is visible.
+     Observer never fires?    Content is visible.
+     Class never added?       Content is visible.
+     Entrance gate stuck?     Content is visible.
+     Animation unsupported?   Content is visible.
+     Keyframe value invalid?  Content is visible.
+
+   The worst outcome available is "the animation did not play", which is what a
+   degraded animation is supposed to look like. There is no path through this
+   file that ends in invisible content.
+
+   `both` fill mode is what lets an element start visible and still animate from
+   a hidden pose: the moment the class lands, the animation owns the property
+   and holds `from` for frame one. Nothing is pre-hidden.
+
+   EVERY BASE CLASS BELOW IS DELIBERATELY EMPTY. Do not add a hidden state to
+   one, however tempting — their emptiness IS the guarantee.
+   ========================================================================== */
+
+@layer components {
+  .reveal-clip,
+  .reveal-fade,
+  .reveal-line-x,
+  .reveal-line-y,
+  .reveal-word {
+  }
+
+  /* ---- clip wipe: photographs and panels ---- */
+
+  .reveal-clip.is-revealed {
+    animation: reveal-clip-in 1.15s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: var(--reveal-delay, 0s);
+  }
+
+  [dir="rtl"] .reveal-clip.is-revealed {
+    animation-name: reveal-clip-in-rtl;
+  }
+
+  @keyframes reveal-clip-in {
+    from {
+      clip-path: inset(0% 100% 0% 0%);
+    }
+    to {
+      clip-path: inset(0% 0% 0% 0%);
+    }
+  }
+
+  @keyframes reveal-clip-in-rtl {
+    from {
+      clip-path: inset(0% 0% 0% 100%);
+    }
+    to {
+      clip-path: inset(0% 0% 0% 0%);
+    }
+  }
+
+  /* ---- fade + lift: the general-purpose block reveal ---- */
+
+  .reveal-fade.is-revealed {
+    animation: reveal-fade-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: var(--reveal-delay, 0s);
+  }
+
+  @keyframes reveal-fade-in {
+    from {
+      opacity: 0;
+      transform: translate3d(var(--reveal-x, 0), var(--reveal-y, 40px), 0)
+        scale(var(--reveal-scale, 1));
+      filter: blur(var(--reveal-blur, 0px));
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0) scale(1);
+      filter: blur(0px);
+    }
+  }
+
+  /* ---- word mask: the site's heading entrance ----
+     The word sits in an overflow-hidden box and slides up from below its own
+     baseline. `--reveal-i` is the word's index, so the stagger is arithmetic
+     rather than a per-element delay written by JS. */
+
+  .reveal-word.is-revealed > span {
+    animation: reveal-word-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(var(--reveal-delay, 0s) + var(--reveal-i, 0) * 0.055s);
+  }
+
+  @keyframes reveal-word-in {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 115%, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  /* ---- drawn rules ---- */
+
+  .reveal-line-x.is-revealed {
+    animation: reveal-line-x-in 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: var(--reveal-delay, 0s);
+    transform-origin: left center;
+  }
+
+  [dir="rtl"] .reveal-line-x.is-revealed {
+    transform-origin: right center;
+  }
+
+  @keyframes reveal-line-x-in {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  .reveal-line-y.is-revealed {
+    animation: reveal-line-y-in 1.1s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: var(--reveal-delay, 0s);
+    transform-origin: top center;
+  }
+
+  @keyframes reveal-line-y-in {
+    from {
+      transform: scaleY(0);
+    }
+    to {
+      transform: scaleY(1);
+    }
+  }
+
+  /* Reduced motion keeps the content and drops the movement. Note this turns
+     the animation OFF rather than substituting a static hidden pose — same
+     principle as everything above. */
+  @media (prefers-reduced-motion: reduce) {
+    .reveal-clip.is-revealed,
+    .reveal-fade.is-revealed,
+    .reveal-line-x.is-revealed,
+    .reveal-line-y.is-revealed,
+    .reveal-word.is-revealed > span {
+      animation: none;
+    }
+  }
+}

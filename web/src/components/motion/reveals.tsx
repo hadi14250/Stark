@@ -1,55 +1,24 @@
 "use client";
 
-import { motion } from "framer-motion";
 import type { CSSProperties, ReactNode } from "react";
-import { ease } from "@/styles/tokens";
-import { useMotionConfig } from "@/components/motion/useMotionConfig";
-import { useRevealPlay } from "@/components/motion/useRevealPlay";
+import { useRevealOnce } from "./useRevealOnce";
 
 /**
- * Element-specific scroll reveals that the shared <Reveal> (up/left/right/scale)
- * doesn't cover — the handoff's `clip`, `draw`, and `drawy` variants. All three
- * resolve to their final visible state under reduced motion, and mirror their
- * origin for RTL.
+ * Element-specific scroll reveals: the clip wipe and the two drawn rules.
  *
- * Timings match the handoff's `.dc.html` (clip 1.5s, draw 1s, drawy 1.1s),
- * easing `cubic-bezier(.22,.7,.2,1)` ≈ our `ease.line`/`ease.zoom`.
+ * ALL OF THESE RENDER PLAIN DIVS THAT ARE VISIBLE ON THEIR OWN. The only thing
+ * scrolling does is add a class, and the class only turns an animation on — the
+ * hidden pose lives inside a keyframe's `from` and nowhere else. See reveal.css
+ * for the full argument; the short version is that this component wraps the
+ * site's photographs, and the previous Framer-driven version left them clipped
+ * to zero width whenever anything stopped the animation from completing. That
+ * happened twice, for two unrelated reasons, and both times it read as broken
+ * images rather than as a stalled animation.
  *
- * ALL THREE GET THEIR PLAY SIGNAL FROM `useRevealPlay`, which is not optional
- * decoration. Each of these holds an initial state until told to animate, and
- * a bare `whileInView` has no answer for an observer that never fires — the
- * element simply keeps that initial state forever. These three shipped without
- * it for months without anyone noticing, because none of them was used; the
- * first `ClipReveal` put on a page rendered a grid of photographs clipped to
- * zero width, which reads as broken images rather than as a stalled animation.
- * See useRevealPlay.ts.
+ * RTL and reduced motion are both handled in CSS (`[dir="rtl"]` and a media
+ * query) rather than by branching in JS, so they cannot disagree with what is
+ * rendered and there is no second code path to keep in sync.
  */
-
-const EASE = [...ease.zoom] as [number, number, number, number];
-
-/**
- * EVERY VALUE IN THESE IS A PERCENTAGE, INCLUDING THE ZEROES, and that is not
- * a style preference — it is the fix for a bug that shipped three sections of
- * blank space.
- *
- * The previous pair was `inset(0 100% 0 0)` -> `inset(0 0 0 0)`. Framer
- * animates a string property like clip-path by pulling the numbers out and
- * rebuilding the string from a TEMPLATE taken from the animate target. That
- * target had no `%` in it anywhere, so every intermediate frame came out as
- * `inset(0 47 0 0)` — a bare number where CSS requires a length. The browser
- * rejects an invalid declaration and keeps the last valid one, which was the
- * fully-clipped initial state. So the animation ran perfectly, at 60fps, and
- * painted nothing but garbage the browser threw away, and the photographs
- * stayed clipped to zero width forever.
- *
- * It survived a fail-safe, a green test suite and an SSR check because none of
- * those look at rendered pixels: the rescue fired correctly, framer started
- * correctly, the markup and the image URLs were all perfect. `reveals.test.tsx`
- * now asserts the unit rule directly, since that is the actual invariant.
- */
-const CLIP_OPEN = "inset(0% 0% 0% 0%)";
-const CLIP_FROM_START = "inset(0% 100% 0% 0%)";
-const CLIP_FROM_END = "inset(0% 0% 0% 100%)";
 
 /** `clip` — the element "grows" in from its trailing edge. */
 export function ClipReveal({
@@ -63,35 +32,20 @@ export function ClipReveal({
   style?: CSSProperties;
   delay?: number;
 }) {
-  const { dir, reduce } = useMotionConfig();
-  // LTR grows left→right (reveal from the right edge); RTL mirrors.
-  const from = dir === -1 ? CLIP_FROM_END : CLIP_FROM_START;
-  const { ref, play } = useRevealPlay({ clipPath: CLIP_OPEN });
-
-  if (reduce) {
-    return (
-      <div className={className} style={style}>
-        {children}
-      </div>
-    );
-  }
+  const ref = useRevealOnce<HTMLDivElement>();
 
   return (
-    <motion.div
+    <div
       ref={ref}
-      className={className}
-      style={style}
-      initial={{ clipPath: from }}
-      {...play}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 1.5, ease: EASE, delay }}
+      className={`reveal-clip ${className ?? ""}`}
+      style={{ ...style, ["--reveal-delay" as string]: `${delay}s` }}
     >
       {children}
-    </motion.div>
+    </div>
   );
 }
 
-/** `draw` — a horizontal divider/line scales in from its start edge. */
+/** `draw` — a horizontal divider scales in from its start edge. */
 export function DrawLine({
   className,
   style,
@@ -101,24 +55,14 @@ export function DrawLine({
   style?: CSSProperties;
   delay?: number;
 }) {
-  const { dir, reduce } = useMotionConfig();
-  const origin = dir === -1 ? "right center" : "left center";
-  const { ref, play } = useRevealPlay({ scaleX: 1 });
-
-  if (reduce) {
-    return <div className={className} style={style} aria-hidden />;
-  }
+  const ref = useRevealOnce<HTMLDivElement>();
 
   return (
-    <motion.div
+    <div
       ref={ref}
       aria-hidden
-      className={className}
-      style={{ ...style, transformOrigin: origin }}
-      initial={{ scaleX: 0 }}
-      {...play}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 1, ease: EASE, delay }}
+      className={`reveal-line-x ${className ?? ""}`}
+      style={{ ...style, ["--reveal-delay" as string]: `${delay}s` }}
     />
   );
 }
@@ -133,23 +77,14 @@ export function DrawLineY({
   style?: CSSProperties;
   delay?: number;
 }) {
-  const { reduce } = useMotionConfig();
-  const { ref, play } = useRevealPlay({ scaleY: 1 });
-
-  if (reduce) {
-    return <div className={className} style={style} aria-hidden />;
-  }
+  const ref = useRevealOnce<HTMLDivElement>();
 
   return (
-    <motion.div
+    <div
       ref={ref}
       aria-hidden
-      className={className}
-      style={{ ...style, transformOrigin: "top center" }}
-      initial={{ scaleY: 0 }}
-      {...play}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 1.1, ease: EASE, delay }}
+      className={`reveal-line-y ${className ?? ""}`}
+      style={{ ...style, ["--reveal-delay" as string]: `${delay}s` }}
     />
   );
 }

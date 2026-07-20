@@ -1,38 +1,36 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { type CSSProperties, type ReactNode } from "react";
-import { ease } from "@/styles/tokens";
-import { useMotionConfig } from "./useMotionConfig";
-import { useRevealPlay } from "./useRevealPlay";
+import { useRevealOnce } from "./useRevealOnce";
 
 /**
  * Type that rises out of a mask, word by word.
  *
  * This is the site's default heading entrance, applied inside SectionHeader so
  * EVERY section gets it from one edit rather than nine. The complaint it
- * answers: with only whole-block <Reveal> fades, a long page reads as static —
- * a block that translates 40px and fades is the least legible kind of motion
- * there is, because nothing inside it moves relative to anything else. Words
- * arriving in sequence is motion you can actually SEE, and it costs nothing:
- * same tokens, same easing, no new dependency.
+ * answers: with only whole-block fades, a long page reads as static — a block
+ * that translates 40px and fades is the least legible kind of motion there is,
+ * because nothing inside it moves relative to anything else. Words arriving in
+ * sequence is motion you can actually SEE.
  *
  * WHY A MASK RATHER THAN A FADE: each word sits in an overflow-hidden box and
  * slides up from below its own baseline, so it appears to be revealed by the
  * page rather than to materialise on top of it. That reads as typography; a
  * staggered opacity fade reads as a loading state.
  *
- * ARABIC IS SAFE HERE. Splitting on whitespace never lands inside a word, so
- * no cursive join is broken — the thing that made letter-spacing unusable on
- * Arabic does not apply to word-level splitting. Wrapping is flex-based, so
- * word ORDER mirrors under `dir="rtl"` automatically.
+ * THE HEADING IS VISIBLE WITHOUT JS, WITHOUT AN OBSERVER, AND WITHOUT THE
+ * ANIMATION RUNNING. That matters more here than anywhere else on the site:
+ * this component renders the h1/h2 of thirteen sections across four pages, and
+ * the version it replaces held every one of them at opacity 0 until a Framer
+ * play-signal arrived. When that signal did not arrive — and it did not, for
+ * three different reasons over three rounds of fixes — the site had no
+ * headings. The stagger is now `--reveal-i` on each word plus arithmetic in
+ * CSS, so the worst case is all the words appearing at once, already readable.
  *
- * ACCESSIBILITY: the words are real text nodes in document order, so the
- * heading is read normally. Under reduced motion this returns a plain element
- * with no wrappers at all.
+ * ARABIC IS SAFE HERE. Splitting on whitespace never lands inside a word, so no
+ * cursive join is broken. Wrapping is flex-based, so word ORDER mirrors under
+ * `dir="rtl"` automatically.
  */
-
-const STAGGER = 0.055;
 
 type Tag = "h1" | "h2" | "h3" | "p" | "span";
 
@@ -58,44 +56,22 @@ export function WordsReveal({
   delay?: number;
   justify?: string;
 }) {
-  const { reduce } = useMotionConfig();
-  // "show" is a variant label rather than a target object — the stagger is
-  // driven by variants, so the parent animates to a NAME and the children
-  // inherit it. The fail-safe matters more here than anywhere: this is the
-  // site's default heading entrance, so an observer that never fires leaves
-  // every heading on the page at opacity 0.
-  const { ref, play } = useRevealPlay<HTMLHeadingElement>("show");
+  const ref = useRevealOnce<HTMLElement>({ amount: 0.4 });
   const Element = as;
-
-  if (reduce) {
-    return (
-      <Element id={id} className={className} style={style}>
-        {text}
-      </Element>
-    );
-  }
-
   const words = text.split(/\s+/).filter(Boolean);
-  const MotionElement = motion[as];
 
   return (
-    <MotionElement
-      ref={ref}
+    <Element
+      ref={ref as React.Ref<never>}
       id={id}
-      className={className}
+      className={`reveal-word ${className ?? ""}`}
       style={{
         display: "flex",
         flexWrap: "wrap",
         justifyContent: justify,
         columnGap: "0.26em",
+        ["--reveal-delay" as string]: `${delay}s`,
         ...style,
-      }}
-      initial="hidden"
-      {...play}
-      viewport={{ once: true, amount: 0.4, margin: "0px 0px -8% 0px" }}
-      variants={{
-        hidden: {},
-        show: { transition: { staggerChildren: STAGGER, delayChildren: delay } },
       }}
     >
       {words.map((word, i) => (
@@ -112,29 +88,26 @@ export function WordsReveal({
             marginBottom: "-0.16em",
           }}
         >
-          <motion.span
-            style={{ display: "inline-block", willChange: "transform" }}
-            variants={{
-              hidden: { y: "115%", opacity: 0 },
-              show: {
-                y: "0%",
-                opacity: 1,
-                transition: { duration: 0.8, ease: [...ease.zoom] },
-              },
-            }}
+          {/* The animated child. The index drives the stagger arithmetic in
+              reveal.css, so there is no per-element delay for JS to compute
+              and nothing to go stale if the words change. */}
+          <span
+            style={
+              { display: "inline-block", ["--reveal-i" as string]: i } as CSSProperties
+            }
           >
             {word}
-          </motion.span>
+          </span>
         </span>
       ))}
-    </MotionElement>
+    </Element>
   );
 }
 
 /**
  * The same entrance for a block that is not a single string — an intro
- * paragraph, a row of pills. One mask, one slide, sequenced AFTER the heading
- * it follows so a section header resolves top-to-bottom instead of at once.
+ * paragraph, a row of pills, a form field. One lift, sequenced AFTER the
+ * heading it follows so a section header resolves top-to-bottom.
  */
 export function LineReveal({
   children,
@@ -145,21 +118,20 @@ export function LineReveal({
   className?: string;
   delay?: number;
 }) {
-  const { reduce } = useMotionConfig();
-  const { ref, play } = useRevealPlay({ y: 0, opacity: 1 });
-
-  if (reduce) return <div className={className}>{children}</div>;
+  const ref = useRevealOnce<HTMLDivElement>({ amount: 0.4 });
 
   return (
-    <motion.div
+    <div
       ref={ref}
-      className={className}
-      initial={{ y: 22, opacity: 0 }}
-      {...play}
-      viewport={{ once: true, amount: 0.4, margin: "0px 0px -8% 0px" }}
-      transition={{ duration: 0.8, ease: [...ease.zoom], delay }}
+      className={`reveal-fade ${className ?? ""}`}
+      style={
+        {
+          "--reveal-delay": `${delay}s`,
+          "--reveal-y": "22px",
+        } as CSSProperties
+      }
     >
       {children}
-    </motion.div>
+    </div>
   );
 }
