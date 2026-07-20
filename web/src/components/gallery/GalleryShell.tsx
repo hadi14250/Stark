@@ -295,7 +295,22 @@ export function GalleryShell({
               definite size or `container: stage / size` never resolves and
               every cqw/cqh inside collapses. */}
           <div className="stage-viewport">
+            {/*
+              KEYED BY CATEGORY, deliberately.
+
+              Without the key, a category switch hands the same slider a
+              completely different `slides` array while it still holds an index
+              into the old one. Two things follow, and both are wrong: for one
+              render the stage resolves a project by POSITION rather than by
+              identity (project 3 of Woodworks becomes project 3 of
+              Mattresses), and the push transition then animates between two
+              projects that have nothing to do with each other.
+
+              Remounting gives the new category a fresh index seeded from
+              `activeId`, and a clean entrance instead of a nonsensical push.
+            */}
             <PushSlider
+              key={category}
               slides={slides}
               activeId={projectId}
               onActiveChange={setProjectId}

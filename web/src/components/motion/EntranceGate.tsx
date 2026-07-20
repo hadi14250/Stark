@@ -34,8 +34,13 @@ import {
  * page animates anyway. A coordination mechanism that can deadlock the entire
  * site's motion is worse than no coordination — which is exactly the class of
  * bug this file is cleaning up after.
+ *
+ * It must stay ABOVE the preloader's own HOLD_MS + LIFT_MS, or the ceiling
+ * fires first and releases the hero's entrance while the curtain is still in
+ * front of it — the exact failure the gate exists to prevent, arriving by the
+ * safety net instead of by the bug. Preloader.test.ts asserts the ordering.
  */
-const MAX_GATE_MS = 2600;
+const MAX_GATE_MS = 1900;
 
 const EntranceContext = createContext<{
   ready: boolean;

@@ -1,0 +1,274 @@
+// @vitest-environment jsdom
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
+import { renderWithIntl as render, screen, fireEvent } from "@/test/render";
+import { GalleryShell } from "./GalleryShell";
+import { byCategory, CATEGORIES } from "@/lib/gallery/projects";
+import { toSlide } from "@/lib/gallery/toSlide";
+import type { CategoryId } from "@/lib/gallery/projects";
+import type { Slide } from "@/lib/gallery/types";
+
+const here = dirname(fileURLToPath(import.meta.url));
+const sliderSrc = readFileSync(join(here, "PushSlider.tsx"), "utf8");
+
+/**
+ * THE CRASH THIS FILE EXISTS FOR.
+ *
+ * Reported as: "when I change tabs from the right side of the left side and
+ * then change tabs from the left side of the left side, the site crashes."
+ * Translated: pick a project other than the first, then switch category —
+ * "Maximum update depth exceeded", route down.
+ *
+ * The mechanism was two effects in PushSlider chasing each other. One mirrored
+ * the shell's `activeId` DOWN into the slider's internal index; the other
+ * watched the resolved slide and reported its id back UP. A category switch
+ * swaps the `slides` array while the index still points into the old one, so
+ * the reporting effect announced project N of the NEW category — a project the
+ * shell never chose — the shell echoed it back as `activeId`, the mirroring
+ * effect pulled the index the other way, and the pair oscillated with period 2
+ * until React gave up.
+ *
+ * Both categories hold exactly three projects, which is why the slider's
+ * bounds clamp never caught it: the stale index was always in range, just
+ * wrong.
+ */
+
+/** Localised on the server in the real route; these stand in for that. */
+const LABELS = {
+  panelTitle: "Projects",
+  projects: "Projects",
+  close: "Close",
+  open: "Open",
+  empty: "No projects yet",
+  startProject: "Start a project",
+};
+
+/**
+ * Real project ids (the URL assertions depend on them) with synthetic display
+ * names. Labelling a category "woodworks" and a project's subtitle "woodworks"
+ * — as the data does — makes every accessible-name query ambiguous, and the
+ * ambiguity would be the test's, not the app's.
+ */
+function fixture() {
+  // Stands in for next-intl's `t`. The real route resolves copy on the server;
+  // none of it matters here, so keys pass through as their own text.
+  const t = Object.assign((key: string) => key, { raw: () => [] });
+  const categories = CATEGORIES.map((id, ci) => ({
+    id,
+    label: `Category ${ci}`,
+    projects: byCategory(id).map((p, pi) => ({
+      id: p.id,
+      title: `Project ${ci}-${pi}`,
+      subtitle: "Sector",
+    })),
+  }));
+  const slidesByCategory = Object.fromEntries(
+    CATEGORIES.map((id) => [id, byCategory(id).map((p) => toSlide(p, t))]),
+  ) as Record<CategoryId, Slide[]>;
+  return { categories, slidesByCategory };
+}
+
+/**
+ * Click the first control with this accessible name, whatever role it carries.
+ *
+ * Both a desktop panel and a mobile strip render every project, so a name
+ * always matches more than one node — and the chrome is due to be replaced
+ * (tabs and rows may change role), so the query deliberately does not care
+ * which element type it lands on.
+ */
+function clickNamed(name: string, role: "button" | "tab") {
+  const found = screen.getAllByRole(role, { name: new RegExp(name) });
+  expect(found.length, `no ${role} named ${name}`).toBeGreaterThan(0);
+  // Each click is one interaction, so each gets a fresh settling budget.
+  writes = 0;
+  fireEvent.click(found[0]);
+}
+
+/** URL writes allowed per interaction. Settling takes one or two. */
+const BUDGET = 12;
+let writes = 0;
+
+beforeEach(() => {
+  // Framer's viewport hooks need one to exist; it never has to fire.
+  vi.stubGlobal(
+    "IntersectionObserver",
+    class {
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+      takeRecords() {
+        return [];
+      }
+      root = null;
+      rootMargin = "";
+      thresholds = [];
+    },
+  );
+  // jsdom has no matchMedia; PushSlider asks it whether hover is available.
+  vi.stubGlobal(
+    "matchMedia",
+    (query: string) =>
+      ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener() {},
+        removeListener() {},
+        addEventListener() {},
+        removeEventListener() {},
+        dispatchEvent: () => false,
+      }) as unknown as MediaQueryList,
+  );
+
+  /**
+   * A CIRCUIT BREAKER, and the reason this file can test a runaway loop at all.
+   *
+   * Left to itself the regression does not throw here — it SPINS. The two
+   * effects re-enter each other through passive-effect flushes fast enough to
+   * starve the event loop, so React never reaches the nested-update ceiling
+   * that produces "Maximum update depth exceeded" in a browser, vitest's own
+   * per-test timeout never gets a turn to fire, and the run simply hangs. A
+   * guard that hangs CI instead of failing it is not a guard.
+   *
+   * The shell writes the URL on every (category, projectId) change, so that
+   * write is a faithful proxy for "the state settled". Capping it converts an
+   * unbounded spin into an immediate, legible failure.
+   */
+  writes = 0;
+  const real = window.history.replaceState.bind(window.history);
+  vi.spyOn(window.history, "replaceState").mockImplementation((...args) => {
+    if (++writes > BUDGET) {
+      throw new Error(
+        `the shell rewrote the URL more than ${BUDGET} times for one ` +
+          `interaction — selection is oscillating between the shell and the stage`,
+      );
+    }
+    // Still perform the write: the URL is also what the assertions read.
+    real(...args);
+  });
+});
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+  vi.restoreAllMocks();
+});
+
+describe("switching category after selecting a project", () => {
+  it("does not send the shell and the stage into an update loop", () => {
+    const { categories, slidesByCategory } = fixture();
+    const woodworks = categories[0];
+    const mattresses = categories[1];
+    // Third project — the case that breaks. With the first selected the index
+    // is already 0 and the stale-index swap has nothing to go wrong with,
+    // which is why this was easy to miss by hand.
+    const third = woodworks.projects[2];
+
+    render(
+      <GalleryShell
+        categories={categories}
+        slidesByCategory={slidesByCategory}
+        initialCategory={woodworks.id}
+        initialProjectId={woodworks.projects[0].id}
+        labels={LABELS}
+      />,
+    );
+
+    // Select the third project, then cross to the other category. React throws
+    // synchronously inside the click handler when the effects oscillate, so a
+    // regression fails this test rather than merely logging.
+    clickNamed(third.title, "button");
+    expect(() => clickNamed(mattresses.label, "tab")).not.toThrow();
+
+    // …and it lands somewhere coherent: the new category's FIRST project, not
+    // whatever happened to sit at the old index.
+    const url = new URL(window.location.href);
+    expect(url.searchParams.get("c")).toBe(mattresses.id);
+    expect(url.searchParams.get("p")).toBe(mattresses.projects[0].id);
+  });
+
+  it("survives being bounced back and forth", () => {
+    // The oscillation needed two crossings to show up reliably by hand. Doing
+    // it four times with a non-first project selected each way is the shape of
+    // the original report.
+    const { categories, slidesByCategory } = fixture();
+    render(
+      <GalleryShell
+        categories={categories}
+        slidesByCategory={slidesByCategory}
+        initialCategory={categories[0].id}
+        initialProjectId={categories[0].projects[0].id}
+        labels={LABELS}
+      />,
+    );
+
+    expect(() => {
+      for (let i = 0; i < 4; i++) {
+        const c = categories[i % 2];
+        clickNamed(c.label, "tab");
+        clickNamed(c.projects[2].title, "button");
+      }
+    }).not.toThrow();
+  });
+});
+
+describe("selection travels in one direction per cause", () => {
+  it("keys the stage by category so an index never outlives its slides", () => {
+    const shell = readFileSync(join(here, "GalleryShell.tsx"), "utf8");
+    expect(shell).toMatch(/<PushSlider\s+key=\{category\}/);
+  });
+
+  it("never reports the active slide back up from an effect", () => {
+    // The upward report must be caused by a NAVIGATION, not by an observation.
+    // An effect that fires `onActiveChange` whenever the resolved slide
+    // changes will also fire when the slide changed because the parent told it
+    // to — which is the feedback edge that closed the loop.
+    const code = sliderSrc.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
+    const effects = [...code.matchAll(/useEffect\(([\s\S]*?)\n {2}\}(?:,|\))/g)].map(
+      (m) => m[1],
+    );
+    for (const body of effects) {
+      // CALLING it is the feedback edge. Keeping a latest-ref in sync with the
+      // prop is not — that effect only assigns.
+      expect(body).not.toMatch(/onActiveChange(?:Ref\.current)?\??\.?\(/);
+    }
+    // It still has to report SOMEHOW, or Prev/Next and autoplay silently
+    // desync the URL and the project strip from the stage.
+    expect(code).toMatch(/onActiveChangeRef\.current\?\.\(/);
+  });
+
+  it("keeps the index updater free of side effects", () => {
+    // `setIndex(cur => { …setDirState(…)… })` fires twice under StrictMode,
+    // which double-invokes updaters to surface exactly this.
+    const updaters = [...sliderSrc.matchAll(/setIndex\(\((?:i|cur)\)? =>([\s\S]*?)\n {4}\}\)/g)];
+    for (const [, body] of updaters) {
+      expect(body).not.toMatch(/setDirState|onActiveChange/);
+    }
+  });
+
+  it("does not read or write refs during render", () => {
+    // The outgoing index feeds the transition and is therefore READ during
+    // render. Held in a ref, that is a dependency React cannot see — it worked
+    // only because the ref happened to be written next to the state it shadows.
+    // It is state now, so the two batch together and the memo tracks it.
+    const code = sliderSrc.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
+    expect(code).not.toMatch(/prevIndexRef/);
+    expect(code).toMatch(/const \[prevIndex, setPrevIndex\] = useState/);
+  });
+
+  it("derives the controlled index during render rather than in an effect", () => {
+    // An effect mirroring a prop into state renders once with the stale value
+    // before correcting it — and that intermediate render is exactly what the
+    // deleted reporting effect used to broadcast. Deriving in render leaves no
+    // intermediate value for anything to observe or echo.
+    const code = sliderSrc.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
+    const effects = [...code.matchAll(/useEffect\(([\s\S]*?)\n {2}\}(?:,|\))/g)].map(
+      (m) => m[1],
+    );
+    for (const body of effects) {
+      expect(body).not.toMatch(/\bactiveId\b/);
+    }
+    expect(code).toMatch(/if \(activeId !== seenActiveId\)/);
+  });
+});

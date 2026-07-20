@@ -20,13 +20,31 @@ const VARIANT = "assemble" as const;
  * How long the mark animates before the curtain lifts. Must be kept in sync
  * with --preloader-hold in logo-loader.css, which drives the no-JS path.
  *
- * "assemble" runs a 3s cycle; the earlier 1.2s hold lifted the curtain while
- * the mark was still flying together, which reads as a glitch rather than an
- * entrance.
+ * THE CONSTRAINT IS THE MARK, NOT THE CLOCK. "assemble" is a loop: the blades
+ * fly in, lock for a beat, then fly back out. Lifting the curtain outside that
+ * locked beat shows a half-built or dispersing logo, which reads as a glitch
+ * rather than an entrance — that is what a 1.2s hold did against the designed
+ * 3s cycle, and why the hold was raised to 2100ms.
+ *
+ * 2.1s + 0.6s is too long to sit through, so the fix is to run the cycle
+ * FASTER rather than to cut into it: at LOADER_SPEED the mark is whole from
+ * ~715ms to ~1250ms, and 1100ms lands inside that window with room either
+ * side. Total entrance is 1.7s instead of 2.7s, and the logo is still fully
+ * assembled at the moment the curtain starts to move.
+ *
+ * Preloader.test.ts recomputes that window from the keyframe stops in
+ * logo-loader.css and the per-blade offsets in LogoLoader.tsx, so changing any
+ * one of the four numbers without the others fails rather than shipping a
+ * glitchy entrance.
  */
-const HOLD_MS = 2100;
+const HOLD_MS = 1100;
 /** The curtain's own lift, matching --dur-curtain. */
 const LIFT_MS = 600;
+/**
+ * Playback rate for the mark. 1 = the designer's 3s cycle; this compresses it
+ * to ~1.95s so a full assemble completes well inside the shortened hold.
+ */
+const LOADER_SPEED = 0.65;
 
 /**
  * The brand loader: the mark assembles itself, then the curtain lifts.
@@ -70,7 +88,12 @@ export function Preloader() {
 
   return (
     <div className="stark-preloader" aria-hidden>
-      <LogoLoader variant={VARIANT} size={150} color="var(--sand-500)" />
+      <LogoLoader
+        variant={VARIANT}
+        size={150}
+        color="var(--sand-500)"
+        speed={LOADER_SPEED}
+      />
     </div>
   );
 }

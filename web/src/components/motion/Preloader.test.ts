@@ -6,6 +6,8 @@ import { describe, it, expect } from "vitest";
 const here = dirname(fileURLToPath(import.meta.url));
 const tsx = readFileSync(join(here, "Preloader.tsx"), "utf8");
 const css = readFileSync(join(here, "../../styles/logo-loader.css"), "utf8");
+const loader = readFileSync(join(here, "LogoLoader.tsx"), "utf8");
+const gate = readFileSync(join(here, "EntranceGate.tsx"), "utf8");
 
 /**
  * The curtain's timing lives in TWO places on purpose, and they must agree.
@@ -29,17 +31,75 @@ function num(re: RegExp, src: string, label: string): number {
 describe("preloader timing is consistent across TS and CSS", () => {
   const holdMs = num(/const HOLD_MS = (\d+)/, tsx, "HOLD_MS");
   const liftMs = num(/const LIFT_MS = (\d+)/, tsx, "LIFT_MS");
+  const speed = num(/const LOADER_SPEED = ([\d.]+)/, tsx, "LOADER_SPEED");
   const holdCss = num(/--preloader-hold:\s*([\d.]+)s/, css, "--preloader-hold");
 
   it("the CSS hold matches HOLD_MS", () => {
     expect(holdCss * 1000).toBe(holdMs);
   });
 
-  it("holds long enough to show a full cycle of the animation", () => {
-    // Every variant in the handoff runs between 1.6s and 3.6s. A hold shorter
-    // than the chosen variant's cycle lifts the curtain mid-assembly, which
-    // reads as a glitch rather than an entrance — that is what 1200ms did.
-    expect(holdMs).toBeGreaterThanOrEqual(1800);
+  it("lifts the curtain while the mark is WHOLE", () => {
+    /**
+     * The real constraint on the hold, replacing a magic ">= 1800ms" floor.
+     *
+     * "assemble" loops: blades fly in, lock for a beat, fly back out. The
+     * curtain must lift DURING the locked beat. Shorten the hold and it lifts
+     * over a half-built mark; leave the hold alone but slow the cycle and it
+     * lifts over a dispersing one. Either reads as a glitch, and neither is
+     * visible to a typecheck.
+     *
+     * So the window is recomputed from its four actual inputs rather than
+     * assumed: the keyframe stops (CSS), the cycle length and per-part delays
+     * (LogoLoader), and the playback rate + hold (Preloader). Changing any one
+     * of them in isolation fails here.
+     */
+    const spec = loader.match(/assemble:\s*\{([\s\S]*?)\n {2}\},/)?.[1] ?? "";
+    expect(spec, "assemble spec not found in LogoLoader").not.toBe("");
+
+    // `s(3)` — the designed cycle, in seconds, before the speed multiplier.
+    const cycleS = num(/kfAssemble \$\{s\(([\d.]+)\)\}/, spec, "assemble cycle");
+    // `d(i * 0.06)` — each blade starts this much after the one before it.
+    const bladeStagger = num(/d\(i \* ([\d.]+)\)/, spec, "blade stagger");
+    // `d(0.3)` — the core waits for the blades before it grows in.
+    const coreDelay = num(/core: `kfCore [^`]*?\$\{d\(([\d.]+)\)\}/, spec, "core delay");
+
+    const bladeCount = (loader.match(/const BLADES = \[([^\]]*)\]/)?.[1] ?? "")
+      .split(",")
+      .filter((s) => s.trim()).length;
+    expect(bladeCount).toBeGreaterThan(0);
+
+    // The stops where kfAssemble holds its part in place at full opacity.
+    // Scoped to that keyframe — kfSeq sits above it in the file and also has
+    // `opacity: 1` stops, which a file-wide scan would pick up instead.
+    const kf = css.match(/@keyframes kfAssemble \{([\s\S]*?)\n {4}\}/)?.[1] ?? "";
+    expect(kf, "kfAssemble not found").not.toBe("");
+    const held = [...kf.matchAll(/(\d+)%\s*\{[^}]*opacity:\s*1;/g)].map((m) =>
+      Number(m[1]),
+    );
+    expect(held, "kfAssemble's locked stops not found").toHaveLength(2);
+    const [lockPct, releasePct] = held;
+
+    const cycleMs = cycleS * speed * 1000;
+    // The part that locks LAST decides when the mark is finally whole: whoever
+    // has the biggest start delay, blades or core.
+    const lastStartMs =
+      Math.max((bladeCount - 1) * bladeStagger, coreDelay) * speed * 1000;
+    const wholeFrom = lastStartMs + (lockPct / 100) * cycleMs;
+    // The part that starts LEAVING first ends it — blade 0, which has no delay.
+    const wholeUntil = (releasePct / 100) * cycleMs;
+
+    expect(wholeFrom).toBeLessThan(wholeUntil);
+    expect(holdMs).toBeGreaterThanOrEqual(wholeFrom);
+    expect(holdMs).toBeLessThanOrEqual(wholeUntil);
+  });
+
+  it("keeps the entrance gate's ceiling above the curtain", () => {
+    // The gate's MAX_GATE_MS is a deadlock guard, not a schedule. If it fires
+    // before the curtain has finished lifting, the hero's staged entrance
+    // plays behind an opaque panel — which is the precise bug EntranceGate was
+    // written to fix, reintroduced through its own safety net.
+    const maxGate = num(/const MAX_GATE_MS = (\d+)/, gate, "MAX_GATE_MS");
+    expect(maxGate).toBeGreaterThan(holdMs + liftMs);
   });
 
   it("unmounts only AFTER the lift has finished", () => {

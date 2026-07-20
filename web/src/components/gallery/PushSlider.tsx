@@ -95,8 +95,17 @@ export default function PushSlider({
   const [overlay, setOverlay] = useState(false);
   // -1 = navigated "Previous", 1 = "Next"
   const [dirState, setDirState] = useState(1);
-  // where we navigated FROM — feeds the WebGL shader's outgoing texture
-  const prevIndexRef = useRef(0);
+  /**
+   * Where we navigated FROM — feeds the transition's outgoing texture.
+   *
+   * STATE, NOT A REF. It is read during render (the resolved-transition memo
+   * below picks the outgoing slide with it), and a ref read during render is
+   * a value React does not know it depends on: the memo listed `safeIndex` in
+   * its deps and then quietly reached for a ref, which happened to work only
+   * because the two were always written together. As state it is tracked,
+   * batches with the index it belongs to, and the render stays pure.
+   */
+  const [prevIndex, setPrevIndex] = useState(0);
 
   /**
    * BOUNDS CLAMP. Without this, switching to a category with fewer projects
@@ -112,24 +121,42 @@ export default function PushSlider({
   if (safeIndex !== index) {
     // Safe in render: setState during render of the same component is React's
     // supported "derive state from props" escape hatch, and this is idempotent.
+    // It deliberately leaves `prevIndex` alone — a clamp is a correction, not
+    // a navigation, and there is no meaningful slide to have travelled from.
     setIndex(safeIndex);
-    prevIndexRef.current = safeIndex;
   }
 
-  /** Controlled selection: mirror `activeId` into the internal index. */
-  useEffect(() => {
-    if (activeId == null) return;
-    const target = effSlides.findIndex((s) => s.id === activeId);
-    if (target >= 0) {
-      setIndex((cur) => {
-        if (cur === target) return cur;
-        prevIndexRef.current = cur;
-        // Direction so the push travels the way the list reads.
-        setDirState(target > cur ? 1 : -1);
-        return target;
-      });
+  /**
+   * Controlled selection: mirror `activeId` into the internal index.
+   *
+   * DERIVED DURING RENDER, NOT IN AN EFFECT, and that is the crash fix.
+   *
+   * This used to be a `useEffect` watching `activeId`, paired with a second
+   * effect that reported the resolved slide back up through `onActiveChange`.
+   * The two formed a cycle. Switching category swapped the `slides` array
+   * while the index still pointed into the old one, so the reporting effect
+   * announced a project the shell had never chosen, the shell echoed it back
+   * as `activeId`, this effect pulled the index the other way, and the pair
+   * oscillated until React gave up with "Maximum update depth exceeded".
+   *
+   * Adjusting state during render is React's documented answer to "a prop
+   * changed and some state derives from it" — it re-renders immediately,
+   * before children or the browser see the stale value, so there is no
+   * intermediate frame to report and nothing for an effect to chase. The
+   * upward report now happens only in `go()`, where a real navigation is
+   * known to have occurred. Selection travels one direction per cause.
+   */
+  const [seenActiveId, setSeenActiveId] = useState(activeId);
+  if (activeId !== seenActiveId) {
+    setSeenActiveId(activeId);
+    const target = activeId == null ? -1 : effSlides.findIndex((s) => s.id === activeId);
+    if (target >= 0 && target !== safeIndex) {
+      setPrevIndex(safeIndex);
+      // Direction so the push travels the way the list reads.
+      setDirState(target > safeIndex ? 1 : -1);
+      setIndex(target);
     }
-  }, [activeId, effSlides]);
+  }
 
   const stageRef = useRef<HTMLDivElement>(null);
 
@@ -141,32 +168,54 @@ export default function PushSlider({
   const active = effSlides[safeIndex];
   const loop = m.loop;
 
-  /** Report Prev/Next back to the shell so the URL and panel follow along. */
+  /**
+   * Latest-ref for the change callback.
+   *
+   * Callers pass an inline arrow, so depending on it directly would rebuild
+   * `go` on every parent render. A ref keeps `go` stable without going stale.
+   */
+  const onActiveChangeRef = useRef(onActiveChange);
   useEffect(() => {
-    if (active) onActiveChange?.(active.id);
-    // `onActiveChange` is intentionally omitted: callers pass an inline arrow,
-    // and including it would re-fire on every parent render.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [active?.id]);
+    onActiveChangeRef.current = onActiveChange;
+  });
 
+  /**
+   * Advance the stage, and REPORT THE MOVE UPWARD FROM HERE.
+   *
+   * There used to be an effect watching `active?.id` that called
+   * `onActiveChange` whenever the resolved slide changed. That is a feedback
+   * loop with the effect above, and it took the route down: switching category
+   * while the index was non-zero swapped `slides` under a stale index, so the
+   * reporting effect pushed the WRONG project of the NEW category up to the
+   * shell, the shell fed it back as `activeId`, the mirroring effect pulled the
+   * index the other way, and the two chased each other until React threw
+   * "Maximum update depth exceeded". (Both categories hold three projects, so
+   * the bounds clamp above never intervened.)
+   *
+   * Selection now travels in exactly one direction per cause: the shell owns it
+   * and pushes down via `activeId`; the stage's own navigation — Prev/Next, the
+   * overlay's arrows, autoplay — pushes up from here, where an actual move is
+   * known to have happened. No effect reports state it merely observed.
+   */
   const go = useCallback(
     (d: number) => {
-      if (busyRef.current) return;
-      if (!loop && (safeIndex + d < 0 || safeIndex + d > count - 1)) return;
+      if (busyRef.current || count === 0) return;
+      const raw = safeIndex + d;
+      if (!loop && (raw < 0 || raw > count - 1)) return;
+      const target = loop
+        ? (raw + count) % count
+        : Math.min(count - 1, Math.max(0, raw));
+      if (target === safeIndex) return;
       busyRef.current = true;
+      setPrevIndex(safeIndex);
       setDirState(d);
-      setIndex((i) => {
-        const target = loop
-          ? (i + d + count) % count
-          : Math.min(count - 1, Math.max(0, i + d));
-        prevIndexRef.current = i;
-        return target;
-      });
+      setIndex(target);
+      onActiveChangeRef.current?.(effSlides[target].id);
       window.setTimeout(() => {
         busyRef.current = false;
       }, m.navCooldownMs);
     },
-    [count, loop, safeIndex, m.navCooldownMs]
+    [count, loop, safeIndex, m.navCooldownMs, effSlides]
   );
 
   const next = useCallback(() => go(1), [go]);
@@ -263,7 +312,7 @@ export default function PushSlider({
     const reverse = dirState === -1 && config.push.reverseOnPrev;
     // RTL mirroring lives in mirrorDir (transitions/core.ts) so it is testable.
     const gridDir: PushDir = mirrorDir(reverse ? "right" : "left", rtl);
-    const from = effSlides[prevIndexRef.current];
+    const from = effSlides[prevIndex];
     const to = effSlides[safeIndex];
     return {
       id: config.transition,
@@ -285,7 +334,7 @@ export default function PushSlider({
         };
       },
     };
-  }, [reduced, m, config.transition, config.push, dirState, effSlides, safeIndex, rtl]);
+  }, [reduced, m, config.transition, config.push, dirState, effSlides, safeIndex, prevIndex, rtl]);
 
   /* ---------------- live stage vars (Style/Colors tabs) ---------------- */
 
