@@ -1,35 +1,16 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { ease, duration } from "@/styles/tokens";
 import { useMotionConfig } from "./useMotionConfig";
-import { useEntrance } from "./EntranceGate";
+import { useRevealPlay } from "./useRevealPlay";
 
-/**
- * How long to wait before assuming the viewport observer is never going to
- * fire for an element that is ALREADY ON SCREEN.
- *
- * The rect check is the whole point. A previous version forced every Reveal
- * visible 1500ms after mount, unconditionally — which meant that 1.5 seconds
- * after page load the entire document, including everything far below the
- * fold, was already revealed. Scrolling then animated nothing, anywhere, on
- * any page. A fail-safe that fires for off-screen elements does not rescue a
- * broken observer, it replaces a working one.
- */
-const FAILSAFE_MS = 2000;
-
-/**
- * Whether the fail-safe is allowed to reveal this element.
- *
- * Exported and pure so the rule can be asserted directly — it is the whole
- * difference between "a rescue for a broken observer" and "a timer that
- * pre-reveals the entire document", and the second one silently removed every
- * scroll animation from the site.
- */
-export function isOnScreen(rect: { top: number; bottom: number }, viewportH: number): boolean {
-  return rect.top < viewportH && rect.bottom > 0;
-}
+// The gate + fail-safe that used to live here are now in useRevealPlay, shared
+// with ClipReveal/DrawLine/DrawLineY — which had gone without them and shipped
+// a section of photographs clipped to zero width. Re-exported because
+// Reveal.test.tsx pins the fail-safe's rule directly.
+export { isOnScreen } from "./useRevealPlay";
 
 type RevealProps = {
   children: ReactNode;
@@ -72,31 +53,6 @@ export function Reveal({
   as = "div",
 }: RevealProps) {
   const { dir, reduce } = useMotionConfig();
-  // While the preloader's curtain is up, hold the initial state. Otherwise the
-  // hero's staged entrance plays behind an opaque panel and is over before the
-  // curtain lifts — which is exactly what used to happen.
-  const { ready } = useEntrance();
-  const ref = useRef<HTMLElement>(null);
-  const [forced, setForced] = useState(false);
-
-  useEffect(() => {
-    if (reduce || !ready) return;
-    const t = window.setTimeout(() => {
-      const el = ref.current;
-      if (!el) return;
-      // ONLY rescue what is actually on screen. Anything below the fold keeps
-      // waiting for the observer, which is what makes scrolling feel alive.
-      if (isOnScreen(el.getBoundingClientRect(), window.innerHeight)) setForced(true);
-    }, FAILSAFE_MS);
-    return () => window.clearTimeout(t);
-  }, [reduce, ready]);
-
-  if (reduce) {
-    const Tag = as;
-    return <Tag className={className}>{children}</Tag>;
-  }
-
-  const MotionTag = motion[as];
   const shown = {
     opacity: 1,
     x: 0,
@@ -104,6 +60,14 @@ export function Reveal({
     scale: 1,
     filter: "blur(0px)",
   };
+  const { ref, play } = useRevealPlay(shown);
+
+  if (reduce) {
+    const Tag = as;
+    return <Tag className={className}>{children}</Tag>;
+  }
+
+  const MotionTag = motion[as];
 
   return (
     <MotionTag
@@ -118,11 +82,7 @@ export function Reveal({
         scale,
         filter: blur ? `blur(${blur}px)` : "blur(0px)",
       }}
-      {...(!ready
-        ? {} // gated: hold `initial` until the curtain is gone
-        : forced
-          ? { animate: shown }
-          : { whileInView: shown })}
+      {...play}
       // -12% bottom margin: fire when the element is properly into the
       // viewport rather than the instant its first pixel appears, so the
       // motion is seen rather than finishing off-screen.

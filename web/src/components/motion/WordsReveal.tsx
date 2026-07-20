@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { type CSSProperties, type ReactNode } from "react";
 import { ease } from "@/styles/tokens";
 import { useMotionConfig } from "./useMotionConfig";
-import { useEntrance } from "./EntranceGate";
+import { useRevealPlay } from "./useRevealPlay";
 
 /**
  * Type that rises out of a mask, word by word.
@@ -56,7 +56,12 @@ export function WordsReveal({
   justify?: string;
 }) {
   const { reduce } = useMotionConfig();
-  const { ready } = useEntrance();
+  // "show" is a variant label rather than a target object — the stagger is
+  // driven by variants, so the parent animates to a NAME and the children
+  // inherit it. The fail-safe matters more here than anywhere: this is the
+  // site's default heading entrance, so an observer that never fires leaves
+  // every heading on the page at opacity 0.
+  const { ref, play } = useRevealPlay<HTMLHeadingElement>("show");
   const Element = as;
 
   if (reduce) {
@@ -72,6 +77,7 @@ export function WordsReveal({
 
   return (
     <MotionElement
+      ref={ref}
       className={className}
       style={{
         display: "flex",
@@ -81,7 +87,7 @@ export function WordsReveal({
         ...style,
       }}
       initial="hidden"
-      {...(ready ? { whileInView: "show" } : {})}
+      {...play}
       viewport={{ once: true, amount: 0.4, margin: "0px 0px -8% 0px" }}
       variants={{
         hidden: {},
@@ -136,15 +142,16 @@ export function LineReveal({
   delay?: number;
 }) {
   const { reduce } = useMotionConfig();
-  const { ready } = useEntrance();
+  const { ref, play } = useRevealPlay({ y: 0, opacity: 1 });
 
   if (reduce) return <div className={className}>{children}</div>;
 
   return (
     <motion.div
+      ref={ref}
       className={className}
       initial={{ y: 22, opacity: 0 }}
-      {...(ready ? { whileInView: { y: 0, opacity: 1 } } : {})}
+      {...play}
       viewport={{ once: true, amount: 0.4, margin: "0px 0px -8% 0px" }}
       transition={{ duration: 0.8, ease: [...ease.zoom], delay }}
     >
