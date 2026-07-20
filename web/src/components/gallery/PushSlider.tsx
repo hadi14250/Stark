@@ -8,7 +8,7 @@ import {
   useState,
   type CSSProperties,
 } from "react";
-import { AnimatePresence, cubicBezier, useReducedMotion } from "framer-motion";
+import { AnimatePresence, cubicBezier } from "framer-motion";
 import { useMotionConfig } from "@/components/motion/useMotionConfig";
 import type { Slide } from "@/lib/gallery/types";
 import { themeVars } from "@/lib/gallery/theme";
@@ -293,9 +293,13 @@ export default function PushSlider({
 
   /* ---------------- resolved live transition ---------------- */
 
-  const reduced = useReducedMotion();
-  // `dir` is -1 under RTL — the same source the rest of the site's motion uses.
-  const rtl = useMotionConfig().dir === -1;
+  // Both read from useMotionConfig, which routes the reduced-motion query
+  // through useSyncExternalStore with an explicit server snapshot. Framer's own
+  // useReducedMotion() answers from matchMedia on the client's first render and
+  // broke hydration on this route for exactly the visitors who had asked for
+  // less motion — see useMotionConfig.ts.
+  const { reduce: reduced, dir } = useMotionConfig();
+  const rtl = dir === -1;
 
   const resolved = useMemo<ResolvedTransition>(() => {
     const impl = reduced

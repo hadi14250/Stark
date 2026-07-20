@@ -23,6 +23,13 @@ export default defineConfig({
     environment: "node",
     include: ["src/**/*.test.{ts,tsx}"],
     globals: false,
+    /**
+     * jsdom has no `window.matchMedia`, and `useMotionConfig` now reads the
+     * reduced-motion query through `useSyncExternalStore` — so any rendered
+     * component that consults motion config throws without this. See the file
+     * for why the shim lives in the test environment rather than in the hook.
+     */
+    setupFiles: ["src/test/setup.ts"],
     server: {
       deps: {
         /**
