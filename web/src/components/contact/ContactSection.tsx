@@ -125,7 +125,16 @@ export async function ContactSection() {
               horizontal on desktop: the card pulls back over the panel's end
               edge, and up, so the two planes interlock instead of abutting.
              --------------------------------------------------------------- */}
+          {/*
+            `data-surface="light"` is load-bearing, not decoration. The card's
+            background is a FIXED off-white on every theme, but `--color-ink`
+            is not fixed — on the dark Woodworks page it resolves to off-white
+            too, which would render the entire form as invisible text on an
+            invisible card. The attribute re-points the ink, line and field
+            roles for this subtree only; axis and density stay the page's.
+          */}
           <div
+            data-surface="light"
             className="relative z-[1] -mt-8 rounded-[var(--radius-card)] p-[clamp(24px,3.4vw,44px)] nav:mt-[clamp(56px,7vw,96px)] nav:ms-[-48px]"
             style={{
               background: "var(--white-500)",

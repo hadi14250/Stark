@@ -1,0 +1,266 @@
+/* =============================================================================
+   WOODWORKS — the dark workshop page.
+   =============================================================================
+
+   Everything here is in this file for one of two reasons, and no others:
+
+   1. IT NEEDS A DIRECTION QUERY. Gradients take a physical direction — there is
+      no `to inline-end` — so a veil that fades from the page into a photograph
+      has to be written twice, once per writing mode. That cannot be expressed
+      as an inline style, and this page is RTL on half its traffic.
+   2. IT NEEDS A KEYFRAME OR A `:has()`. Tailwind can express neither inline.
+
+   Anything that is just colour or spacing stays on the element as a token —
+   this file is deliberately small, and should stay that way.
+   ========================================================================== */
+
+/**
+ * THE LAYER DECLARATION IS LOAD-BEARING — do not delete it as boilerplate.
+ *
+ * This file is imported by the route, so it ships as its OWN stylesheet chunk
+ * rather than through globals.css. A route chunk that writes `@layer components`
+ * does not reliably land in Tailwind's components layer: the first version of
+ * this file did exactly that, and the result was a rule that half-applied —
+ * `display: flex` took effect while `padding-block` and `color` were still
+ * being won by preflight. A rule that partly works is worse than one that does
+ * not, because it looks styled.
+ *
+ * gallery-stage.css and gallery-chrome.css already solved this: re-state the
+ * full order and own a layer that sits after `utilities`. `page` is that layer
+ * for route-scoped page CSS. Every selector below is prefixed so it cannot
+ * reach outside this page's subtree.
+ */
+@layer theme, base, components, utilities, page;
+
+@layer page {
+  /* ---------- hero: the veil that carries the photograph into the page ----
+     The hero image bleeds off the inline-end edge. Without a veil its INLINE-
+     START edge lands as a hard vertical seam on near-black, which announces
+     the crop and undoes the point of bleeding it off the other side. */
+
+  .ww-veil {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to right,
+      var(--color-surface) 0%,
+      rgb(29 29 27 / 0.62) 30%,
+      rgb(29 29 27 / 0.15) 58%,
+      transparent 76%
+    );
+  }
+
+  [dir="rtl"] .ww-veil {
+    background: linear-gradient(
+      to left,
+      var(--color-surface) 0%,
+      rgb(29 29 27 / 0.62) 30%,
+      rgb(29 29 27 / 0.15) 58%,
+      transparent 76%
+    );
+  }
+
+  /* ---------- scroll cue ---------- */
+
+  .ww-cue {
+    display: block;
+    width: 1px;
+    height: 34px;
+    background: linear-gradient(
+      to bottom,
+      var(--color-accent),
+      rgb(219 202 173 / 0)
+    );
+    transform-origin: top center;
+    animation: ww-cue 2.4s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  }
+
+  @keyframes ww-cue {
+    0% {
+      transform: scaleY(0.2);
+      opacity: 0;
+    }
+    30% {
+      opacity: 1;
+    }
+    100% {
+      transform: scaleY(1);
+      opacity: 0;
+    }
+  }
+
+  /* ---------- chapters: the sticky index ----------
+     `position: sticky` needs an ancestor that scrolls WITH the page and a
+     parent tall enough to travel inside. The index sticks against the chapter
+     column's own height, which is why the index and the panels are siblings in
+     one grid rather than the index being a section of its own. */
+
+  .ww-index {
+    position: sticky;
+    top: calc(var(--header-h) + clamp(24px, 4vw, 56px));
+    align-self: start;
+  }
+
+  .ww-index-item {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding-block: 11px;
+    text-align: start;
+    background: none;
+    border: 0;
+    width: 100%;
+    color: var(--color-ink-muted);
+    transition:
+      color 320ms var(--ease-theme, ease),
+      opacity 320ms var(--ease-theme, ease);
+  }
+
+  .ww-index-item[aria-current="true"] {
+    color: var(--color-ink);
+  }
+
+  .ww-index-num {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-ink-muted);
+    transition: color 320ms var(--ease-theme, ease);
+  }
+
+  .ww-index-item[aria-current="true"] .ww-index-num {
+    color: var(--color-accent);
+  }
+
+  /* The travelling rule. One element per item; only the current one is opaque,
+     so what the eye sees is a mark moving down a list. */
+  .ww-index-rule {
+    position: absolute;
+    inset-inline-start: 0;
+    top: 12px;
+    bottom: 12px;
+    width: 2px;
+    border-radius: 1px;
+    background: var(--color-accent);
+    opacity: 0;
+    transition: opacity 320ms var(--ease-theme, ease);
+  }
+
+  .ww-index-item[aria-current="true"] .ww-index-rule {
+    opacity: 1;
+  }
+
+  /* ---------- chapters: narrow ----------
+     The index becomes a horizontal strip pinned under the header. It stays a
+     LIST, not a set of tabs: on a phone the panels are the page and the index
+     is a position readout, so it must never look like something you operate
+     to get somewhere else. */
+
+  /**
+   * VISIBILITY IS DECIDED HERE, NOT WITH `nav:hidden` ON THE ELEMENT.
+   *
+   * This layer sits after `utilities` — that is the whole reason it exists —
+   * so a `display: flex` written here BEATS Tailwind's `nav:hidden`, and the
+   * strip rendered on desktop on top of the sticky index it is supposed to
+   * replace. Anything in this file that sets `display` has to own its own
+   * breakpoint; mixing the two systems means the one that loses is whichever
+   * happens to be in the lower layer, which is not a design decision.
+   */
+  .ww-index-strip {
+    position: sticky;
+    top: var(--header-h);
+    z-index: 4;
+    display: flex;
+    gap: 18px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 12px clamp(16px, 5vw, 28px);
+    background: color-mix(in srgb, var(--color-surface) 92%, transparent);
+    backdrop-filter: blur(8px);
+    border-block-end: 1px solid var(--color-line);
+  }
+
+  .ww-index-strip::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Keep the 860px in sync with --breakpoint-nav (tokens.css). */
+  @media (min-width: 860px) {
+    .ww-index-strip {
+      display: none;
+    }
+  }
+
+  /* ---------- materials: the scroll-snap strip ----------
+     Native overflow + snap rather than a JS carousel. It is swipeable on touch,
+     trackpad-scrollable on desktop, keyboard-reachable because the cards are in
+     the tab order, and it degrades to a plain row with no script at all. */
+
+  .ww-strip {
+    display: flex;
+    gap: clamp(14px, 1.8vw, 24px);
+    overflow-x: auto;
+    scroll-snap-type: inline mandatory;
+    scroll-padding-inline-start: clamp(16px, 5vw, 40px);
+    padding-inline: clamp(16px, 5vw, 40px);
+    padding-block-end: 14px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-accent) transparent;
+  }
+
+  .ww-strip::-webkit-scrollbar {
+    height: 3px;
+  }
+
+  .ww-strip::-webkit-scrollbar-thumb {
+    background: rgb(219 202 173 / 0.5);
+    border-radius: 2px;
+  }
+
+  .ww-strip::-webkit-scrollbar-track {
+    background: var(--color-line);
+  }
+
+  .ww-card {
+    flex: 0 0 clamp(220px, 26vw, 300px);
+    scroll-snap-align: start;
+  }
+
+  .ww-card img {
+    transition: transform 900ms var(--ease-theme, ease);
+  }
+
+  @media (hover: hover) {
+    .ww-card:hover img,
+    .ww-card:focus-within img {
+      transform: scale(1.05);
+    }
+  }
+
+  /* ---------- standards table: row hover ---------- */
+
+  .ww-row {
+    transition: background-color 260ms var(--ease-theme, ease);
+  }
+
+  @media (hover: hover) {
+    .ww-row:hover {
+      background: rgb(219 202 173 / 0.06);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ww-cue {
+      animation: none;
+      opacity: 0.6;
+    }
+    .ww-index-item,
+    .ww-index-num,
+    .ww-index-rule,
+    .ww-card img,
+    .ww-row {
+      transition-duration: 0.001ms;
+    }
+  }
+}

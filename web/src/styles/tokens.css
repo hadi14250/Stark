@@ -77,6 +77,14 @@
   --green-900: #0c1a13;
   --green-panel: #16271e;
 
+  /* The graphite column stops at --neutral-500 (#1d1d1b), which is the darkest
+     value the book gives. The Woodworks page is a DARK page, so it needs one
+     step below its own surface for panels and one above it for raised cards —
+     the same reason the green column needed 700/800/900. Both keep the ramp's
+     warm cast (R > G > B) rather than drifting to a neutral black. */
+  --neutral-600: #141412;
+  --neutral-450: #2a2a27;
+
   /* Feedback. Not in the palette; tuned to sit beside it. */
   --red-error: #a4361c;
 
@@ -84,6 +92,10 @@
   --line-on-light: rgb(28 61 46 / 0.14);
   --line-on-graphite: rgb(29 29 27 / 0.16);
   --line-on-dark: rgb(219 202 173 / 0.22);
+  /* Off-white rather than sand, for the dark GRAPHITE page: a sand hairline on
+     graphite reads as a gold rule and turns every table row into decoration.
+     The dark GREEN surfaces keep --line-on-dark, where sand is on-brand. */
+  --line-on-graphite-dark: rgb(250 245 239 / 0.13);
 
   /* Form field surfaces. */
   --field-surface: #ffffff;
@@ -391,24 +403,79 @@
 /* Woodworks — the graphite theme. This REPLACES the old cream/green block of
    the same name rather than sitting beside it. */
 [data-theme="woodworks"] {
-  --color-surface: var(--white-500);
-  --color-surface-2: var(--warm-200);
-  --color-ink: var(--neutral-500);
-  --color-ink-body: var(--neutral-400);
-  --color-ink-muted: var(--neutral-400);
+  /**
+   * THE PAGE IS DARK NOW, and that is the point.
+   *
+   * It used to be off-white surfaces with graphite ink — technically the
+   * neutral column, perceptually indistinguishable from Home. The client's
+   * review said so plainly: the page read as Home with different words. Ink
+   * colour is the weakest differentiation axis there is; a visitor does not
+   * compare hex values between pages, they register light or dark in the first
+   * 200ms.
+   *
+   * So the ramp inverts. Home is light, centred and airy; Woodworks is the
+   * factory floor — near-black, left-aligned against a standing rule, dense.
+   * Nothing here is invented: --neutral is an official brand column, and the
+   * page simply sits at its dark end instead of using it as ink on white.
+   */
+  --color-surface: var(--neutral-500);
+  --color-surface-2: var(--neutral-600);
+  --color-ink: var(--white-500);
+  --color-ink-body: var(--warm-300);
+  --color-ink-muted: var(--neutral-200);
   --color-accent: var(--sand-500);
   --color-accent-2: var(--sand-400);
-  --color-interactive: var(--neutral-500);
-  /* --neutral-500 at panel scale reads as a hole punched in the page (A0c).
-     The 400 step carries the same graphite intent at a weight layouts hold. */
-  --color-panel: var(--neutral-400);
-  --color-line: var(--line-on-graphite);
-  --color-field-surface: var(--field-surface);
-  --color-field-border: rgb(29 29 27 / 0.22);
+  /* Sand, not off-white: on a dark page the accent is the only colour with a
+     job, so it carries every interactive affordance. 11.5:1 on surface-2. */
+  --color-interactive: var(--sand-500);
+  /* One step below the page, so a panel reads as a recess rather than a card.
+     On the light version this role had to be lightened away from neutral-500
+     because a near-black panel punched a hole in the page — inverted, the same
+     value IS the page and the recess is what reads correctly. */
+  --color-panel: var(--neutral-600);
+  --color-line: var(--line-on-graphite-dark);
+  /* Fields go dark with the page. The one light surface on the route is the
+     contact card, which resets these via [data-surface="light"]. */
+  --color-field-surface: rgb(250 245 239 / 0.05);
+  --color-field-border: rgb(250 245 239 / 0.2);
   --align-axis: start;
   --density: 0.8;
-  --image-filter: contrast(1.12) saturate(0.92) brightness(0.98);
+  /**
+   * Timber wants grain and shadow, not brightness.
+   *
+   * The placeholder photography is bright, high-key interior stock — on a
+   * near-black page an ungraded version of it glows like a lightbox and the
+   * page stops reading as a workshop and starts reading as a dark theme with
+   * bright pictures pasted on. Pulled down hard and desaturated so photographs
+   * sit IN the page. Contrast is raised to buy back the definition brightness
+   * takes away, which is what keeps grain and machining marks legible.
+   */
+  --image-filter: contrast(1.16) saturate(0.82) brightness(0.68);
   --ease-theme: var(--ease-zoom);
+}
+
+/**
+ * A LIGHT ISLAND ON A DARK PAGE.
+ *
+ * The contact form sits on a raised off-white card, on every theme, because
+ * that card is the composition's payoff. On the light themes that is free. On
+ * dark Woodworks it is a trap: `--color-ink` is off-white there, so without a
+ * reset the form would render off-white text on an off-white card — a section
+ * that is present, correct in the DOM, and completely unreadable.
+ *
+ * Scoped to the ink, surface and field roles only. Axis and density belong to
+ * the PAGE and must not be reset by a card sitting on it.
+ */
+[data-surface="light"] {
+  --color-surface: var(--white-500);
+  --color-surface-2: var(--sand-200);
+  --color-ink: var(--green-500);
+  --color-ink-body: var(--green-400);
+  --color-ink-muted: var(--green-400);
+  --color-interactive: var(--green-500);
+  --color-line: var(--line-on-light);
+  --color-field-surface: var(--field-surface);
+  --color-field-border: var(--field-border);
 }
 
 /* Mattresses — brand colours, airier. */

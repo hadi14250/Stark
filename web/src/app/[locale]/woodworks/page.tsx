@@ -5,13 +5,17 @@ import { routing, type Locale } from "@/i18n/routing";
 import { Container } from "@/components/ui/Container";
 import { Section, SectionHeader } from "@/components/ui/Section";
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import { Pill } from "@/components/ui/Pill";
-import { PageOpener } from "@/components/ui/PageOpener";
-import { CapabilityBand } from "@/components/ui/CapabilityBand";
-import { Reveal } from "@/components/motion/Reveal";
-import { MarkGlyph, MarkTexture } from "@/components/brand/geometry";
+import { MarkGlyph } from "@/components/brand/geometry";
 import { ContactSection } from "@/components/contact/ContactSection";
+import { WoodworksHero } from "@/components/woodworks/WoodworksHero";
+import { Chapters, type Chapter } from "@/components/woodworks/Chapters";
+import {
+  MaterialsStrip,
+  ServicesList,
+  ProjectsBand,
+} from "@/components/woodworks/sections";
 import { landingImages } from "@/components/landing/assets";
+import "@/styles/woodworks.css";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -38,26 +42,43 @@ type Material = { label: string; body: string };
 type Row = { stage: string; check: string };
 
 /**
- * Woodworks — the graphite theme.
+ * WOODWORKS — the dark workshop page.
  *
- * This replaces the "Element" page, a dark/tan furniture template that shared
- * nothing with the rest of the site: its own nav, its own footer, its own
- * fonts, its own palette, and copy that still named the template's own brand
- * ("Element brings extraordinary, natural wood flooring…") and listed US
- * timber species a Saudi manufacturer does not stock.
+ * WHAT THE CLIENT SAW BEFORE, and they were right about all of it: an off-white
+ * page that opened with the same component as Home, then repeated Home's
+ * Capabilities section parameter-for-parameter — same component, same order,
+ * the SAME THREE IMAGE FILES, one of them appearing three times. Its theme
+ * delta from Home was ink colour and a density multiplier, neither of which a
+ * visitor perceives. It read as Home with different words, because structurally
+ * that is what it was.
  *
- * What makes this page feel different from Home is NOT just colour. Four axes
- * move, all as Tier-3 tokens on `data-theme="woodworks"`:
- *   ink ramp  → neutral (graphite — an official brand column, not invented)
- *   axis      → start: a standing rule the copy hangs off, no centred column
- *   density   → 0.8, so sections sit tighter. A factory page should read as a
- *               spec sheet, not a brochure.
- *   image     → contrast(1.12) saturate(.92): material and grain, close-crop
+ * THE DIRECTION IS THE OPPOSITE REGISTER. Home is light, centred, airy, and
+ * sells an outcome. This is the factory floor: near-black, left-aligned against
+ * a standing rule, dense, and sells a process. The difference is legible in the
+ * first 200ms without reading a word, which is the only test that matters —
+ * nobody compares two pages side by side, they just feel whether they have
+ * arrived somewhere new.
  *
- * NO PROCESS BAND. Home has one; putting the same four-step band here and on
- * /mattresses would show a visitor the same component three times in one
- * session, which reads as laziness rather than as a system. Woodworks gets a
- * stage/check table instead — denser, more spec-sheet, on-theme.
+ * FOUR AXES MOVE, all Tier-3 tokens on `data-theme="woodworks"` (tokens.css):
+ *   surface   → the graphite ramp at its DARK end, ink inverted to off-white.
+ *               An official brand column, used as a page instead of as ink.
+ *   axis      → start. A standing rule the copy hangs off, no centred column.
+ *   density   → 0.8. A factory page reads as a spec sheet, not a brochure.
+ *   image     → contrast(1.1) saturate(.88) brightness(.82) — grain and shadow.
+ *
+ * AND THE STRUCTURE MOVES, which matters more than any of them:
+ *   hero        full-viewport, photograph bleeding off the end edge
+ *   chapters    a sticky index beside panels — a device Home does not have
+ *   materials   a horizontal scroll-snap strip — changes the page's axis
+ *   standards   the stage/check table (kept: it is unique on the site)
+ *   services    a ruled mono list, the page's one quiet block
+ *   projects    a full-bleed band with the CTA over it
+ *
+ * NO PROCESS BAND, still. Home has one; a third copy across three pages in one
+ * session reads as laziness rather than as a system.
+ *
+ * NO CAPABILITY BANDS, now. `CapabilityBand` remains Home's; this page having
+ * its own structure is the entire point of the rebuild.
  */
 export default async function WoodworksPage({
   params,
@@ -71,129 +92,65 @@ export default async function WoodworksPage({
   const materials = t.raw("materials.items") as Material[];
   const rows = t.raw("standards.rows") as Row[];
 
+  /**
+   * The chapters ARE the capabilities copy, re-presented.
+   *
+   * Deliberately not new writing. That copy was written for this page and
+   * approved; what was wrong with the section was its shape and its
+   * photographs, not its words. Rewriting approved copy to justify a structural
+   * change would have put unreviewed claims about a real factory on a live
+   * page — the one thing this project must never do.
+   */
+  const chapters: Chapter[] = caps.map((c, i) => ({
+    ...c,
+    image: landingImages.woodworks.chapters[i % landingImages.woodworks.chapters.length],
+  }));
+
   return (
-    <div data-theme="woodworks">
-      <PageOpener
-        axis="start"
-        eyebrow={<Eyebrow division="woodworks">{t("eyebrow")}</Eyebrow>}
+    <div data-theme="woodworks" style={{ background: "var(--color-surface)" }}>
+      <WoodworksHero
+        eyebrow={t("eyebrow")}
         line1={t("hero.line1")}
         line2={t("hero.line2")}
         sub={t("hero.sub")}
         meta={t.raw("hero.meta") as string[]}
-        image={landingImages.bands[0]}
+        image={landingImages.woodworks.hero}
         imageAlt={t("hero.alt")}
-        actions={
-          <>
-            <Pill variant="tan" href="/#contact">
-              {t("hero.cta")}
-            </Pill>
-            <Pill variant="forest" href="/gallery?c=woodworks">
-              {t("hero.ctaSecondary")}
-            </Pill>
-          </>
-        }
+        ctaPrimary={t("hero.cta")}
+        ctaSecondary={t("hero.ctaSecondary")}
+        scrollLabel={t("hero.scrollCue")}
       />
 
-      {/* Capabilities ------------------------------------------------- */}
-      <Section surface="surface-2">
-        <Container>
-          <SectionHeader
-            eyebrow={<Eyebrow>{t("capabilities.eyebrowLabel")}</Eyebrow>}
-            heading={t("capabilities.heading")}
-            intro={t("capabilities.sub")}
-          />
-        </Container>
-
-        <div className="mt-[clamp(40px,5vw,72px)] flex flex-col gap-[clamp(48px,6vw,88px)]">
-          {caps.map((c, i) => (
-            <CapabilityBand
-              key={c.title}
-              index={i + 1}
-              heading={c.title}
-              body={c.body}
-              meta={c.meta}
-              image={landingImages.bands[i]}
-              imageAlt={c.alt}
-              /* One pentagon on this page, on the first band. The budget is two
-                 pairs and Woodworks spends only one — the standing rule in the
-                 opener is already carrying the structure here. */
-              shape={i === 0 ? "pentagon" : "rect"}
-              flip={i % 2 === 1}
-            />
-          ))}
-        </div>
-      </Section>
-
-      {/* Services ----------------------------------------------------- */}
+      {/* Chapters ----------------------------------------------------- */}
       <Section surface="surface">
         <Container>
           <SectionHeader
-            eyebrow={<Eyebrow>{t("services.eyebrowLabel")}</Eyebrow>}
-            heading={t("services.heading")}
-            intro={t("services.sub")}
+            eyebrow={<Eyebrow>{t("chapters.eyebrowLabel")}</Eyebrow>}
+            heading={t("capabilities.heading")}
+            intro={t("capabilities.sub")}
           />
-
-          {/* gap-px over a line-coloured background draws the grid's rules
-              without a border on every cell doubling up at the seams. */}
-          <div
-            className="mt-[clamp(32px,4vw,56px)] grid gap-px overflow-hidden rounded-[var(--radius-card)] nav:grid-cols-2"
-            style={{ background: "var(--color-line)" }}
-          >
-            {services.map((s, i) => (
-              <Reveal key={s.title} delay={i * 0.06}>
-                <div
-                  className="flex h-full gap-4 p-6 nav:p-8"
-                  style={{ background: "var(--color-surface)" }}
-                >
-                  <span className="font-mono text-[11px] tabular-nums text-[color:var(--color-accent-2)]">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <div>
-                    <h3 className="font-display text-h4 font-semibold text-[color:var(--color-ink)]">
-                      {s.title}
-                    </h3>
-                    <p className="mt-2 text-body-sm leading-body text-[color:var(--color-ink-body)]">
-                      {s.body}
-                    </p>
-                  </div>
-                </div>
-              </Reveal>
-            ))}
+          <div className="mt-[clamp(40px,5vw,80px)]">
+            <Chapters chapters={chapters} />
           </div>
         </Container>
       </Section>
 
       {/* Materials ---------------------------------------------------- */}
       <Section surface="surface-2" className="overflow-hidden">
-        <MarkTexture
-          variant="mark"
-          color="var(--neutral-500)"
-          opacity={0.05}
-          size={560}
-          style={{ bottom: "-160px", insetInlineEnd: "-150px" }}
-        />
-        <Container className="relative z-[1]">
+        <Container>
           <SectionHeader
             eyebrow={<Eyebrow>{t("materials.eyebrowLabel")}</Eyebrow>}
             heading={t("materials.heading")}
             intro={t("materials.sub")}
           />
-
-          <dl className="mt-[clamp(32px,4vw,56px)] grid gap-x-10 gap-y-7 nav:grid-cols-3">
-            {materials.map((m, i) => (
-              <Reveal key={m.label} delay={(i % 3) * 0.06}>
-                <div className="border-t pt-4" style={{ borderColor: "var(--color-line)" }}>
-                  <dt className="font-display text-h4 font-semibold text-[color:var(--color-ink)]">
-                    {m.label}
-                  </dt>
-                  <dd className="mt-2 text-body-sm leading-body text-[color:var(--color-ink-body)]">
-                    {m.body}
-                  </dd>
-                </div>
-              </Reveal>
-            ))}
-          </dl>
         </Container>
+        {/* Outside the Container on purpose — the strip runs to the viewport
+            edge so that "there is more this way" needs no chevron. */}
+        <MaterialsStrip
+          items={materials}
+          images={landingImages.woodworks.materials}
+          alt={t("materials.alt")}
+        />
       </Section>
 
       {/* Standards table --------------------------------------------- */}
@@ -211,7 +168,7 @@ export default async function WoodworksPage({
           <div className="mt-[clamp(32px,4vw,56px)] overflow-x-auto">
             <table className="w-full min-w-[520px] border-collapse">
               <thead>
-                <tr style={{ borderBottom: "2px solid var(--color-ink)" }}>
+                <tr style={{ borderBottom: "1px solid var(--color-accent)" }}>
                   {[t("standards.colStage"), t("standards.colCheck")].map((h) => (
                     <th
                       key={h}
@@ -226,17 +183,21 @@ export default async function WoodworksPage({
               </thead>
               <tbody>
                 {rows.map((r) => (
-                  <tr key={r.stage} style={{ borderBottom: "1px solid var(--color-line)" }}>
+                  <tr
+                    key={r.stage}
+                    className="ww-row"
+                    style={{ borderBottom: "1px solid var(--color-line)" }}
+                  >
                     <th
                       scope="row"
-                      className="w-[38%] py-4 pe-6 text-start align-top font-display text-h4 font-semibold text-[color:var(--color-ink)]"
+                      className="w-[38%] py-4 pe-6 ps-3 text-start align-top font-display text-h4 font-semibold text-[color:var(--color-ink)]"
                     >
                       <span className="inline-flex items-center gap-2.5">
                         <MarkGlyph division="woodworks" size={20} color="var(--color-accent)" />
                         {r.stage}
                       </span>
                     </th>
-                    <td className="py-4 align-top text-body leading-body text-[color:var(--color-ink-body)]">
+                    <td className="py-4 pe-3 align-top text-body leading-body text-[color:var(--color-ink-body)]">
                       {r.check}
                     </td>
                   </tr>
@@ -247,24 +208,27 @@ export default async function WoodworksPage({
         </Container>
       </Section>
 
-      {/* Projects teaser --------------------------------------------- */}
+      {/* Services ----------------------------------------------------- */}
       <Section surface="surface-2">
         <Container>
           <SectionHeader
-            eyebrow={<Eyebrow>{t("projects.eyebrowLabel")}</Eyebrow>}
-            heading={t("projects.heading")}
-            intro={t("projects.sub")}
+            eyebrow={<Eyebrow>{t("services.eyebrowLabel")}</Eyebrow>}
+            heading={t("services.heading")}
+            intro={t("services.sub")}
           />
-          <div className="mt-8 flex" style={{ justifyContent: "var(--align-axis)" }}>
-            {/* Deep-links the gallery with Woodworks preselected. The category
-                is resolved on the SERVER from searchParams, so this lands on
-                the right tab with no flash and no spurious transition. */}
-            <Pill variant="tan" href="/gallery?c=woodworks">
-              {t("projects.cta")}
-            </Pill>
-          </div>
+          <ServicesList items={services} />
         </Container>
       </Section>
+
+      {/* Projects band ------------------------------------------------ */}
+      <ProjectsBand
+        eyebrow={<Eyebrow>{t("projects.eyebrowLabel")}</Eyebrow>}
+        heading={t("projects.heading")}
+        sub={t("projects.sub")}
+        cta={t("projects.cta")}
+        image={landingImages.woodworks.projects}
+        alt={t("projects.alt")}
+      />
 
       <ContactSection />
     </div>

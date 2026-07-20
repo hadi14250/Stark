@@ -110,6 +110,14 @@ const PAIRS: Pair[] = [
   ...inkPairs('[data-theme="woodworks"]', "woodworks"),
   ...inkPairs('[data-theme="mattresses"]', "mattresses"),
   ...inkPairs('[data-surface="dark"]', "dark"),
+  /**
+   * The light card that sits on the dark Woodworks page. Without this reset
+   * the contact form renders off-white ink on an off-white card: present,
+   * correct in the DOM, and invisible. This suite is what proves the reset
+   * actually resets — a partial one (surface but not ink, say) would look
+   * deliberate in the diff and be unreadable on screen.
+   */
+  ...inkPairs('[data-surface="light"]', "light island"),
 
   // Accent surfaces carrying text — the pill, the footer, the panel.
   {

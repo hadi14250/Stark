@@ -368,7 +368,8 @@
         "Engineered tolerances",
         "In-house finishing"
       ],
-      "alt": "Machined timber on the production line."
+      "alt": "Machined timber on the production line.",
+      "scrollCue": "Scroll"
     },
     "capabilities": {
       "eyebrowLabel": "What we run",
@@ -459,7 +460,8 @@
           "label": "Hardware",
           "body": "Specified to a cycle rating — the hinge is what fails first on a cheap job."
         }
-      ]
+      ],
+      "alt": "Timber, panel and finish samples."
     },
     "standards": {
       "eyebrowLabel": "How we work",
@@ -498,7 +500,12 @@
       "eyebrowLabel": "Selected work",
       "heading": "Delivered projects.",
       "sub": "Fit-outs, joinery packages and furniture programmes across hospitality and residential work.",
-      "cta": "View woodworks projects"
+      "cta": "View woodworks projects",
+      "alt": "A completed joinery installation."
+    },
+    "chapters": {
+      "eyebrowLabel": "On the floor",
+      "heading": "Built like a factory, finished like a workshop."
     }
   },
   "mattresses": {
