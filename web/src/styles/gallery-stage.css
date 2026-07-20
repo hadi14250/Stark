@@ -527,7 +527,27 @@
     .stage-viewport .hero {
       /* hero fills the tall top block of column 1 */
       flex: 1 1 auto;
-      min-height: 360px;
+      /**
+       * THE MIN-HEIGHT THAT USED TO LIVE HERE IS GONE — see .cell-hero below.
+       *
+       * The comment four lines above this rule spelled out the rule it broke:
+       * "no own min-height, or it would overflow the frame and clip the title".
+       * A `min-height: 360px` was added here anyway, and did exactly that. On a
+       * short stage the hero grew past its pushcard frame, the frame clipped
+       * the overflow, and the subtitle under the project name was sliced off at
+       * the card's bottom edge — while the layout below it lost the whole
+       * View details / Previous / Next row.
+       *
+       * Verified against production before touching it: the OLD chrome clipped
+       * here too, so this is pre-existing rather than a cost of the new strips.
+       * The strips took 100px of stage height, which is what made it visible.
+       *
+       * There is no replacement floor. `.cell-hero` is `flex: 1 1 auto`, so it
+       * already claims every pixel column 1 has spare — a floor could only ever
+       * fire when there was no room, which is precisely when honouring it
+       * pushes the View details / Previous / Next row off the bottom edge.
+       * Tried that first; it traded a clipped subtitle for clipped controls.
+       */
     }
   }
   .stage-viewport .hero .photo {
@@ -660,6 +680,17 @@
     }
     /* COL 1: hero (grows) — intro row (fixed share) — controls (pinned bottom) */
     .stage-viewport .cell-hero {
+      /**
+       * `flex: 1 1 auto` with `min-height: 0` is the whole sizing rule for the
+       * hero, and it always was. The cell takes every pixel column 1 has left
+       * after the intro row and the controls, and gives it back on a short
+       * stage instead of pushing the controls off the bottom.
+       *
+       * The `min-height: 360px` that used to sit on `.hero` INSIDE this frame
+       * was not a second opinion about that — it was a floor on a child of a
+       * box that had already been sized, so all it could do was overflow and
+       * get clipped. It is gone; see the note on `.hero` above.
+       */
       flex: 1 1 auto;
       min-height: 0;
     }

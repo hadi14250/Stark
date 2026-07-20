@@ -597,14 +597,13 @@
   },
   "gallery": {
     "heading": "المعرض",
+    "selectedWork": "أعمال مختارة",
+    "divisions": "الأقسام",
     "categories": {
       "woodworks": "الأعمال الخشبية",
       "mattresses": "المراتب"
     },
-    "panelTitle": "المشاريع",
     "projects": "المشاريع",
-    "close": "إغلاق اللوحة",
-    "open": "فتح اللوحة",
     "empty": "مشاريع هذا القسم قريباً.",
     "startProject": "ابدأ مشروعاً",
     "cta": "عرض التفاصيل",

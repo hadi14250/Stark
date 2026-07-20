@@ -597,14 +597,13 @@
   },
   "gallery": {
     "heading": "Gallery",
+    "selectedWork": "Selected work",
+    "divisions": "Divisions",
     "categories": {
       "woodworks": "Woodworks",
       "mattresses": "Mattresses"
     },
-    "panelTitle": "Projects",
     "projects": "Projects",
-    "close": "Close panel",
-    "open": "Open panel",
     "empty": "Projects in this division are coming soon.",
     "startProject": "Start a project",
     "cta": "View details",

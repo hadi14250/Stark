@@ -1,3 +1,6 @@
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
 import { describe, it, expect } from "vitest";
 import en from "@/messages/en.json";
 import ar from "@/messages/ar.json";
@@ -48,6 +51,49 @@ describe("gallery data model", () => {
     // be 66 unreviewed colours on the one route whose job is to look coherent.
     for (const p of PROJECTS) {
       expect(Object.keys(THEMES)).toContain(p.theme);
+    }
+  });
+
+  it("keeps every stage background inside the brand's green ramp", () => {
+    /**
+     * THE CLASH THIS CATCHES. Two of the three themes used to be warm greys
+     * (#1d1d1b, #2a2620) sitting inside green chrome, so four of six projects
+     * put a grey stage on a green route — the exact "reads as several different
+     * products" problem the whole rebuild exists to fix.
+     *
+     * `Theme` is serialised into inline styles inside the stage's container-
+     * query subtree, which has its own custom-property scope, so these have to
+     * be literals rather than `var(--green-900)`. That makes tokens.css the
+     * source and THEMES a hand-copy — and a hand-copy drifts. This is the pin.
+     */
+    const tokens = readFileSync(
+      join(dirname(fileURLToPath(import.meta.url)), "../../styles/tokens.css"),
+      "utf8",
+    );
+    const token = (name: string) => {
+      const m = tokens.match(new RegExp(`--${name}:\\s*(#[0-9a-fA-F]{6})`));
+      expect(m, `--${name} is gone from tokens.css`).not.toBeNull();
+      return m![1].toLowerCase();
+    };
+
+    expect(THEMES.forest.bg).toBe(token("green-900"));
+    expect(THEMES.moss.bg).toBe(token("green-800"));
+    expect(THEMES.pine.bg).toBe(token("green-panel"));
+
+    // And nothing anywhere in the set may be a grey — equal-ish RGB channels.
+    for (const [name, theme] of Object.entries(THEMES)) {
+      for (const [key, value] of Object.entries(theme)) {
+        const hex = /^#([0-9a-f]{6})$/i.exec(value);
+        if (!hex) continue; // rgba() overlay tints carry their own alpha
+        const [r, g, b] = [0, 2, 4].map((i) => parseInt(hex[1].slice(i, i + 2), 16));
+        // Sand and off-white are warm by design; only the DARK end must be
+        // green, which is where the greys were.
+        if (r + g + b > 330) continue;
+        expect(
+          g,
+          `${name}.${key} (${value}) is not a green — greys are what this route just removed`,
+        ).toBeGreaterThan(Math.max(r, b));
+      }
     }
   });
 

@@ -1,8 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useId, useRef, useState } from "react";
+import { motion } from "framer-motion";
+import { Link } from "@/i18n/navigation";
 import PushSlider from "./PushSlider";
 import { MarkGlyph } from "@/components/brand/geometry";
+import { useMotionConfig } from "@/components/motion/useMotionConfig";
 import type { Slide } from "@/lib/gallery/types";
 import type { CategoryId } from "@/lib/gallery/projects";
 
@@ -14,26 +17,27 @@ export type ShellCategory = {
 };
 
 /**
- * The gallery chrome: [rail][panel][stage].
+ * The gallery chrome: two labelled strips above the stage.
  *
- * Ported in spirit from the handoff's EditorShell, but rewritten rather than
- * lifted — that file was half editor (7 tabs, a preview toolbar, localStorage
- * UI persistence, a `JSX.Element` annotation that no longer compiles under
- * @types/react 19) and half chrome. The chrome is what is worth keeping, and
- * it is here. The visual language lives in gallery-chrome.css.
+ * WHAT THIS IS NOT, ANY MORE. It was an editor shell — an icon rail of
+ * unlabelled glyphs, a collapsible 300px panel, hover-delayed tooltips, and a
+ * duplicate pair of chip bars below 760px. Four controls for two decisions, and
+ * on a touch device the tooltips that explained the glyphs never appeared at
+ * all. It is now: pick a division, pick a project. Both are words. See
+ * gallery-chrome.css for the visual reasoning.
  *
- * STATE IS THREE VARIABLES, NOT ONE. The handoff had `active: TabId | null`,
- * where null meant "panel closed". Mapping TabId onto CategoryId would have
- * made "no category selected" a reachable state, and the stage has nothing to
- * render in it. So:
+ * STATE IS TWO VARIABLES, AND SELECTION ONLY EVER TRAVELS DOWN.
  *
- *   panelOpen   the collapse gesture — what `active` actually meant
  *   category    always set
  *   projectId   always set, always within the active category
  *
- * Project selection lives HERE rather than inside a tab, so it survives a
- * category switch. (The handoff's tabs unmount and lose local state — correct
- * for an editor, wrong for navigation.)
+ * (`panelOpen` is gone with the panel.) Project selection lives HERE rather
+ * than inside the stage, so it survives a category switch — and the stage is
+ * KEYED by category so an index can never outlive the slides it indexes. That
+ * key is load-bearing: without it a category switch handed the same slider a
+ * different array while it still held an index into the old one, and the
+ * resulting shell↔stage feedback loop crashed the route. GalleryShell.test.tsx
+ * pins both halves of that fix.
  */
 export function GalleryShell({
   categories,
@@ -48,26 +52,24 @@ export function GalleryShell({
   initialCategory: CategoryId;
   initialProjectId: string;
   labels: {
-    panelTitle: string;
+    /** Strip label — "Selected work". */
+    selectedWork: string;
+    /** Accessible name for the division tablist. */
+    divisions: string;
+    /** Accessible name for the project tablist. */
     projects: string;
-    close: string;
-    open: string;
     empty: string;
     startProject: string;
   };
 }) {
-  const [panelOpen, setPanelOpen] = useState(true);
   const [category, setCategory] = useState<CategoryId>(initialCategory);
   const [projectId, setProjectId] = useState(initialProjectId);
+  const { reduce } = useMotionConfig();
   const uid = useId();
+  const stageId = `${uid}-stage`;
 
   const active = categories.find((c) => c.id === category) ?? categories[0];
   const slides = slidesByCategory[category] ?? [];
-
-  /** Default the panel closed on narrow desktops, as the handoff did. */
-  useEffect(() => {
-    if (window.innerWidth < 1200) setPanelOpen(false);
-  }, []);
 
   /**
    * Reflect selection into the URL with replaceState, not pushState.
@@ -100,223 +102,232 @@ export function GalleryShell({
     return () => window.removeEventListener("popstate", onPop);
   }, [categories]);
 
-  /** Esc closes the panel. */
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setPanelOpen(false);
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, []);
-
   const selectCategory = useCallback(
     (id: CategoryId) => {
       setCategory(id);
       // Move to the new category's first project. Leaving projectId pointing
-      // at a project from the OTHER category would put the slider in a state
+      // at a project from the OTHER category would put the stage in a state
       // its bounds clamp has to rescue on the next render.
       const first = categories.find((c) => c.id === id)?.projects[0];
       if (first) setProjectId(first.id);
-      setPanelOpen(true);
     },
     [categories],
   );
 
-  /** Roving arrow-key navigation across the rail, per the tablist pattern. */
-  const railRef = useRef<HTMLDivElement>(null);
-  const onRailKey = (e: React.KeyboardEvent) => {
-    const keys = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"];
+  /**
+   * Roving arrow-key navigation, per the tablist pattern — one Tab stop per
+   * strip, arrows move within it. Ported from the deleted rail: the chrome
+   * changed, the keyboard contract did not.
+   *
+   * Both strips are horizontal, so Left/Right are the semantic keys; Up/Down
+   * are accepted too because the rail taught this page's users to use them and
+   * it costs one array entry.
+   */
+  const catsRef = useRef<HTMLDivElement>(null);
+  const projectsRef = useRef<HTMLDivElement>(null);
+
+  function rove(
+    e: React.KeyboardEvent,
+    count: number,
+    currentIndex: number,
+    onMove: (index: number) => void,
+    container: React.RefObject<HTMLDivElement | null>,
+    selector: string,
+  ) {
+    const keys = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Home", "End"];
     if (!keys.includes(e.key)) return;
     e.preventDefault();
-    const i = categories.findIndex((c) => c.id === category);
-    const fwd = e.key === "ArrowDown" || e.key === "ArrowRight";
-    const nextIdx = (i + (fwd ? 1 : -1) + categories.length) % categories.length;
-    selectCategory(categories[nextIdx].id);
-    railRef.current
-      ?.querySelectorAll<HTMLButtonElement>(".ed-railbtn")
-      [nextIdx]?.focus();
-  };
 
-  const panelId = `${uid}-panel`;
+    // In RTL the strips render end-to-start, so ArrowLeft must advance. Reading
+    // direction off the document is what keeps the keyboard matching the eye.
+    const rtl =
+      typeof document !== "undefined" && document.documentElement.dir === "rtl";
+    let next: number;
+    if (e.key === "Home") next = 0;
+    else if (e.key === "End") next = count - 1;
+    else {
+      const forwardKey =
+        e.key === "ArrowDown" || (rtl ? e.key === "ArrowLeft" : e.key === "ArrowRight");
+      next = (currentIndex + (forwardKey ? 1 : -1) + count) % count;
+    }
+
+    onMove(next);
+    container.current?.querySelectorAll<HTMLElement>(selector)[next]?.focus();
+  }
+
+  const categoryIndex = categories.findIndex((c) => c.id === category);
+  const projectIndex = active.projects.findIndex((p) => p.id === projectId);
 
   return (
-    <div className="gallery-chrome h-full">
-      <div className="shell">
-        {/* ---------- rail: the two categories ---------- */}
+    <div className="gallery-chrome">
+      {/* ---------- top strip: what this page is, and the two divisions ------ */}
+      <div className="gl-strip gl-strip--top">
+        <span className="gl-eyebrow">{labels.selectedWork}</span>
+
         <div
-          ref={railRef}
-          className="ed-rail"
+          ref={catsRef}
+          className="gl-cats"
           role="tablist"
-          aria-orientation="vertical"
-          aria-label={labels.projects}
-          onKeyDown={onRailKey}
+          aria-label={labels.divisions}
+          onKeyDown={(e) =>
+            rove(
+              e,
+              categories.length,
+              categoryIndex,
+              (i) => selectCategory(categories[i].id),
+              catsRef,
+              ".gl-cat",
+            )
+          }
         >
           {categories.map((c) => (
             <button
               key={c.id}
               type="button"
               role="tab"
-              className="ed-railbtn"
-              data-tip={c.label}
+              className="gl-cat"
               aria-selected={c.id === category}
-              aria-controls={panelId}
-              /* Roving tabIndex: one stop for the whole rail, arrows move
-                 within it. Two tabs is small, but the pattern is the same one
-                 a screen-reader user expects from any tablist. */
+              aria-controls={stageId}
               tabIndex={c.id === category ? 0 : -1}
               onClick={() => selectCategory(c.id)}
             >
-              <span className="sr-only">{c.label}</span>
-              {/* The one place a division glyph is genuinely self-explanatory:
-                  two categories, each with a fixed blade. */}
+              {/*
+                Accompanies the label, never replaces it — that confusion is
+                exactly what the deleted rail was. MarkGlyph is aria-hidden
+                internally, so the tab's accessible name is just the division.
+
+                Size 20 is the floor MIN_GLYPH enforces rather than a number
+                picked to fit: below it the blade reads as a stray mark instead
+                of the division's signature. It stays at 20 on every screen —
+                once the CTA drops out below 700px there is room for both chips
+                at full size, so nothing has to be shrunk under the floor.
+              */}
               <MarkGlyph
                 division={c.id === "woodworks" ? "woodworks" : "mattresses"}
-                size={22}
+                size={20}
                 color="currentColor"
               />
+              {c.label}
             </button>
           ))}
-
-          <div className="mt-auto">
-            <a
-              href="/#contact"
-              className="ed-railbtn"
-              data-tip={labels.startProject}
-              aria-label={labels.startProject}
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
-                <path
-                  d="M12 5v14M5 12h14"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </a>
-          </div>
-        </div>
-
-        {/* ---------- panel: the projects in the active category ---------- */}
-        <div className={`ed-panel-slot${panelOpen ? " open" : ""}`}>
-          <div className="ed-panel" id={panelId} role="tabpanel" aria-label={active.label}>
-            <div className="ed-panel-head">
-              <h2>{active.label}</h2>
-              <button
-                type="button"
-                className="ed-railbtn"
-                style={{ width: 28, height: 28 }}
-                onClick={() => setPanelOpen(false)}
-                aria-label={labels.close}
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
-                  <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                </svg>
-              </button>
-            </div>
-
-            <div className="ed-panel-body">
-              <div className="ed-section">
-                <div className="ed-sec-inner">
-                  {active.projects.length === 0 ? (
-                    <p className="px-3 py-4 text-[11px]" style={{ color: "var(--ed-faint)" }}>
-                      {labels.empty}
-                    </p>
-                  ) : (
-                    /*
-                      A LIST OF ROWS THAT WRAP, not the handoff's `.ed-chip-btn`
-                      in `.ed-target-grid`. That is a fixed 3-column export
-                      picker at roughly 95px per column, which ellipsizes:
-                      "Hospitality Fit-Out" and "Hotel Bedding Programme" would
-                      both render as "Hospi…". Project names are NAVIGATION —
-                      if you cannot read them you cannot choose.
-                    */
-                    <ul>
-                      {active.projects.map((p) => (
-                        <li key={p.id}>
-                          <button
-                            type="button"
-                            className="ed-projectrow"
-                            aria-current={p.id === projectId}
-                            onClick={() => setProjectId(p.id)}
-                          >
-                            <span>
-                              {p.title}
-                              <span className="ed-projectrow-meta">{p.subtitle}</span>
-                            </span>
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
 
         {/*
-          MOBILE. The handoff hid the rail below 760px and left a gear FAB as
-          the only route to another project — correct for an editor whose
-          panel is optional, wrong for a gallery where moving between projects
-          IS the page. A horizontal strip replaces both.
+          Replaces the rail's bare "+", which navigated off the page with no
+          indication that it would. A plain anchor rather than the site Pill:
+          this is chrome inside a fixed-height strip, and the Pill's generous
+          section-CTA padding would push the strip 20px taller.
         */}
-        <div className="ed-mobilebar">
-          <div className="ed-mobilescroll" role="tablist" aria-label={labels.projects}>
-            {categories.map((c) => (
-              <button
-                key={c.id}
-                type="button"
-                role="tab"
-                className="ed-mobilechip"
-                aria-selected={c.id === category}
-                onClick={() => selectCategory(c.id)}
-              >
-                {c.label}
-              </button>
-            ))}
-          </div>
-          <div className="ed-mobilescroll">
-            {active.projects.map((p) => (
-              <button
-                key={p.id}
-                type="button"
-                className="ed-mobilechip"
-                aria-current={p.id === projectId}
-                onClick={() => setProjectId(p.id)}
-              >
-                {p.title}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="canvas">
-          {/* stage-viewport = the design's query container. It must have a
-              definite size or `container: stage / size` never resolves and
-              every cqw/cqh inside collapses. */}
-          <div className="stage-viewport">
-            {/*
-              KEYED BY CATEGORY, deliberately.
-
-              Without the key, a category switch hands the same slider a
-              completely different `slides` array while it still holds an index
-              into the old one. Two things follow, and both are wrong: for one
-              render the stage resolves a project by POSITION rather than by
-              identity (project 3 of Woodworks becomes project 3 of
-              Mattresses), and the push transition then animates between two
-              projects that have nothing to do with each other.
-
-              Remounting gives the new category a fresh index seeded from
-              `activeId`, and a clean entrance instead of a nonsensical push.
-            */}
-            <PushSlider
-              key={category}
-              slides={slides}
-              activeId={projectId}
-              onActiveChange={setProjectId}
-              emptyLabel={labels.empty}
+        <Link className="gl-cta" href="/#contact">
+          {labels.startProject}
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden>
+            <path
+              d="M5 12h14M13 6l6 6-6 6"
+              stroke="currentColor"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
-          </div>
+          </svg>
+        </Link>
+      </div>
+
+      {/* ---------- project strip: the active division's work ---------- */}
+      <div className="gl-strip gl-strip--projects">
+        <div
+          ref={projectsRef}
+          className="gl-projects"
+          role="tablist"
+          aria-label={labels.projects}
+          onKeyDown={(e) =>
+            rove(
+              e,
+              active.projects.length,
+              projectIndex,
+              (i) => setProjectId(active.projects[i].id),
+              projectsRef,
+              ".gl-project",
+            )
+          }
+        >
+          {active.projects.length === 0 ? (
+            <p className="gl-eyebrow" style={{ display: "block", padding: "18px 0" }}>
+              {labels.empty}
+            </p>
+          ) : (
+            active.projects.map((p, i) => {
+              const isActive = p.id === projectId;
+              return (
+                <button
+                  key={p.id}
+                  type="button"
+                  role="tab"
+                  className="gl-project"
+                  aria-selected={isActive}
+                  aria-controls={stageId}
+                  tabIndex={isActive ? 0 : -1}
+                  onClick={() => setProjectId(p.id)}
+                >
+                  <span className="gl-project-num">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span className="gl-project-name">{p.title}</span>
+                  <span className="gl-project-sub">{p.subtitle}</span>
+
+                  {/*
+                    ONE rule with a shared layoutId, so Framer moves the SAME
+                    element between tabs instead of crossfading two. The
+                    movement is what says "you navigated along a row" rather
+                    than "the page redrew". Keyed by category as well, because
+                    across a category switch the old and new tab rows are
+                    unrelated lists and sliding between them would animate a
+                    relationship that does not exist.
+                  */}
+                  {isActive &&
+                    (reduce ? (
+                      <span aria-hidden className="gl-project-rule" />
+                    ) : (
+                      <motion.span
+                        aria-hidden
+                        layoutId={`gl-project-rule-${category}`}
+                        className="gl-project-rule"
+                        transition={{ duration: 0.42, ease: [0.16, 1, 0.3, 1] }}
+                      />
+                    ))}
+                </button>
+              );
+            })
+          )}
+        </div>
+      </div>
+
+      {/* ---------- stage ---------- */}
+      <div className="gl-stage" id={stageId} role="tabpanel" aria-label={active.label}>
+        {/* stage-viewport = the design's query container. It must have a
+            definite size or `container: stage / size` never resolves and every
+            cqw/cqh inside collapses. */}
+        <div className="stage-viewport">
+          {/*
+            KEYED BY CATEGORY, deliberately.
+
+            Without the key, a category switch hands the same slider a
+            completely different `slides` array while it still holds an index
+            into the old one. Two things follow, and both are wrong: for one
+            render the stage resolves a project by POSITION rather than by
+            identity (project 3 of Woodworks becomes project 3 of Mattresses),
+            and the push transition then animates between two projects that
+            have nothing to do with each other.
+
+            Remounting gives the new category a fresh index seeded from
+            `activeId`, and a clean entrance instead of a nonsensical push.
+          */}
+          <PushSlider
+            key={category}
+            slides={slides}
+            activeId={projectId}
+            onActiveChange={setProjectId}
+            emptyLabel={labels.empty}
+          />
         </div>
       </div>
     </div>

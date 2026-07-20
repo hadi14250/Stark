@@ -3,7 +3,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-import { renderWithIntl as render, screen, fireEvent } from "@/test/render";
+import { renderWithIntl as render, screen, fireEvent, cleanup } from "@/test/render";
 import { GalleryShell } from "./GalleryShell";
 import { byCategory, CATEGORIES } from "@/lib/gallery/projects";
 import { toSlide } from "@/lib/gallery/toSlide";
@@ -37,10 +37,9 @@ const sliderSrc = readFileSync(join(here, "PushSlider.tsx"), "utf8");
 
 /** Localised on the server in the real route; these stand in for that. */
 const LABELS = {
-  panelTitle: "Projects",
+  selectedWork: "Selected work",
+  divisions: "Divisions",
   projects: "Projects",
-  close: "Close",
-  open: "Open",
   empty: "No projects yet",
   startProject: "Start a project",
 };
@@ -71,12 +70,13 @@ function fixture() {
 }
 
 /**
- * Click the first control with this accessible name, whatever role it carries.
+ * Click the first control with this accessible name.
  *
- * Both a desktop panel and a mobile strip render every project, so a name
- * always matches more than one node — and the chrome is due to be replaced
- * (tabs and rows may change role), so the query deliberately does not care
- * which element type it lands on.
+ * `getAllBy` rather than `getBy` is a holdover with a reason: the old chrome
+ * rendered every project twice (a desktop panel and a mobile chip bar), so a
+ * name always matched more than one node. The replacement renders each control
+ * once at every width — but a future chrome that duplicates again should fail
+ * on its own behaviour, not by making this helper throw.
  */
 function clickNamed(name: string, role: "button" | "tab") {
   const found = screen.getAllByRole(role, { name: new RegExp(name) });
@@ -151,6 +151,11 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  // Explicit, because vitest runs with `globals: false` — Testing Library's
+  // automatic cleanup only registers when it can see a global afterEach, so
+  // without this the DOM accumulates across tests and every `getAllByRole`
+  // starts matching the previous test's shell too.
+  cleanup();
   vi.unstubAllGlobals();
   vi.restoreAllMocks();
 });
@@ -178,7 +183,7 @@ describe("switching category after selecting a project", () => {
     // Select the third project, then cross to the other category. React throws
     // synchronously inside the click handler when the effects oscillate, so a
     // regression fails this test rather than merely logging.
-    clickNamed(third.title, "button");
+    clickNamed(third.title, "tab");
     expect(() => clickNamed(mattresses.label, "tab")).not.toThrow();
 
     // …and it lands somewhere coherent: the new category's FIRST project, not
@@ -207,9 +212,87 @@ describe("switching category after selecting a project", () => {
       for (let i = 0; i < 4; i++) {
         const c = categories[i % 2];
         clickNamed(c.label, "tab");
-        clickNamed(c.projects[2].title, "button");
+        clickNamed(c.projects[2].title, "tab");
       }
     }).not.toThrow();
+  });
+});
+
+describe("every control in the chrome is a word", () => {
+  /**
+   * THE CLIENT'S ACTUAL COMPLAINT, pinned so it cannot come back.
+   *
+   * The chrome this replaced navigated with two unlabelled abstract glyphs and
+   * a bare "+". The only way to learn what any of them did was to hover and
+   * wait 450ms for a tooltip — which on a touch device never appears at all, so
+   * on a phone the controls were permanently unexplained.
+   *
+   * A glyph MAY accompany a label. It may not be the label. Testing accessible
+   * names rather than "is there an svg" is what makes that distinction: an icon
+   * with a visually-hidden name would pass a DOM check and still leave a
+   * sighted user guessing.
+   */
+  function renderShell() {
+    const { categories, slidesByCategory } = fixture();
+    render(
+      <GalleryShell
+        categories={categories}
+        slidesByCategory={slidesByCategory}
+        initialCategory={categories[0].id}
+        initialProjectId={categories[0].projects[0].id}
+        labels={LABELS}
+      />,
+    );
+    return categories;
+  }
+
+  it("gives every tab a visible text label", () => {
+    const categories = renderShell();
+    for (const tab of screen.getAllByRole("tab")) {
+      expect(
+        tab.textContent?.trim(),
+        `a tab renders no visible text — it is a glyph again`,
+      ).toBeTruthy();
+    }
+    // Specifically: the divisions are named, not drawn.
+    for (const c of categories) {
+      expect(screen.getAllByRole("tab", { name: new RegExp(c.label) }).length)
+        .toBeGreaterThan(0);
+    }
+  });
+
+  it("spells out the call to action instead of drawing a plus", () => {
+    renderShell();
+    const cta = screen.getByRole("link", { name: new RegExp(LABELS.startProject) });
+    expect(cta.textContent?.trim()).toBeTruthy();
+  });
+
+  it("has no collapsible panel left to hide navigation behind", () => {
+    /**
+     * The panel could be collapsed to zero width, and DEFAULTED collapsed under
+     * 1200px — so the common desktop first paint offered no visible route to
+     * another project. Nothing in the chrome may be hideable now: both strips
+     * are always rendered.
+     */
+    // Comments stripped first: the file's own docblock names what it removed,
+    // and a guard that trips on its own explanation is a guard nobody keeps.
+    const shell = readFileSync(join(here, "GalleryShell.tsx"), "utf8")
+      .replace(/\/\*[\s\S]*?\*\//g, "")
+      .replace(/\{\/\*[\s\S]*?\*\/\}/g, "")
+      .replace(/\/\/.*$/gm, "");
+    expect(shell).not.toMatch(/panelOpen|ed-panel|ed-rail|innerWidth/);
+  });
+
+  it("keeps a roving tabindex on both strips", () => {
+    // One Tab stop per tablist, arrows move within it. Without this a keyboard
+    // user tabs through every project before reaching the stage.
+    const categories = renderShell();
+    const selected = screen
+      .getAllByRole("tab")
+      .filter((t) => t.getAttribute("tabindex") === "0");
+    // Exactly one per strip: the active division and the active project.
+    expect(selected).toHaveLength(2);
+    expect(categories.length).toBeGreaterThan(1);
   });
 });
 

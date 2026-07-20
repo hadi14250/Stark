@@ -160,7 +160,7 @@ export default function PushCard({
   };
 
   const impl = t ? t.impl : pushImpl;
-  let spec: LayerSpec = impl.card ? impl.card(ctx) : pushImpl.card!(ctx);
+  const spec: LayerSpec = impl.card ? impl.card(ctx) : pushImpl.card!(ctx);
 
   // WebGL: photo cells overlay the shader canvas (on top, z-index 5). The DOM
   // layers underneath keep the impl's OWN crossfade targets and are NOT

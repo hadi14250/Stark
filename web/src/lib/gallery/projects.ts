@@ -74,10 +74,30 @@ export interface Project {
  * look coherent — on a site being rebuilt precisely because it had three
  * palettes. Projects pick a theme; they do not invent one.
  */
-export type ThemeName = "forest" | "graphite" | "sand";
+export type ThemeName = "forest" | "moss" | "pine";
 
+/**
+ * ONE GREEN FAMILY, THREE DEPTHS — not three different worlds.
+ *
+ * These used to be `forest` (green), `graphite` (#1d1d1b) and `sand`
+ * (#2a2620). Two of the three were warm greys, so two projects in every three
+ * put a grey stage inside green chrome, on the one route whose entire job is to
+ * look coherent. The site was rebuilt precisely because it read as four
+ * different products; the gallery was quietly reproducing that in miniature.
+ *
+ * The three now walk down the brand's own green ramp — forest (--green-900),
+ * moss (--green-800), pine (--green-panel) — so a project still gets a distinct
+ * stage, but the difference is DEPTH rather than hue. Sand stays the single
+ * accent throughout and off-white the type. Nothing on the route is grey.
+ *
+ * The values are literals rather than `var(--green-900)` because `Theme` is
+ * serialised into inline styles on the stage, which is inside a container-query
+ * subtree with its own custom-property scope — the tokens are the source, these
+ * are the copy, and projects.test.ts pins the copy to the source so the two
+ * cannot drift silently.
+ */
 export const THEMES: Record<ThemeName, Theme> = {
-  /** Stark green — the default, for turnkey and mixed-scope work. */
+  /** Deepest — the default, for turnkey and mixed-scope work. */
   forest: {
     bg: "#0c1a13",
     cardBg: "#16271e",
@@ -91,32 +111,32 @@ export const THEMES: Record<ThemeName, Theme> = {
     overlayCard: "rgba(22, 39, 30, 0.62)",
     overlayAccent: "#dbcaad",
   },
-  /** The Woodworks ramp — graphite, for joinery and fit-out work. */
-  graphite: {
-    bg: "#1d1d1b",
-    cardBg: "#2a2a28",
-    cardBg2: "#232321",
-    cardDark: "#161615",
+  /** A step up the ramp — for joinery and fit-out work. */
+  moss: {
+    bg: "#11271c",
+    cardBg: "#1b3226",
+    cardBg2: "#16271e",
+    cardDark: "#0c1a13",
     accent: "#dbcaad",
     accent2: "#e2d4bd",
-    accentText: "#1d1d1b",
+    accentText: "#11271c",
     text: "#faf5ef",
-    subtext: "#bababa",
-    overlayCard: "rgba(42, 42, 40, 0.62)",
+    subtext: "#c2cdc7",
+    overlayCard: "rgba(27, 50, 38, 0.62)",
     overlayAccent: "#dbcaad",
   },
-  /** Warm and light — for mattress and residential work. */
-  sand: {
-    bg: "#2a2620",
-    cardBg: "#3a352c",
-    cardBg2: "#332e26",
-    cardDark: "#211e19",
+  /** Lightest of the three — for mattress and residential work. */
+  pine: {
+    bg: "#16271e",
+    cardBg: "#21382a",
+    cardBg2: "#1b3226",
+    cardDark: "#11271c",
     accent: "#dbcaad",
     accent2: "#ece4d5",
-    accentText: "#2a2620",
+    accentText: "#16271e",
     text: "#faf5ef",
-    subtext: "#d7dad4",
-    overlayCard: "rgba(58, 53, 44, 0.62)",
+    subtext: "#cbd6d0",
+    overlayCard: "rgba(33, 56, 42, 0.62)",
     overlayAccent: "#ece4d5",
   },
 };
@@ -137,7 +157,7 @@ export const PROJECTS: readonly Project[] = [
   {
     id: "hospitality-fit-out",
     category: "woodworks",
-    theme: "graphite",
+    theme: "moss",
     cells: {
       hero: img("8244b28836385a29.png"),
       intro: img("44e767d2df80b104.png"),
@@ -189,7 +209,7 @@ export const PROJECTS: readonly Project[] = [
   {
     id: "fitted-furniture",
     category: "woodworks",
-    theme: "sand",
+    theme: "pine",
     cells: {
       hero: img("d1c0e28eb1c679aa.png"),
       intro: img("46cb9cc7e202b440.jpg"),
@@ -241,7 +261,7 @@ export const PROJECTS: readonly Project[] = [
   {
     id: "serviced-residences",
     category: "mattresses",
-    theme: "sand",
+    theme: "pine",
     cells: {
       hero: img("9147afdc9d8c4223.png"),
       intro: img("f264f5dea2782694.jpg"),
@@ -267,7 +287,7 @@ export const PROJECTS: readonly Project[] = [
   {
     id: "retail-programme",
     category: "mattresses",
-    theme: "graphite",
+    theme: "moss",
     cells: {
       hero: img("6ef0b9569b029eeb.png"),
       intro: img("d41cceabf062f878.png"),

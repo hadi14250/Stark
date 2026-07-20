@@ -109,10 +109,9 @@ export default async function GalleryPage({
         initialCategory={category}
         initialProjectId={projectId}
         labels={{
-          panelTitle: t("panelTitle"),
+          selectedWork: t("selectedWork"),
+          divisions: t("divisions"),
           projects: t("projects"),
-          close: t("close"),
-          open: t("open"),
           empty: t("empty"),
           startProject: t("startProject"),
         }}

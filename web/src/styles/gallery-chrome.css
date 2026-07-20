@@ -1,323 +1,354 @@
 /* =============================================================================
-   GALLERY CHROME — the rail + panel around the stage.
+   GALLERY CHROME — two labelled strips above the stage.
    =============================================================================
 
-   Transcribed from the push-slitra handoff's editor.css. That file is 1243
-   lines and 176 blocks, most of it editor CONTROLS (sliders, swatches, bezier
-   editors, font pickers) for a tool Stark does not ship. What is kept is the
-   chrome's visual language, which is genuinely good and worth inheriting:
+   WHAT THIS REPLACED, AND WHY.
 
-     • separation by background SHADE, not borders. One divider weight, used
-       only between sections.
-     • ONE accent, used exclusively for active / selected / focus — never
-       decoration.
-     • 8px rhythm, 11–12px labels, tabular numerals.
+   The previous chrome was an editor shell transcribed from the push-slitra
+   handoff: a 56px icon rail on the far edge, a 300px collapsible panel, delayed
+   tooltips, and — below 760px — a pair of horizontal chip bars that duplicated
+   both. It was a good tool chrome. It was the wrong chrome for a gallery:
 
-   TWO DELIBERATE DEPARTURES FROM THE HANDOFF:
+     • The rail's two buttons were UNLABELLED abstract glyphs. The only way to
+       learn that one meant Woodworks was to hover and wait 450ms for a tooltip,
+       which on a touch device never arrives at all.
+     • A third rail button was a bare "+" that navigated off the page entirely.
+       Nothing about a plus sign says "start a project".
+     • The panel could be collapsed to nothing, and defaulted collapsed under
+       1200px — so the common desktop first paint was a stage with no visible
+       way to reach another project.
+     • The stage themes carried two GRAPHITE palettes while the chrome was
+       Stark green, so the one route whose job is to look coherent shipped a
+       grey-on-green clash.
 
-   1. THE BACKGROUNDS ARE STARK GREENS, not the tool's neutral darks. The whole
-      point of this project is that the site stopped reading as four different
-      products; shipping the gallery on #121215 would reintroduce exactly that.
+   THE REPLACEMENT IS TWO STRIPS, AND EVERY CONTROL IS A WORD.
 
-   2. INSET RINGS ONLY, never outside rings or outlines. `.ed-sec-inner` has
-      `overflow: hidden`, so an outside ring or a standard focus outline gets
-      shaved off at the container edge and the user sees half a focus
-      indicator. Every focus style here is `box-shadow: inset`.
+     [ SELECTED WORK ][ Woodworks | Mattresses ]        [ Start a project ]
+     [ 01 Hospitality Fit-Out   02 Joinery Package   03 Fitted Furniture ]
+     [                      the stage                                    ]
 
-   Scoped to `.gallery-chrome` and layered after `utilities` for the same
-   reason gallery-stage.css is — see the header there.
+   The two strips are deliberately given DIFFERENT visual mechanics even though
+   both are tablists. Categories are a segmented control (a filled active chip);
+   projects are underline tabs (a sand rule that slides). Two identical-looking
+   tab rows stacked on top of each other read as one confusing control — the
+   difference in mechanic is what makes the hierarchy legible without a label
+   explaining it.
+
+   COLOUR: ONE DARK-GREEN WORLD. Surfaces are the green ramp, type is off-white
+   at descending opacities, and there is no grey anywhere on the route. Sand
+   does exactly two jobs — the CTA and the active project's rule — so it always
+   means "act on this" or "you are looking at this".
+
+   The active CATEGORY is off-white rather than sand on purpose. A sand-filled
+   category chip sitting 40px from a sand-filled CTA makes the two read as a
+   pair of buttons of equal weight. Off-white says "you are here"; sand says
+   "do this"; they never compete.
+
+   Scoped to `.gallery-chrome` and layered after `utilities` for the same reason
+   gallery-stage.css is — see the header there.
    ========================================================================== */
 
+/* Declared after Tailwind's four layers — see gallery-stage.css (3). */
 @layer theme, base, components, utilities, gallery;
 
 @layer gallery {
   .gallery-chrome {
-    /* Re-pointed to Stark. The geometry, rhythm and motion below are the
-       handoff's; only these colours moved. */
-    --ed-rail-bg: var(--green-900);
-    --ed-panel: var(--green-800);
-    --ed-input: var(--green-panel);
-    --ed-hover: var(--green-700);
-    --ed-border: rgb(250 245 239 / 0.1);
-    --ed-text: var(--white-500);
-    --ed-dim: var(--green-200);
-    --ed-faint: var(--green-300);
-    /* The handoff's accent was #6a8dff — a periwinkle that appears nowhere in
-       the official palette and sits close to --brand-blue, which is reserved
-       for the `blue mattress` sub-brand. Using it here would give the one page
-       whose job is showing finished work a fourth design language. Sand is the
-       site's accent and reads correctly on these greens (11.1:1). */
-    --ed-accent: var(--sand-500);
-    --ed-accent-soft: rgb(219 202 173 / 0.16);
-    --ed-panel-w: 300px;
-  }
+    /* Off-white at opacity, never a grey token: a literal grey would not sit
+       in the green world and would reintroduce exactly the clash this rebuild
+       removes. */
+    --gl-bg: var(--green-900);
+    --gl-line: rgb(250 245 239 / 0.12);
+    --gl-text: var(--white-500);
+    --gl-dim: rgb(250 245 239 / 0.6);
+    --gl-faint: rgb(250 245 239 / 0.42);
+    --gl-hover: rgb(250 245 239 / 0.08);
+    --gl-accent: var(--sand-500);
 
-  /* ---------- shell: [rail][panel][canvas] ----------
-     Height comes from the parent, NOT 100svh as in the handoff: Stark's
-     gallery sits under a fixed header, so the shell must fill what is left
-     (`100svh - var(--header-h)`), not the whole viewport. */
-  .gallery-chrome .shell {
     display: flex;
+    flex-direction: column;
+    /* Height comes from the parent (`100svh - var(--header-h)`), so the strips
+       take what they need and the stage gets the remainder. */
     height: 100%;
-    background: var(--ed-rail-bg);
+    background: var(--gl-bg);
+    color: var(--gl-text);
     overflow: hidden;
   }
-  .gallery-chrome .canvas {
+
+  /* ---------- the two strips ---------- */
+
+  .gallery-chrome .gl-strip {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: clamp(10px, 2vw, 28px);
+    padding-inline: clamp(14px, 3vw, 40px);
+    background: var(--gl-bg);
+    border-bottom: 1px solid var(--gl-line);
+    /* Above the stage, so the bento's transforms never paint over the nav. */
     position: relative;
+    z-index: 3;
+  }
+
+  .gallery-chrome .gl-strip--top {
+    min-height: 54px;
+  }
+
+  .gallery-chrome .gl-strip--projects {
+    min-height: 48px;
+    /* The scroller owns the end padding so a tab can scroll flush to the edge
+       instead of stopping short of it. */
+    padding-inline-end: 0;
+  }
+
+  .gallery-chrome .gl-eyebrow {
+    flex: 0 0 auto;
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gl-faint);
+    white-space: nowrap;
+  }
+
+  /* ---------- category tabs: a segmented control ---------- */
+
+  .gallery-chrome .gl-cats {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px;
+    border-radius: 999px;
+    background: rgb(250 245 239 / 0.06);
+  }
+
+  .gallery-chrome .gl-cat {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px clamp(12px, 1.6vw, 18px);
+    border: 0;
+    border-radius: 999px;
+    background: none;
+    color: var(--gl-dim);
+    font-size: clamp(12px, 1.3vw, 13.5px);
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+    cursor: pointer;
+    transition:
+      background-color 200ms ease,
+      color 200ms ease;
+  }
+
+  .gallery-chrome .gl-cat:hover {
+    background: var(--gl-hover);
+    color: var(--gl-text);
+  }
+
+  .gallery-chrome .gl-cat[aria-selected="true"] {
+    background: var(--gl-text);
+    color: var(--green-900);
+  }
+
+  /* The glyph ACCOMPANIES the label and never replaces it — the whole reason
+     the rail was torn out. It also carries no accessible name of its own. */
+  .gallery-chrome .gl-cat svg {
+    flex: 0 0 auto;
+    opacity: 0.85;
+  }
+
+  /* ---------- the CTA ----------
+     OUTLINED, NOT FILLED, AND THAT IS THE WHOLE POINT.
+
+     The site header sits directly above this strip and already carries a solid
+     tan "Start a project" pill — at every breakpoint, roughly 45px away. A
+     second solid tan pill with identical words reads as a duplicate control,
+     and the eye cannot tell which one is the real one.
+
+     So this one states the same action in the same words at a lower volume: it
+     replaces the rail's mystery "+" (which was the requirement) without
+     competing with the header (which would have been a new problem). Below
+     700px it is dropped entirely — there the header's pill is close enough to
+     be obviously the same offer, and the strip needs the room. */
+
+  .gallery-chrome .gl-cta {
+    flex: 0 0 auto;
+    /* Pushed to the end edge; logical margin so RTL mirrors it for free. */
+    margin-inline-start: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px clamp(13px, 1.8vw, 18px);
+    border: 1px solid rgb(219 202 173 / 0.45);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--gl-accent);
+    font-size: clamp(12px, 1.3vw, 13px);
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+    text-decoration: none;
+    transition:
+      background-color 200ms ease,
+      border-color 200ms ease,
+      color 200ms ease;
+  }
+
+  .gallery-chrome .gl-cta:hover {
+    background: var(--gl-accent);
+    border-color: var(--gl-accent);
+    color: var(--green-900);
+  }
+
+  .gallery-chrome .gl-cta svg {
+    transition: transform 200ms ease;
+  }
+
+  .gallery-chrome .gl-cta:hover svg {
+    transform: translateX(2px);
+  }
+
+  [dir="rtl"] .gallery-chrome .gl-cta:hover svg {
+    transform: translateX(-2px);
+  }
+
+  /* ---------- project tabs: underline row ---------- */
+
+  .gallery-chrome .gl-projects {
+    display: flex;
+    align-items: stretch;
+    gap: clamp(16px, 3vw, 40px);
     flex: 1 1 auto;
     min-width: 0;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
+    overflow-x: auto;
+    /* Snap so a half-scrolled tab never becomes the resting state. */
+    scroll-snap-type: inline proximity;
+    scrollbar-width: none;
+    padding-inline-end: clamp(14px, 3vw, 40px);
   }
 
-  /* ---------- icon rail ---------- */
-  .gallery-chrome .ed-rail {
-    flex: 0 0 56px;
-    width: 56px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    padding: 14px 0;
-    background: var(--ed-rail-bg);
-    z-index: 5;
-  }
-  .gallery-chrome .ed-railbtn {
-    position: relative;
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--ed-dim);
-    background: none;
-    border: 0;
-    cursor: pointer;
-    transition: background-color 0.15s ease, color 0.15s ease;
-  }
-  .gallery-chrome .ed-railbtn:hover {
-    background: var(--ed-hover);
-    color: var(--ed-text);
-  }
-  .gallery-chrome .ed-railbtn[aria-selected="true"] {
-    background: var(--ed-accent-soft);
-    color: var(--ed-accent);
-  }
-  /* 2px accent edge on the rail side of the active tab */
-  .gallery-chrome .ed-railbtn[aria-selected="true"]::before {
-    content: "";
-    position: absolute;
-    inset-inline-start: -8px;
-    top: 9px;
-    bottom: 9px;
-    width: 2px;
-    border-radius: 1px;
-    background: var(--ed-accent);
-  }
-  /* delayed tooltip, on the inline-end side so it mirrors under RTL */
-  .gallery-chrome .ed-railbtn::after {
-    content: attr(data-tip);
-    position: absolute;
-    inset-inline-start: 50px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: var(--green-panel);
-    color: var(--ed-text);
-    padding: 5px 9px;
-    border-radius: 6px;
-    font-size: 11px;
-    white-space: nowrap;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.12s ease 0.45s;
-    z-index: 30;
-  }
-  .gallery-chrome .ed-railbtn:hover::after,
-  .gallery-chrome .ed-railbtn:focus-visible::after {
-    opacity: 1;
-  }
-
-  /* ---------- panel slot (the width that squeezes the canvas) ---------- */
-  .gallery-chrome .ed-panel-slot {
-    flex: 0 0 auto;
-    width: 0;
-    overflow: hidden;
-    background: var(--ed-panel);
-    transition: width 200ms ease;
-  }
-  .gallery-chrome .ed-panel-slot.open {
-    width: var(--ed-panel-w);
-  }
-
-  /* ---------- panel ---------- */
-  .gallery-chrome .ed-panel {
-    width: var(--ed-panel-w); /* fixed, so content doesn't reflow mid-slide */
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    background: var(--ed-panel);
-    color: var(--ed-text);
-    font-size: 12px;
-  }
-  .gallery-chrome .ed-panel-head {
-    flex: 0 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    padding: 14px 16px 13px;
-    border-bottom: 1px solid var(--ed-border);
-    box-shadow: 0 6px 12px -8px rgb(0 0 0 / 0.55); /* scroll shadow */
-    position: relative;
-    z-index: 2;
-  }
-  .gallery-chrome .ed-panel-head h2 {
-    font-size: 12.5px;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-  }
-  .gallery-chrome .ed-panel-body {
-    flex: 1 1 auto;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-  }
-  .gallery-chrome .ed-panel-body::-webkit-scrollbar {
-    width: 8px;
-  }
-  .gallery-chrome .ed-panel-body::-webkit-scrollbar-thumb {
-    background: rgb(250 245 239 / 0.14);
-    border-radius: 4px;
-  }
-  .gallery-chrome .ed-panel-body::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  /* INSET focus rings, always. `.ed-sec-inner` clips, so an outline or an
-     outside ring is shaved at the container edge. */
-  .gallery-chrome :focus-visible {
-    outline: none;
-    box-shadow: inset 0 0 0 2px var(--ed-accent);
-  }
-
-  .gallery-chrome .ed-section {
-    border-bottom: 1px solid var(--ed-border);
-  }
-  .gallery-chrome .ed-sec-head {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 16px;
-    color: var(--ed-dim);
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    background: none;
-    border: 0;
-  }
-  .gallery-chrome .ed-sec-inner {
-    /* Both of these are load-bearing: overflow clips the section during the
-       open/close transition, min-height:0 lets it actually shrink inside the
-       flex column. Removing either breaks the collapse. */
-    overflow: hidden;
-    min-height: 0;
-    padding: 4px 10px 12px;
-  }
-
-  /* ---------- project rows ----------
-     NOT the handoff's `.ed-chip-btn`, which ellipsizes in a fixed 3-column
-     grid at ~95px per column. Project names are NAVIGATION, so they wrap. */
-  .gallery-chrome .ed-projectrow {
-    width: 100%;
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    padding: 10px 12px;
-    border-radius: 8px;
-    text-align: start;
-    color: var(--ed-dim);
-    background: none;
-    border: 0;
-    cursor: pointer;
-    line-height: 1.4;
-    transition: background-color 0.15s ease, color 0.15s ease;
-  }
-  .gallery-chrome .ed-projectrow:hover {
-    background: var(--ed-hover);
-    color: var(--ed-text);
-  }
-  .gallery-chrome .ed-projectrow[aria-current="true"] {
-    background: var(--ed-accent-soft);
-    color: var(--ed-text);
-    box-shadow: inset 0 0 0 1px var(--ed-accent);
-  }
-  .gallery-chrome .ed-projectrow-meta {
-    display: block;
-    color: var(--ed-faint);
-    font-size: 11px;
-    margin-top: 2px;
-  }
-
-  /* ---------- mobile ----------
-     The handoff hid the rail below 760px and left a gear FAB as the only way
-     in. Correct for an editor; wrong for a gallery, where moving between
-     projects IS the page. Below 760 the rail and panel become a horizontal
-     strip above the stage instead. */
-  .gallery-chrome .ed-mobilebar {
+  .gallery-chrome .gl-projects::-webkit-scrollbar {
     display: none;
   }
-  @media (max-width: 759px) {
-    .gallery-chrome .ed-rail,
-    .gallery-chrome .ed-panel-slot {
+
+  .gallery-chrome .gl-project {
+    position: relative;
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+    display: flex;
+    align-items: baseline;
+    gap: 9px;
+    padding-block: 15px 14px;
+    border: 0;
+    background: none;
+    color: var(--gl-dim);
+    text-align: start;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: color 200ms ease;
+  }
+
+  .gallery-chrome .gl-project:hover,
+  .gallery-chrome .gl-project[aria-selected="true"] {
+    color: var(--gl-text);
+  }
+
+  .gallery-chrome .gl-project-num {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    font-variant-numeric: tabular-nums;
+    color: var(--gl-faint);
+    transition: color 200ms ease;
+  }
+
+  .gallery-chrome .gl-project[aria-selected="true"] .gl-project-num {
+    color: var(--gl-accent);
+  }
+
+  .gallery-chrome .gl-project-name {
+    font-size: clamp(13px, 1.4vw, 15px);
+    font-weight: 500;
+  }
+
+  .gallery-chrome .gl-project-sub {
+    font-size: 12px;
+    color: var(--gl-faint);
+  }
+
+  /* The rule sits ON the strip's bottom border rather than above it. */
+  .gallery-chrome .gl-project-rule {
+    position: absolute;
+    inset-inline: 0;
+    bottom: -1px;
+    height: 2px;
+    border-radius: 1px;
+    background: var(--gl-accent);
+  }
+
+  /* ---------- stage ---------- */
+
+  .gallery-chrome .gl-stage {
+    flex: 1 1 auto;
+    /* Load-bearing: without it a flex item refuses to shrink below its content
+       and `container: stage / size` inside never resolves a height. */
+    min-height: 0;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  /* ---------- focus ----------
+     Drawn INSIDE the element. The project strip is an overflow-x scroller, so
+     an outside ring on the first or last tab is shaved off at the container
+     edge and the user sees half a focus indicator. */
+  .gallery-chrome .gl-cat:focus-visible,
+  .gallery-chrome .gl-project:focus-visible,
+  .gallery-chrome .gl-cta:focus-visible {
+    outline: 2px solid var(--gl-accent);
+    outline-offset: -2px;
+    border-radius: 6px;
+  }
+
+  /* ---------- narrow ----------
+     No rail, no panel and no FAB to special-case any more: the same two strips
+     compress. The eyebrow is the only thing that goes, because it labels the
+     row rather than operating it. */
+  @media (max-width: 700px) {
+    .gallery-chrome .gl-eyebrow {
       display: none;
     }
-    .gallery-chrome .shell {
-      flex-direction: column;
+    .gallery-chrome .gl-strip {
+      padding-inline: 12px;
     }
-    .gallery-chrome .ed-mobilebar {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      padding: 10px 12px;
-      background: var(--ed-rail-bg);
-      border-bottom: 1px solid var(--ed-border);
+    .gallery-chrome .gl-strip--projects {
+      padding-inline-end: 0;
     }
-    .gallery-chrome .ed-mobilescroll {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      scrollbar-width: none;
-    }
-    .gallery-chrome .ed-mobilescroll::-webkit-scrollbar {
+    /* The header's own pill is ~45px above this and says the same thing. At
+       390px the strip needs the width more than the page needs the offer
+       twice. */
+    .gallery-chrome .gl-cta {
       display: none;
     }
-    .gallery-chrome .ed-mobilechip {
-      flex: 0 0 auto;
-      padding: 7px 14px;
-      border-radius: 999px;
-      font-size: 12px;
-      color: var(--ed-dim);
-      background: var(--ed-input);
-      border: 0;
-      white-space: nowrap;
-    }
-    .gallery-chrome .ed-mobilechip[aria-current="true"],
-    .gallery-chrome .ed-mobilechip[aria-selected="true"] {
-      background: var(--ed-accent-soft);
-      color: var(--ed-accent);
-      box-shadow: inset 0 0 0 1px var(--ed-accent);
+  }
+
+  @media (max-width: 859px) {
+    .gallery-chrome .gl-project-sub {
+      display: none;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .gallery-chrome .ed-panel-slot,
-    .gallery-chrome .ed-railbtn,
-    .gallery-chrome .ed-projectrow {
+    .gallery-chrome .gl-cat,
+    .gallery-chrome .gl-project,
+    .gallery-chrome .gl-cta,
+    .gallery-chrome .gl-cta svg {
       transition-duration: 0.001ms;
+    }
+    .gallery-chrome .gl-cta:hover {
+      transform: none;
     }
   }
 }
