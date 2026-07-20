@@ -1,0 +1,202 @@
+/* =============================================================================
+   MATTRESSES — photography-first, soft, slow.
+   =============================================================================
+
+   Same rule as woodworks.css: things live here only if they need a direction
+   query, a keyframe, or a hover/media query that cannot be an inline style.
+
+   THE LAYER DECLARATION IS LOAD-BEARING — see woodworks.css for the failure it
+   prevents (a route-imported `@layer components` block half-applies, so a rule
+   renders and is still wrong). And its mirror: this layer outranks Tailwind
+   `utilities`, so anything here that sets `display` owns its own breakpoints
+   rather than deferring to a `nav:hidden` it would defeat.
+   ========================================================================== */
+
+@layer theme, base, components, utilities, page;
+
+@layer page {
+  /* ---------- hero: the veil ----------
+     The headline sits ON the photograph, so the photograph has to be made
+     safe for type — and it is a client-replaceable placeholder, so "this
+     particular image happens to be dark at the bottom" is not a plan. An ivory
+     wash rising from the bottom third gives the copy a guaranteed field
+     regardless of what replaces the picture. It rises from the BOTTOM because
+     the copy sits low; a full-frame scrim would flatten the image everywhere
+     and lose the reason for using a photograph at all. */
+
+  .mt-hero-veil {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      var(--color-surface) 0%,
+      color-mix(in srgb, var(--color-surface) 94%, transparent) 30%,
+      color-mix(in srgb, var(--color-surface) 72%, transparent) 52%,
+      color-mix(in srgb, var(--color-surface) 28%, transparent) 76%,
+      transparent 96%
+    );
+  }
+
+  /* ---------- brand duet ----------
+     Two full-height panels. On desktop the hovered one takes a little more of
+     the row — the same flex-grow mechanic the Divisions index uses on Home,
+     turned on its side and given a brand tint, so it reads as a sibling idea
+     rather than a repeat. */
+
+  .mt-duet {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(16px, 2vw, 28px);
+  }
+
+  .mt-panel {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    border-radius: var(--radius-card);
+    min-height: clamp(380px, 62vh, 560px);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: clamp(24px, 3vw, 44px);
+    flex: 1 1 0;
+    transition: flex-grow 700ms var(--ease-cushion);
+  }
+
+  @media (min-width: 860px) {
+    .mt-duet {
+      flex-direction: row;
+      min-height: clamp(460px, 74vh, 680px);
+    }
+    /* Hover expands the panel you are looking at and yields from the other.
+       `:has()` on the row rather than a class on the panel, so the SIBLING
+       reacts too — a panel that grows while its neighbour stays put reads as
+       the layout breaking rather than as a response. */
+    .mt-duet:has(.mt-panel:hover) .mt-panel,
+    .mt-duet:has(.mt-panel:focus-within) .mt-panel {
+      flex-grow: 0.82;
+    }
+    .mt-duet .mt-panel:hover,
+    .mt-duet .mt-panel:focus-within {
+      flex-grow: 1.36;
+    }
+  }
+
+  /**
+   * TWO LAYERS, NOT ONE, AND THE ORDER MATTERS.
+   *
+   * The first attempt was a single brand-coloured gradient at 88% over the
+   * photograph. Both brand colours are mid-tones, so at that weight they stop
+   * being a wash and become a fill — the panels came out as a flat blue
+   * rectangle and a flat purple one with a photograph faintly detectable
+   * underneath, which is neither photography-first nor recognisably STARK.
+   *
+   * So contrast and identity are separated. A neutral near-black gradient does
+   * the legibility work, sized to the copy at the bottom; the brand tint sits
+   * over it at a weight where it colours the panel without hiding it. The
+   * photograph survives, the type is safely on the dark end, and blue/purple
+   * read as a family the way a duotone does rather than as paint.
+   */
+  .mt-panel-scrim {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(
+      to top,
+      rgb(12 26 19 / 0.94) 0%,
+      rgb(12 26 19 / 0.82) 34%,
+      rgb(12 26 19 / 0.55) 58%,
+      rgb(12 26 19 / 0.26) 82%,
+      rgb(12 26 19 / 0.12) 100%
+    );
+  }
+
+  /* `--color-hero-bg` is what [data-brand] re-points, so this reads the brand
+     without either brand's name appearing in this file. */
+  .mt-panel-tint {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    mix-blend-mode: color;
+    opacity: 0.55;
+    background: linear-gradient(
+      to top,
+      var(--color-hero-bg) 0%,
+      color-mix(in srgb, var(--color-hero-bg) 55%, transparent) 60%,
+      transparent 100%
+    );
+  }
+
+  .mt-panel img {
+    transition: transform 1200ms var(--ease-cushion);
+  }
+
+  @media (hover: hover) {
+    .mt-panel:hover img,
+    .mt-panel:focus-within img {
+      transform: scale(1.04);
+    }
+  }
+
+  /* ---------- comfort layers: the cross-section ----------
+     Bands are CSS shapes, not photographs: a real mattress cut-through is a
+     photograph nobody has, and a diagram drawn in CSS cannot go out of date
+     with the product or need a licence.
+
+     THE RESTING STATE IS THE ASSEMBLED STACK, and the scrub only ever pushes
+     the bands APART. That direction is deliberate — if the scroll listener
+     never runs, the reader sees a mattress rather than a pile of loose
+     rectangles, and the labels still line up with their bands. */
+
+  .mt-stack {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    /* A definite height, because the bands are sized in percentages — their
+       proportions ARE the drawing, so they have to be relative to the stack
+       rather than to their own content. */
+    height: clamp(280px, 44vh, 420px);
+    /* Room for the bands to travel into when the stack opens. Nothing clips
+       them; this just keeps the exploded view from colliding with whatever is
+       above and below. */
+    margin-block: clamp(36px, 5vw, 60px);
+  }
+
+  .mt-band {
+    position: relative;
+    /* A mattress edge, not a capsule. `999px` made the bands read as a stack
+       of lozenges — the silhouette is doing as much of the explaining here as
+       the tints are, so it has to be the right silhouette. */
+    border-radius: clamp(12px, 1.6vw, 20px);
+    border: 1px solid var(--color-line);
+    box-shadow: var(--shadow-card);
+  }
+
+  /* ---------- credentials ---------- */
+
+  .mt-cred {
+    border-block-start: 1px solid var(--color-line);
+    padding-block-start: clamp(16px, 2vw, 24px);
+    transition: border-color 400ms var(--ease-cushion);
+  }
+
+  @media (hover: hover) {
+    .mt-cred:hover {
+      border-color: var(--color-accent);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mt-panel,
+    .mt-panel img,
+    .mt-cred {
+      transition-duration: 0.001ms;
+    }
+    .mt-panel:hover,
+    .mt-panel:focus-within,
+    .mt-duet:has(.mt-panel:hover) .mt-panel {
+      flex-grow: 1;
+    }
+  }
+}

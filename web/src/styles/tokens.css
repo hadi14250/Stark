@@ -480,8 +480,25 @@
 
 /* Mattresses — brand colours, airier. */
 [data-theme="mattresses"] {
+  /**
+   * PHOTOGRAPHY-FIRST, SOFT, SLOW — the opposite register to Woodworks by
+   * design, and the reason the two pages can share every component.
+   *
+   * The colour delta from Home used to be `--color-surface-2: white-300`
+   * against Home's `sand-200`, which is a difference of about four percent
+   * luminance. That is not a theme, it is a rounding error, and the client
+   * read the page as Home in a different order — correctly.
+   *
+   * What makes this page feel different is not a hue, it is SOFTNESS: warmer
+   * ivory surfaces, larger radii, shadows that diffuse rather than drop, and
+   * every transition on the page running through --ease-cushion, which
+   * overshoots slightly and settles. A mattress page should decelerate.
+   */
   --color-surface: var(--white-500);
-  --color-surface-2: var(--white-300);
+  /* Warm ivory rather than a cooler off-white. It is the same family as the
+     page, one step toward sand, so bands read as light falling on the page
+     rather than as a second colour. */
+  --color-surface-2: #f7f1e8;
   --color-ink: var(--green-500);
   --color-ink-body: var(--green-400);
   --color-ink-muted: var(--green-400);
@@ -494,6 +511,12 @@
   --color-field-border: var(--field-border);
   --align-axis: center;
   --density: 1.15;
+  /* Radii up, shadows diffused. Both are the theme doing the "soft" work that
+     colour cannot do at this luminance range. */
+  --radius-card: 32px;
+  --radius-image: 20px;
+  --shadow-card: 0 40px 80px -44px rgb(28 61 46 / 0.34);
+  --shadow-panel: 0 48px 96px -56px rgb(28 61 46 / 0.38);
   --image-filter: saturate(0.94) brightness(1.04);
   --ease-theme: var(--ease-cushion);
 }
