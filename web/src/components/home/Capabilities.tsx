@@ -5,6 +5,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { CapabilityBand } from "@/components/ui/CapabilityBand";
 import { BladeField } from "@/components/brand/geometry";
 import { landingImages } from "@/components/landing/assets";
+import { CapabilitySpine } from "./CapabilitySpine";
 
 type Item = { title: string; body: string; alt: string };
 
@@ -36,12 +37,23 @@ export async function Capabilities() {
 
   return (
     <Section surface="surface-2" className="overflow-hidden" id="capabilities">
+      {/* The two blades now drift at DIFFERENT rates as the section passes, so
+          they sit at different depths instead of reading as one flat backdrop
+          that happens to have two shapes on it. Opposite signs: they shear
+          against each other rather than travelling together. */}
       <BladeField
         weight="structural"
         color="var(--sand-300)"
         blades={[
-          { element: "stark", width: 520, top: "6%", end: "-220px", float: 12 },
-          { element: "turnkey", width: 460, bottom: "-140px", start: "-200px", float: 10 },
+          { element: "stark", width: 520, top: "6%", end: "-220px", float: 12, depth: 14 },
+          {
+            element: "turnkey",
+            width: 460,
+            bottom: "-140px",
+            start: "-200px",
+            float: 10,
+            depth: -8,
+          },
         ]}
       />
 
@@ -54,7 +66,11 @@ export async function Capabilities() {
           />
         </Container>
 
-        <div className="mt-[clamp(48px,6vw,80px)] flex flex-col gap-[clamp(56px,7vw,96px)]">
+        {/* `relative` so the spine can size itself to exactly this stack —
+            start of band 01, end of band 03. */}
+        <div className="relative mt-[clamp(48px,6vw,80px)] flex flex-col gap-[clamp(56px,7vw,96px)]">
+          <CapabilitySpine />
+
           {items.map((item, i) => (
             <CapabilityBand
               key={item.title}

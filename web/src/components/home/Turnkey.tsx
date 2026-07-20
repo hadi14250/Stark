@@ -4,9 +4,26 @@ import { Section, SectionHeader } from "@/components/ui/Section";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Pill } from "@/components/ui/Pill";
 import { MarkTexture } from "@/components/brand/geometry";
-import { Reveal } from "@/components/motion/Reveal";
+import { Parallax } from "@/components/motion/Parallax";
+import { landingImages } from "@/components/landing/assets";
+import { TurnkeyLedger } from "./TurnkeyLedger";
 
 type Feature = { title: string; body: string };
+
+/**
+ * One photograph per ledger row.
+ *
+ * The categories set (woodworks / mattresses / turnkey) plus a band shot for
+ * the fourth row. Chosen so the picture a row summons is actually of the thing
+ * the row is describing — a random image under a specific claim is worse than
+ * no image, because it reads as stock.
+ */
+const ROW_IMAGES = [
+  landingImages.categories[0],
+  landingImages.categories[1],
+  landingImages.categories[2],
+  landingImages.bands[2],
+] as const;
 
 /**
  * Turnkey — the dark band, and the page's one `[data-surface="dark"]` subtree.
@@ -41,14 +58,21 @@ export async function Turnkey() {
         }}
       />
       {/* One large mark bleeding off the edge, not a repeating tile. A 300px
-          tile at this scale reads as wallpaper competing with the copy (A0c). */}
-      <MarkTexture
-        variant="mark"
-        color="var(--white-500)"
-        opacity={0.05}
-        size={620}
-        style={{ bottom: "-200px", insetInlineEnd: "-180px" }}
-      />
+          tile at this scale reads as wallpaper competing with the copy (A0c).
+
+          The drift is what stops it reading as a flat sticker on the slab: it
+          moves against the scroll, slowly, so the watermark sits BEHIND the
+          copy in depth rather than just underneath it in z-order. At 5%
+          opacity nobody will consciously see it move, which is the point. */}
+      <Parallax amount={10} className="pointer-events-none absolute inset-0">
+        <MarkTexture
+          variant="mark"
+          color="var(--white-500)"
+          opacity={0.05}
+          size={620}
+          style={{ bottom: "-200px", insetInlineEnd: "-180px" }}
+        />
+      </Parallax>
 
       <Container className="relative z-[1]">
         <SectionHeader
@@ -59,51 +83,25 @@ export async function Turnkey() {
 
         {/*
           WAS four bordered boxes in a 2x2 grid — the most generic possible
-          treatment, and it read that way. Now a numbered ledger: a large ghost
-          numeral, a hairline between rows rather than a box around each, and
-          the rows offset so the eye travels down a diagonal instead of
-          bouncing between four equal rectangles. Same content, same tokens.
+          treatment, and it read that way. Then a numbered ledger, which was the
+          right structure but still entirely static once it had faded in. The
+          ledger keeps its structure and gains the two devices in
+          TurnkeyLedger: scrubbed numerals and a pointer-tracked photograph of
+          the work each row describes (a real in-row thumbnail on touch).
+
+          The images are the landing set's category photographs, one per row,
+          because the row copy describes exactly those three offerings plus the
+          turnkey whole. Real project photography per row is a client
+          dependency — TODO(F-content).
         */}
-        <ol className="mt-[clamp(44px,6vw,72px)]">
-          {features.map((f, i) => (
-            <Reveal key={f.title} delay={i * 0.08} y={32} className="block">
-              <li
-                className="group relative grid items-baseline gap-x-6 gap-y-2 border-t py-7 nav:grid-cols-[auto_minmax(0,22ch)_minmax(0,1fr)] nav:py-9"
-                style={{
-                  borderColor: "var(--color-line)",
-                  // Each row steps further in, so the column reads as a
-                  // descent rather than a stack.
-                  paddingInlineStart: `calc(${i} * clamp(0px, 2.2vw, 34px))`,
-                }}
-              >
-                <span
-                  aria-hidden
-                  className="font-mono text-[clamp(30px,4vw,52px)] font-light leading-none tabular-nums"
-                  style={{ color: "var(--color-accent)", opacity: 0.35 }}
-                >
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-
-                <h3 className="font-display text-h3 font-semibold leading-h3 tracking-display text-[color:var(--color-ink)]">
-                  {f.title}
-                </h3>
-
-                <p className="text-body leading-body text-[color:var(--color-ink-body)]">
-                  {f.body}
-                </p>
-
-                {/* The rule under a row draws itself in as the row arrives —
-                    the only motion in the section, so it reads as emphasis
-                    rather than decoration. */}
-                <span
-                  aria-hidden
-                  className="absolute inset-x-0 bottom-0 h-px origin-left scale-x-0 transition-transform duration-700 group-hover:scale-x-100 motion-reduce:transition-none"
-                  style={{ background: "var(--color-accent)" }}
-                />
-              </li>
-            </Reveal>
-          ))}
-        </ol>
+        <TurnkeyLedger
+          items={features.map((f, i) => ({
+            title: f.title,
+            body: f.body,
+            image: ROW_IMAGES[i % ROW_IMAGES.length],
+            alt: f.title,
+          }))}
+        />
 
         <div className="mt-10 flex" style={{ justifyContent: "var(--align-axis)" }}>
           <Pill variant="tan" href="/#contact">

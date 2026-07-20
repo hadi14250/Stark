@@ -1,5 +1,6 @@
 import type { CSSProperties, ReactNode } from "react";
 import { DIVISION_ELEMENT, LOGO_VIEWBOX, type DivisionKey } from "./LogoDefs";
+import { Parallax } from "@/components/motion/Parallax";
 
 /**
  * The four brand-geometry techniques (plan §2.8), plus their governance.
@@ -101,6 +102,18 @@ export type Blade = {
   end?: string;
   /** Float animation period, seconds. Alternates direction per index. */
   float?: number;
+  /**
+   * Scroll-linked drift, as a % of the blade's height, each way. Omit for a
+   * blade that should stay put.
+   *
+   * This is what separates a field from a backdrop. The `float` above is an
+   * ambient loop on its own clock — every blade doing it looks like one layer
+   * wobbling. Give two blades DIFFERENT depths (ideally opposite signs) and
+   * they shear against each other as the section passes, which is the only
+   * cue that says "these are at different distances". The two compose because
+   * they sit on different elements: `float` on the svg, this on a wrapper.
+   */
+  depth?: number;
 };
 
 type BladeFieldProps = {
@@ -129,18 +142,8 @@ export function BladeField({ blades, weight, color, className }: BladeFieldProps
         zIndex: 0,
       }}
     >
-      {blades.map((b, i) => (
-        <div
-          key={i}
-          style={{
-            position: "absolute",
-            top: b.top,
-            bottom: b.bottom,
-            insetInlineStart: b.start,
-            insetInlineEnd: b.end,
-            width: `min(${b.width}px, 42vw)`,
-          }}
-        >
+      {blades.map((b, i) => {
+        const blade = (
           <svg
             aria-hidden
             focusable="false"
@@ -157,8 +160,27 @@ export function BladeField({ blades, weight, color, className }: BladeFieldProps
           >
             <use href={DIVISION_ELEMENT[b.element]} />
           </svg>
-        </div>
-      ))}
+        );
+
+        return (
+          <div
+            key={i}
+            style={{
+              position: "absolute",
+              top: b.top,
+              bottom: b.bottom,
+              insetInlineStart: b.start,
+              insetInlineEnd: b.end,
+              width: `min(${b.width}px, 42vw)`,
+            }}
+          >
+            {/* Only the blades that asked for depth pay for a client boundary.
+                A field of purely ambient blades stays entirely server-rendered
+                with no JS at all, which is what it was before. */}
+            {b.depth === undefined ? blade : <Parallax amount={b.depth}>{blade}</Parallax>}
+          </div>
+        );
+      })}
     </div>
   );
 }

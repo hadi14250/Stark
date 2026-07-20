@@ -1,14 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Pill } from "@/components/ui/Pill";
 import { MarkGlyph } from "@/components/brand/geometry";
 import { useMotionConfig } from "@/components/motion/useMotionConfig";
+import { ClipReveal } from "@/components/motion/reveals";
 import { landingImages } from "@/components/landing/assets";
 import type { DivisionKey } from "@/components/brand/LogoDefs";
-import { ease } from "@/styles/tokens";
+import { ease, easeCss } from "@/styles/tokens";
+
+/** How long each panel holds before the row advances on its own. */
+const CYCLE_MS = 4500;
 
 export type DivisionItem = {
   title: string;
@@ -45,10 +49,46 @@ export type DivisionItem = {
  * width behaviour and there is no width to trade on a phone, so it simply does
  * not apply — `flex-grow` has no free space to distribute in an auto-height
  * column, which is why the same markup can serve both.
+ *
+ * THE ROW NOW MOVES WITHOUT INPUT. Hover-driven emphasis has a failure mode
+ * nobody notices on a desktop: on a phone there is no hover, no focus until
+ * something is tabbed to, and therefore no state change ever — the section was
+ * three still photographs, permanently. So the active panel advances on its own
+ * every 4.5s until the reader takes over, and the active panel's photograph
+ * runs a slow Ken Burns. That is the same section being alive on both, from one
+ * mechanic, and it is why the phone deliberately does NOT get an accordion:
+ * collapsing the copy would gate content behind a tap to buy motion that the
+ * cycle already provides for free, and would put the panel's only link inside
+ * a collapsed region where the keyboard cannot reach it.
  */
 export function DivisionIndex({ items }: { items: DivisionItem[] }) {
   const [active, setActive] = useState(0);
+  /**
+   * Set by the first hover/focus/tap, and never unset.
+   *
+   * Deliberately permanent rather than "resume after N seconds idle". A row
+   * that starts moving again while you are reading the panel you chose is
+   * fighting you, and the auto-cycle's whole job — proving the section is
+   * interactive — is already done the moment you interact with it.
+   */
+  const [engaged, setEngaged] = useState(false);
   const { reduce, dir } = useMotionConfig();
+
+  const take = useCallback((i: number) => {
+    setEngaged(true);
+    setActive(i);
+  }, []);
+
+  useEffect(() => {
+    // Reduced motion gets the first panel, held. An auto-advancing carousel is
+    // exactly the vestibular trigger the preference exists to suppress.
+    if (reduce || engaged) return;
+    const id = window.setInterval(
+      () => setActive((i) => (i + 1) % items.length),
+      CYCLE_MS,
+    );
+    return () => window.clearInterval(id);
+  }, [reduce, engaged, items.length]);
 
   return (
     <div className="mt-[clamp(40px,5vw,64px)] flex flex-col gap-4 nav:h-[clamp(440px,62vh,600px)] nav:flex-row nav:gap-3">
@@ -56,15 +96,30 @@ export function DivisionIndex({ items }: { items: DivisionItem[] }) {
         const open = active === i;
 
         return (
-          <motion.article
+          /*
+            THE WIPE WRAPPER IS ALSO THE FLEX ITEM, and the widening is a CSS
+            transition rather than a Framer animation because of it. Nesting an
+            animated article inside a wrapper would put `flex-grow` on an
+            element whose parent is the wrapper, not the row — it would have
+            had no effect at all, and the panels would simply have stopped
+            expanding. `flex-grow` is a transitionable property, so one styled
+            div does both jobs and there is no second element to keep in sync.
+          */
+          <ClipReveal
             key={item.title}
-            onMouseEnter={() => setActive(i)}
-            onFocus={() => setActive(i)}
-            className="group relative isolate h-[340px] min-w-0 basis-auto overflow-hidden rounded-[var(--radius-card)] nav:h-full nav:basis-0"
-            initial={false}
-            animate={{ flexGrow: reduce ? 1 : open ? 2.3 : 1 }}
-            transition={{ duration: 0.75, ease: [...ease.zoom] }}
+            delay={i * 0.12}
+            className="flex min-w-0 nav:h-full nav:basis-0"
+            style={{
+              flexGrow: reduce ? 1 : open ? 2.3 : 1,
+              transition: `flex-grow 750ms ${easeCss.zoom}`,
+            }}
           >
+            <article
+              onMouseEnter={() => take(i)}
+              onFocus={() => take(i)}
+              onPointerDown={() => take(i)}
+              className="group relative isolate h-[340px] w-full min-w-0 overflow-hidden rounded-[var(--radius-card)] nav:h-full"
+            >
             <motion.div
               className="absolute inset-0 -z-10"
               initial={false}
@@ -74,14 +129,40 @@ export function DivisionIndex({ items }: { items: DivisionItem[] }) {
               animate={{ scale: reduce ? 1 : open ? 1 : 1.12 }}
               transition={{ duration: 0.9, ease: [...ease.zoom] }}
             >
-              <Image
-                src={landingImages.categories[i]}
-                alt={item.alt}
-                fill
-                sizes="(max-width: 860px) 100vw, 45vw"
-                className="object-cover"
-                style={{ filter: "var(--image-filter)" }}
-              />
+              {/*
+                KEN BURNS, on its own element. It has to be a separate layer
+                from the settle above because both are `scale` — put them on one
+                element and the looping animation and the state transition
+                overwrite each other, and the panel jitters every time the
+                cycle ticks. Nested, they multiply, which is what depth is.
+
+                Only the ACTIVE panel drifts. Three photographs all slowly
+                zooming at once is aquarium screensaver; one drifting while two
+                sit still is emphasis.
+              */}
+              <motion.div
+                className="absolute inset-0"
+                initial={false}
+                animate={
+                  reduce || !open
+                    ? { scale: 1, x: "0%", y: "0%" }
+                    : { scale: 1.08, x: `${1.5 * dir}%`, y: "-1.5%" }
+                }
+                transition={
+                  reduce || !open
+                    ? { duration: 1.2, ease: [...ease.zoom] }
+                    : { duration: 9, ease: "linear", repeat: Infinity, repeatType: "reverse" }
+                }
+              >
+                <Image
+                  src={landingImages.categories[i]}
+                  alt={item.alt}
+                  fill
+                  sizes="(max-width: 860px) 100vw, 45vw"
+                  className="object-cover"
+                  style={{ filter: "var(--image-filter)" }}
+                />
+              </motion.div>
             </motion.div>
 
             {/* Scrim. Fixed dark-green rather than a theme role: it exists to
@@ -147,7 +228,8 @@ export function DivisionIndex({ items }: { items: DivisionItem[] }) {
                 </div>
               </div>
             </div>
-          </motion.article>
+            </article>
+          </ClipReveal>
         );
       })}
     </div>

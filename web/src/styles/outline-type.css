@@ -40,6 +40,25 @@
     -webkit-text-stroke: 0;
   }
 
+  /* DIGITS ARE THE EXCEPTION, and they need to be, because the ordinals on
+     Capabilities and the Process step index render "01".."04" in Latin figures
+     in BOTH locales — the reason for the rule above simply does not apply to
+     them. Without this they inherit the cursive fallback and come out as sand
+     at 35% on a sand surface, which is invisible: the Arabic page would lose
+     its ordinals entirely while the English one keeps them.
+
+     Guarded by the POSITIVE @supports so it can never out-specify the
+     degradation blocks below — if the stroke is unavailable this rule is not
+     in the cascade at all, and `.outline-type` falls back like everything
+     else. Only put this on content you know is numeric. */
+  @supports (-webkit-text-stroke: 1px currentColor) {
+    [lang="ar"] .outline-type.outline-digits {
+      color: transparent;
+      opacity: 1;
+      -webkit-text-stroke: var(--outline-w) var(--outline-c);
+    }
+  }
+
   @supports not (-webkit-text-stroke: 1px currentColor) {
     .outline-type {
       color: var(--outline-c);
@@ -48,9 +67,12 @@
   }
 
   /* In forced-colours mode the stroke colour is overridden but the transparent
-     fill is not, which would blank the text entirely. */
+     fill is not, which would blank the text entirely. The digit selector is
+     repeated at its own specificity so the exception above cannot survive
+     here — this block has to win for every case. */
   @media (forced-colors: active) {
-    .outline-type {
+    .outline-type,
+    [lang="ar"] .outline-type.outline-digits {
       color: CanvasText;
       -webkit-text-stroke: 0;
       opacity: 0.6;

@@ -2,8 +2,9 @@ import type { ReactNode } from "react";
 import { Container } from "./Container";
 import { Photo } from "./Photo";
 import { PentagonClip } from "@/components/brand/geometry";
-import { Reveal } from "@/components/motion/Reveal";
 import { ParallaxImage } from "@/components/motion/Parallax";
+import { ClipReveal, DrawLine } from "@/components/motion/reveals";
+import { WordsReveal, LineReveal } from "@/components/motion/WordsReveal";
 
 /**
  * A full-width alternating band: a pentagon-clipped photograph on one side,
@@ -62,23 +63,64 @@ export function CapabilityBand({
         className="grid items-center gap-[clamp(32px,5vw,72px)]"
         style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(420px, 100%), 1fr))" }}
       >
-        <Reveal className={flip ? "nav:order-2" : undefined}>
+        <div className={flip ? "nav:order-2" : undefined}>
           <div className="flex flex-col items-start gap-5">
             {index !== undefined && (
+              /*
+                THE ORDINAL IS IN FLOW. The previous one was an 11px mono label;
+                the one before that (on Process) was a display-scale numeral
+                positioned absolutely, which is what put it through its own
+                heading at some viewport widths. This is the version that gets
+                the scale without the risk: a real block in the column, so the
+                copy below it is laid out around it by the browser and there is
+                no width at which it can collide with anything.
+
+                Hollow rather than filled because at 96px a solid numeral
+                outweighs the heading it is numbering. `outline-digits` is the
+                opt-out from the Arabic solid-fallback — see outline-type.css;
+                these are Latin figures in both locales and stroke cleanly.
+
+                The negative bottom margin pulls the heading back up under the
+                numeral's optical baseline: display figures carry a lot of
+                internal leading, and without it the ordinal floats away from
+                the thing it belongs to.
+              */
               <span
                 aria-hidden
-                className="font-mono text-eyebrow tabular-nums text-[color:var(--color-accent-2)]"
+                className="outline-type outline-digits -mb-2 font-display text-[clamp(56px,6vw,96px)] font-bold leading-[0.85] tabular-nums"
+                style={
+                  {
+                    "--outline-c": "var(--color-accent)",
+                    "--outline-w": "2px",
+                  } as React.CSSProperties
+                }
               >
                 {String(index).padStart(2, "0")}
               </span>
             )}
             {eyebrow}
-            <h3 className="max-w-[16ch] font-display text-h3 font-bold leading-h3 tracking-display text-[color:var(--color-ink)]">
-              {heading}
-            </h3>
-            <p className="max-w-[52ch] text-body leading-body text-[color:var(--color-ink-body)]">
-              {body}
-            </p>
+            {/*
+              Word-by-word rather than the whole block fading. A band heading is
+              the one string in this layout long enough for the stagger to read,
+              and it is what makes the copy column arrive rather than appear.
+            */}
+            {typeof heading === "string" ? (
+              <WordsReveal
+                text={heading}
+                as="h3"
+                justify="flex-start"
+                className="max-w-[16ch] font-display text-h3 font-bold leading-h3 tracking-display text-[color:var(--color-ink)]"
+              />
+            ) : (
+              <h3 className="max-w-[16ch] font-display text-h3 font-bold leading-h3 tracking-display text-[color:var(--color-ink)]">
+                {heading}
+              </h3>
+            )}
+            <LineReveal delay={0.12}>
+              <p className="max-w-[52ch] text-body leading-body text-[color:var(--color-ink-body)]">
+                {body}
+              </p>
+            </LineReveal>
 
             {/*
               A qualitative strip, deliberately not a spec table with numbers.
@@ -89,28 +131,46 @@ export function CapabilityBand({
               finished. Same pattern applies to every facts-blocked slot.
             */}
             {meta && meta.length > 0 && (
-              <ul className="flex flex-wrap gap-x-5 gap-y-2 font-mono text-[11px] tracking-eyebrow text-[color:var(--color-ink-muted)]"
-                  style={{ textTransform: "var(--eyebrow-transform)" as "uppercase" }}>
-                {meta.map((m, i) => (
-                  <li key={m} className="flex items-center gap-5">
-                    {i > 0 && (
-                      <span
-                        aria-hidden
-                        className="h-1 w-1 rounded-full"
-                        style={{ background: "var(--color-accent)" }}
-                      />
-                    )}
-                    {m}
-                  </li>
-                ))}
-              </ul>
+              <LineReveal delay={0.2} className="w-full">
+                {/* The rule draws itself in above the strip, so the strip
+                    arrives as a footer to the copy rather than as one more
+                    line of it. */}
+                <DrawLine
+                  className="mb-4 h-px w-full"
+                  style={{ background: "var(--color-line)" }}
+                  delay={0.28}
+                />
+                <ul
+                  className="flex flex-wrap gap-x-5 gap-y-2 font-mono text-[11px] tracking-eyebrow text-[color:var(--color-ink-muted)]"
+                  style={{ textTransform: "var(--eyebrow-transform)" as "uppercase" }}
+                >
+                  {meta.map((m, i) => (
+                    <li key={m} className="flex items-center gap-5">
+                      {i > 0 && (
+                        <span
+                          aria-hidden
+                          className="h-1 w-1 rounded-full"
+                          style={{ background: "var(--color-accent)" }}
+                        />
+                      )}
+                      {m}
+                    </li>
+                  ))}
+                </ul>
+              </LineReveal>
             )}
 
             {cta}
           </div>
-        </Reveal>
+        </div>
 
-        <Reveal delay={0.1} className={flip ? "nav:order-1" : undefined}>
+        {/*
+          The photograph WIPES in rather than fading up. A fade is the least
+          legible motion there is — nothing inside the element moves relative
+          to anything else, so a photo fading in reads as a slow image load. A
+          clip wipe has a moving edge, which reads as a reveal.
+        */}
+        <ClipReveal delay={0.1} className={flip ? "nav:order-1" : undefined}>
           {shape === "pentagon" ? (
             <div className="relative">
               <PentagonClip
@@ -143,7 +203,10 @@ export function CapabilityBand({
             </div>
           ) : (
             <div className="relative">
-              <ParallaxImage className="rounded-[var(--radius-card)]">
+              {/* 12% rather than the 8% default: this is the largest image on
+                  the page after the hero, and at 8% the drift was below the
+                  threshold where anyone notices it is happening. */}
+              <ParallaxImage amount={12} className="rounded-[var(--radius-card)]">
                 <Photo
                   src={image}
                   alt={imageAlt}
@@ -170,7 +233,7 @@ export function CapabilityBand({
               )}
             </div>
           )}
-        </Reveal>
+        </ClipReveal>
       </div>
     </Container>
   );

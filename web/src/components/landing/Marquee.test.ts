@@ -58,6 +58,32 @@ describe("hollow type degrades to something readable", () => {
     expect(arabic).toMatch(/-webkit-text-stroke:\s*0/);
     expect(arabic).toMatch(/opacity:/);
   });
+
+  it("keeps the Arabic digit exception behind a positive @supports", () => {
+    /**
+     * `.outline-digits` opts Latin ordinals (01..04 on Capabilities and
+     * Process, which are Latin figures in BOTH locales) out of the cursive
+     * fallback above — without it the Arabic page loses its ordinals to
+     * sand-at-35%-on-sand, which is invisible.
+     *
+     * The exception is more specific than every degradation rule below it, so
+     * if it were declared unconditionally it would WIN in the two cases those
+     * rules exist for and put transparent text on a page with no stroke to
+     * draw it. Wrapping it in the POSITIVE @supports removes it from the
+     * cascade entirely wherever the stroke is unavailable, which is the only
+     * placement that is safe by construction rather than by ordering.
+     */
+    const guarded = /@supports \(-webkit-text-stroke[\s\S]*?\[lang="ar"\] \.outline-type\.outline-digits/;
+    expect(
+      outlineCss,
+      "the digit exception must sit inside a positive @supports, or it out-specifies the fallbacks",
+    ).toMatch(guarded);
+
+    // Forced colours cannot be handled by @supports, so it has to beat the
+    // exception on specificity instead — by naming the same selector.
+    const forced = outlineCss.match(/@media \(forced-colors: active\) \{([\s\S]*?)\n  \}/)?.[1] ?? "";
+    expect(forced).toMatch(/\.outline-digits/);
+  });
 });
 
 describe("the ticker still loops seamlessly", () => {

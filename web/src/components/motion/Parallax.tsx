@@ -57,9 +57,18 @@ export function Parallax({
  */
 export function ParallaxImage({
   children,
+  /**
+   * Travel each way as a % of the frame's height. The oversize below is
+   * derived from it (never hardcoded): the image has to be exactly `2 *
+   * amount` taller than its frame and offset by `amount`, or it runs out of
+   * material at the extremes and shows a bare edge. That coupling is why this
+   * is one knob rather than three.
+   */
+  amount = 8,
   className,
 }: {
   children: ReactNode;
+  amount?: number;
   className?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -68,7 +77,7 @@ export function ParallaxImage({
     target: ref,
     offset: ["start end", "end start"],
   });
-  const y = useTransform(scrollYProgress, [0, 1], ["-8%", "8%"]);
+  const y = useTransform(scrollYProgress, [0, 1], [`${-amount}%`, `${amount}%`]);
 
   if (reduce) {
     return (
@@ -80,7 +89,9 @@ export function ParallaxImage({
 
   return (
     <div ref={ref} className={`overflow-hidden ${className ?? ""}`}>
-      <motion.div style={{ y, height: "116%", marginTop: "-8%" }}>
+      <motion.div
+        style={{ y, height: `${100 + amount * 2}%`, marginTop: `${-amount}%` }}
+      >
         {children}
       </motion.div>
     </div>
