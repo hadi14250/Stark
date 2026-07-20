@@ -138,15 +138,38 @@ export function LogoLoader({
   color = "var(--color-accent)",
   /** 1 = the designed speed. >1 slows down, <1 speeds up. */
   speed = 1,
+  /**
+   * Play the animation a single time and hold the finished state, instead of
+   * looping forever.
+   *
+   * For "assemble" this is the difference between a loading indicator and a
+   * completion: the mark flies together, arrives whole, and STAYS whole. A
+   * loop would take it apart again half a second later, which reads as "still
+   * working" at the exact moment the copy says the message was sent.
+   */
+  once = false,
   className,
 }: {
   variant?: LoaderVariant;
   size?: number;
   color?: string;
   speed?: number;
+  once?: boolean;
   className?: string;
 }) {
-  const spec = SPECS[variant];
+  const raw = SPECS[variant];
+  // Every spec writes `infinite` into its `animation` shorthand, so swapping
+  // the iteration count is a string edit on the built value rather than a
+  // second copy of all twelve specs. `both` is already on each of them, which
+  // is what holds the final keyframe once the single run ends.
+  const spec: Spec = once
+    ? {
+        ...raw,
+        blade: (i) => raw.blade(i).replace(" infinite ", " 1 "),
+        core: raw.core?.replace(" infinite ", " 1 "),
+        ring: raw.ring?.replace(" infinite ", " 1 "),
+      }
+    : raw;
   const box = spec.transformBox ?? "view-box";
 
   const strokeProps = spec.stroke

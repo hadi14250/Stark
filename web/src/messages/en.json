@@ -288,6 +288,7 @@
     }
   },
   "contact": {
+    "eyebrow": "GET IN TOUCH",
     "heading": "Let's build complete environments together.",
     "sub": "Tell us about your project and we'll get back to you.",
     "fields": {
@@ -351,7 +352,8 @@
       "email": "hello@stark-ksa.net",
       "phone": "",
       "location": "Jeddah, Saudi Arabia"
-    }
+    },
+    "locationLabel": "Location"
   },
   "woodworks": {
     "eyebrow": "Woodworks",

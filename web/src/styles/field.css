@@ -1,0 +1,124 @@
+/* =============================================================================
+   FORM FIELDS — floating labels and the underline focus treatment.
+   =============================================================================
+
+   Boxed inputs with a label stacked above each one is the default every form
+   arrives as, and it is why the contact section read as a form bolted onto a
+   designed page rather than part of it. This is the presentation swap the
+   ContactForm docblock has promised since it was written; NONE of the
+   validation, error or focus-management logic changes.
+
+   WHY CSS AND NOT REACT STATE. A floating label needs to know whether its
+   control is empty, and the obvious implementation — onChange into useState —
+   is wrong three ways: it makes every field a controlled component (the form
+   deliberately uses uncontrolled inputs so a server-rendered `defaultValue`
+   repopulates after a failed submit), it misses browser autofill, which fills
+   a value without firing the events React listens for, and it does nothing at
+   all before hydration. `:placeholder-shown` is evaluated by the browser
+   against the real value, so autofill, back-button restore and no-JS all get
+   the right label position for free.
+
+   THE PLACEHOLDER IS THE MECHANISM, so every control that wants a floating
+   label MUST carry one — a control with no placeholder attribute never matches
+   `:placeholder-shown` and its label stays permanently floated over an empty
+   box. Fields with nothing useful to suggest pass a single space.
+   ========================================================================== */
+
+@layer components {
+  .field-shell {
+    position: relative;
+    display: block;
+  }
+
+  .field-control {
+    display: block;
+    width: 100%;
+    /* Top padding is what the label floats INTO. Without it the floated label
+       sits on top of the text it is labelling. */
+    padding: 1.5rem 0.25rem 0.5rem;
+    color: var(--color-ink);
+    background: transparent;
+    border: 0;
+    /* The hairline lives on the shell's ::after so it can thicken without
+       moving the control's box — a border-width change would shift every
+       field below it by a pixel on focus. */
+    outline: none;
+    border-radius: 0;
+    appearance: none;
+  }
+
+  .field-control:focus {
+    outline: none;
+  }
+
+  .field-line {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--color-line);
+    transition: background-color 220ms ease, height 220ms ease;
+    pointer-events: none;
+  }
+
+  .field-control:focus ~ .field-line {
+    height: 2px;
+    background: var(--color-interactive);
+  }
+
+  .field-control[aria-invalid="true"] ~ .field-line {
+    background: var(--color-error);
+  }
+
+  .field-label {
+    position: absolute;
+    inset-inline-start: 0.25rem;
+    top: 1.5rem;
+    color: var(--color-ink-muted);
+    pointer-events: none;
+    transform-origin: inline-start top;
+    transition:
+      transform 200ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      color 200ms ease;
+    /* Mirrors correctly without a second rule: `translateY` is axis-neutral
+       and the origin above is logical. */
+    will-change: transform;
+  }
+
+  /* The two states that float it: being edited, or holding a value. */
+  .field-control:focus ~ .field-label,
+  .field-control:not(:placeholder-shown) ~ .field-label,
+  /* Selects never match :placeholder-shown — see Select.tsx. Their label is
+     floated permanently, which is honest: a select always displays something. */
+  .field-label--floated {
+    transform: translateY(-1.15rem) scale(0.78);
+  }
+
+  .field-control:focus ~ .field-label {
+    color: var(--color-interactive);
+  }
+
+  .field-control[aria-invalid="true"] ~ .field-label {
+    color: var(--color-error);
+  }
+
+  /* The placeholder is real copy ("you@company.com"), but showing it at the
+     same time as the label says the same thing twice. It appears once the
+     field is being filled in, which is when an example is actually useful. */
+  .field-control::placeholder {
+    color: transparent;
+    transition: color 200ms ease;
+  }
+
+  .field-control:focus::placeholder {
+    color: var(--color-ink-muted);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .field-label,
+    .field-line,
+    .field-control::placeholder {
+      transition: none;
+    }
+  }
+}

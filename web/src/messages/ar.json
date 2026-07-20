@@ -288,6 +288,7 @@
     }
   },
   "contact": {
+    "eyebrow": "تواصل معنا",
     "heading": "لنبنِ بيئات متكاملة معاً.",
     "sub": "أخبرنا عن مشروعك وسنعاود التواصل معك.",
     "fields": {
@@ -351,7 +352,8 @@
       "email": "hello@stark-ksa.net",
       "phone": "",
       "location": "جدة، المملكة العربية السعودية"
-    }
+    },
+    "locationLabel": "الموقع"
   },
   "woodworks": {
     "eyebrow": "الأعمال الخشبية",

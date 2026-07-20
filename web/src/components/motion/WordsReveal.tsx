@@ -39,6 +39,7 @@ type Tag = "h1" | "h2" | "h3" | "p" | "span";
 export function WordsReveal({
   text,
   as = "h2",
+  id,
   className,
   style,
   delay = 0,
@@ -50,6 +51,8 @@ export function WordsReveal({
 }: {
   text: string;
   as?: Tag;
+  /** So a section can point `aria-labelledby` at its own heading. */
+  id?: string;
   className?: string;
   style?: CSSProperties;
   delay?: number;
@@ -66,7 +69,7 @@ export function WordsReveal({
 
   if (reduce) {
     return (
-      <Element className={className} style={style}>
+      <Element id={id} className={className} style={style}>
         {text}
       </Element>
     );
@@ -78,6 +81,7 @@ export function WordsReveal({
   return (
     <MotionElement
       ref={ref}
+      id={id}
       className={className}
       style={{
         display: "flex",
