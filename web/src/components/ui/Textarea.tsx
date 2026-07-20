@@ -9,7 +9,7 @@ export function Textarea({
   return (
     <textarea
       {...props}
-      className={`${controlClass} resize-y ${className}`}
+      className={`${controlClass} ${className}`}
     />
   );
 }

@@ -186,7 +186,7 @@ export function ContactForm() {
         fail-safe, so a viewport observer that never fires cannot leave the form
         invisible; see useRevealPlay.ts for why that is not hypothetical here.
       */}
-      <div className="grid gap-6 sm:grid-cols-2">
+      <div className="grid gap-x-10 gap-y-8 sm:grid-cols-2">
         {CONTACT_FIELDS.slice(0, 6).map((f, i) => (
           <LineReveal key={f.key} delay={i * 0.06}>
             {renderControl(f)}

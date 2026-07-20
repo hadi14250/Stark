@@ -4,121 +4,169 @@
 
    Boxed inputs with a label stacked above each one is the default every form
    arrives as, and it is why the contact section read as a form bolted onto a
-   designed page rather than part of it. This is the presentation swap the
-   ContactForm docblock has promised since it was written; NONE of the
-   validation, error or focus-management logic changes.
+   designed page. This is the presentation swap the ContactForm docblock had
+   promised since it was written; NONE of the validation, error or
+   focus-management logic changes.
 
    WHY CSS AND NOT REACT STATE. A floating label needs to know whether its
    control is empty, and the obvious implementation — onChange into useState —
-   is wrong three ways: it makes every field a controlled component (the form
-   deliberately uses uncontrolled inputs so a server-rendered `defaultValue`
-   repopulates after a failed submit), it misses browser autofill, which fills
-   a value without firing the events React listens for, and it does nothing at
-   all before hydration. `:placeholder-shown` is evaluated by the browser
-   against the real value, so autofill, back-button restore and no-JS all get
-   the right label position for free.
+   is wrong three ways: it makes every field controlled (the form deliberately
+   uses uncontrolled inputs so a server-rendered `defaultValue` repopulates
+   after a failed submit), it misses browser autofill, which sets a value
+   without firing the events React listens for, and it does nothing at all
+   before hydration. `:placeholder-shown` is evaluated by the browser against
+   the real value, so autofill, back-button restore and no-JS all get the right
+   label position for free.
 
    THE PLACEHOLDER IS THE MECHANISM, so every control that wants a floating
    label MUST carry one — a control with no placeholder attribute never matches
    `:placeholder-shown` and its label stays permanently floated over an empty
    box. Fields with nothing useful to suggest pass a single space.
+
+   ------------------------------------------------------------------------
+   TWO THINGS HERE ARE LOAD-BEARING AND BOTH LOOK LIKE STYLE CHOICES.
+   ------------------------------------------------------------------------
+
+   1. THIS FILE IS NOT IN AN @layer. It was in `@layer components`, and
+      Tailwind's preflight sets `::placeholder { color: color-mix(...) }` in
+      `@layer base`. Layer order beats specificity outright, so a bare
+      `::placeholder` in a later-resolving layer silently defeated
+      `.field-control::placeholder` no matter how specific it was — the
+      placeholder stayed visible and sat on top of its own label. Unlayered
+      styles win over every layered one, which is the correct standing for
+      component CSS that must not be overridden by a utility.
+
+      The cost: a Tailwind class passed via `className` will NOT override these
+      declarations. That is deliberate. Change the rules here instead.
+
+   2. THE LABEL AND THE CONTROL DECLARE THE SAME font-size AND line-height.
+      They have to, because the label's resting position is supposed to sit
+      exactly on top of the control's own text, and two elements only share a
+      baseline if they share metrics. When the label was a size smaller, its
+      line box resolved differently and it rendered a full line BELOW the
+      placeholder — which read as two overlapping labels rather than as one
+      misalignment. Do not put a Tailwind text-size class on either one.
    ========================================================================== */
 
-@layer components {
-  .field-shell {
-    position: relative;
-    display: block;
-  }
+.field-shell {
+  position: relative;
+  display: block;
+}
 
-  .field-control {
-    display: block;
-    width: 100%;
-    /* Top padding is what the label floats INTO. Without it the floated label
-       sits on top of the text it is labelling. */
-    padding: 1.5rem 0.25rem 0.5rem;
-    color: var(--color-ink);
-    background: transparent;
-    border: 0;
-    /* The hairline lives on the shell's ::after so it can thicken without
-       moving the control's box — a border-width change would shift every
-       field below it by a pixel on focus. */
-    outline: none;
-    border-radius: 0;
-    appearance: none;
-  }
+.field-control {
+  display: block;
+  width: 100%;
+  /* Top padding is the space the label floats INTO. */
+  padding: 1.65rem 0 0.55rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--color-ink);
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  outline: none;
+  appearance: none;
+}
 
-  .field-control:focus {
-    outline: none;
-  }
+.field-control:focus {
+  outline: none;
+}
 
-  .field-line {
-    position: absolute;
-    inset-inline: 0;
-    bottom: 0;
-    height: 1px;
-    background: var(--color-line);
-    transition: background-color 220ms ease, height 220ms ease;
-    pointer-events: none;
-  }
+/* Textareas need room to be a textarea, and must not collapse onto the label. */
+textarea.field-control {
+  min-height: 8.5rem;
+  resize: vertical;
+}
 
-  .field-control:focus ~ .field-line {
-    height: 2px;
-    background: var(--color-interactive);
-  }
+/* The hairline lives on its own element rather than as a border, so it can
+   thicken on focus without changing the control's box and nudging every field
+   below it by a pixel. */
+.field-line {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--color-line);
+  transition:
+    background-color 220ms ease,
+    height 220ms ease;
+  pointer-events: none;
+}
 
-  .field-control[aria-invalid="true"] ~ .field-line {
-    background: var(--color-error);
-  }
+.field-control:focus ~ .field-line {
+  height: 2px;
+  background: var(--color-interactive);
+}
 
-  .field-label {
-    position: absolute;
-    inset-inline-start: 0.25rem;
-    top: 1.5rem;
-    color: var(--color-ink-muted);
-    pointer-events: none;
-    transform-origin: inline-start top;
-    transition:
-      transform 200ms cubic-bezier(0.2, 0.8, 0.2, 1),
-      color 200ms ease;
-    /* Mirrors correctly without a second rule: `translateY` is axis-neutral
-       and the origin above is logical. */
-    will-change: transform;
-  }
+.field-control[aria-invalid="true"] ~ .field-line {
+  background: var(--color-error);
+}
 
-  /* The two states that float it: being edited, or holding a value. */
-  .field-control:focus ~ .field-label,
-  .field-control:not(:placeholder-shown) ~ .field-label,
-  /* Selects never match :placeholder-shown — see Select.tsx. Their label is
-     floated permanently, which is honest: a select always displays something. */
-  .field-label--floated {
-    transform: translateY(-1.15rem) scale(0.78);
-  }
+.field-label {
+  position: absolute;
+  inset-inline-start: 0;
+  /* Matches the control's padding-top, so at rest the label sits exactly on
+     the control's own text line. */
+  top: 1.65rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--color-ink-muted);
+  pointer-events: none;
+  /* `left top`, not `inline-start top` — the latter is not a valid
+     transform-origin value and the whole declaration is dropped, which leaves
+     the shrink pivoting from the element's centre. RTL is handled below. */
+  transform-origin: left top;
+  transition:
+    transform 200ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    color 200ms ease;
+  white-space: nowrap;
+}
 
-  .field-control:focus ~ .field-label {
-    color: var(--color-interactive);
-  }
+[dir="rtl"] .field-label {
+  transform-origin: right top;
+}
 
-  .field-control[aria-invalid="true"] ~ .field-label {
-    color: var(--color-error);
-  }
+/* The two states that float it: being edited, or holding a value. */
+.field-control:focus ~ .field-label,
+.field-control:not(:placeholder-shown) ~ .field-label,
+/* Selects never match :placeholder-shown — see Select.tsx. Their label is
+   floated permanently, which is honest: a select always displays something. */
+.field-label--floated {
+  transform: translateY(-1.5rem) scale(0.72);
+}
 
-  /* The placeholder is real copy ("you@company.com"), but showing it at the
-     same time as the label says the same thing twice. It appears once the
-     field is being filled in, which is when an example is actually useful. */
+.field-control:focus ~ .field-label {
+  color: var(--color-interactive);
+}
+
+.field-control[aria-invalid="true"] ~ .field-label {
+  color: var(--color-error);
+}
+
+/* The optional hint rides along at a smaller size without affecting the
+   label's own line box, which is what has to stay matched to the control. */
+.field-label .field-hint {
+  font-size: 0.8em;
+  opacity: 0.75;
+}
+
+/* The placeholder is real copy ("you@company.com"), but showing it at the same
+   time as the label says the same thing twice — and prints it on top of the
+   label, which is what the unlayered note above is about. It appears once the
+   field is being filled in, which is when an example is actually useful. */
+.field-control::placeholder {
+  color: transparent;
+  transition: color 200ms ease;
+}
+
+.field-control:focus::placeholder {
+  color: var(--color-ink-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .field-label,
+  .field-line,
   .field-control::placeholder {
-    color: transparent;
-    transition: color 200ms ease;
-  }
-
-  .field-control:focus::placeholder {
-    color: var(--color-ink-muted);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .field-label,
-    .field-line,
-    .field-control::placeholder {
-      transition: none;
-    }
+    transition: none;
   }
 }

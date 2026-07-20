@@ -64,9 +64,16 @@ export function Field({
           "aria-required": required || undefined,
         })}
 
+        {/*
+          NO TEXT-SIZE CLASS ON THIS LABEL. Its font-size and line-height are
+          set in field.css to match the control's exactly, because its resting
+          position is meant to sit on top of the control's own text and two
+          elements only share a baseline if they share metrics. A Tailwind size
+          class here put the label a full line below the placeholder.
+        */}
         <label
           htmlFor={id}
-          className={`field-label text-body-sm ${labelFloated ? "field-label--floated" : ""}`}
+          className={`field-label ${labelFloated ? "field-label--floated" : ""}`}
         >
           {label}
           {required ? (
@@ -74,7 +81,7 @@ export function Field({
               {" *"}
             </span>
           ) : optionalHint ? (
-            <span className="ms-1 text-xs font-normal">({optionalHint})</span>
+            <span className="field-hint">{` (${optionalHint})`}</span>
           ) : null}
         </label>
 
@@ -100,4 +107,4 @@ export function Field({
  * it was also the only part of the site not built from the hairline language
  * every other section uses.
  */
-export const controlClass = "field-control text-body";
+export const controlClass = "field-control";
