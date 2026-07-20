@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { describe, it, expect } from "vitest";
-import { stepIndexAt, stepPositionOf, STEP_PARTS, CLOSING_PARTS } from "./ProcessSection";
+import { stepIndexAt, STEP_PARTS, CLOSING_PARTS } from "./ProcessSection";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const src = readFileSync(join(here, "ProcessSection.tsx"), "utf8");
@@ -70,7 +70,7 @@ describe("the process section stays usable when motion is off", () => {
     // ever carries a breakpoint.
     expect(src).not.toMatch(/function StackedProcess/);
     expect(src.match(/<AssemblingMark/g) ?? []).toHaveLength(1);
-    expect(src.match(/<StepRail/g) ?? []).toHaveLength(1);
+    expect(src.match(/<StepIndex/g) ?? []).toHaveLength(1);
   });
 
   it("sizes the mark off viewport HEIGHT as well as width", () => {
@@ -84,44 +84,78 @@ describe("the process section stays usable when motion is off", () => {
   });
 });
 
-describe("the step transition is directional", () => {
-  it("parks read steps above and unread steps below", () => {
-    // With a two-state active/inactive boolean, every inactive step has to sit
-    // in the same place — so a step not yet reached drops DOWN into view,
-    // which is backwards, and scrolling up looks identical to scrolling down.
-    expect(stepPositionOf(0, 2)).toBe("before");
-    expect(stepPositionOf(1, 2)).toBe("before");
-    expect(stepPositionOf(2, 2)).toBe("current");
-    expect(stepPositionOf(3, 2)).toBe("after");
+describe("the step change is legible because the whole list is on screen", () => {
+  it("renders every step title, not just the current one", () => {
+    /**
+     * THE REGRESSION THIS EXISTS FOR is the design it replaced. Four steps
+     * shared one grid cell and slid through it, so exactly one title was ever
+     * visible. That is why the transition was not noticeable no matter how much
+     * emphasis machinery was piled on top of it — a lone title becoming a
+     * different title gives the reader no evidence they moved through a
+     * sequence. The list must map over the steps and render each one.
+     */
+    expect(src).toMatch(/steps\.map\(\(step, i\) => \(\s*<StepRow/);
+    // The single-cell stack, by its signature: everything landing in one place.
+    expect(src).not.toMatch(/col-start-1 row-start-1/);
   });
 
-  it("has exactly one current step at every index", () => {
-    for (let index = 0; index < 4; index++) {
-      const positions = [0, 1, 2, 3].map((i) => stepPositionOf(i, index));
-      expect(positions.filter((p) => p === "current")).toHaveLength(1);
-    }
+  it("has deleted the three devices that competed with each other", () => {
+    // A 210px numeral, a sand sweep across the title, and a separate rail below
+    // the column were all doing the same job at once. The list IS the rail now.
+    expect(src, "the giant absolute numeral is back").not.toMatch(/text-\[clamp\(120px/);
+    expect(src, "the sand sweep is back").not.toMatch(/scaleX: \[0, 1, 1\]/);
+    expect(src, "StepRail is back").not.toMatch(/function StepRail/);
+    expect(src, "SlotLine is back").not.toMatch(/function SlotLine/);
   });
 
-  it("clips the sliding lines so type is dealt rather than dissolved", () => {
-    // A crossfade between two headlines shows two overlapping words and
-    // neither is readable. The mask is what gives the swap a hard edge.
-    expect(src).toMatch(/overflow-hidden/);
-    // …and the descender fix that has to come with any text mask.
-    expect(src).toMatch(/paddingBottom: "0\.16em", marginBottom: "-0\.16em"/);
+  it("moves ONE marker rather than crossfading two", () => {
+    // A shared layoutId is what makes the bar travel from the previous row to
+    // this one. Without it Framer fades one out and another in, and the
+    // movement — the only thing that says "you advanced" — disappears.
+    expect(src).toMatch(/layoutId="process-step-marker"/);
   });
 
-  it("never tries to tween between two token colours", () => {
-    // Framer cannot interpolate `var()` values. A colour tween written as
-    // `color: "var(--color-accent)" -> "var(--color-ink)"` does not animate,
-    // it snaps — which looks like nothing happening, the exact failure the
-    // sweep exists to fix. Colour cues here must be opacity/scale on a solid
-    // background instead.
+  it("crossfades two title layers instead of tweening a stroke", () => {
+    // `-webkit-text-stroke` does not interpolate, and fading a fill in under a
+    // stroke that stays put gives a heavy outlined-AND-filled title mid-swap.
+    // Hollow layer underneath, solid on top, opacity between them.
+    expect(src).toMatch(/outline-type block/);
+    expect(src).toMatch(/opacity: active \? 1 : 0/);
+  });
+
+  it("announces each title once", () => {
+    // Both layers carry the same string. The solid overlay must be hidden from
+    // assistive tech or every step is read out twice.
+    const solid = src.match(/<span\s+aria-hidden\s+className="absolute inset-0 block transition-opacity/);
+    expect(solid, "the solid title layer lost its aria-hidden").not.toBeNull();
+  });
+
+  it("never tries to tween between two token colours in Framer", () => {
+    // Framer cannot interpolate `var()` values — a token-to-token colour tween
+    // does not animate, it snaps, which looks like nothing happening. CSS
+    // transitions CAN do it (they interpolate the computed colours), which is
+    // why the numeral uses `transition-colors` and not a Framer animation.
     expect(src).not.toMatch(/(?:color|background(?:Color)?):\s*\[/);
-    expect(src).not.toMatch(/color: "var\(--[^"]+\)",\s*\n?\s*(?:before|after|current):/);
+    expect(src).toMatch(/transition-colors/);
+  });
+});
+
+describe("reduced motion gets the whole section, not a quarter of it", () => {
+  it("opens every body when the scrub cannot run", () => {
+    /**
+     * A REAL BUG THAT SHIPPED IN THE PREVIOUS VERSION. Non-current steps
+     * rendered at `opacity: 0`, and under reduced motion the track collapses so
+     * the scrub never advances — the index stayed at 0 forever and three of the
+     * four steps were permanently invisible. Wanting less motion is not asking
+     * for less content.
+     */
+    expect(src).toMatch(/const open = reduce \|\| active/);
   });
 
-  it("gives the rail three states so it says how far, not just where", () => {
-    expect(src).toMatch(/const done = i < index/);
+  it("still shows which step is current without sliding a marker", () => {
+    // The layoutId marker is motion, so it is correctly withheld — but the
+    // section still has to answer "which one". A static bar on the active row.
+    expect(src).toMatch(/active && reduce/);
   });
 });
 
