@@ -165,40 +165,40 @@
     },
     "clients": {
       "eyebrow": "Clients",
-      "heading": "Our success partners",
-      "sub": "Developers, investors, hospitality groups, contractors and homeowners. We design as well as build, taking what a client imagines and turning it into a space they can walk into.",
+      "heading": "Who we build for",
+      "sub": "Contractors, developers and consultants across the Kingdom's hospitality, healthcare and public projects.",
       "logos": [
         {
-          "key": "northvale",
-          "alt": "Northvale"
+          "key": "saudiBinladinGroup",
+          "alt": "Saudi Binladin Group"
         },
         {
-          "key": "atlasGroup",
-          "alt": "Atlas Group"
+          "key": "nesmaPartners",
+          "alt": "Nesma & Partners"
         },
         {
-          "key": "meridian",
-          "alt": "Meridian"
+          "key": "modernBuildingLeaders",
+          "alt": "Modern Building Leaders"
         },
         {
-          "key": "kawkab",
-          "alt": "Kawkab"
+          "key": "redSeaDevelopment",
+          "alt": "The Red Sea Development Company"
         },
         {
-          "key": "summitCo",
-          "alt": "Summit Co."
+          "key": "elSeif",
+          "alt": "El Seif"
         },
         {
-          "key": "halcyon",
-          "alt": "Halcyon"
+          "key": "alshayaGroup",
+          "alt": "Alshaya Group"
         },
         {
-          "key": "vertex",
-          "alt": "Vertex"
+          "key": "depa",
+          "alt": "Depa"
         },
         {
-          "key": "rawabi",
-          "alt": "Rawabi"
+          "key": "acciona",
+          "alt": "Acciona"
         }
       ]
     },

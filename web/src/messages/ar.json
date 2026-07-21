@@ -165,40 +165,40 @@
     },
     "clients": {
       "eyebrow": "عملاؤنا",
-      "heading": "شركاء نجاحنا",
-      "sub": "مطوّرون ومستثمرون ومجموعات ضيافة ومقاولون وأصحاب منازل. نحن نصمّم كما نبني، فنأخذ ما يتخيّله العميل ونحوّله إلى مساحة يمكنه أن يدخلها.",
+      "heading": "لمن نصنع",
+      "sub": "مقاولون ومطوّرون واستشاريون في مشاريع الضيافة والرعاية الصحية والمشاريع العامة في المملكة.",
       "logos": [
         {
-          "key": "northvale",
-          "alt": "نورث فيل"
+          "key": "saudiBinladinGroup",
+          "alt": "مجموعة بن لادن السعودية"
         },
         {
-          "key": "atlasGroup",
-          "alt": "مجموعة أطلس"
+          "key": "nesmaPartners",
+          "alt": "نسما وشركاه"
         },
         {
-          "key": "meridian",
-          "alt": "ميريديان"
+          "key": "modernBuildingLeaders",
+          "alt": "مودرن بيلدنق ليدرز"
         },
         {
-          "key": "kawkab",
-          "alt": "كوكب"
+          "key": "redSeaDevelopment",
+          "alt": "شركة البحر الأحمر للتطوير"
         },
         {
-          "key": "summitCo",
-          "alt": "شركة سِمِت"
+          "key": "elSeif",
+          "alt": "السيف"
         },
         {
-          "key": "halcyon",
-          "alt": "هالسيون"
+          "key": "alshayaGroup",
+          "alt": "مجموعة الشايع"
         },
         {
-          "key": "vertex",
-          "alt": "فيرتكس"
+          "key": "depa",
+          "alt": "ديبا"
         },
         {
-          "key": "rawabi",
-          "alt": "روابي"
+          "key": "acciona",
+          "alt": "أكسيونا"
         }
       ]
     },

@@ -4,7 +4,7 @@ import { dirname, join } from "node:path";
 import { describe, it, expect } from "vitest";
 import {
   CLIENT_ROWS,
-  PLACEHOLDER_CLIENTS,
+  CLIENTS,
   SETS_PER_HALF,
   WIDEST_SUPPORTED_VIEWPORT,
   setWidth,
@@ -34,7 +34,7 @@ describe("the ticker loops without a visible gap", () => {
     // Two rows scrolling against each other showing the same logo twice reads
     // as padding rather than as a client list.
     expect(overlap).toEqual([]);
-    expect(a.length + b.length).toBe(PLACEHOLDER_CLIENTS.length);
+    expect(a.length + b.length).toBe(CLIENTS.length);
   });
 });
 
@@ -42,7 +42,7 @@ describe("every logo is a real, described asset", () => {
   const files = new Set(readdirSync(publicClients));
 
   it("points at a file that exists", () => {
-    for (const logo of PLACEHOLDER_CLIENTS) {
+    for (const logo of CLIENTS) {
       expect(files.has(logo.src.replace("/clients/", ""))).toBe(true);
     }
   });
@@ -51,7 +51,7 @@ describe("every logo is a real, described asset", () => {
     // next/image reserves space from these numbers. If they disagree with the
     // SVG's own viewBox the row shifts as the images load, which is exactly
     // the CLS the width/height props exist to prevent.
-    for (const logo of PLACEHOLDER_CLIENTS) {
+    for (const logo of CLIENTS) {
       const svg = readFileSync(join(publicClients, logo.src.replace("/clients/", "")), "utf8");
       const viewBox = svg.match(/viewBox="0 0 ([\d.]+) ([\d.]+)"/);
       expect(viewBox, `${logo.key} has no viewBox`).toBeTruthy();
@@ -63,7 +63,7 @@ describe("every logo is a real, described asset", () => {
   it("has an accessible name in both locales", () => {
     for (const messages of [en, ar]) {
       const alts = messages.landing.clients.logos as { key: string; alt: string }[];
-      for (const logo of PLACEHOLDER_CLIENTS) {
+      for (const logo of CLIENTS) {
         const entry = alts.find((a) => a.key === logo.key);
         expect(entry, `${logo.key} missing alt`).toBeTruthy();
         expect(entry!.alt.trim().length).toBeGreaterThan(0);
@@ -72,16 +72,17 @@ describe("every logo is a real, described asset", () => {
   });
 });
 
-describe("the placeholders cannot be shipped by accident", () => {
+describe("the invented companies cannot come back", () => {
   /**
-   * A client wall is a factual claim about who a company has worked for.
-   * These eight do not exist, so leaving them on a live site is not an
-   * unfinished placeholder — it is a false statement on the front page.
+   * A client wall is a factual claim about who a company has worked for, and
+   * for three rounds this one carried eight companies that do not exist. That
+   * was never an unfinished placeholder; it was a false statement on the front
+   * page, and it is the single worst thing the content audit found.
    *
-   * This test FAILS ON PURPOSE while they are still in place. When the real
-   * logos land, delete the invented names from this list and it goes green.
-   * That makes shipping them a decision someone has to make rather than
-   * something that slips through because nobody looked at the section again.
+   * The names are kept here as a blocklist rather than deleted with the files.
+   * They are the exact shape of the mistake — plausible, well-drawn, correctly
+   * sized marks that fill a row — and the next person short of a logo will
+   * reach for something just like them.
    */
   const INVENTED = [
     "northvale",
@@ -94,8 +95,47 @@ describe("the placeholders cannot be shipped by accident", () => {
     "rawabi",
   ];
 
-  it.fails("has had its invented logos replaced with real clients", () => {
+  it("has no invented company left in public/clients", () => {
+    /**
+     * WAS A DELIBERATE FAILURE (`it.fails`) while the wall carried eight
+     * companies that did not exist. The content audit replaced them with real
+     * references from the wood factory's own client wall, three of which are
+     * corroborated by a second document, so the gate has done its job and now
+     * asserts the property instead of waiting for it.
+     *
+     * It stays as a guard rather than being deleted: these files are the one
+     * place on the site where adding an asset makes a factual claim about a
+     * third party, and re-adding a convenient placeholder to fill a gap in the
+     * row is exactly the mistake that would go unnoticed.
+     */
     const files = readdirSync(publicClients).map((f) => f.replace(".svg", ""));
     expect(files.filter((f) => INVENTED.includes(f))).toEqual([]);
+  });
+
+  it("ships no mark the browser will refuse to parse", () => {
+    /**
+     * THE FAILURE THIS CATCHES, because it already happened: "NESMA &
+     * PARTNERS" was written into an SVG with a raw ampersand. That is not
+     * legal XML, so the browser dropped the whole document and rendered a
+     * broken-image box in the middle of the client wall — on the section whose
+     * entire job is to look credible.
+     *
+     * Nothing else would have caught it. The file exists, the manifest row is
+     * correct, next/image reserves the right space, and every test passed. It
+     * was visible only in a screenshot.
+     */
+    const bad: string[] = [];
+    for (const file of readdirSync(publicClients)) {
+      if (!file.endsWith(".svg")) continue;
+      const svg = readFileSync(join(publicClients, file), "utf8");
+      // Any `&` that is not the start of a character entity.
+      if (/&(?!(amp|lt|gt|quot|apos|#\d+|#x[0-9a-f]+);)/i.test(svg)) {
+        bad.push(`${file}: unescaped ampersand`);
+      }
+      if (!/^<svg[\s>]/.test(svg.trim()) || !svg.trimEnd().endsWith("</svg>")) {
+        bad.push(`${file}: not a well-formed svg document`);
+      }
+    }
+    expect(bad).toEqual([]);
   });
 });

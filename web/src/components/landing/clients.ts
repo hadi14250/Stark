@@ -1,21 +1,36 @@
 /**
- * Client logo manifest — the wall's single source of truth.
+ * Client reference manifest — the wall's single source of truth.
  *
- * TODO(F-content): EVERY LOGO HERE IS A PLACEHOLDER. These eight companies do
- * not exist; the marks were drawn for this build so the section could be
- * designed against realistic shapes (varied widths, mixed cap heights,
- * one-word and two-word lockups) instead of grey boxes.
+ * These eight are real. They come from the wood factory's own client wall
+ * (Trust Wood profile p38, 25 marks), and the first three are corroborated by
+ * a second document: Saudi Binladin Group appears on the Mataf Extension
+ * submittal, Nesma & Partners on the National Guard hospitals submittal, and
+ * Modern Building Leaders on the King Salman Park prequalification. They
+ * replace eight invented companies -- Northvale, Atlas Group, Meridian,
+ * Kawkab, Summit Co., Halcyon, Vertex, Rawabi -- that did not exist.
  *
- * They MUST be replaced with real client logos before anything is shown to a
- * client or deployed to a public URL. A client wall is a factual claim about
- * who a company has worked for — shipping invented ones is not a placeholder,
- * it is a false statement on the front page. `Clients.test.ts` fails while any
- * file under public/clients/ is still one of these, so this cannot be
- * forgotten rather than decided.
+ * THE SELECTION IS CONTRACTORS AND DEVELOPERS ONLY, and that is deliberate.
+ * The factory's wall also carries Hilton, Fairmont, St Regis and Swissotel,
+ * where it is not clear from any document whether the relationship was with
+ * the operator or with a project that happened to carry the flag. A
+ * manufacturer's client wall of contractors reads consistently and asserts
+ * nothing it cannot support.
+ *
+ * MOVENPICK IS DELIBERATELY ABSENT. The mark on the factory's wall is the
+ * ice-cream company ("THE ART OF SWISS ICE CREAM" is printed under it), not
+ * Movenpick Hotels & Resorts. On a page about hospitality manufacturing, that
+ * logo would be read as the hotel group by every single visitor.
+ *
+ * ⚠ THESE ARE WORDMARKS, NOT THE CLIENTS' LOGOS. Each asset sets the company
+ * NAME in type. Reproducing a company's actual trademarked artwork on a third
+ * party's website is a separate act that needs their permission, and that
+ * permission is still outstanding (SOURCES.md, open question 5). Naming a
+ * reference is ordinary practice and the client publishes these names in their
+ * own profile; copying the artwork is not, so it waits.
  *
  * Adding a real one is a data change: drop the asset in public/clients/, add a
  * row here, add its `alt` to the `landing.clients.logos` message array. No
- * component edit — the row scales itself to whatever it is given.
+ * component edit -- the row scales itself to whatever it is given.
  */
 
 export type ClientLogo = {
@@ -28,16 +43,15 @@ export type ClientLogo = {
   key: string;
 };
 
-/** @see the TODO above — placeholders, not real clients. */
-export const PLACEHOLDER_CLIENTS: readonly ClientLogo[] = [
-  { key: "northvale", src: "/clients/northvale.svg", width: 205, height: 48 },
-  { key: "atlasGroup", src: "/clients/atlas-group.svg", width: 199, height: 48 },
-  { key: "meridian", src: "/clients/meridian.svg", width: 185, height: 48 },
-  { key: "kawkab", src: "/clients/kawkab.svg", width: 160, height: 48 },
-  { key: "summitCo", src: "/clients/summit-co.svg", width: 186, height: 48 },
-  { key: "halcyon", src: "/clients/halcyon.svg", width: 160, height: 48 },
-  { key: "vertex", src: "/clients/vertex.svg", width: 164, height: 48 },
-  { key: "rawabi", src: "/clients/rawabi.svg", width: 162, height: 48 },
+export const CLIENTS: readonly ClientLogo[] = [
+  { key: "saudiBinladinGroup", src: "/clients/saudi-binladin-group.svg", width: 266, height: 48 },
+  { key: "nesmaPartners", src: "/clients/nesma-partners.svg", width: 230, height: 48 },
+  { key: "modernBuildingLeaders", src: "/clients/modern-building-leaders.svg", width: 267, height: 48 },
+  { key: "redSeaDevelopment", src: "/clients/red-sea-development.svg", width: 267, height: 48 },
+  { key: "elSeif", src: "/clients/el-seif.svg", width: 139, height: 48 },
+  { key: "alshayaGroup", src: "/clients/alshaya-group.svg", width: 202, height: 48 },
+  { key: "depa", src: "/clients/depa.svg", width: 97, height: 48 },
+  { key: "acciona", src: "/clients/acciona.svg", width: 133, height: 48 },
 ] as const;
 
 /**
@@ -48,8 +62,8 @@ export const PLACEHOLDER_CLIENTS: readonly ClientLogo[] = [
  * halves would sit under each other looking like one list that wrapped.
  */
 export const CLIENT_ROWS: readonly (readonly ClientLogo[])[] = [
-  PLACEHOLDER_CLIENTS.filter((_, i) => i % 2 === 0),
-  PLACEHOLDER_CLIENTS.filter((_, i) => i % 2 === 1),
+  CLIENTS.filter((_, i) => i % 2 === 0),
+  CLIENTS.filter((_, i) => i % 2 === 1),
 ] as const;
 
 /**
