@@ -1,62 +1,62 @@
-"use client";
-
-import { useRef } from "react";
-import { motion, useScroll, useSpring, useTransform } from "framer-motion";
 import { Photo } from "@/components/ui/Photo";
 import { PentagonClip } from "@/components/brand/geometry";
-import { useMotionConfig } from "@/components/motion/useMotionConfig";
 
 /**
- * The About photo cluster: a pentagon and a rectangular card, orbiting each
- * other as the section scrolls.
+ * The About photo cluster: the pentagon and a rectangular card trading places
+ * around each other.
  *
- * WHAT THIS REPLACED, TWICE. First a static square tucked behind the pentagon's
- * bottom corner, desktop-only — it read as a mistake rather than a composition.
- * Then a card that travelled across the pentagon on a straight diagonal, which
- * was better but still one object moving past another stationary one.
+ * FOUR VERSIONS. The reasons are worth keeping, because three of them are
+ * mistakes that are easy to walk back into.
  *
- * THE CLIENT ASKED FOR AN ORBIT: "make them rotate around each other while
- * scrolling." So both elements are now on a shared circular path, 180° apart —
- * the card sweeps around one side while the pentagon drifts the other way, and
- * because they are always opposite each other the composition stays balanced at
- * every scroll position rather than bunching up at one end.
+ * 1. A static square tucked behind the pentagon's bottom corner, desktop-only.
+ *    Read as a mistake — two photos that failed to line up — and did not exist
+ *    on a phone at all.
+ * 2. A card scrubbed along a diagonal by scroll position. Better composition,
+ *    but the client's note was blunt and correct: the rotation should not
+ *    depend on scrolling. A thing that only moves while you turn the wheel is
+ *    a scrubber, not an orbit.
+ * 3. A continuous slow orbit, 40s a revolution. This looked BROKEN. Two
+ *    separate reasons, and both are instructive: the travel was far too slow to
+ *    register at a glance (the client's word was "stuck"), and the radius was
+ *    set in percent — which in a transform means percent of the ELEMENT'S OWN
+ *    width, not the container's. 7% of a card that is a third of the cluster is
+ *    about nine pixels. It genuinely was barely moving.
+ * 4. This. Rest, a fast swap, rest, swap back — the shape the client asked for.
  *
- * HOW IT IS BUILT. `angle` runs from -0.55π to 0.75π over the section's transit
- * — about three quarters of a turn, not a full one. A full revolution would
- * return both elements to exactly where they started, so the whole effect would
- * cancel out for anyone who scrolled past and looked at the end state; three
- * quarters means the cluster arrives somewhere it did not begin.
+ * THE CYCLE IS 10s: four seconds still, one second to trade places, four
+ * seconds still, one second back. The stillness is not padding; it is what
+ * makes the movement read as a gesture rather than as drift. A viewer who looks
+ * up at the wrong moment sees a composition, and a viewer watching sees it
+ * rearrange itself in a second.
  *
- * The two radii differ (the pentagon travels a third as far as the card),
- * which is what stops it reading as a fairground ride: the big shape holds the
- * composition while the small one does most of the moving. Same reason the
- * card counter-rotates against its own orbit rather than staying axis-aligned.
+ * PURE CSS, AND A SERVER COMPONENT. The scroll-driven version was a client
+ * component holding a `useScroll`, a `useSpring` and six `useTransform`s,
+ * including an interpolated `box-shadow` — which forces a repaint every frame
+ * rather than riding the compositor. On a page that already carries parallax
+ * bands, two ticker drifts and a pinned scroll scrub, that was real weight for
+ * an effect nobody had asked to be scroll-linked. Two keyframes on `transform`
+ * and one on `z-index` cost the main thread nothing, and the whole thing left
+ * the JavaScript bundle.
  *
- * `useSpring` smooths the whole thing. A raw scroll value on a circular path
- * is where wheel-notch stepping becomes obvious, because the eye tracks a
- * curve far better than it tracks a straight line.
+ * THE GEOMETRY, so the radii can be changed safely. Everything below is in
+ * percent of the CLUSTER's width; the `--orbit-r` values are converted to
+ * percent of each element's own width, which is what a transform expects.
  *
- * THE Z-FLIP STAYS, and it is a step rather than a tween on purpose: z-index
- * does not interpolate into anything meaningful, and the moment of passing in
- * front should be a moment. It now fires at the point in the orbit where the
- * card is crossing the pentagon's face, which is what makes the two read as
- * occupying the same space rather than as two layers.
+ *     pentagon   84% wide, centred     arm 7% of cluster  → 8.3% of its width
+ *     card       34% wide, centred     arm 26% of cluster → 76% of its width
  *
- * `dir` mirrors the orbit's direction so it sweeps the reading way under RTL.
+ * The furthest either travels from the centre is the card at 26 + 17 (its own
+ * half-width) = 43% of the cluster — inside the 50% edge, so nothing swings
+ * past the page on a narrow window. The scroll version did exactly that, 41px
+ * into a horizontal scrollbar at 768px.
  *
- * REDUCED MOTION gets the end pose, static: card in front, overlapping, tilted.
- * That is a composition someone chose — not the first frame of an animation
- * that never plays.
+ * They start 180° apart (`--orbit-a0`), which is what makes them read as
+ * orbiting EACH OTHER rather than as two things independently going round.
+ *
+ * REDUCED MOTION stops both animations. They rest at their `from` pose — card
+ * low and to the end side, pentagon slightly the other way, overlapping — which
+ * is a composition someone chose rather than the corner of an animation.
  */
-
-/** Where the orbit starts and ends, in radians. Just under one turn. */
-const ANGLE_FROM = -0.55 * Math.PI;
-const ANGLE_TO = 0.75 * Math.PI;
-
-/** Card orbit radius, in % of the cluster box. The pentagon uses a third. */
-const CARD_R = 13;
-const PENTAGON_R = CARD_R / 3;
-
 export function AboutCluster({
   pentagon,
   card,
@@ -64,73 +64,12 @@ export function AboutCluster({
   pentagon: { src: string; alt: string };
   card: { src: string; alt: string };
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const { dir, reduce } = useMotionConfig();
-
-  /**
-   * `start 82%` rather than `start end`.
-   *
-   * The client's note was that "the pentagon picture should slide in when we
-   * reach that section, not before". With the scrub anchored at `start end` it
-   * begins the instant the cluster's top edge touches the bottom of the
-   * viewport — so by the time the section is actually being looked at, the
-   * orbit is already a third of the way through and the reader only ever sees
-   * the tail of it. Starting at 82% of the viewport height holds the opening
-   * pose until the cluster is properly on screen.
-   */
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start 82%", "end start"],
-  });
-
-  const progress = useSpring(scrollYProgress, {
-    stiffness: 80,
-    damping: 24,
-    restDelta: 0.001,
-  });
-
-  const angle = useTransform(progress, [0, 1], [ANGLE_FROM, ANGLE_TO]);
-
-  // Opposite ends of the same diameter: cos/sin for the card, negated for the
-  // pentagon. One `angle` drives both, so they cannot drift out of phase.
-  const cardX = useTransform(angle, (a) => `${Math.cos(a) * CARD_R * dir}%`);
-  const cardY = useTransform(angle, (a) => `${Math.sin(a) * CARD_R}%`);
-  const pentagonX = useTransform(angle, (a) => `${-Math.cos(a) * PENTAGON_R * dir}%`);
-  const pentagonY = useTransform(angle, (a) => `${-Math.sin(a) * PENTAGON_R}%`);
-
-  // Counter-rotation: the card leans against its own travel instead of riding
-  // the circle like a carriage, which is what keeps it reading as a print
-  // being moved rather than as an object on a track.
-  const cardRotate = useTransform(progress, [0, 1], [-9 * dir, 6 * dir]);
-
-  // In front once it has swung across the pentagon's face.
-  const zIndex = useTransform(progress, (p) => (p > 0.5 ? 2 : 0));
-  const boxShadow = useTransform(
-    progress,
-    [0, 0.5, 1],
-    [
-      "0 8px 20px rgb(12 26 19 / 0.10)",
-      "0 18px 40px rgb(12 26 19 / 0.20)",
-      "0 26px 60px rgb(12 26 19 / 0.26)",
-    ],
-  );
-
-  const cardFrame = {
-    // A 6px flat frame — the card reads as a print laid on the page rather
-    // than a second window cut into it, which is what makes the overlap look
-    // intentional instead of like two photos colliding.
-    padding: 6,
-    background: "var(--white-500)",
-    borderRadius: "var(--radius-image)",
-  } as const;
-
-  const cardBox =
-    "absolute w-[36%] nav:w-[42%] bottom-[-6%] [inset-inline-end:-6%]";
-
-  if (reduce) {
-    return (
-      <div className="relative">
-        <div className="relative z-[1]">
+  return (
+    <div className="relative">
+      {/* The pentagon stays IN FLOW: it is what gives the cluster its height,
+          so the section does not collapse. Only the inner div transforms. */}
+      <div className="relative z-[1] mx-auto w-[84%]">
+        <div className="animate-orbit-swap [--orbit-a0:180deg] [--orbit-r:8.3%] motion-reduce:animate-none">
           <PentagonClip
             variant="photo"
             ringColor="var(--color-surface-2)"
@@ -139,46 +78,32 @@ export function AboutCluster({
             <Photo src={pentagon.src} alt={pentagon.alt} ratio="pentagon" />
           </PentagonClip>
         </div>
+      </div>
+
+      {/*
+        TWO NESTED DIVS, and the split is load-bearing. The outer one centres
+        the card on the cluster's midpoint and carries the z-index animation;
+        the inner one carries the orbit. They cannot be merged: centring is a
+        transform (`-translate-x-1/2`) and so is the orbit, and one element can
+        only have one `transform` — the animation would silently overwrite the
+        centring and the card would sit in the corner.
+      */}
+      <div className="absolute left-1/2 top-1/2 w-[34%] -translate-x-1/2 -translate-y-1/2 animate-orbit-z motion-reduce:animate-none motion-reduce:z-[3]">
         <div
-          className={cardBox}
+          className="animate-orbit-swap [--orbit-a0:0deg] [--orbit-r:76%] [--orbit-tilt:5deg] motion-reduce:animate-none"
           style={{
-            ...cardFrame,
-            zIndex: 2,
-            rotate: `${6 * dir}deg`,
-            boxShadow: "0 26px 60px rgb(12 26 19 / 0.26)",
+            // A 6px flat frame: the card reads as a print laid on the page
+            // rather than a second window cut into it, which is what makes the
+            // overlap look intentional instead of like two photos colliding.
+            padding: 6,
+            background: "var(--white-500)",
+            borderRadius: "var(--radius-image)",
+            boxShadow: "0 22px 50px rgb(12 26 19 / 0.24)",
           }}
         >
           <Photo src={card.src} alt={card.alt} ratio="square" />
         </div>
       </div>
-    );
-  }
-
-  return (
-    <div ref={ref} className="relative">
-      <motion.div className="relative z-[1]" style={{ x: pentagonX, y: pentagonY }}>
-        <PentagonClip
-          variant="photo"
-          ringColor="var(--color-surface-2)"
-          style={{ boxShadow: "var(--shadow-pentagon)" }}
-        >
-          <Photo src={pentagon.src} alt={pentagon.alt} ratio="pentagon" />
-        </PentagonClip>
-      </motion.div>
-
-      <motion.div
-        className={cardBox}
-        style={{
-          ...cardFrame,
-          x: cardX,
-          y: cardY,
-          rotate: cardRotate,
-          zIndex,
-          boxShadow,
-        }}
-      >
-        <Photo src={card.src} alt={card.alt} ratio="square" />
-      </motion.div>
     </div>
   );
 }

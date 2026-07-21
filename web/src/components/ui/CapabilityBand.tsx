@@ -132,11 +132,21 @@ export function CapabilityBand({
             */}
             {meta && meta.length > 0 && (
               <LineReveal delay={0.2} className="w-full">
-                {/* The rule draws itself in above the strip, so the strip
-                    arrives as a footer to the copy rather than as one more
-                    line of it. */}
+                {/*
+                  The rule draws itself in above the strip, so the strip
+                  arrives as a footer to the copy rather than as one more line
+                  of it.
+
+                  IT NEEDS ROOM ON BOTH SIDES. It was 20px under the body and
+                  16px above the chips, and at that spacing it read as
+                  underlining the paragraph rather than as separating two
+                  blocks — the client's note was that the full-width line is
+                  too close to the text. A divider has to be nearer to nothing
+                  than it is to either thing it divides, so the gap is now
+                  roughly double on each side and scales with the viewport.
+                */}
                 <DrawLine
-                  className="mb-4 h-px w-full"
+                  className="mt-[clamp(8px,1.4vw,18px)] mb-[clamp(24px,3.2vw,38px)] h-px w-full"
                   style={{ background: "var(--color-line)" }}
                   delay={0.28}
                 />

@@ -88,7 +88,37 @@
   @keyframes reveal-fade-in {
     from {
       opacity: 0;
-      transform: translate3d(var(--reveal-x, 0), var(--reveal-y, 40px), 0)
+      transform: translate3d(var(--reveal-x, 0px), var(--reveal-y, 40px), 0)
+        scale(var(--reveal-scale, 1));
+      filter: blur(var(--reveal-blur, 0px));
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0) scale(1);
+      filter: blur(0px);
+    }
+  }
+
+  /* RTL MIRRORS THE HORIZONTAL TRAVEL, and this was missing.
+     `Reveal`'s docblock has said "mirrored for RTL by the CSS, not here" since
+     it was written, and for `.reveal-clip` and `.reveal-line-x` below it is
+     true — but `.reveal-fade` never had the rule. It went unnoticed while every
+     call site passed a token 24px, where entering from the wrong side is
+     invisible. It stops being invisible the moment a reveal travels far enough
+     to see: on the Arabic home page the About cluster sits on the LEFT, so a
+     positive `x` had it entering from the far side of the page, crossing the
+     column it belongs beside.
+
+     Negating the custom property is the whole fix — one keyframe, and every
+     existing call site is corrected at once without touching a component. */
+  [dir="rtl"] .reveal-fade.is-revealed {
+    animation-name: reveal-fade-in-rtl;
+  }
+
+  @keyframes reveal-fade-in-rtl {
+    from {
+      opacity: 0;
+      transform: translate3d(calc(-1 * var(--reveal-x, 0px)), var(--reveal-y, 40px), 0)
         scale(var(--reveal-scale, 1));
       filter: blur(var(--reveal-blur, 0px));
     }

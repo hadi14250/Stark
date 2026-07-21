@@ -108,13 +108,30 @@ export function CapabilitySpine() {
 }
 
 /**
- * Puts the 1px rule on the content container's inline-start gutter edge.
+ * Puts the 1px rule in the gutter, OUTSIDE the content column.
  *
- * The bands each render their own <Container>, so the spine has to reproduce
- * that container's geometry to land on the same edge — same max-width, same
- * fluid padding, same auto margins. Written out as a class string rather than
- * by rendering <Container> because the padded box itself needs `relative` to
- * hang the rule off, and Container takes no style.
+ * The bands each render their own <Container>, so the spine reproduces that
+ * container's geometry — same max-width, same fluid padding, same auto margins
+ * — and then steps back off the content edge. Written out as a class string
+ * rather than by rendering <Container> because the padded box itself needs
+ * `relative` to hang the rule off, and Container takes no style.
+ *
+ * ⚠ IT USED TO SIT EXACTLY ON THE CONTENT EDGE, i.e. flush against the start of
+ * every heading, paragraph and ordinal in the section — a zero-pixel gap. The
+ * client raised it twice, and both times the words were "the line is too close
+ * to the text". A rule that shares an edge with the type does not read as a
+ * spine connecting the bands; it reads as a border someone forgot to pad, or
+ * as a text cursor.
+ *
+ * So it now sits `--spine-gap` back from the content edge, in the page margin
+ * where the connective tissue belongs. The gap scales with the gutter, so it is
+ * ~19px at the `nav:` breakpoint and ~32px on a wide display — always clearly
+ * separate from the column, never far enough to look unrelated to it.
+ *
+ * The gap is subtracted from the padding rather than being a fixed inset, so
+ * the rule can never end up off the left of the viewport: at the narrowest
+ * width the padding is 43px and the gap 19px, leaving the rule at 24px with the
+ * glyph's own -8.5px offset still comfortably on screen.
  *
  * `trackRef` goes on the OUTER box on purpose: it is the element that spans the
  * whole bands stack, so it is the correct thing to measure scroll progress
@@ -132,11 +149,17 @@ function SpineFrame({
       ref={trackRef}
       aria-hidden
       className="pointer-events-none absolute inset-0 hidden nav:block"
+      style={
+        {
+          "--spine-pad": "clamp(24px, 5vw, 72px)",
+          "--spine-gap": "clamp(19px, 2.2vw, 32px)",
+        } as React.CSSProperties
+      }
     >
-      <div className="relative mx-auto h-full w-full max-w-[1440px] px-[clamp(24px,5vw,72px)]">
+      <div className="relative mx-auto h-full w-full max-w-[1440px] px-[var(--spine-pad)]">
         <div
           className="absolute inset-y-0 w-px"
-          style={{ insetInlineStart: "clamp(24px,5vw,72px)" }}
+          style={{ insetInlineStart: "calc(var(--spine-pad) - var(--spine-gap))" }}
         >
           {children}
         </div>

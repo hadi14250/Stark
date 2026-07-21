@@ -99,3 +99,48 @@ describe("token consumers", () => {
     expect(consumed.size).toBeGreaterThan(30);
   });
 });
+
+/**
+ * LETTER-SPACING IS A TOKEN, NEVER A LITERAL.
+ *
+ * The eyebrow tracking came down twice in one review round — 0.3em to 0.16em,
+ * then 0.16em to 0.09em — because the client kept finding micro-labels whose
+ * letters had drifted apart. The second pass only reached everything because
+ * `--tracking-eyebrow` is a single dial.
+ *
+ * Except it was not, quite: four files had `tracking-[0.24em]`, one had
+ * `tracking-[0.14em]` and the locale switcher had `tracking-[0.2em]`, all
+ * written as Tailwind arbitrary values. Those did not move when the token
+ * moved, which is exactly why the client was still reading over-spaced labels
+ * in the footer and the gallery teaser after the first fix had "gone in".
+ *
+ * The switcher's was worse than inconsistent. Its label is always in the OTHER
+ * language, so on the English page it applied 0.2em to Arabic — and tracking
+ * does not merely widen cursive, it BREAKS THE JOINS between letters. That is
+ * the same defect `[lang="ar"] { --tracking-eyebrow: 0 }` exists to prevent,
+ * reintroduced by hardcoding past it.
+ *
+ * So: no arbitrary tracking values in components. Use `tracking-eyebrow` or
+ * `tracking-display` and change the token.
+ */
+describe("letter-spacing comes from tokens, not from arbitrary values", () => {
+  const offenders = files
+    .filter((f) => /\.tsx?$/.test(f) && !f.includes(".test."))
+    .flatMap((f) => {
+      const src = readFileSync(f, "utf8");
+      const hits = src.match(/tracking-\[[^\]]+\]/g) ?? [];
+      return hits.map((h) => `${relative(SRC, f)}: ${h}`);
+    });
+
+  it("no component hardcodes a tracking value", () => {
+    expect(offenders).toEqual([]);
+  });
+
+  it("the eyebrow tracking token is still declared, and still zeroed for Arabic", () => {
+    const tokens = readFileSync(join(SRC, "styles/tokens.css"), "utf8");
+    expect(tokens).toMatch(/--tracking-eyebrow:\s*[\d.]+em;/);
+    // Cursive scripts must not be tracked at all — the joins break.
+    const arabic = tokens.match(/\[lang="ar"\]\s*\{([\s\S]*?)\n\}/)?.[1] ?? "";
+    expect(arabic).toMatch(/--tracking-eyebrow:\s*0;/);
+  });
+});

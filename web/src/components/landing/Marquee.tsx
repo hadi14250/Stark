@@ -13,7 +13,6 @@ import { MarkGlyph } from "@/components/brand/geometry";
  * The CSS does everything the tween did:
  *   travel      `--animate-marquee` translates -50% * var(--dir), so the two
  *               identical copies loop seamlessly and RTL scrolls the other way
- *   hover pause `animation-play-state: paused` on hover
  *   reduced     `motion-reduce:animate-none` plus the global duration
  *               neutraliser — the ribbon simply sits still and stays readable
  *
@@ -92,7 +91,7 @@ export async function Marquee() {
   return (
     <section
       aria-label={t("label")}
-      className="group flex h-[clamp(120px,14vw,168px)] w-full items-center overflow-hidden border-y bg-[color:var(--color-accent)]"
+      className="flex h-[clamp(120px,14vw,168px)] w-full items-center overflow-hidden border-y bg-[color:var(--color-accent)]"
       // Hairlines top and bottom. Without them the band's colour just stops,
       // which reads as a gap in the page; with them it reads as a set band.
       // Mixed from ink rather than --color-line, which is tuned for the light
@@ -113,7 +112,15 @@ export async function Marquee() {
         default block width it would size to the viewport instead and the seam
         would land in the middle of a phrase.
       */}
-      <div className="flex w-max flex-none flex-nowrap whitespace-nowrap animate-marquee will-change-transform group-hover:[animation-play-state:paused] motion-reduce:animate-none">
+      {/*
+        NO HOVER PAUSE EITHER. Same call as the client ticker: the band runs
+        edge to edge and sits between two sections, so the pointer lands on it
+        constantly while you are reading or just moving toward something else,
+        and the ribbon kept stopping dead for no reason the reader could connect
+        to an action of theirs. Nothing in here is interactive or readable-only-
+        when-still, so the pause was protecting nothing.
+      */}
+      <div className="flex w-max flex-none flex-nowrap whitespace-nowrap animate-marquee will-change-transform motion-reduce:animate-none">
         {[0, 1].map(pass)}
       </div>
     </section>

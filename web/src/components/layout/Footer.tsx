@@ -37,7 +37,7 @@ export function Footer() {
 
           {/* Divisions */}
           <div>
-            <h3 className="mb-4 font-mono text-xs uppercase tracking-[0.24em] text-[color:var(--ink-green-muted)]">
+            <h3 className="mb-4 font-mono text-xs uppercase tracking-eyebrow text-[color:var(--ink-green-muted)]">
               {t("divisions")}
             </h3>
             <ul className="space-y-2 text-sm">
@@ -60,7 +60,7 @@ export function Footer() {
 
           {/* Company */}
           <div>
-            <h3 className="mb-4 font-mono text-xs uppercase tracking-[0.24em] text-[color:var(--ink-green-muted)]">
+            <h3 className="mb-4 font-mono text-xs uppercase tracking-eyebrow text-[color:var(--ink-green-muted)]">
               {t("company")}
             </h3>
             <ul className="space-y-2 text-sm">
@@ -79,7 +79,7 @@ export function Footer() {
 
           {/* Contact */}
           <div>
-            <h3 className="mb-4 font-mono text-xs uppercase tracking-[0.24em] text-[color:var(--ink-green-muted)]">
+            <h3 className="mb-4 font-mono text-xs uppercase tracking-eyebrow text-[color:var(--ink-green-muted)]">
               {t("contact")}
             </h3>
             <ul className="space-y-2 text-sm">

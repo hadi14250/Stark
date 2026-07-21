@@ -7,7 +7,7 @@ export default async function NotFound() {
   return (
     <Container className="grid min-h-[60vh] place-items-center py-20 text-center">
       <div>
-        <p className="font-mono text-sm uppercase tracking-[0.24em] text-accent">
+        <p className="font-mono text-sm uppercase tracking-eyebrow text-accent">
           404
         </p>
         <h1 className="mt-3 font-display text-3xl font-semibold text-[color:var(--color-ink)]">

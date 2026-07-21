@@ -169,7 +169,7 @@ function Tile({
 
       <span
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 bottom-0 flex translate-y-2 items-center gap-2 p-4 font-mono text-[11px] uppercase tracking-[0.14em] text-[color:var(--white-500)] opacity-0 transition-[opacity,transform] duration-500 group-hover/tile:translate-y-0 group-hover/tile:opacity-100 group-focus-visible/tile:translate-y-0 group-focus-visible/tile:opacity-100 motion-reduce:transition-none"
+        className="pointer-events-none absolute inset-x-0 bottom-0 flex translate-y-2 items-center gap-2 p-4 font-mono text-[11px] uppercase tracking-eyebrow text-[color:var(--white-500)] opacity-0 transition-[opacity,transform] duration-500 group-hover/tile:translate-y-0 group-hover/tile:opacity-100 group-focus-visible/tile:translate-y-0 group-focus-visible/tile:opacity-100 motion-reduce:transition-none"
       >
         {label}
         <span className="rtl:rotate-180">→</span>

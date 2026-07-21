@@ -100,3 +100,40 @@ describe("the ticker still loops seamlessly", () => {
     expect(src).toMatch(/aria-hidden=\{copy === 1\}/);
   });
 });
+
+/**
+ * NEITHER TICKER MAY PAUSE ON HOVER.
+ *
+ * The client raised this twice in one review, once for the watchword ribbon and
+ * once for the client logo wall, because both had `animation-play-state: paused`
+ * on hover and both are full-bleed bands sitting between sections. The pointer
+ * lands on them constantly — while reading the section above, while travelling
+ * toward the nav — so the band stops for reasons the reader cannot connect to
+ * anything they did, and it reads as the animation breaking rather than as a
+ * considerate pause.
+ *
+ * It is a tempting thing to add back ("let people look at a logo"), so the rule
+ * is asserted rather than remembered. Neither band contains anything
+ * interactive, and neither needs to be still to be read.
+ *
+ * Comments are stripped before scanning — the docblocks in both files explain
+ * why the pause was removed and necessarily name it.
+ */
+describe("the full-bleed tickers never stop for the pointer", () => {
+  const clients = readFileSync(
+    join(here, "../home/Clients.tsx"),
+    "utf8",
+  );
+  const strip = (s: string) =>
+    s.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\{\/\*[\s\S]*?\*\/\}/g, "").replace(/\/\/.*$/gm, "");
+
+  for (const [name, code] of [
+    ["Marquee", strip(src)],
+    ["Clients", strip(clients)],
+  ] as const) {
+    it(`${name} does not pause its animation on hover`, () => {
+      expect(code).not.toMatch(/animation-play-state/);
+      expect(code).not.toMatch(/hover:\[animation/);
+    });
+  }
+});

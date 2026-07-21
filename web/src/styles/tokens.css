@@ -243,12 +243,21 @@
   --leading-body: 1.85;
 
   --tracking-display: -0.02em;
-  /* 0.16em, not 0.3em. At 0.3 the letters of a three-word eyebrow drifted far
-     enough apart that "Who we are" stopped reading as a phrase and started
-     reading as separated characters — the client flagged it on that exact
-     string. 0.16 still separates the eyebrow from body copy at 12px without
-     breaking the word. */
-  --tracking-eyebrow: 0.16em;
+  /* 0.09em, down from 0.3em in two steps.
+     At 0.3 the letters of a three-word eyebrow drifted far enough apart that
+     "Who we are" stopped reading as a phrase and started reading as separated
+     characters. 0.16 fixed that string at 12px but was still too open for the
+     11px MONOSPACE micro-labels that make up most consumers of this token —
+     mono glyphs already carry their own even sidebearing, so tracking added on
+     top double-counts, and "PANEL PROCESSING · EDGE BANDING" came out looking
+     like it had a space between every letter. The client listed a dozen of
+     them.
+
+     THIS TOKEN IS THE ONLY DIAL, which is why the two hardcoded 0.24em and
+     0.2em call sites that used to sit beside it are now gone: a value written
+     into a class string is a value that will not move the next time this is
+     wrong. */
+  --tracking-eyebrow: 0.09em;
   --eyebrow-transform: uppercase;
 
   /* ---------------------------------------------------------------------
@@ -306,6 +315,32 @@
   --animate-logos-alt: marquee 64s linear infinite reverse;
   --animate-ken-burns: ken-burns 18s ease-in-out infinite alternate;
 
+  /* The About cluster's orbit: the two photographs trade places around a shared
+     centre, hold, then trade back.
+
+     DELIBERATELY NOT SCROLL-DRIVEN. The first version scrubbed this to scroll
+     position and the client's note was blunt and right — the rotation should
+     not depend on scrolling. Something that only moves while you turn the wheel
+     is a scrubber, not an orbit. It also meant six motion values recomputing on
+     every scroll frame on a page that already has plenty of scroll-linked work.
+
+     THE SHAPE OF THE CYCLE IS THE WHOLE EFFECT, and it is what the client asked
+     for: rest, then a fast move, then rest. 10s total — 4s still, 1s swap, 4s
+     still, 1s back. A continuous slow rotation was the first attempt and it
+     read as broken: at any given glance nothing appears to be happening, so the
+     pentagon just looks stuck. A one-second move is impossible to miss, and the
+     four seconds of stillness either side are what make it land as a deliberate
+     gesture rather than as drift.
+
+     The easing is applied at the 40% and 90% stops, which is where CSS wants
+     it: a timing function on a keyframe governs the segment STARTING there, so
+     these two curve and the holds stay flat. */
+  --animate-orbit-swap: orbit-swap 10s infinite;
+  /* Which of the two sits in front. Steps, not a tween — z-index is not
+     something to interpolate, and the changeover should happen once, mid-swap,
+     while the two are crossing and it is invisible. */
+  --animate-orbit-z: orbit-z 10s step-end infinite;
+
 }
 
 /* The header's bar grows 64 → 76 at the `nav:` breakpoint, so its total height
@@ -360,6 +395,61 @@
   }
   to {
     transform: scale(1.08) translate3d(1.5%, -1.5%, 0);
+  }
+}
+
+/* The orbit pair.
+   `rotate(θ) translate(r) rotate(-θ)` is the standard way to carry a child
+   around a circle while keeping it upright: the outer rotation sweeps the arm,
+   the inner one cancels the spin so the photograph never turns upside down.
+
+   ONE KEYFRAME SERVES BOTH ELEMENTS. `--orbit-a0` is the starting angle, so
+   the card sits at 0° and the pentagon at 180° — opposite ends of the same
+   diameter, which is what makes them read as orbiting EACH OTHER rather than
+   as two things independently going round.
+
+   ⚠ `--orbit-r` IS A PERCENTAGE OF THE ELEMENT'S OWN WIDTH, not the container's
+   — that is how percentage translations work, and getting it wrong is why the
+   first version looked frozen. 7% of a card that is itself a third of the
+   cluster is about nine pixels of travel. The consumers set values in the tens
+   of percent for this reason; check the arithmetic there before changing them.
+
+   `--orbit-tilt` adds a lean that is NOT cancelled, so the card stays angled
+   like a print laid on the page rather than snapping to axis-aligned.
+
+   `--dir` reverses the sweep under RTL. */
+@keyframes orbit-swap {
+  0%,
+  40% {
+    transform: rotate(var(--orbit-a0, 0deg)) translate(var(--orbit-r))
+      rotate(calc(-1 * var(--orbit-a0, 0deg))) rotate(var(--orbit-tilt, 0deg));
+    animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+  }
+  50%,
+  90% {
+    transform: rotate(calc(var(--orbit-a0, 0deg) + 180deg * var(--dir, 1)))
+      translate(var(--orbit-r))
+      rotate(calc(-1 * (var(--orbit-a0, 0deg) + 180deg * var(--dir, 1))))
+      rotate(var(--orbit-tilt, 0deg));
+    animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+  }
+  100% {
+    transform: rotate(var(--orbit-a0, 0deg)) translate(var(--orbit-r))
+      rotate(calc(-1 * var(--orbit-a0, 0deg))) rotate(var(--orbit-tilt, 0deg));
+  }
+}
+
+/* The card leads, then the pentagon does. Both changeovers land at the midpoint
+   of a swap, when the two are crossing and the restack cannot be seen. */
+@keyframes orbit-z {
+  0% {
+    z-index: 3;
+  }
+  45% {
+    z-index: 0;
+  }
+  95% {
+    z-index: 3;
   }
 }
 

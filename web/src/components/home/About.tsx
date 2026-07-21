@@ -92,9 +92,25 @@ export async function About() {
             </div>
           </Reveal>
 
-          <Reveal x={24} delay={0.1}>
-            {/* The square is no longer parked behind the pentagon's corner —
-                it travels across it on scroll. See AboutCluster for why. */}
+          {/*
+            THE CLUSTER SLIDES IN FROM THE END SIDE, like every other
+            photograph on this page.
+
+            It was `x={24}`, a 24px nudge under a 40px vertical lift — which is
+            to say it read as a fade, and next to the capability bands wiping in
+            beside it the section looked like the one place the images just
+            appeared. The client asked for it to arrive like the others. 96px
+            with a slight scale and blur is a slide you can actually see, and
+            `y=0` keeps it purely horizontal so it reads as coming in from the
+            side rather than drifting up diagonally.
+
+            The travel is MIRRORED FOR RTL by reveal.css, not here, so the
+            cluster always enters from the outside edge of the reading
+            direction. The orbit inside it is unaffected: this transforms the
+            wrapper, the orbit transforms two elements further down, and one
+            element never carries both.
+          */}
+          <Reveal x={96} y={0} scale={0.97} blur={3} delay={0.12}>
             <AboutCluster
               pentagon={{ src: landingImages.collage[0], alt: collageAlt[0] }}
               card={{ src: landingImages.collage[1], alt: collageAlt[1] }}
