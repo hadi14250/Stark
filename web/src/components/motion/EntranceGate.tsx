@@ -40,7 +40,7 @@ import {
  * front of it — the exact failure the gate exists to prevent, arriving by the
  * safety net instead of by the bug. Preloader.test.ts asserts the ordering.
  */
-const MAX_GATE_MS = 1900;
+const MAX_GATE_MS = 2600;
 
 const EntranceContext = createContext<{
   ready: boolean;

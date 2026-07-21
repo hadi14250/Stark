@@ -96,7 +96,7 @@
      site forever. `forwards` guarantees it clears with or without React.
      Keep --preloader-hold in sync with HOLD_MS in Preloader.tsx. */
   .stark-preloader {
-    --preloader-hold: 1.1s;
+    --preloader-hold: 1.8s;
     position: fixed;
     inset: 0;
     z-index: 10000;

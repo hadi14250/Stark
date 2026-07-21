@@ -22,6 +22,26 @@ import { useEffect, useRef } from "react";
  * so nothing re-animates on scroll-back and the observer set shrinks as the
  * reader moves down the page.
  */
+/**
+ * How far ABOVE the viewport's bottom edge the trigger line sits.
+ *
+ * WHY IT IS NOT ZERO. With no root margin the observer fires the moment an
+ * element crosses the bottom edge of the screen — so a photograph animates
+ * into place while it is still a sliver at the very bottom, and by the time
+ * the reader has scrolled far enough to actually look at it, the animation
+ * finished several hundred pixels ago. The client's note was exactly that:
+ * "all the animations slide into place earlier than the user scrolls to them."
+ *
+ * Shrinking the observer's root by 14% of the viewport height moves the
+ * trigger to roughly where the eye is, so the reveal plays while the element
+ * is being looked at rather than before.
+ *
+ * It is a percentage rather than a pixel value on purpose: 14% of a 667px
+ * phone is 93px and 14% of a 1200px display is 168px, which is the right
+ * shape — the taller the screen, the further from the edge "arrived" is.
+ */
+const TRIGGER_INSET = "0px 0px -14% 0px";
+
 export function useRevealOnce<T extends HTMLElement = HTMLDivElement>(options?: {
   /** Fraction of the element that must be visible. Default 0.2. */
   amount?: number;
@@ -48,7 +68,7 @@ export function useRevealOnce<T extends HTMLElement = HTMLDivElement>(options?: 
           io.unobserve(entry.target);
         }
       },
-      { threshold: amount },
+      { threshold: amount, rootMargin: TRIGGER_INSET },
     );
 
     io.observe(el);

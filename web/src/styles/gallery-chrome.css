@@ -271,11 +271,6 @@
     font-weight: 500;
   }
 
-  .gallery-chrome .gl-project-sub {
-    font-size: 12px;
-    color: var(--gl-faint);
-  }
-
   /* The rule sits ON the strip's bottom border rather than above it. */
   .gallery-chrome .gl-project-rule {
     position: absolute;
@@ -330,12 +325,6 @@
        390px the strip needs the width more than the page needs the offer
        twice. */
     .gallery-chrome .gl-cta {
-      display: none;
-    }
-  }
-
-  @media (max-width: 859px) {
-    .gallery-chrome .gl-project-sub {
       display: none;
     }
   }

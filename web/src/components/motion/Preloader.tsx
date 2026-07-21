@@ -26,25 +26,29 @@ const VARIANT = "assemble" as const;
  * rather than an entrance — that is what a 1.2s hold did against the designed
  * 3s cycle, and why the hold was raised to 2100ms.
  *
- * 2.1s + 0.6s is too long to sit through, so the fix is to run the cycle
- * FASTER rather than to cut into it: at LOADER_SPEED the mark is whole from
- * ~715ms to ~1250ms, and 1100ms lands inside that window with room either
- * side. Total entrance is 1.7s instead of 2.7s, and the logo is still fully
- * assembled at the moment the curtain starts to move.
+ * THE HOLD WENT DOWN, THEN BACK UP. A previous round compressed the cycle to
+ * ~1.95s (LOADER_SPEED 0.65) and cut the hold to 1100ms, for a 1.7s entrance.
+ * The client's review asked for the opposite — "increase the length of
+ * loading" — so the cycle is back at the designed speed and the hold sits in
+ * the middle of the locked beat rather than at its front edge.
+ *
+ * At LOADER_SPEED 1.0 the mark is whole from 1200ms (the core is the last part
+ * to land: 300ms delay + the 30% lock stop of a 3s cycle) until 1920ms (the
+ * 64% release stop, when blade 0 starts leaving). 1800ms sits inside that with
+ * 120ms of margin on the late side, so the logo is not merely assembled when
+ * the curtain moves — it has visibly been assembled for a beat. Total entrance
+ * is 2.4s.
  *
  * Preloader.test.ts recomputes that window from the keyframe stops in
  * logo-loader.css and the per-blade offsets in LogoLoader.tsx, so changing any
  * one of the four numbers without the others fails rather than shipping a
  * glitchy entrance.
  */
-const HOLD_MS = 1100;
+const HOLD_MS = 1800;
 /** The curtain's own lift, matching --dur-curtain. */
 const LIFT_MS = 600;
-/**
- * Playback rate for the mark. 1 = the designer's 3s cycle; this compresses it
- * to ~1.95s so a full assemble completes well inside the shortened hold.
- */
-const LOADER_SPEED = 0.65;
+/** Playback rate for the mark. 1 = the designer's 3s cycle, as drawn. */
+const LOADER_SPEED = 1;
 
 /**
  * The brand loader: the mark assembles itself, then the curtain lifts.

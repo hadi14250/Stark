@@ -25,7 +25,10 @@ export async function generateMetadata({
     metadataBase: new URL(SITE_URL),
     title: {
       default: `${t("siteName")} — ${t("tagline")}`,
-      template: `%s — ${t("siteName")}`,
+      // A pipe, not an em-dash. The dash sweep covered the copy deck; this is
+      // the one string that builds a user-visible line in code rather than in
+      // messages, so it has to be changed here or the browser tab keeps it.
+      template: `%s | ${t("siteName")}`,
     },
     description: t("defaultDescription"),
     alternates: alternates(""),

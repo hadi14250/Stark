@@ -272,7 +272,15 @@ export function GalleryShell({
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <span className="gl-project-name">{p.title}</span>
-                  <span className="gl-project-sub">{p.subtitle}</span>
+                  {/*
+                    NO SUBTITLE IN THE TAB. Each tab carried its sector line
+                    too ("Hotel · Public areas"), which put three pieces of
+                    text in every tab across a row of three — the client's word
+                    was "crowded", and on a narrow window the row scrolled
+                    horizontally because of it. The subtitle still appears on
+                    the hero card inside the stage, where it belongs and has
+                    room; a tab only has to be nameable.
+                  */}
 
                   {/*
                     ONE rule with a shared layoutId, so Framer moves the SAME

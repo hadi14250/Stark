@@ -140,16 +140,31 @@ export function CapabilityBand({
                   style={{ background: "var(--color-line)" }}
                   delay={0.28}
                 />
+                {/*
+                  ONE ROW ON DESKTOP, wrapping only on phones. The client's
+                  note on this section was that "the words are under each
+                  other, make them next to each other" — three chips at the old
+                  lengths could not fit the copy column, so they stacked, and a
+                  three-line stack of mono labels reads as a list of failures
+                  rather than as a capability strip.
+
+                  Two things fix it together and both are needed: the strings
+                  are shorter (see the messages), and the row is `nowrap` above
+                  the breakpoint so it cannot silently stack again if a
+                  translation runs long — under `nav:` it scrolls instead,
+                  which is visible and recoverable. Below the breakpoint there
+                  is genuinely no room for three, so wrapping is correct there.
+                */}
                 <ul
-                  className="flex flex-wrap gap-x-5 gap-y-2 font-mono text-[11px] tracking-eyebrow text-[color:var(--color-ink-muted)]"
+                  className="flex flex-wrap gap-x-5 gap-y-2 font-mono text-[11px] tracking-eyebrow text-[color:var(--color-ink-muted)] nav:flex-nowrap nav:overflow-x-auto"
                   style={{ textTransform: "var(--eyebrow-transform)" as "uppercase" }}
                 >
                   {meta.map((m, i) => (
-                    <li key={m} className="flex items-center gap-5">
+                    <li key={m} className="flex items-center gap-5 nav:whitespace-nowrap">
                       {i > 0 && (
                         <span
                           aria-hidden
-                          className="h-1 w-1 rounded-full"
+                          className="h-1 w-1 shrink-0 rounded-full"
                           style={{ background: "var(--color-accent)" }}
                         />
                       )}

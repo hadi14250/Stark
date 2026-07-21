@@ -1,6 +1,5 @@
 import { getTranslations } from "next-intl/server";
 import { MarkGlyph } from "@/components/brand/geometry";
-import { ScrollDrift } from "@/components/motion/ScrollDrift";
 
 /**
  * Marquee ribbon — a sand full-bleed band of infinitely-scrolling watchwords.
@@ -35,11 +34,11 @@ import { ScrollDrift } from "@/components/motion/ScrollDrift";
  *   separator     the pentagon itself, slowly rotating, instead of a "✦" from
  *                 whatever font happened to resolve. The mark is the one
  *                 ornament this site is entitled to use.
- *   drift         ScrollDrift layers scroll-linked travel over the CSS loop,
- *                 so the band answers the scroll instead of ignoring it.
+ *   (drift        a fourth device, scroll-linked travel layered on the loop,
+ *                 was removed in review round 2. See the note at the markup.)
  *
- * STILL A SERVER COMPONENT for everything except the drift wrapper: the loop,
- * the type and the glyphs are all static markup.
+ * A PURE SERVER COMPONENT AGAIN, now that the drift wrapper is gone: the loop,
+ * the type and the glyphs are all static markup and this ships no client JS.
  */
 export async function Marquee() {
   const t = await getTranslations("landing.marquee");
@@ -100,15 +99,23 @@ export async function Marquee() {
       // surfaces either side of this and disappears on sand.
       style={{ borderColor: "color-mix(in srgb, var(--color-ink) 16%, transparent)" }}
     >
-      <ScrollDrift amount={6} className="w-full">
-        {/* `w-max` is load-bearing: the loop translates the track -50%, which
-            is only half its CONTENT if the track sizes to its content. Left at
-            the default block width it would size to the viewport instead and
-            the seam would land in the middle of a phrase. */}
-        <div className="flex w-max flex-none flex-nowrap whitespace-nowrap animate-marquee will-change-transform group-hover:[animation-play-state:paused] motion-reduce:animate-none">
-          {[0, 1].map(pass)}
-        </div>
-      </ScrollDrift>
+      {/*
+        NO SCROLL DRIFT. The band was wrapped in ScrollDrift so that scrolling
+        dragged it on top of its own loop. The client's note was to keep the
+        band and drop that: "keep the yellow section that slides words, without
+        the scroll animation." Two travel sources on one strip made the speed
+        read as inconsistent rather than as depth, and on a trackpad it looked
+        like the loop was stuttering. The CSS loop alone is the whole effect
+        now. ScrollDrift stays in the codebase — Clients still uses it.
+
+        `w-max` is load-bearing: the loop translates the track -50%, which is
+        only half its CONTENT if the track sizes to its content. Left at the
+        default block width it would size to the viewport instead and the seam
+        would land in the middle of a phrase.
+      */}
+      <div className="flex w-max flex-none flex-nowrap whitespace-nowrap animate-marquee will-change-transform group-hover:[animation-play-state:paused] motion-reduce:animate-none">
+        {[0, 1].map(pass)}
+      </div>
     </section>
   );
 }

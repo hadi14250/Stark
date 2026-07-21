@@ -7,14 +7,20 @@ import { BladeField } from "@/components/brand/geometry";
 import { landingImages } from "@/components/landing/assets";
 import { CapabilitySpine } from "./CapabilitySpine";
 
-type Item = { title: string; body: string; alt: string };
+type Item = { title: string; body: string; meta: string[]; alt: string };
 
-/** The capability strips, per band. Qualitative — no unconfirmed figures. */
-const META: string[][] = [
-  ["European lines", "Repeatable tolerance", "Full component range"],
-  ["Project volume", "Multi-unit hospitality", "Complete interiors"],
-  ["Stage-gated QC", "Raw material to install", "Site-ready on arrival"],
-];
+/*
+ * THE CHIP STRIPS USED TO LIVE HERE, AS AN ENGLISH ARRAY IN THE COMPONENT.
+ * That was a bug hiding in plain sight: nine strings of visible UI copy that
+ * never went through next-intl, so the Arabic page rendered them in English.
+ * They are message keys now, alongside the copy they belong to.
+ *
+ * They were also wrong. The client read the third band's out loud — "there's
+ * nothing called 'site-ready on arrival', they don't make sense" — and the
+ * strings were long enough to wrap onto three stacked lines, which is the
+ * "words are under each other" note on the same section. The replacements are
+ * short enough to sit on one row and describe operations that exist.
+ */
 
 /**
  * The section the client cared most about.
@@ -77,7 +83,7 @@ export async function Capabilities() {
               index={i + 1}
               heading={item.title}
               body={item.body}
-              meta={META[i]}
+              meta={item.meta}
               image={landingImages.bands[i]}
               imageAlt={item.alt}
               /*

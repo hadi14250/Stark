@@ -112,10 +112,12 @@ export function WordsReveal({
 export function LineReveal({
   children,
   className,
+  style,
   delay = 0,
 }: {
   children: ReactNode;
   className?: string;
+  style?: CSSProperties;
   delay?: number;
 }) {
   const ref = useRevealOnce<HTMLDivElement>({ amount: 0.4 });
@@ -128,6 +130,7 @@ export function LineReveal({
         {
           "--reveal-delay": `${delay}s`,
           "--reveal-y": "22px",
+          ...style,
         } as CSSProperties
       }
     >

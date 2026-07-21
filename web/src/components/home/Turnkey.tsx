@@ -1,10 +1,12 @@
-import { getTranslations } from "next-intl/server";
+import { getTranslations, getLocale } from "next-intl/server";
 import { Container } from "@/components/ui/Container";
 import { Section, SectionHeader } from "@/components/ui/Section";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Pill } from "@/components/ui/Pill";
 import { MarkTexture } from "@/components/brand/geometry";
 import { Parallax } from "@/components/motion/Parallax";
+import { Reveal } from "@/components/motion/Reveal";
+import { CountUp } from "@/components/motion/CountUp";
 import { landingImages } from "@/components/landing/assets";
 import { TurnkeyLedger } from "./TurnkeyLedger";
 
@@ -26,6 +28,28 @@ const ROW_IMAGES = [
 ] as const;
 
 /**
+ * The four figures, from the STARK company profile (p.2, the stat row under
+ * "WHO WE ARE"). They are the client's own published numbers, confirmed for use
+ * on the site in the round-2 review.
+ *
+ * `grouping` is off for the year and on for the area, and that distinction is
+ * the whole reason the flag exists: "1,967" is a quantity and "1967" is a date,
+ * and the separator is what decides which one a reader sees.
+ *
+ * ⚠ THE FOUNDING YEAR IS CONTESTED. The profile says 1967; research notes on
+ * the Trust Wood factory behind the woodworks division say 2019. Both cannot be
+ * right, and this is the most quotable number on the site. It ships because the
+ * client confirmed it against their own document, but it is worth one more
+ * question before anyone external reads it.
+ */
+const STATS = [
+  { to: 1967, suffix: "", grouping: false },
+  { to: 60000, suffix: " m²", grouping: true },
+  { to: 200, suffix: "+", grouping: true },
+  { to: 2, suffix: "", grouping: false },
+] as const;
+
+/**
  * Turnkey — the dark band, and the page's one `[data-surface="dark"]` subtree.
  *
  * Setting the attribute rather than hand-picking dark colours is what lets the
@@ -34,16 +58,19 @@ const ROW_IMAGES = [
  * which is the one place sage is legible (4.95:1 on green-800; it is 2.94:1 on
  * off-white and fails even the 3:1 non-text floor).
  *
- * NO STAT BAND. The plan called for four animated count-ups here, and the
- * numbers behind them (F1–F8: founding year, city, floor area, headcount) are
- * still unconfirmed by the client. A count-up animating to an invented figure
- * is worse than no figure — it draws the eye to the exact thing that is wrong.
- * This is the qualitative fallback: same visual slot, same weight, no numerals.
- * When the facts land, four <CountUp> instances drop into this grid.
+ * THE STAT BAND FINALLY LANDS. This slot carried a qualitative fallback for
+ * three rounds because the figures behind it were unconfirmed, and a count-up
+ * animating to an invented number is worse than no number — it draws the eye to
+ * the exact thing that is wrong. The company profile turned out to state all
+ * four, and the client confirmed them, so the four <CountUp>s this file has been
+ * describing since Phase 3 are now real.
  */
 export async function Turnkey() {
   const t = await getTranslations("landing.turnkey");
+  const stats = await getTranslations("landing.stats");
+  const locale = await getLocale();
   const features = t.raw("features") as Feature[];
+  const statItems = stats.raw("items") as { label: string }[];
 
   return (
     <Section surface="surface" data-surface="dark" className="overflow-hidden" id="turnkey">
@@ -75,10 +102,14 @@ export async function Turnkey() {
       </Parallax>
 
       <Container className="relative z-[1]">
+        {/* A wider measure than the site default. This intro is the longest on
+            the page and came out as five short lines; the client counted them
+            and asked for three. */}
         <SectionHeader
           eyebrow={<Eyebrow>{t("eyebrow")}</Eyebrow>}
           heading={t("heading")}
           intro={t("sub")}
+          introMax="86ch"
         />
 
         {/*
@@ -102,6 +133,39 @@ export async function Turnkey() {
             alt: f.title,
           }))}
         />
+
+        {/*
+          The stat band. Border-top items rather than boxed cards, matching the
+          ledger above it — four framed boxes under a ruled ledger would be two
+          competing treatments of the same idea one scroll apart.
+        */}
+        <dl className="mt-[clamp(40px,5vw,68px)] grid grid-cols-2 gap-x-[clamp(20px,3vw,44px)] gap-y-[clamp(24px,3vw,36px)] nav:grid-cols-4">
+          {STATS.map((stat, i) => (
+            <Reveal
+              key={statItems[i]?.label ?? i}
+              y={22}
+              delay={i * 0.08}
+              className="border-t pt-4 [border-color:var(--color-line)]"
+            >
+              <dt className="sr-only">{statItems[i]?.label}</dt>
+              <dd>
+                <CountUp
+                  to={stat.to}
+                  suffix={stat.suffix}
+                  grouping={stat.grouping}
+                  locale={locale}
+                  className="block font-display text-[clamp(30px,4vw,54px)] font-bold leading-[1.05] tracking-display text-[color:var(--color-ink)]"
+                />
+                <span
+                  className="mt-2 block font-mono text-[11px] tracking-eyebrow text-[color:var(--color-ink-muted)]"
+                  style={{ textTransform: "var(--eyebrow-transform)" as "uppercase" }}
+                >
+                  {statItems[i]?.label}
+                </span>
+              </dd>
+            </Reveal>
+          ))}
+        </dl>
 
         <div className="mt-10 flex" style={{ justifyContent: "var(--align-axis)" }}>
           <Pill variant="tan" href="/#contact">

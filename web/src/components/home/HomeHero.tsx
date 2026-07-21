@@ -2,11 +2,12 @@ import { getTranslations } from "next-intl/server";
 import { Container } from "@/components/ui/Container";
 import { Pill } from "@/components/ui/Pill";
 import { Photo } from "@/components/ui/Photo";
-import { Eyebrow } from "@/components/ui/Eyebrow";
 import { BladeField } from "@/components/brand/geometry";
 import { Reveal } from "@/components/motion/Reveal";
+import { WordsReveal } from "@/components/motion/WordsReveal";
 import { landingImages } from "@/components/landing/assets";
 import { ScrollCue } from "@/components/landing/ScrollCue";
+import { Link } from "@/i18n/navigation";
 
 /**
  * Home hero.
@@ -27,9 +28,10 @@ import { ScrollCue } from "@/components/landing/ScrollCue";
  *   - it is capped to the viewport, so the composition is seen at once rather
  *     than the headline and the photograph being two separate scrolls.
  *
- * The entrance is STAGED, not uniform: eyebrow, each display line, rule, sub,
- * actions — ~90ms apart, each with a little scale and blur so the type resolves
- * into place instead of sliding in.
+ * The entrance is STAGED, not uniform: each display line word by word, then
+ * rule, sub, sub2, actions. Round 2 pushed the staging further at the client's
+ * request ("more animation on the hero, especially the text") and dropped the
+ * sand eyebrow that used to lead it.
  */
 export async function HomeHero() {
   const t = await getTranslations("landing.hero");
@@ -79,48 +81,92 @@ export async function HomeHero() {
 
       <Container className="relative z-[1]">
         <div className="flex flex-col items-center gap-6 py-[clamp(40px,6vh,80px)] text-center">
-          <Reveal y={14}>
-            <Eyebrow className="!text-[color:var(--sand-500)]">{t("eyebrow")}</Eyebrow>
-          </Reveal>
+          {/*
+            NO EYEBROW. "Saudi Based Power." sat here in sand above the
+            headline; the client asked for it to come off both here and the
+            footer. The headline now opens the page, which is the stronger
+            arrangement anyway — the tagline was competing with it for the
+            first line of the site.
+          */}
 
-          {/* One h1, two lines, one weight pair. Tighter leading than the token
-              default so the pair reads as a single statement. */}
+          {/*
+            ONE H1, TWO LINES, WORD BY WORD.
+            Each line was a single block that translated 38px and faded, which
+            is the least legible motion there is: nothing inside the block moves
+            relative to anything else, so it reads as a slow paint rather than
+            as an entrance. The client asked for "more animation on the hero,
+            especially the text" — so the words now rise out of their own masks
+            in sequence, and the second line is offset behind the first.
+          */}
           <h1
             className="font-display tracking-display text-[color:var(--white-500)]"
             style={{ fontSize: "clamp(44px, 7vw, 96px)", lineHeight: 0.98 }}
           >
-            <Reveal as="span" className="block" y={38} scale={0.97} blur={6} delay={0.09}>
-              <span className="block font-light">{t("line1")}</span>
-            </Reveal>
-            <Reveal as="span" className="block" y={38} scale={0.97} blur={6} delay={0.18}>
-              <span className="block font-semibold">{t("line2")}</span>
-            </Reveal>
+            <WordsReveal
+              as="span"
+              text={t("line1")}
+              justify="center"
+              delay={0.06}
+              className="font-light"
+            />
+            <WordsReveal
+              as="span"
+              text={t("line2")}
+              justify="center"
+              delay={0.28}
+              className="font-semibold"
+            />
           </h1>
 
-          <Reveal y={0} delay={0.3}>
+          <Reveal y={0} delay={0.5}>
             <hr className="h-0.5 w-20 border-0" style={{ background: "var(--sand-500)" }} />
           </Reveal>
 
-          <Reveal y={22} delay={0.36}>
-            <p className="max-w-[54ch] text-lead leading-lead text-[color:var(--green-200)]">
-              {t("sub")}
-            </p>
-          </Reveal>
+          {/*
+            TWO SENTENCES, TWO LINES, NO DASH.
+            It was one sentence joined by an em-dash and capped at 54ch, so it
+            wrapped into three or four short lines with the dash stranded at a
+            line end. The client asked for each half on its own line and the
+            dash gone. `text-balance` is deliberately NOT used here — these are
+            two deliberate lines, not one paragraph to be evened out — and the
+            measure is wide enough that each holds a single line down to about
+            700px. Below that they wrap, which no amount of CSS can prevent at
+            this type size on a 390px screen.
+          */}
+          <div className="flex max-w-[68ch] flex-col gap-1.5 text-lead leading-lead text-[color:var(--green-200)]">
+            <Reveal y={22} delay={0.56}>
+              <p>{t("sub")}</p>
+            </Reveal>
+            <Reveal y={22} delay={0.64}>
+              <p>{t("sub2")}</p>
+            </Reveal>
+          </div>
 
-          <Reveal y={22} delay={0.44}>
+          <Reveal y={22} delay={0.74}>
             <div className="mt-2 flex flex-wrap justify-center gap-3.5">
               <Pill variant="tan" href="/#contact">
                 {t("cta")}
               </Pill>
-              {/* The "forest" pill would vanish into this ground, so the
-                  secondary action is an outline in the light ink instead. */}
-              <a
+              {/*
+                The "forest" pill would vanish into this ground, so the
+                secondary action is an outline in the light ink instead.
+
+                A LOCALE-AWARE <Link>, NOT A BARE <a>. It was a raw anchor,
+                which meant "View our work" did a full document navigation: it
+                dropped the locale prefix (so an Arabic reader landed on the
+                English gallery via a middleware redirect) and it remounted
+                SiteChrome, which replays the preloader curtain. That was
+                already wrong and the longer 2.4s curtain in this round made it
+                properly annoying — clicking the hero's own link put a loading
+                screen in front of you.
+              */}
+              <Link
                 href="/gallery"
                 className="inline-flex items-center justify-center rounded-full border px-6 py-3 text-sm font-medium text-[color:var(--white-500)] transition-[background-color,transform] duration-300 hover:-translate-y-0.5 hover:bg-[rgb(250_245_239/0.1)] motion-reduce:transition-none motion-reduce:hover:translate-y-0"
                 style={{ borderColor: "rgb(250 245 239 / 0.34)" }}
               >
                 {t("ctaSecondary")}
-              </a>
+              </Link>
             </div>
           </Reveal>
         </div>

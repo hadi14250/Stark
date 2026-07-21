@@ -13,17 +13,25 @@ import { z } from "zod";
  *   client bundle (guarded by `import "server-only"`).
  * - No heavy env library — zod (already a dependency) validates a small schema.
  *
- * ⚠ F6 (unconfirmed facts): CONTACT_TO_EMAIL / CONTACT_FROM_EMAIL default to
- * placeholders. Production requires the client's real inbox and a domain
- * verified in Resend (SPF/DKIM). See stark-content-facts-to-confirm.
+ * F6 IS HALF RESOLVED. The client gave the real inbox on the round-2 review
+ * call: info@stark.com.sa, which is now the default here and the address shown
+ * in the footer and contact panel.
+ *
+ * ⚠ Note the domain: the address is on `stark.com.sa` while the only domain
+ * printed in either brand document is `stark-ksa.net`. That is worth one
+ * confirmation, because it decides which domain gets verified in Resend.
+ *
+ * ⚠ CONTACT_FROM_EMAIL is still a placeholder. Sending in production needs a
+ * domain verified in Resend (SPF/DKIM); until then the transport falls back to
+ * console logging. See stark-content-facts-to-confirm.
  */
 const envSchema = z
   .object({
     /** Resend API key. Absent → console-log transport (safe local dev). */
     RESEND_API_KEY: z.string().min(1).optional(),
 
-    /** Where lead emails are delivered. Placeholder until F6 confirmed. */
-    CONTACT_TO_EMAIL: z.email().default("hello@stark-ksa.net"),
+    /** Where lead emails are delivered. Confirmed by the client, round 2. */
+    CONTACT_TO_EMAIL: z.email().default("info@stark.com.sa"),
 
     /**
      * Verified sending identity. Dev fallback is Resend's shared onboarding

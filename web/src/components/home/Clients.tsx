@@ -82,7 +82,7 @@ export async function Clients() {
           measure reads as a widget sitting on the page. Running edge to edge
           is what makes it read as a band. */}
       <div
-        className="group relative mt-[clamp(40px,5vw,64px)] flex flex-col gap-[clamp(20px,2.5vw,34px)] border-y py-[clamp(18px,2.2vw,30px)]"
+        className="relative mt-[clamp(40px,5vw,64px)] flex flex-col gap-[clamp(20px,2.5vw,34px)] border-y py-[clamp(18px,2.2vw,30px)]"
         // Hairlines top and bottom, matching the watchword marquee: they are
         // what make a full-bleed strip read as a band rather than as content
         // that happens to run off the edge.
@@ -109,6 +109,17 @@ export async function Clients() {
   );
 }
 
+/**
+ * One travelling row.
+ *
+ * NO HOVER PAUSE, as of review round 2. The rows used to stop while the pointer
+ * was anywhere over the band, on the reasoning that a reader might want to hold
+ * a logo still and look at it. In practice the band runs edge to edge, so the
+ * pointer rests on it while you are reading the section ABOVE — and the ticker
+ * kept freezing for no reason the reader could connect to anything they had
+ * done. The client asked for it to keep moving. Nothing in here is interactive,
+ * so a pause was not protecting anything.
+ */
 function LogoRow({
   logos,
   alts,
@@ -120,7 +131,7 @@ function LogoRow({
 }) {
   return (
     <div
-      className={`flex w-max flex-none will-change-transform group-hover:[animation-play-state:paused] motion-reduce:animate-none ${
+      className={`flex w-max flex-none will-change-transform motion-reduce:animate-none ${
         reverse ? "animate-logos-alt" : "animate-logos"
       }`}
     >

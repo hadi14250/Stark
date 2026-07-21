@@ -243,7 +243,12 @@
   --leading-body: 1.85;
 
   --tracking-display: -0.02em;
-  --tracking-eyebrow: 0.3em;
+  /* 0.16em, not 0.3em. At 0.3 the letters of a three-word eyebrow drifted far
+     enough apart that "Who we are" stopped reading as a phrase and started
+     reading as separated characters — the client flagged it on that exact
+     string. 0.16 still separates the eyebrow from body copy at 12px without
+     breaking the word. */
+  --tracking-eyebrow: 0.16em;
   --eyebrow-transform: uppercase;
 
   /* ---------------------------------------------------------------------

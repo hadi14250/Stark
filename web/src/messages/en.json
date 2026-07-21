@@ -2,7 +2,7 @@
   "meta": {
     "siteName": "STARK",
     "tagline": "Complete environments. Fully delivered.",
-    "defaultDescription": "STARK — a Saudi manufacturer of integrated woodworks, mattresses and turnkey hospitality environments."
+    "defaultDescription": "STARK is a Saudi manufacturer of integrated woodworks, mattresses and turnkey hospitality environments."
   },
   "nav": {
     "home": "Home",
@@ -24,35 +24,34 @@
     "blue": "blue mattress · B2C",
     "siesta": "siesta · B2B",
     "gallery": "Gallery",
-    "email": "hello@stark-ksa.net",
+    "email": "info@stark.com.sa",
     "location": "Jeddah, Saudi Arabia",
-    "rights": "All rights reserved.",
-    "power": "SAUDI BASED POWER."
+    "rights": "All rights reserved."
   },
   "pages": {
     "home": {
       "title": "Complete environments. Fully delivered.",
       "description": "A Saudi manufacturer delivering integrated woodworks, mattresses and turnkey hospitality environments, fully in-house.",
       "heading": "Complete environments. Fully delivered.",
-      "placeholder": "Landing page — built in Phase 3."
+      "placeholder": "Landing page."
     },
     "woodworks": {
       "title": "Woodworks",
       "description": "Engineered in wood, down to the joint. Custom woodworks, interior fit-outs and bespoke furniture.",
       "heading": "Engineered in wood, down to the joint.",
-      "placeholder": "Woodworks page — built in Phase 4."
+      "placeholder": "Woodworks page."
     },
     "mattresses": {
       "title": "Mattresses",
       "description": "Engineered comfort. blue mattress for retail, siesta mattresses for hospitality.",
       "heading": "Engineered comfort.",
-      "placeholder": "Mattresses page — built in Phase 5."
+      "placeholder": "Mattresses page."
     },
     "gallery": {
       "title": "Gallery",
       "description": "Selected woodworks and mattress work across our divisions.",
       "heading": "Selected work.",
-      "placeholder": "Gallery page — built in Phase 6."
+      "placeholder": "Gallery page."
     }
   },
   "states": {
@@ -66,21 +65,21 @@
   },
   "landing": {
     "hero": {
-      "eyebrow": "Saudi Based Power.",
       "line1": "Complete environments.",
       "line2": "Fully delivered.",
-      "sub": "Saudi-based manufacturing of woodworks, furniture, and mattresses — from raw materials to finished interiors, under one partner.",
+      "sub": "Saudi-based manufacturing of woodworks, furniture and mattresses.",
+      "sub2": "From raw materials to finished interiors, under one partner.",
       "cta": "Start a project",
       "scrollCue": "Scroll to explore",
-      "alt": "STARK — complete environments, fully delivered.",
+      "alt": "STARK. Complete environments, fully delivered.",
       "ctaSecondary": "View our work"
     },
     "about": {
       "heading": "More than a manufacturer.",
       "paragraphs": [
-        "Stark is a Saudi manufacturer of integrated environments — woodworks, furniture, and mattresses — delivered from raw material to finished interior under one partner.",
+        "Strategic Trust for Advanced and Reliable Knowledge (STARK) is a Saudi manufacturer of integrated environments: woodworks, furniture and mattresses.",
         "We are more than a manufacturer: a trusted solutions partner that brings design, manufacturing, and on-site execution into a single, accountable process. Every piece is engineered for durability and finished to a standard that hospitality demands.",
-        "From bespoke wood elements and full interior fit-outs to comfort-engineered mattresses, our work is built to last and made to measure — with fair, quality-first practices at every stage."
+        "From bespoke wood elements and full interior fit-outs to comfort-engineered mattresses, our work is built to last and made to measure, with fair, quality-first practices at every stage."
       ],
       "collageAlt": [
         "Crafted wood interior detail.",
@@ -91,58 +90,73 @@
       "pillars": [
         {
           "title": "Vision",
-          "body": "To be the Gulf's most trusted partner for complete, delivered environments — not a supplier of parts, but the single accountable name behind a finished space."
+          "body": "To be a trusted regional leader in hospitality solutions, recognised for quality, innovation and reliability."
         },
         {
           "title": "Mission",
-          "body": "To build the invisible foundation of every great space: engineered, manufactured and installed to one standard, from raw material to handover."
+          "body": "To deliver end-to-end hospitality solutions through high-quality manufacturing, customised design and efficient execution, creating long-term value for our clients."
         }
       ]
     },
     "features": {
       "heading": "Built to global standard.",
-      "sub": "The capabilities behind every environment we deliver.",
+      "sub": "The manufacturing capabilities behind every environment we deliver.",
       "items": [
         {
           "title": "European machinery",
-          "body": "Precision equipment across the production line, so every component is cut, shaped, and finished to a repeatable standard — at the scale major projects require.",
+          "body": "Modern automated carpentry and production lines.",
+          "meta": [
+            "Panel processing",
+            "Edge banding",
+            "CNC boring"
+          ],
           "alt": "Precision woodworking machinery on the production floor."
         },
         {
           "title": "Large-scale capacity",
-          "body": "Engineered for major project volume. Our facility is built to take on complete interiors and multi-unit hospitality work without compromising on finish.",
+          "body": "Capable of two mega-projects per year.",
+          "meta": [
+            "Project volume",
+            "Multi-unit work",
+            "Full interiors"
+          ],
           "alt": "Large-scale manufacturing facility interior."
         },
         {
-          "title": "Strict quality control",
-          "body": "Checked at every stage — from raw material to final install — so what leaves the factory is what arrives on site: complete, durable, and ready.",
+          "title": "Quality control",
+          "body": "Strict checks at every stage to delivery.",
+          "meta": [
+            "Stage checks",
+            "Through to delivery",
+            "One standard"
+          ],
           "alt": "Finished interior demonstrating quality of finish."
         }
       ],
-      "eyebrowLabel": "What we run"
+      "eyebrowLabel": "Manufacturing capabilities"
     },
     "categories": {
       "heading": "What we deliver",
-      "sub": "Two divisions and full turnkey execution — one standard across everything we make.",
+      "sub": "Two divisions and full turnkey execution, one standard across everything we make.",
       "viewMore": "View gallery",
       "prev": "Previous",
       "next": "Next",
       "items": [
         {
           "title": "Woodworks",
-          "body": "Everything wood — design, fit-out, furniture, turnkey. Custom wood elements from concept to production.",
+          "body": "Everything wood: design, fit-out, furniture, turnkey. Custom wood elements from concept to production.",
           "cta": "Explore Woodworks",
           "alt": "Woodworks interior environment."
         },
         {
           "title": "Mattresses",
-          "body": "Comfort, engineered — for homes and for hospitality. Delivered through two focused brands.",
+          "body": "Comfort engineered for homes and for hospitality. Delivered through two focused brands.",
           "cta": "Explore Mattresses",
           "alt": "Mattress and bedroom environment."
         },
         {
-          "title": "Turnkey Projects",
-          "body": "Design, manufacture, deliver, install — one partner for complete, made-to-measure interiors.",
+          "title": "Turnkey",
+          "body": "Design, manufacture, deliver, install. One partner for complete, made-to-measure interiors.",
           "cta": "Start a project",
           "alt": "Complete turnkey interior environment."
         }
@@ -151,8 +165,8 @@
     },
     "clients": {
       "eyebrow": "Clients",
-      "heading": "The people we build for",
-      "sub": "Developers, hospitality groups and contractors who bring us their interiors and let us deliver them end to end.",
+      "heading": "Our success partners",
+      "sub": "Developers, investors, hospitality groups, contractors and homeowners. We design as well as build, taking what a client imagines and turning it into a space they can walk into.",
       "logos": [
         {
           "key": "northvale",
@@ -190,7 +204,7 @@
     },
     "gallery": {
       "heading": "Our Gallery",
-      "sub": "Explore selected environments across our divisions — woodworks, furniture, and mattress work in real settings.",
+      "sub": "Explore selected environments across our divisions: woodworks, furniture and mattress work in real settings.",
       "viewMore": "View gallery",
       "tilesAlt": [
         "Styled seating in a finished interior.",
@@ -217,23 +231,23 @@
       "heading": "Built to last, trusted at scale.",
       "items": [
         {
-          "label": "Years of craft"
+          "label": "Established"
         },
         {
-          "label": "Pieces delivered"
+          "label": "Manufacturing facility"
         },
         {
-          "label": "On-time delivery"
+          "label": "Specialists"
         },
         {
-          "label": "Skilled artisans"
+          "label": "Mega-projects a year"
         }
       ]
     },
     "process": {
       "eyebrow": "How we work",
       "heading": "Our Process",
-      "sub": "From first drawing to final handover — four considered steps behind every project we deliver.",
+      "sub": "From first drawing to final handover: four considered steps behind every project we deliver.",
       "steps": [
         {
           "title": "Design",
@@ -254,7 +268,7 @@
       ]
     },
     "marquee": {
-      "label": "Stark brand values",
+      "label": "STARK brand values",
       "words": [
         "Precision Manufacturing",
         "Turnkey Delivery",
@@ -264,8 +278,8 @@
     },
     "turnkey": {
       "eyebrow": "One partner",
-      "heading": "Design, manufacture, deliver, install.",
-      "sub": "Most projects are assembled from four suppliers and one long argument about whose fault it is. Turnkey execution removes the seams — one contract, one standard, one name on the outcome.",
+      "heading": "Design, manufacture, deliver and install.",
+      "sub": "Most projects are assembled from four suppliers and one long argument about whose fault it is. STARK is built to remove that argument: one company, one contract, one standard, one name on the outcome.",
       "cta": "Start a project",
       "features": [
         {
@@ -274,11 +288,11 @@
         },
         {
           "title": "Made to measure",
-          "body": "Every element is built for the space it is going into, rather than specified from a catalogue and made to fit on site."
+          "body": "Every element is drawn for the room it will stand in and built to those dimensions, so the piece fits the space rather than the space being altered to take the piece."
         },
         {
           "title": "One quality standard",
-          "body": "The same stage-gated checks apply to a wood element, a piece of furniture and a mattress — because they all carry the same name."
+          "body": "The same stage-gated checks apply to a wood element, a piece of furniture and a mattress."
         },
         {
           "title": "Delivered, not shipped",
@@ -289,8 +303,7 @@
   },
   "contact": {
     "eyebrow": "GET IN TOUCH",
-    "heading": "Let's build complete environments together.",
-    "sub": "Tell us about your project and we'll get back to you.",
+    "heading": "Every project is a journey. Let's start yours.",
     "fields": {
       "name": {
         "label": "Name",
@@ -342,14 +355,14 @@
     "states": {
       "submit": "Send",
       "sending": "Sending…",
-      "success": "Thank you — we'll be in touch shortly.",
+      "success": "Thank you, we'll be in touch shortly.",
       "error": "Something went wrong. Please try again or email us directly.",
       "required": "This field is required.",
       "invalidEmail": "Please enter a valid email address."
     },
     "optionalHint": "optional",
     "details": {
-      "email": "hello@stark-ksa.net",
+      "email": "info@stark.com.sa",
       "phone": "",
       "location": "Jeddah, Saudi Arabia"
     },
@@ -360,7 +373,7 @@
     "hero": {
       "line1": "Where materials",
       "line2": "become spaces",
-      "sub": "STARK's woodworks division takes a project from raw panel to installed interior — engineered joinery, fitted furniture and full interior fit-outs, produced on our own lines and installed by our own teams.",
+      "sub": "STARK's woodworks division takes a project from raw panel to installed interior: engineered joinery, fitted furniture and full interior fit-outs, produced on our own lines and installed by our own teams.",
       "cta": "Start a project",
       "ctaSecondary": "See our work",
       "meta": [
@@ -410,31 +423,35 @@
     },
     "services": {
       "eyebrowLabel": "What we deliver",
-      "heading": "Four services, one contract.",
+      "heading": "Integrated solutions, delivered end to end.",
       "sub": "Most interiors are assembled from separate suppliers who each own a piece and none of the outcome. These sit under one name.",
       "items": [
         {
-          "title": "Joinery & wood elements",
-          "body": "Wall panelling, ceilings, screens, doors and the bespoke wood elements that give a space its character."
+          "title": "Wood Design & Manufacturing",
+          "body": "Custom wood elements for hospitality and residential projects, from concept to production."
         },
         {
-          "title": "Interior fit-outs",
-          "body": "Complete interiors delivered as one package — from partition to final finish, coordinated against the site programme."
+          "title": "Wood Fit-Out Solutions",
+          "body": "From decorative features to full interior fit-outs, built precisely to specification."
         },
         {
-          "title": "Fitted furniture",
-          "body": "Wardrobes, vanities, reception desks and casegoods, built for the space rather than adapted to it."
+          "title": "Hotel Furniture",
+          "body": "Bespoke beds, headboards, cabinets and loose furniture, made to order."
         },
         {
-          "title": "Turnkey execution",
-          "body": "Design, manufacture, deliver, install. One contract, one standard, one name on the result."
+          "title": "Interior Room Solutions",
+          "body": "Complete guest rooms: furniture, soft furnishings and fit-out components."
+        },
+        {
+          "title": "Turnkey Projects",
+          "body": "Full execution: manufacturing, delivery and installation under one partner."
         }
       ]
     },
     "materials": {
       "eyebrowLabel": "Materials",
       "heading": "Specified, not improvised.",
-      "sub": "Substrate and finish are chosen against how a surface will actually be used — humidity, traffic, cleaning regime — and recorded so a repair in year five matches the original.",
+      "sub": "Substrate and finish are chosen against how a surface will actually be used (humidity, traffic, cleaning regime) and recorded so a repair in year five matches the original.",
       "items": [
         {
           "label": "Engineered panel",
@@ -458,7 +475,7 @@
         },
         {
           "label": "Hardware",
-          "body": "Specified to a cycle rating — the hinge is what fails first on a cheap job."
+          "body": "Specified to a cycle rating, because the hinge is what fails first on a cheap job."
         }
       ],
       "alt": "Timber, panel and finish samples."
@@ -513,7 +530,7 @@
     "hero": {
       "line1": "Comfort,",
       "line2": "engineered.",
-      "sub": "STARK manufactures mattresses for two very different customers, through two focused brands — one built for the home, one built for hotels that replace a floor at a time.",
+      "sub": "STARK manufactures mattresses for two very different customers, through two focused brands: one built for the home, one built for hotels that replace a floor at a time.",
       "cta": "Talk to us",
       "ctaSecondary": "See our work",
       "alt": "Finished bedroom interior with a STARK mattress."
@@ -526,7 +543,7 @@
         {
           "name": "blue mattress",
           "audience": "For the home · B2C",
-          "body": "Sold to people who will sleep on it for years and want to understand what they are buying. Comfort options across firmness, with the construction explained rather than hidden behind a marketing name.",
+          "body": "Spring and foam mattresses designed for modern homes and everyday rest, with the construction explained rather than hidden behind a marketing name.",
           "points": [
             "Firmness range",
             "Explained construction",
@@ -536,9 +553,9 @@
           "alt": "Bedroom with a blue mattress product."
         },
         {
-          "name": "siesta",
+          "name": "siesta mattresses",
           "audience": "For hospitality · B2B",
-          "body": "Specified for hotels and serviced residences: consistent across a large order, built for a replacement cycle, and delivered against a programme rather than a promise.",
+          "body": "Durable, high-performance mattresses engineered to hotel and resort standards, consistent across a large order and delivered against a programme rather than a promise.",
           "points": [
             "Volume consistency",
             "Contract specification",
@@ -736,7 +753,7 @@
       "title": "Serviced Residences",
       "subtitle": "Hospitality · Long stay",
       "headline": "Built for people who actually live there",
-      "paragraph": "Long-stay properties are slept in every night by the same guest. The specification changes accordingly — durability over first impression.",
+      "paragraph": "Long-stay properties are slept in every night by the same guest. The specification changes accordingly: durability over first impression.",
       "scope": "Long-stay specification",
       "delivery": "Rolling by unit type",
       "materials": "Higher-durability build",

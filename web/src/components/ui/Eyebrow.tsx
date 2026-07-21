@@ -28,14 +28,22 @@ export function Eyebrow({
 }) {
   return (
     <span
-      className={`inline-flex items-center gap-2.5 font-mono text-eyebrow tracking-eyebrow text-[color:var(--color-ink-muted)] ${className ?? ""}`}
+      className={`inline-flex items-center gap-3 font-mono text-eyebrow tracking-eyebrow text-[color:var(--color-ink-muted)] ${className ?? ""}`}
       style={{ textTransform: "var(--eyebrow-transform)" as "uppercase" }}
     >
       {division && <MarkGlyph division={division} size={22} color="var(--color-accent)" />}
       {children}
+      {/*
+        `ms-2` on top of the flex gap, so the rule sits ~22px from the last
+        letter rather than 10px. The client read the tighter spacing as the
+        rule being attached to the word ("the line is too close to the text")
+        rather than as a separate mark closing the eyebrow — and they were
+        right: at 0.16em tracking the gap was narrower than the space between
+        two words in the eyebrow itself.
+      */}
       <span
         aria-hidden
-        className="inline-block h-px w-6 shrink-0"
+        className="ms-2 inline-block h-px w-10 shrink-0"
         style={{ background: "var(--color-accent)" }}
       />
     </span>

@@ -190,9 +190,20 @@ export function DivisionIndex({ items }: { items: DivisionItem[] }) {
               </div>
 
               <div>
+                {/*
+                  `whitespace-nowrap` and a size that tops out below the h3
+                  scale. A collapsed panel is roughly a fifth of the row, and
+                  at full h3 the longest division name broke onto two lines
+                  inside it — the client's note was to keep these on one line.
+                  Clamping the size rather than shortening the word is the
+                  version that survives an Arabic translation being longer.
+                */}
                 <h3
-                  className="font-display text-h3 font-bold leading-h3 tracking-display"
-                  style={{ color: "var(--white-500)" }}
+                  className="whitespace-nowrap font-display font-bold leading-h3 tracking-display"
+                  style={{
+                    color: "var(--white-500)",
+                    fontSize: "clamp(20px, 2.2vw, 32px)",
+                  }}
                 >
                   {item.title}
                 </h3>
@@ -214,8 +225,12 @@ export function DivisionIndex({ items }: { items: DivisionItem[] }) {
                   transition={{ duration: 0.7, ease: [...ease.zoom] }}
                 />
 
+                {/* No `max-w`. The panel is already the measure — capping the
+                    body at 38ch inside a column that is often narrower than
+                    that just guaranteed a stack of short lines with nothing
+                    gained, which is what the client was pointing at. */}
                 <p
-                  className="mt-4 max-w-[38ch] text-body-sm leading-body"
+                  className="mt-4 text-body-sm leading-body"
                   style={{ color: "rgb(250 245 239 / 0.82)" }}
                 >
                   {item.body}

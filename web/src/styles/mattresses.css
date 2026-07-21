@@ -38,10 +38,26 @@
   }
 
   /* ---------- brand duet ----------
-     Two full-height panels. On desktop the hovered one takes a little more of
-     the row — the same flex-grow mechanic the Divisions index uses on Home,
-     turned on its side and given a brand tint, so it reads as a sibling idea
-     rather than a repeat. */
+     Two full-height panels, side by side on desktop.
+
+     THE HOVER USED TO RESIZE BOTH, AND THAT WAS THE BUG THE CLIENT FOUND.
+     The row ran the Divisions flex-grow mechanic: `:has(.mt-panel:hover)`
+     shrank EVERY panel to 0.82 and the hovered one grew to 1.36. The reasoning
+     in the old comment was that a panel growing while its neighbour stays put
+     reads as the layout breaking — but with only two panels the effect is that
+     pointing at either one visibly moves both, and the client read that as the
+     two pictures being wired together ("the hover of siesta and the other
+     picture move at the same time no matter what section I'm hovering on").
+
+     They were right, and the Divisions comparison does not hold: that row has
+     three panels, so the two yielding siblings share the cost and each moves
+     half as far. Here the whole cost lands on one neighbour.
+
+     So the widths are FIXED now and the hovered panel lifts instead: it rises,
+     scales very slightly, raises its z-index and deepens its shadow. Only the
+     panel under the pointer changes, which is what the client asked for, and
+     lifting is a better fit for this page anyway — Woodworks is the page that
+     rearranges itself, this one is supposed to be soft and slow. */
 
   .mt-duet {
     display: flex;
@@ -59,8 +75,12 @@
     flex-direction: column;
     justify-content: flex-end;
     padding: clamp(24px, 3vw, 44px);
+    /* `flex: 1 1 0` with no grow changes anywhere = the two panels hold an
+       even split at every pointer position. */
     flex: 1 1 0;
-    transition: flex-grow 700ms var(--ease-cushion);
+    transition:
+      transform 700ms var(--ease-cushion),
+      box-shadow 700ms var(--ease-cushion);
   }
 
   @media (min-width: 860px) {
@@ -68,17 +88,15 @@
       flex-direction: row;
       min-height: clamp(460px, 74vh, 680px);
     }
-    /* Hover expands the panel you are looking at and yields from the other.
-       `:has()` on the row rather than a class on the panel, so the SIBLING
-       reacts too — a panel that grows while its neighbour stays put reads as
-       the layout breaking rather than as a response. */
-    .mt-duet:has(.mt-panel:hover) .mt-panel,
-    .mt-duet:has(.mt-panel:focus-within) .mt-panel {
-      flex-grow: 0.82;
-    }
-    .mt-duet .mt-panel:hover,
-    .mt-duet .mt-panel:focus-within {
-      flex-grow: 1.36;
+  }
+
+  /* `hover: hover` so a touch device never gets a lift stuck on after a tap. */
+  @media (hover: hover) and (min-width: 860px) {
+    .mt-panel:hover,
+    .mt-panel:focus-within {
+      transform: translateY(-8px) scale(1.012);
+      box-shadow: var(--shadow-panel);
+      z-index: 1;
     }
   }
 
@@ -193,10 +211,12 @@
     .mt-cred {
       transition-duration: 0.001ms;
     }
+    /* No lift at all under reduced motion — the shadow alone still marks the
+       hovered panel, and a translate is exactly the kind of movement the
+       preference is asking us not to make. */
     .mt-panel:hover,
-    .mt-panel:focus-within,
-    .mt-duet:has(.mt-panel:hover) .mt-panel {
-      flex-grow: 1;
+    .mt-panel:focus-within {
+      transform: none;
     }
   }
 }

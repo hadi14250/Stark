@@ -95,13 +95,13 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Legal bar */}
+        {/* Legal bar.
+            The sand "SAUDI BASED POWER." sign-off used to sit at the end of
+            this row. The client asked for it off the site entirely, here and
+            on the hero, so the bar carries the copyright alone. */}
         <div className="mt-14 flex flex-col gap-3 border-t border-[color:var(--color-line)] pt-6 text-xs text-[color:var(--ink-green-muted)] nav:flex-row nav:items-center nav:justify-between">
           <span>
             © {year} STARK. {t("rights")}
-          </span>
-          <span className="font-mono uppercase tracking-[0.24em] text-accent">
-            {t("power")}
           </span>
         </div>
       </Container>

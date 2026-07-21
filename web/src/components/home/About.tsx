@@ -4,6 +4,7 @@ import { Section } from "@/components/ui/Section";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { MarkGlyph } from "@/components/brand/geometry";
 import { Reveal } from "@/components/motion/Reveal";
+import { LineReveal } from "@/components/motion/WordsReveal";
 import { landingImages } from "@/components/landing/assets";
 import { AboutCluster } from "./AboutCluster";
 
@@ -41,19 +42,42 @@ export async function About() {
 
               {/* Two paragraphs, not three. The third repeated the first with
                   different nouns, which is how a positioning statement stops
-                  landing. */}
-              <div className="flex max-w-[54ch] flex-col gap-4 text-body leading-body text-[color:var(--color-ink-body)]">
+                  landing.
+
+                  Each gets its own LineReveal rather than the column fading as
+                  one block — the client asked for "more animation … for vision
+                  and mission and text", and a paragraph that arrives after the
+                  heading reads as the section assembling itself. */}
+              <div className="flex max-w-[68ch] flex-col gap-4 text-body leading-body text-[color:var(--color-ink-body)]">
                 {paragraphs.slice(0, 2).map((p, i) => (
-                  <p key={i}>{p}</p>
+                  <LineReveal key={i} delay={0.1 + i * 0.1}>
+                    <p>{p}</p>
+                  </LineReveal>
                 ))}
               </div>
 
+              {/*
+                VISION AND MISSION ARE THE COMPANY'S OWN NOW. The two statements
+                here were placeholders I wrote in Phase 3 and nobody had ever
+                approved; the company profile (p.2) carries real ones. Inventing
+                a mission statement for a real manufacturer and leaving it on a
+                live page was the worst piece of invented copy on the site.
+
+                They stagger in one after the other, each with its rule drawing
+                across first, so the pair reads as two arriving rather than as a
+                block appearing.
+              */}
               <dl className="mt-2 grid w-full gap-5 nav:grid-cols-2">
-                {pillars.map((p) => (
-                  <div
+                {pillars.map((p, i) => (
+                  /* The Reveal IS the <div> grouping the dt/dd pair — a <dl>
+                     may contain <div>s wrapping term/description groups, so
+                     adding a second nested wrapper just to animate would put
+                     invalid markup inside a definition list. */
+                  <Reveal
                     key={p.title}
-                    className="border-t pt-4"
-                    style={{ borderColor: "var(--color-line)" }}
+                    y={26}
+                    delay={0.28 + i * 0.12}
+                    className="h-full border-t pt-4 [border-color:var(--color-line)]"
                   >
                     <dt className="flex items-center gap-2.5 font-display text-h4 font-semibold text-[color:var(--color-ink)]">
                       <MarkGlyph division="stark" size={20} color="var(--color-accent)" />
@@ -62,7 +86,7 @@ export async function About() {
                     <dd className="mt-1.5 text-body-sm leading-body text-[color:var(--color-ink-body)]">
                       {p.body}
                     </dd>
-                  </div>
+                  </Reveal>
                 ))}
               </dl>
             </div>

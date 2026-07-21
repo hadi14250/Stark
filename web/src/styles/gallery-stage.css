@@ -560,13 +560,32 @@
     right: var(--pad);
     z-index: 2;
   }
+  /*
+    THE PROJECT NAME, over the establishing shot.
+
+    IT WAS clamp(2.4rem, 5cqw, 4.1rem) AND IT CLIPPED. At the ceiling a
+    two-word project name ("Hospitality Fit-Out") set at ~66px is wider than
+    the hero cell on a 1440x900 laptop, so it wrapped to two lines, and the
+    second line ran out of the bottom of the card — the client saw it cut off
+    on a reviewer's machine. This card sits inside a pushcard frame with its
+    own overflow clipping, so type that outgrows the cell does not push the
+    layout, it just disappears.
+
+    The ceiling comes down to 3rem and the growth rate with it (5cqw -> 3.6cqw,
+    so the title stops chasing the container as hard). That leaves the longest
+    name on one line at every desktop width the bento is laid out for, with the
+    subtitle still under it.
+  */
   .stage-viewport .hero-title {
     font-family: var(--font-heading, var(--font-poppins)), system-ui, sans-serif;
     font-weight: 700;
-    font-size: calc(clamp(2.4rem, 5cqw, 4.1rem) * var(--fs-heading, 1));
-    line-height: 1;
+    font-size: calc(clamp(1.9rem, 3.6cqw, 3rem) * var(--fs-heading, 1));
+    line-height: 1.04;
     letter-spacing: -0.01em;
     color: #fff;
+    /* Belt and braces: if a translation is longer than anything measured
+       here, balance the wrap rather than stranding one word on line two. */
+    text-wrap: balance;
   }
   .stage-viewport .hero-sub {
     margin-top: 8px;

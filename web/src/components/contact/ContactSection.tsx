@@ -97,14 +97,9 @@ export async function ContactSection() {
                 style={{ color: "var(--white-500)" }}
               />
 
-              <LineReveal delay={0.22}>
-                <p
-                  className="max-w-[38ch] text-body leading-body"
-                  style={{ color: "rgb(250 245 239 / 0.78)" }}
-                >
-                  {t("sub")}
-                </p>
-              </LineReveal>
+              {/* The sub-line that used to sit here ("Tell us about your
+                  project and we'll get back to you.") is gone at the client's
+                  request. It was restating the form directly beneath it. */}
             </div>
 
             <dl className="mt-[clamp(28px,4vw,44px)] flex flex-col">

@@ -212,18 +212,20 @@ const SWAP_S = 0.45;
  *     eyebrow + gaps   34
  *     heading         ~70   two lines
  *     step list      ~154   4 titles at the 26px floor + gaps
+ *     active growth     4   the 1.12 scale on one 26px title, half of which
+ *                           falls below its own centre line
  *     open body       ~70   three lines of body-sm
  *                     ----
- *                      477   under 603, with room for Arabic to wrap a title
+ *                      481   under 603, with room for Arabic to wrap a title
  *
  * The intro paragraph is desktop-only for this reason and no other. If a title
  * is ever added, re-do this arithmetic — do not assume it still fits.
  */
 function StepIndex({ steps, index }: { steps: Step[]; index: number }) {
-  const { reduce } = useMotionConfig();
+  const { reduce, dir } = useMotionConfig();
 
   return (
-    <ol className="mt-[clamp(18px,3vw,44px)] flex flex-col gap-[clamp(6px,1vw,14px)]">
+    <ol className="mt-[clamp(18px,3vw,44px)] flex flex-col gap-[clamp(8px,1.1vw,16px)]">
       {steps.map((step, i) => (
         <StepRow
           key={step.title}
@@ -231,6 +233,7 @@ function StepIndex({ steps, index }: { steps: Step[]; index: number }) {
           i={i}
           active={i === index}
           reduce={reduce}
+          dir={dir}
         />
       ))}
     </ol>
@@ -242,11 +245,13 @@ function StepRow({
   i,
   active,
   reduce,
+  dir,
 }: {
   step: Step;
   i: number;
   active: boolean;
   reduce: boolean;
+  dir: 1 | -1;
 }) {
   const numeral = String(i + 1).padStart(2, "0");
 
@@ -318,7 +323,31 @@ function StepRow({
           The hollow layer carries the real text and the solid one is
           `aria-hidden` — otherwise every title is announced twice.
         */}
-        <h3 className={`relative min-w-0 ${titleClass}`}>
+        {/*
+          THE ACTIVE TITLE GROWS. The client asked for it directly: "make the
+          text get bigger when we're on that specific scroll animation — Design
+          gets bigger, and when we scroll down Source gets bigger."
+
+          IT IS A TRANSFORM, NOT A FONT-SIZE, and that is not a stylistic
+          preference. This list lives inside a pinned stage with a fixed height
+          budget (the arithmetic is above StepIndex); `font-size` reflows, so
+          growing a title would push the list taller and the last step would be
+          cut off by the stage's `overflow-hidden` — silently, on exactly the
+          short screens nobody tests on. A transform paints outside the box
+          without moving anything, so the budget only has to absorb the visual
+          overflow, which the `<ol>` gap now does.
+
+          `transform-origin` is direction-aware like every other transform on
+          this site: the title grows away from the marker on the start edge
+          rather than pushing back through it.
+        */}
+        <h3
+          className={`relative min-w-0 transition-transform duration-[450ms] will-change-transform motion-reduce:transition-none ${titleClass}`}
+          style={{
+            transform: active && !reduce ? "scale(1.12)" : "scale(1)",
+            transformOrigin: `${dir === -1 ? "right" : "left"} center`,
+          }}
+        >
           <span className="outline-type block" style={{ "--outline-w": "1.5px" } as React.CSSProperties}>
             {step.title}
           </span>

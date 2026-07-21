@@ -67,15 +67,31 @@ export function SectionHeader({
   eyebrow,
   heading,
   intro,
+  introMax = "74ch",
   className,
 }: {
   eyebrow?: ReactNode;
   heading: ReactNode;
   intro?: ReactNode;
+  /**
+   * Measure for the intro paragraph.
+   *
+   * WAS A FIXED 58ch, AND THE CLIENT COUNTED THE LINES. At 58 characters a
+   * two-sentence intro comes out as five short lines with a one-word last
+   * line, which reads as a stack of fragments rather than as a paragraph —
+   * they raised it on three separate sections. 74ch is past the classic
+   * 45–75 comfort range at its top end, which is the right trade here: these
+   * are two-sentence intros under a heading, not body copy anyone reads for
+   * minutes, and the alternative was worse.
+   *
+   * Overridable because Turnkey's intro is longer than the rest and needed
+   * more to land on three lines.
+   */
+  introMax?: string;
   className?: string;
 }) {
   const headingClass =
-    "max-w-[18ch] font-display text-h2 font-bold leading-h2 tracking-display text-[color:var(--color-ink)]";
+    "max-w-[18ch] text-balance font-display text-h2 font-bold leading-h2 tracking-display text-[color:var(--color-ink)]";
 
   return (
     <div
@@ -94,7 +110,7 @@ export function SectionHeader({
       )}
 
       {intro && (
-        <LineReveal delay={0.26} className="max-w-[58ch]">
+        <LineReveal delay={0.26} style={{ maxWidth: introMax }}>
           <p className="text-lead leading-lead text-[color:var(--color-ink-body)]">{intro}</p>
         </LineReveal>
       )}
