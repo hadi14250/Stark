@@ -196,6 +196,8 @@ export const FACTS = {
   blueWarrantyYears: {
     value: 10,
     source: "blue dossier, Products/Luna/Luna info 2026.docx (الضمان)",
+    caveat:
+      "Stated on 7 of the 8 product sheets. Pure latex leaves the warranty field blank; confirm it is also 10 years before this is read as covering the whole range.",
   },
 
   /** blue's home trial. Its own terms document, on SLIC letterhead. */
@@ -215,9 +217,19 @@ export const FACTS = {
       "blue dossier, Products/*/info 2026.docx (Blue 1, Comfy zone, Loft, Luna, Pure latex, Retro, Skin care, Sky)",
   },
 
+  /** siesta's three ranges: Luxury, Economic, Hospitality. */
+  siestaRanges: {
+    value: 3,
+    source: "Siesta catalogue 2026 pp7, 29, 53 (range title pages)",
+  },
+
   /** SLIC's founding headcount and first factory, before the Old Makkah Road move. */
   slicFoundingStaff: {
     value: 15,
+    source: "Siesta catalogue 2026 p3 (EN, ABOUT US)",
+  },
+  slicFoundingArea: {
+    value: 6000,
     source: "Siesta catalogue 2026 p3 (EN, ABOUT US)",
   },
   slicReequipYear: {

@@ -570,9 +570,9 @@
           "audience": "For the home · B2C",
           "body": "Spring and foam mattresses designed for modern homes and everyday rest, with the construction explained rather than hidden behind a marketing name.",
           "points": [
-            "Firmness range",
-            "Explained construction",
-            "Retail support"
+            "8 models",
+            "10-year warranty",
+            "50-night trial"
           ],
           "cta": "Talk to us",
           "alt": "Bedroom with a blue mattress product."
@@ -582,9 +582,9 @@
           "audience": "For hospitality · B2B",
           "body": "Durable, high-performance mattresses engineered to hotel and resort standards, consistent across a large order and delivered against a programme rather than a promise.",
           "points": [
-            "Volume consistency",
-            "Contract specification",
-            "Programme delivery"
+            "16 models",
+            "Three ranges",
+            "Fire-resistant hospitality range"
           ],
           "cta": "Request a specification",
           "alt": "Hotel room with siesta mattresses."
@@ -593,47 +593,47 @@
     },
     "engineering": {
       "eyebrowLabel": "Inside the mattress",
-      "heading": "What is actually inside.",
-      "sub": "A mattress is a stack of decisions about support, pressure and heat. These are the ones we make deliberately.",
+      "heading": "The same four layers, every model.",
+      "sub": "A siesta mattress is built in four blocks, top to bottom. What changes between models is what goes inside each one.",
       "items": [
         {
-          "title": "Support layer",
-          "body": "The part that decides whether your spine stays in line. Specified against the sleeper's weight range rather than a single 'medium' that suits nobody in particular."
+          "title": "Top quilted layers",
+          "body": "Fabric, fibre and super-soft foam, quilted into one surface. This is what you feel first, and on the hospitality range it is where the fire-resistant fabric sits."
         },
         {
-          "title": "Comfort layer",
-          "body": "Where pressure at the shoulder and hip is dealt with. Too little and you feel the support layer; too much and you sink into it."
+          "title": "The core",
+          "body": "Pocket springs or Bonnell springs depending on the model, with a foam border around the perimeter and a felt layer between the springs and everything above them. The core sets support; the border is what decides whether the usable area matches the size on the label."
         },
         {
-          "title": "Airflow",
-          "body": "Heat is the most common reason people stop liking a mattress they once loved. Structure and cover are chosen to move it away rather than trap it."
+          "title": "Comfort layers",
+          "body": "What sits between the core and the sleeper: memory foam, mini pocket springs, high-density or polyurethane layers, combined differently in each model. This is where pressure at the shoulder and the hip is dealt with."
         },
         {
-          "title": "Edge and cover",
-          "body": "The edge decides whether the usable area matches the size on the label. The cover decides how it survives being cleaned."
+          "title": "Bottom quilted layers",
+          "body": "The underside is built the same way and finished in an anti-slip fabric, so the mattress wears evenly and stays where it is put."
         }
       ]
     },
     "credentials": {
       "eyebrowLabel": "Manufacturing",
-      "heading": "Made here, to a stated standard.",
-      "sub": "The claims a manufacturer can actually make. Certifications and figures are confirmed per specification rather than asserted on a web page.",
+      "heading": "The Kingdom's first foam factory.",
+      "sub": "STARK's mattress division is Saudi Light Industries, and it has been making foam in Jeddah since 1967.",
       "items": [
         {
-          "title": "Own production",
-          "body": "Made on our own lines in the Kingdom, not assembled from imported finished goods with a label applied."
+          "title": "Founded in 1967",
+          "body": "The first foam factory in the Kingdom, started by 15 people in a 6,000 m² plant on Madinah Road, making foam mattresses and pillows. It works today from the Al Fadel district on Old Makkah Road."
         },
         {
-          "title": "Material traceability",
-          "body": "Foam, spring and textile inputs are specified and recorded, so a contract order is repeatable and a warranty claim is answerable."
+          "title": "Re-equipped in 1998",
+          "body": "An assembly line was added and the factory re-equipped with Italian and German technology, which is what turned a foam maker into somewhere a hotel order can be produced consistently."
         },
         {
-          "title": "Batch consistency",
-          "body": "A two-hundred-unit hotel order has to be the same mattress two hundred times. That is a production discipline, not a promise."
+          "title": "Hotel rooms since 2017",
+          "body": "The factory extended into designing, manufacturing and equipping hotel rooms on Italian automated carpentry machines. The bed and the room around it come from the same group."
         },
         {
-          "title": "Testing",
-          "body": "Durability and firmness verified against the specification a project was sold on, before it ships."
+          "title": "Fire-resistant for hospitality",
+          "body": "Every model in the hospitality range is built on fire-resistant fabric, cotton or striped jacquard depending on the model."
         }
       ]
     },
