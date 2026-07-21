@@ -77,9 +77,9 @@
     "about": {
       "heading": "More than a manufacturer.",
       "paragraphs": [
-        "Strategic Trust for Advanced and Reliable Knowledge (STARK) is a Saudi manufacturer of integrated environments: woodworks, furniture and mattresses.",
-        "We are more than a manufacturer: a trusted solutions partner that brings design, manufacturing, and on-site execution into a single, accountable process. Every piece is engineered for durability and finished to a standard that hospitality demands.",
-        "From bespoke wood elements and full interior fit-outs to comfort-engineered mattresses, our work is built to last and made to measure, with fair, quality-first practices at every stage."
+        "STARK provides integrated manufacturing solutions across woodworks, furniture and mattresses, for hospitality, residential, commercial, administrative, healthcare and government projects.",
+        "It was formed in 2026, when Saudi Light Industries, making foam and mattresses in Jeddah since 1967, joined with Trust Wood and the Haidar family's decades in the wood industry. Two factories, one company.",
+        "That is why design, manufacturing and on-site execution sit in a single accountable process here rather than across four contracts. Every element is engineered for durability and finished to the standard hospitality demands."
       ],
       "collageAlt": [
         "Crafted wood interior detail.",
@@ -90,11 +90,11 @@
       "pillars": [
         {
           "title": "Vision",
-          "body": "To be a trusted regional leader in hospitality solutions, recognised for quality, innovation and reliability."
+          "body": "To be a leading industrial company delivering integrated manufacturing solutions that contribute to strengthening national industry and improving quality of life."
         },
         {
           "title": "Mission",
-          "body": "To deliver end-to-end hospitality solutions through high-quality manufacturing, customised design and efficient execution, creating long-term value for our clients."
+          "body": "To serve our clients by delivering reliable industrial products and integrated manufacturing solutions, supported by accumulated expertise, specialized capabilities and the highest standards of quality, creating sustainable value for our partners and the communities we serve."
         }
       ]
     },
@@ -106,9 +106,9 @@
           "title": "European machinery",
           "body": "Modern automated carpentry and production lines.",
           "meta": [
-            "Panel processing",
+            "CNC and beam saws",
             "Edge banding",
-            "CNC boring"
+            "Through-boring"
           ],
           "alt": "Precision woodworking machinery on the production floor."
         },
@@ -116,9 +116,9 @@
           "title": "Large-scale capacity",
           "body": "Capable of two mega-projects per year.",
           "meta": [
-            "Project volume",
-            "Multi-unit work",
-            "Full interiors"
+            "Door line",
+            "Panel line",
+            "Paint line"
           ],
           "alt": "Large-scale manufacturing facility interior."
         },
@@ -127,8 +127,8 @@
           "body": "Strict checks at every stage to delivery.",
           "meta": [
             "Stage checks",
-            "Through to delivery",
-            "One standard"
+            "100% inspection",
+            "Signed off with the client"
           ],
           "alt": "Finished interior demonstrating quality of finish."
         }
@@ -247,23 +247,23 @@
     "process": {
       "eyebrow": "How we work",
       "heading": "Our Process",
-      "sub": "From first drawing to final handover: four considered steps behind every project we deliver.",
+      "sub": "From the first drawing to the installed room, the same four steps, inside one company.",
       "steps": [
         {
           "title": "Design",
-          "body": "We shape each piece around the space and the brief, balancing form, function, and proportion."
+          "body": "Drawings, mood boards and material selections worked through with the client until the intent is unambiguous and the drawing is the thing that gets built."
         },
         {
           "title": "Source",
-          "body": "Responsibly sourced solid hardwoods and materials, selected for durability and finish."
+          "body": "Material bought against the specification and inside our FSC chain of custody, so what a drawing calls for is what can be documented on delivery."
         },
         {
-          "title": "Craft",
-          "body": "Our workshop cuts, joins, and finishes every surface to a repeatable production standard."
+          "title": "Make",
+          "body": "Cut, sized, moulded, assembled and finished on automated lines, with every stage inspected against a written quality plan rather than a fitter's judgement."
         },
         {
-          "title": "Deliver",
-          "body": "Coordinated delivery and installation, so your space is ready the moment it arrives."
+          "title": "Install",
+          "body": "Delivery and installation by our own teams. The project ends when the space is ready, not when the truck leaves."
         }
       ]
     },
@@ -363,8 +363,8 @@
     "optionalHint": "optional",
     "details": {
       "email": "info@stark.com.sa",
-      "phone": "",
-      "location": "Jeddah, Saudi Arabia"
+      "phone": "+966 56 200 1435",
+      "location": "Old Makkah Road, Kilo 16, Jeddah"
     },
     "locationLabel": "Location"
   },

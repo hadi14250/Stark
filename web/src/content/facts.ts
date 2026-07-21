@@ -27,22 +27,25 @@
  * THE ONE THING TO UNDERSTAND BEFORE EDITING
  * ===========================================================================
  *
- * STARK is a holding brand over TWO REAL JEDDAH FACTORIES, and the documents
- * do not say so anywhere:
+ * STARK IS ONE COMPANY MADE OF TWO REAL JEDDAH FACTORIES:
  *
  *   Saudi Light Industries Co. (SLIC)   founded 1967/68, 60,000 m², ~200 staff
  *                                       foam and mattresses (siesta, blue)
  *   Trust Wood Factory                  founded 2019, 3rd Industrial City
  *                                       joinery, doors, hotel furniture
+ *   STARK                               formed 2026 from the two
  *
- * Neither factory's own profile contains the word "STARK" even once. The
- * headline statistics in STARK's company profile are SLIC's, lifted verbatim.
+ * The 2026 company profile states this outright (p3, COMPANY HISTORY) — which
+ * corrected an earlier conclusion of this audit. Working from the two factory
+ * profiles alone it looked undocumented, because neither of them contains the
+ * word "STARK" even once; they predate the company. The brand-level document
+ * is where the relationship lives.
  *
- * This matters because it retires an alarm that looked fatal: 1967 against
- * 2019 is not a contradiction, it is two founding dates for two different
- * companies. Anyone re-auditing this site will hit that apparent conflict and
- * reach for the delete key, so it is written down here rather than left to be
- * rediscovered.
+ * This is what dissolves an alarm that looked fatal: 1967 against 2019 is not
+ * a contradiction, it is two founding dates for two different factories, and
+ * 2026 is the third. Anyone re-auditing this site will hit that apparent
+ * conflict and reach for the delete key, so it is written down here rather
+ * than left to be rediscovered.
  *
  * See `SOURCES.md` in this directory for the full claim-by-claim ledger,
  * including the non-numeric claims this file cannot police.
@@ -120,7 +123,34 @@ export const FACTS = {
   megaProjects: {
     value: 2,
     grouping: false,
-    source: "STARK company profile p2 (stat row under WHO WE ARE)",
+    source: "STARK company profile 2026 p5 (MANUFACTURING & FACILITY)",
+  },
+
+  /**
+   * The year STARK itself came into existence, as the integration of Saudi
+   * Light Industries and Trust Wood.
+   *
+   * This is the fact that dissolves the whole 1967/2019/2026 tangle: three
+   * real founding years for three real entities. 1967 is SLIC's, 2019 is Trust
+   * Wood's, and 2026 is STARK's own.
+   */
+  starkFormed: {
+    value: 2026,
+    source: "STARK company profile 2026 p3 (COMPANY HISTORY)",
+  },
+
+  /** The phone number on the profile's back page. */
+  contactPhone: {
+    value: "+966 56 200 1435",
+    source: "STARK company profile 2026 p20 (back page)",
+    caveat:
+      "One digit from blue's customer-care line (0562001434). Most likely a consecutive block rather than a typo, but worth one confirmation since a wrong number fails silently.",
+  },
+
+  /** Kilo 16 on Old Makkah Road, the address the profile publishes. */
+  contactAddressKilo: {
+    value: 16,
+    source: "STARK company profile 2026 p20 (back page)",
   },
 
   // ── Woodworks ──────────────────────────────────────────────────────────
