@@ -9,7 +9,7 @@ import { ContactForm } from "./ContactForm";
 
 /**
  * The contact section — the site's single contact surface, mounted on the
- * Landing page (`#contact`, the target of every "Start a project" CTA).
+ * Landing page (`#contact`, the target of every "Let's talk" CTA).
  *
  * WHAT WAS HERE: a plain two-column band. A heading, three label/value pairs,
  * and seven bordered inputs. It was the only section on the site that used no

@@ -41,7 +41,7 @@ const LABELS = {
   divisions: "Divisions",
   projects: "Projects",
   empty: "No projects yet",
-  startProject: "Start a project",
+  startProject: "Let's talk",
 };
 
 /**

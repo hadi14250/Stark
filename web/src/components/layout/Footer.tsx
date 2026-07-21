@@ -3,7 +3,7 @@ import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { Container } from "@/components/ui/Container";
 import { SocialLinks, type SocialKey } from "@/components/ui/SocialLinks";
-import logoWhite from "../../../public/brand/logo-horizontal-white.png";
+import logoLockup from "../../../public/brand/logo-lockup-white.png";
 
 const SOCIAL_KEYS: readonly SocialKey[] = ["facebook", "instagram", "youtube", "x"];
 
@@ -28,7 +28,15 @@ export function Footer() {
         <div className="grid grid-cols-2 gap-10 nav:grid-cols-[1.4fr_1fr_1fr_1fr]">
           {/* Brand */}
           <div className="col-span-2 nav:col-span-1">
-            <Image src={logoWhite} alt="STARK" width={47} height={30} />
+            {/* Transparent lockup, sized past the brand book's 80px minimum
+                (p11). The footer has the room the nav does not, so this is the
+                one place the tagline is actually readable. */}
+            <Image
+              src={logoLockup}
+              alt="STARK"
+              className="h-14 w-auto"
+              sizes="184px"
+            />
             <p className="mt-5 max-w-[28ch] font-display text-xl font-light text-[color:var(--ink-green-strong)]">
               {t("tagline")}
             </p>

@@ -8,8 +8,8 @@ const base =
 
 /**
  * Variant styling — consumes ONLY semantic tokens.
- * - tan:    accent fill, forest text (nav "Contact Us", section "Start a project").
- * - forest: forest fill, cream text (hero "Start a project", "View More").
+ * - tan:    accent fill, forest text (nav and section "Let's talk").
+ * - forest: forest fill, cream text (hero "Let's talk", "View More").
  */
 const variants: Record<Variant, string> = {
   tan: "bg-accent text-[color:var(--green-forest)] hover:bg-[color:var(--color-accent-2)]",

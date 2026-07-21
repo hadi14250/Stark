@@ -8,7 +8,7 @@ import { Container } from "@/components/ui/Container";
 import { Pill } from "@/components/ui/Pill";
 import { EnvelopeIcon, SocialLinks, type SocialKey } from "@/components/ui/SocialLinks";
 import { LocaleSwitcher } from "./LocaleSwitcher";
-import logoWhite from "../../../public/brand/logo-horizontal-white.png";
+import logoLockup from "../../../public/brand/logo-lockup-white.png";
 
 const LINKS = [
   { href: "/", key: "home" },
@@ -91,9 +91,26 @@ export function Nav() {
       {/* Main nav bar. */}
       <div className="bg-[color:var(--color-nav-bg)]">
         <Container className="flex h-16 items-center justify-between nav:h-[76px]">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-3" aria-label="STARK">
-            <Image src={logoWhite} alt="STARK" width={44} height={28} priority />
+          {/* Logo.
+              The lockup asset is transparent, so it sits ON the nav green
+              rather than carrying its own lighter-green plate — the previous
+              export was a 660x420 image with #1C3D2E baked in, which read as a
+              box floating on the #142c21 bar.
+
+              Sizes are driven by the brand book's floor of 80px lockup width
+              (p11, "Minimum Logo Scaling"); the old 44px render was 45% of it,
+              which is why the tagline was mush. h-8/h-11 give 105px and 145px.
+              Clear space (p12) asks for 1x the icon height all round — no nav
+              bar can honour that, so the bar gives it what vertical room it
+              has and buys the horizontal side back with the gap to the links. */}
+          <Link href="/" className="flex items-center" aria-label="STARK">
+            <Image
+              src={logoLockup}
+              alt="STARK"
+              priority
+              className="h-8 w-auto nav:h-11"
+              sizes="(min-width: 860px) 145px, 105px"
+            />
           </Link>
 
           {/* Desktop nav */}

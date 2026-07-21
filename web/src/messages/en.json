@@ -9,7 +9,7 @@
     "woodworks": "Woodworks",
     "mattresses": "Mattresses",
     "gallery": "Gallery",
-    "cta": "Start a project",
+    "cta": "Let's talk",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
     "switchTo": "العربية"
@@ -69,7 +69,7 @@
       "line2": "Fully delivered.",
       "sub": "Saudi-based manufacturing of woodworks, furniture and mattresses.",
       "sub2": "From raw materials to finished interiors, under one partner.",
-      "cta": "Start a project",
+      "cta": "Let's talk",
       "scrollCue": "Scroll to explore",
       "alt": "STARK. Complete environments, fully delivered.",
       "ctaSecondary": "View our work"
@@ -157,7 +157,7 @@
         {
           "title": "Turnkey",
           "body": "Design, manufacture, deliver, install. One partner for complete, made-to-measure interiors.",
-          "cta": "Start a project",
+          "cta": "Let's talk",
           "alt": "Complete turnkey interior environment."
         }
       ],
@@ -280,7 +280,7 @@
       "eyebrow": "One partner",
       "heading": "Design, manufacture, deliver and install.",
       "sub": "Most projects are assembled from four suppliers and one long argument about whose fault it is. STARK is built to remove that argument: one company, one contract, one standard, one name on the outcome.",
-      "cta": "Start a project",
+      "cta": "Let's talk",
       "features": [
         {
           "title": "One accountable partner",
@@ -374,7 +374,7 @@
       "line1": "Where materials",
       "line2": "become spaces",
       "sub": "STARK's woodworks division takes a project from raw panel to installed interior: engineered joinery, fitted furniture and full interior fit-outs, produced on our own lines and installed by our own teams.",
-      "cta": "Start a project",
+      "cta": "Let's talk",
       "ctaSecondary": "See our work",
       "meta": [
         "Automated lines",
@@ -556,7 +556,7 @@
       "line1": "Comfort,",
       "line2": "engineered.",
       "sub": "STARK manufactures mattresses for two very different customers, through two focused brands: one built for the home, one built for hotels that replace a floor at a time.",
-      "cta": "Talk to us",
+      "cta": "Let's talk",
       "ctaSecondary": "See our work",
       "alt": "Finished bedroom interior with a STARK mattress."
     },
@@ -574,7 +574,7 @@
             "10-year warranty",
             "50-night trial"
           ],
-          "cta": "Talk to us",
+          "cta": "Let's talk",
           "alt": "Bedroom with a blue mattress product."
         },
         {
@@ -654,10 +654,10 @@
     },
     "projects": "Projects",
     "empty": "Our documented references are woodworks projects. Mattress project references are coming soon.",
-    "startProject": "Start a project",
+    "startProject": "Let's talk",
     "cta": "View details",
     "overlayEyebrow": "Selected work",
-    "overlayCta": "Start a project",
+    "overlayCta": "Let's talk",
     "labels": {
       "scope": "Scope",
       "delivery": "Delivery",

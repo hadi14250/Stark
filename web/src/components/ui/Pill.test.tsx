@@ -14,8 +14,8 @@ import { Pill } from "@/components/ui/Pill";
  */
 describe("component test infrastructure", () => {
   it("renders a Pill as a button", () => {
-    render(<Pill>Start a project</Pill>);
-    const el = screen.getByRole("button", { name: "Start a project" });
+    render(<Pill>Let&apos;s talk</Pill>);
+    const el = screen.getByRole("button", { name: "Let's talk" });
     expect(el.tagName).toBe("BUTTON");
   });
 
