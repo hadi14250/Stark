@@ -122,6 +122,112 @@ export const FACTS = {
     grouping: false,
     source: "STARK company profile p2 (stat row under WHO WE ARE)",
   },
+
+  // ── Woodworks ──────────────────────────────────────────────────────────
+  // The certificate held by Trust Wood, the group's Jeddah joinery factory.
+
+  /**
+   * FSC Chain of Custody, issued by BMC Assurance under FSC-STD-40-004 V-3-1
+   * and FSC-STD-50-001 V-2-1. Registered 22-01-2024, expires 21-01-2029 — so
+   * unlike the ISO pair it is CURRENT, which is why this one is on the site.
+   *
+   * ⚠ THE SYSTEM IS "TRANSFER", AND THAT LIMITS THE CLAIM. Transfer means
+   * certified output requires certified input; it does not mean everything
+   * leaving the factory is FSC-certified. Copy may say the factory holds chain
+   * of custody and can supply certified material. It may NOT say "our wood is
+   * FSC-certified" as a blanket statement.
+   */
+  fscCertificate: {
+    value: "BMC-COC-010074",
+    source: "Trust Wood profile p83 (BMC certificate of registration)",
+  },
+
+  /**
+   * The machining allowances in the factory's quality plan, stage by stage.
+   * Cut oversize, then size, then mould: the numbers descend because each
+   * stage takes the component closer to final, which is why they are worded
+   * as allowances rather than as a finished tolerance. "+10 mm tolerance" on a
+   * delivered component would read as sloppy to a specifier; it is not what
+   * the document means.
+   */
+  toleranceCutting: {
+    value: 10,
+    source: "Trust Wood profile p103 (Quality Plan TW-QP-01, line 03)",
+  },
+  toleranceSizing: {
+    value: 5,
+    source: "Trust Wood profile p103 (Quality Plan TW-QP-01, line 04)",
+  },
+  toleranceMolding: {
+    value: 3,
+    source: "Trust Wood profile p103 (Quality Plan TW-QP-01, line 06)",
+  },
+  toleranceGluingPainting: {
+    value: 2,
+    source: "Trust Wood profile p103 (Quality Plan TW-QP-01, lines 07 and 08)",
+  },
+
+  /** Inspection frequency on nine of the ten quality-plan stages. */
+  inspectionFrequency: {
+    value: 100,
+    source: "Trust Wood profile p103 (Quality Plan TW-QP-01, Frequency column)",
+  },
+
+  /** CORAL pressurised water-wash spray booth, 6 x 12 m. */
+  paintBoothWidth: {
+    value: 6,
+    source: "Trust Wood profile p17 (machine list after expansion, item 29)",
+  },
+  paintBoothLength: {
+    value: 12,
+    source: "Trust Wood profile p17 (machine list after expansion, item 29)",
+  },
+
+  // ── Mattresses ─────────────────────────────────────────────────────────
+
+  /**
+   * blue's warranty. Stated per product in the 2026 product sheets.
+   *
+   * ⚠ SIESTA'S WARRANTIES ARE DIFFERENT AND SHORTER — 10 years on SENSICE but
+   * 5 on COMFORT, 3 on STANDARD, 1 on SLEEP. "Up to 10 years" is the only
+   * honest way to state the range across that catalogue, and the two brands
+   * must never share one warranty number.
+   */
+  blueWarrantyYears: {
+    value: 10,
+    source: "blue dossier, Products/Luna/Luna info 2026.docx (الضمان)",
+  },
+
+  /** blue's home trial. Its own terms document, on SLIC letterhead. */
+  blueTrialNights: {
+    value: 50,
+    source: "blue mattress 50-Night Trial Terms p1",
+  },
+
+  /** Models in each catalogue. siesta: 5 luxury + 8 economic + 3 hospitality. */
+  siestaModels: {
+    value: 16,
+    source: "Siesta catalogue 2026 pp7-59 (model pages)",
+  },
+  blueModels: {
+    value: 8,
+    source:
+      "blue dossier, Products/*/info 2026.docx (Blue 1, Comfy zone, Loft, Luna, Pure latex, Retro, Skin care, Sky)",
+  },
+
+  /** SLIC's founding headcount and first factory, before the Old Makkah Road move. */
+  slicFoundingStaff: {
+    value: 15,
+    source: "Siesta catalogue 2026 p3 (EN, ABOUT US)",
+  },
+  slicReequipYear: {
+    value: 1998,
+    source: "Siesta catalogue 2026 p3 (EN, ABOUT US)",
+  },
+  slicHotelRoomsYear: {
+    value: 2017,
+    source: "Siesta catalogue 2026 p3 (EN, ABOUT US)",
+  },
 } as const satisfies Record<string, SourcedFact | StatFact>;
 
 /**

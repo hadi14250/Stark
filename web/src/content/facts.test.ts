@@ -94,16 +94,22 @@ describe("every number in the copy deck traces to a source", () => {
 });
 
 describe("the fact registry is usable as a citation", () => {
-  it("names a document AND a page for every fact", () => {
+  it("names a retrievable location for every fact", () => {
     /**
      * "Company profile" is not a source — checking it would mean re-reading a
-     * 108-page deck. A page reference makes verification a lookup, which is
+     * 108-page deck. The citation has to make verification a LOOKUP, which is
      * the difference between a ledger somebody maintains and one they abandon.
+     *
+     * A page reference is the usual form. Not every source is paginated,
+     * though: blue's product data is one file per model, so the file name is
+     * the locator and a page number would be a fiction. Both are accepted;
+     * "somewhere in that document" is not.
      */
+    const locatable = /\bpp?\.?\s?\d|\.\w{3,5}\b/i;
     const vague = Object.entries(FACTS as Record<string, SourcedFact>)
-      .filter(([, f]) => !/\bp{1,2}\s?\.?\s?\d/i.test(f.source))
+      .filter(([, f]) => !locatable.test(f.source))
       .map(([id, f]) => `${id}: "${f.source}"`);
-    expect(vague, "these sources cite no page number").toEqual([]);
+    expect(vague, "these sources cite neither a page nor a file").toEqual([]);
   });
 
   it("keeps the contested founding year flagged", () => {

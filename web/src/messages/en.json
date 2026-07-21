@@ -391,30 +391,30 @@
       "items": [
         {
           "title": "Automated production lines",
-          "body": "Panel processing, edge work and boring run on programmed equipment, so the four-hundredth component matches the first. Repeatability is what makes a large fit-out possible without a drop in finish.",
+          "body": "Doors, panels and solid timber each run on their own line: programmed cutting, edge work and through-boring, then an automated paint line and a packing section. Repeatability is what makes a large fit-out possible without a drop in finish.",
           "meta": [
-            "Panel processing",
-            "Edge banding",
-            "CNC boring"
+            "Door line",
+            "Panel line",
+            "Solid section"
           ],
-          "alt": "Automated panel processing line."
+          "alt": "Panels running through the automated production line."
         },
         {
-          "title": "Engineered tolerances",
-          "body": "Components are cut to a specified tolerance rather than to a fitter's judgement on site, which is why our assemblies close cleanly against walls that are never quite square.",
+          "title": "Conditioned before it is cut",
+          "body": "Timber is seasoned in a dry-air chamber and held in a climatic chamber before machining, and the seasoning is checked twice a day. In this climate that step is the difference between joinery that stays shut and joinery that moves through its first summer.",
           "meta": [
-            "Specified tolerance",
-            "Dry-fit verified",
-            "Documented"
+            "Dry-air seasoning",
+            "Climatic chamber",
+            "Checked twice a day"
           ],
-          "alt": "Precision joinery detail."
+          "alt": "Timber stacked for seasoning."
         },
         {
           "title": "Finishing in-house",
-          "body": "Spray, lacquer and hand finishing happen under our roof, on our schedule. Nothing waits in a queue at a third-party shop, and nothing arrives on site with a finish nobody signed off.",
+          "body": "A finishing line, a profile sander and a 6 x 12 m water-wash spray booth, under our own roof and on our own schedule. Nothing waits in a queue at a third-party shop, and nothing arrives on site with a finish nobody signed off.",
           "meta": [
-            "Spray booth",
-            "Hand finishing",
+            "Finishing line",
+            "Water-wash spray booth",
             "Sign-off before dispatch"
           ],
           "alt": "Finished wood surface detail."
@@ -451,67 +451,92 @@
     "materials": {
       "eyebrowLabel": "Materials",
       "heading": "Specified, not improvised.",
-      "sub": "Substrate and finish are chosen against how a surface will actually be used (humidity, traffic, cleaning regime) and recorded so a repair in year five matches the original.",
+      "sub": "Every substrate below sits inside our FSC chain-of-custody scope, so the material a drawing calls for is the material that can be documented on delivery.",
       "items": [
         {
-          "label": "Engineered panel",
-          "body": "Dimensionally stable substrates for large flat surfaces that must stay flat."
+          "label": "Solid wood",
+          "body": "Where an edge will be touched, seen close, or has to take a knock."
         },
         {
-          "label": "Solid hardwood",
-          "body": "Where an edge will be touched, seen close, or has to take a knock."
+          "label": "Wood panel",
+          "body": "Dimensionally stable substrates for large flat surfaces that have to stay flat."
+        },
+        {
+          "label": "MDF",
+          "body": "Machines cleanly and takes a sprayed finish without a grain telegraphing through it."
         },
         {
           "label": "Veneer",
           "body": "Book-matched and sequenced across a run so a wall reads as one piece."
         },
         {
-          "label": "Laminate & HPL",
+          "label": "HPL",
           "body": "High-traffic and wet areas where the cleaning regime is unforgiving."
         },
         {
-          "label": "Lacquer & PU",
-          "body": "Sprayed finishes, matched to a specified sheen rather than an approximate one."
-        },
-        {
-          "label": "Hardware",
-          "body": "Specified to a cycle rating, because the hinge is what fails first on a cheap job."
+          "label": "Chipboard",
+          "body": "Carcass material for the work that will be faced, laminated or hidden."
         }
       ],
       "alt": "Timber, panel and finish samples."
     },
     "standards": {
       "eyebrowLabel": "How we work",
-      "heading": "What a specification actually gets you.",
-      "sub": "These are the checks a project passes through. Figures are confirmed per project against the specification, not claimed here.",
+      "heading": "Every stage is inspected, and the allowance is written down.",
+      "sub": "This is the quality plan our factory works to. Each stage names the equipment, the document it is checked against and who signs it off. Inspection is 100% of production unless the stage says otherwise.",
       "rows": [
         {
-          "stage": "Shop drawings",
-          "check": "Approved before any material is cut"
+          "stage": "Material intake",
+          "check": "Weighed and measured against the purchase order and the technical specification"
         },
         {
-          "stage": "Material release",
-          "check": "Substrate and finish verified against the specification"
+          "stage": "Seasoning",
+          "check": "Dry-air chamber, checked twice a day against the seasoning procedure"
         },
         {
-          "stage": "Machining",
-          "check": "First-off inspected, then sampled through the run"
+          "stage": "Cutting",
+          "check": "Automatic saw, cut to drawing with a 10 mm machining allowance"
         },
         {
-          "stage": "Dry assembly",
-          "check": "Assembled and checked in the factory before it ships"
+          "stage": "Sizing",
+          "check": "CNC, sized to drawing with a 5 mm allowance"
         },
         {
-          "stage": "Finish",
-          "check": "Sheen and colour signed off against an approved sample"
+          "stage": "Molding",
+          "check": "Moulded to drawing with a 3 mm allowance"
         },
         {
-          "stage": "Installation",
-          "check": "Snag list closed by our own team, not handed over"
+          "stage": "Gluing",
+          "check": "Assembled to drawing with a 2 mm allowance"
+        },
+        {
+          "stage": "Painting",
+          "check": "Paint chamber, finished to drawing with a 2 mm allowance"
+        },
+        {
+          "stage": "Dressing",
+          "check": "Worked to the work-order instructions and signed off by the section head"
+        },
+        {
+          "stage": "Final inspection",
+          "check": "Inspected against the drawing, and the report is signed by the quality manager with the client's representative"
         }
       ],
       "colStage": "Stage",
-      "colCheck": "What is checked"
+      "colCheck": "What is checked",
+      "certs": {
+        "label": "Certified",
+        "items": [
+          {
+            "label": "FSC Chain of Custody",
+            "body": "Certificate BMC-COC-010074, covering doors and frames, windows, stairs, wall cladding, cabinets, custom furniture, beds, wardrobes and worktops."
+          },
+          {
+            "label": "Fire-rated doors",
+            "body": "Certified by Intertek to manufacture fire-rated doors, built on fire-rated cores from Intertek-certified suppliers."
+          }
+        ]
+      }
     },
     "projects": {
       "eyebrowLabel": "Selected work",

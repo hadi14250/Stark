@@ -7,6 +7,7 @@ import { Section, SectionHeader } from "@/components/ui/Section";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { MarkGlyph } from "@/components/brand/geometry";
 import { ContactSection } from "@/components/contact/ContactSection";
+import { Reveal } from "@/components/motion/Reveal";
 import { WoodworksHero } from "@/components/woodworks/WoodworksHero";
 import { Chapters, type Chapter } from "@/components/woodworks/Chapters";
 import {
@@ -40,6 +41,7 @@ type Cap = { title: string; body: string; meta: string[]; alt: string };
 type Service = { title: string; body: string };
 type Material = { label: string; body: string };
 type Row = { stage: string; check: string };
+type Certs = { label: string; items: { label: string; body: string }[] };
 
 /**
  * WOODWORKS — the dark workshop page.
@@ -91,6 +93,7 @@ export default async function WoodworksPage({
   const services = t.raw("services.items") as Service[];
   const materials = t.raw("materials.items") as Material[];
   const rows = t.raw("standards.rows") as Row[];
+  const certs = t.raw("standards.certs") as Certs;
 
   /**
    * The chapters ARE the capabilities copy, re-presented.
@@ -204,6 +207,42 @@ export default async function WoodworksPage({
                 ))}
               </tbody>
             </table>
+          </div>
+
+          {/*
+            THE CERTIFICATIONS THE FACTORY ACTUALLY HOLDS, under the plan they
+            govern. Two of them, not four: ISO 9001 and ISO 45001 are held but
+            EXPIRED ON 13.12.2025, so they are deliberately absent rather than
+            hedged. See content/facts.ts.
+
+            Deliberately not cards. The table above is the section's structure;
+            a second bordered treatment one scroll down would read as a
+            different section rather than as the plan's footnote.
+          */}
+          <div className="mt-[clamp(28px,3.5vw,44px)]">
+            <Reveal y={18}>
+              <p
+                className="font-mono text-[11px] tracking-eyebrow text-[color:var(--color-ink-muted)]"
+                style={{ textTransform: "var(--eyebrow-transform)" as "uppercase" }}
+              >
+                {certs.label}
+              </p>
+              <ul className="mt-4 grid gap-x-[clamp(20px,3vw,44px)] gap-y-5 nav:grid-cols-2">
+                {certs.items.map((c) => (
+                  <li
+                    key={c.label}
+                    className="border-t pt-4 [border-color:var(--color-line)]"
+                  >
+                    <p className="font-display text-h4 font-semibold text-[color:var(--color-ink)]">
+                      {c.label}
+                    </p>
+                    <p className="mt-1.5 text-body leading-body text-[color:var(--color-ink-body)]">
+                      {c.body}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </Reveal>
           </div>
         </Container>
       </Section>
