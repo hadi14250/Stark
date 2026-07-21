@@ -8,6 +8,7 @@ import { MarkGlyph } from "@/components/brand/geometry";
 import { useMotionConfig } from "@/components/motion/useMotionConfig";
 import { ClipReveal } from "@/components/motion/reveals";
 import { landingImages } from "@/components/landing/assets";
+import { mattressImages } from "@/components/mattresses/assets";
 import type { DivisionKey } from "@/components/brand/LogoDefs";
 import { ease, easeCss } from "@/styles/tokens";
 
@@ -155,7 +156,7 @@ export function DivisionIndex({ items }: { items: DivisionItem[] }) {
                 }
               >
                 <Image
-                  src={landingImages.categories[i]}
+                  src={i === 1 ? mattressImages.homeCard : landingImages.categories[i]}
                   alt={item.alt}
                   fill
                   sizes="(max-width: 860px) 100vw, 45vw"

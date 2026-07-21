@@ -503,6 +503,42 @@
     height: 100%;
     object-fit: cover;
   }
+  /* CUT-OUT PRODUCTS ARE NOT PHOTOGRAPHS.
+     `cover` is right for a bedroom — it can lose its edges and still be a
+     bedroom. Applied to a mattress masked out of its background it scaled the
+     product up until it bled past the card on all four sides, slicing off the
+     corners and the `blue` logo: the subject was the first thing cropped.
+     `contain` keeps the whole product in frame, and because these files are
+     transparent the card's own colour fills the rest, so it reads as a product
+     sitting on a surface rather than as a letterboxed photo. The inset gives
+     it the breathing room a product shot needs. */
+  .stage-viewport .card .photo.contain {
+    object-fit: contain;
+    inset: clamp(8px, 2cqw, 22px);
+    width: auto;
+    height: auto;
+  }
+  /* A CUT-OUT HERO IS NOT A PHOTOGRAPH.
+     The hero's title is white over a dark bottom-gradient scrim, which works
+     when the cell is filled edge to edge by a photo. A cut-out product leaves
+     the card's own surface showing, so under the linen theme "Sky" was white
+     type on a cream card — invisible. Here the scrim inherits the card colour
+     instead of black, and the type takes the theme's ink. Scoped to `.cutout`,
+     so the woodworks heroes are untouched. */
+  .stage-viewport .hero.cutout .scrim {
+    background: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--card-bg) 88%, transparent) 0%,
+    transparent 58%
+    );
+  }
+  .stage-viewport .hero.cutout .hero-title {
+    color: var(--text);
+  }
+  .stage-viewport .hero.cutout .hero-sub {
+    color: var(--text);
+    opacity: 0.86;
+  }
   /* NOTE: the original does NOT zoom images on hover — the hover feedback is the
   cursor-follow glow (see .card::before). Zoom intentionally removed. */
   /* subtle bottom gradient for text over photos */
@@ -880,20 +916,34 @@
     ),
     linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 55%);
   }
+  /* THE OVERLAY MUST FIT THE STAGE IT COVERS.
+     It used to be `height:100%` with `overflow:hidden` at desktop, which is a
+     promise the content could not keep: a three-line title plus five stacked
+     spec cards is taller than a stage that is only ever viewport-height minus
+     the nav and the tab bar. Everything past the fold was simply clipped —
+     the heading cut mid-word, the CTA gone, and the control row (the only
+     visible way out) gone with it.
+
+     Now the panel is a two-row grid whose columns are each allowed to shrink
+     (`min-height: 0` — without it a grid item refuses to go below its content
+     height and overflows anyway) and to scroll INSIDE themselves. Nothing is
+     clipped, the page behind never scrolls, and the exit is always on screen. */
   .stage-viewport .overlay-inner {
     position: relative;
     z-index: 2;
     height: 100%;
+    min-height: 0;
     display: grid;
     grid-template-columns: 1fr;
-    padding: clamp(20px, 4cqw, 60px);
-    overflow-y: auto;
+    grid-template-rows: minmax(0, 1fr);
+    gap: clamp(12px, 2cqw, 28px);
+    padding: clamp(16px, 3cqw, 48px);
+    overflow: hidden;
   }
   @container stage (min-width: 1000px) {
     .stage-viewport .overlay-inner {
-      grid-template-columns: 1fr minmax(380px, 34%);
+      grid-template-columns: 1fr minmax(340px, 34%);
       align-items: stretch;
-      overflow: hidden;
     }
   }
   /* left side: eyebrow + big title + controls */
@@ -902,6 +952,8 @@
     flex-direction: column;
     justify-content: flex-end;
     order: 2;
+    min-height: 0;
+    overflow: hidden;
   }
   @container stage (min-width: 1000px) {
     .stage-viewport .overlay-left {
@@ -918,7 +970,10 @@
        structured". Re-pointed at the display face. */
     font-family: var(--font-display), sans-serif;
     font-size: calc(clamp(1.6rem, 3cqw, 2.4rem) * var(--fs-heading, 1));
-    color: var(--accent);
+    /* Sand, fixed. This line lies on the overlay's photo scrim, which is dark
+       under every theme, so it cannot take --accent: that is sand for the
+       three greens but dark green under linen, where it disappeared. */
+    color: #dbcaad;
     line-height: 1;
   }
   .stage-viewport .overlay-eyebrow.plain {
@@ -927,16 +982,26 @@
   .stage-viewport .overlay-title {
     font-family: var(--font-heading, var(--font-poppins)), system-ui, sans-serif;
     font-weight: 700;
-    font-size: calc(clamp(2.4rem, 6cqw, 5rem) * var(--fs-heading, 1));
-    line-height: 1;
+    /* Ceiling dropped from 5rem to 3.4rem and tied to the stage's HEIGHT as
+       well as its width. At 5rem a title of any real length ran to three lines
+       and ate the column the controls live in; `cqh` means a short stage gets
+       a smaller headline instead of a clipped one. */
+    font-size: calc(clamp(1.8rem, min(4.4cqw, 7cqh), 3.4rem) * var(--fs-heading, 1));
+    line-height: 1.04;
     letter-spacing: -0.01em;
     color: #fff;
     margin-top: 6px;
+    /* Long titles taper rather than shove the controls off the panel. */
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
   }
   .stage-viewport .overlay-controls {
     display: flex;
     gap: 12px;
-    margin-top: 22px;
+    margin-top: clamp(12px, 2cqh, 22px);
+    flex: 0 0 auto;
   }
   .stage-viewport .octl {
     width: 62px;
@@ -946,7 +1011,7 @@
     align-items: center;
     justify-content: center;
     background: var(--card-dark);
-    color: #fff;
+    color: var(--text);
     font-size: 1.3rem;
     transition: background-color 0.2s ease, transform 0.15s ease;
   }
@@ -960,14 +1025,47 @@
     background: var(--accent);
     color: var(--accent-text);
   }
-  /* right side: info panels */
+  /* right side: info panels.
+     Scrolls INSIDE its own column when a project has more specs than the stage
+     is tall, instead of pushing the layout past the panel's edge. `min-height:
+     0` is what makes that work at all inside a grid item. */
   .stage-viewport .overlay-right {
     display: flex;
     flex-direction: column;
-    gap: 14px;
-    justify-content: center;
+    gap: clamp(8px, 1.4cqh, 14px);
+    justify-content: flex-start;
     order: 1;
     padding-top: 8px;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
+  /* An always-visible dismiss, pinned to the panel's top corner so it survives
+     any amount of content below it. */
+  .stage-viewport .overlay-dismiss {
+    position: absolute;
+    top: clamp(12px, 2cqw, 24px);
+    inset-inline-end: clamp(12px, 2cqw, 24px);
+    z-index: 4;
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    line-height: 1;
+    background: var(--accent);
+    color: var(--accent-text);
+    box-shadow: 0 6px 20px -8px rgba(0, 0, 0, 0.55);
+    transition: transform 0.15s ease, filter 0.2s ease;
+  }
+  .stage-viewport .overlay-dismiss:hover {
+    filter: brightness(1.08);
+  }
+  .stage-viewport .overlay-dismiss:active {
+    transform: scale(0.94);
   }
   @container stage (min-width: 1000px) {
     .stage-viewport .overlay-right {
@@ -982,26 +1080,42 @@
     font-weight: 600;
     margin-top: 6px;
   }
+  .stage-viewport .ov-specs {
+    display: grid;
+    gap: clamp(8px, 1.4cqh, 12px);
+    grid-template-columns: 1fr;
+  }
+  @container stage (min-width: 1000px) {
+    .stage-viewport .ov-specs {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
   .stage-viewport .ov-card {
     background: var(--overlay-card);
     border-radius: 9px;
-    padding: 18px 20px;
+    /* Padding tracks the stage's height so a short viewport tightens the cards
+       instead of overflowing the column. */
+    padding: clamp(10px, 1.6cqh, 18px) clamp(12px, 1.6cqw, 20px);
     backdrop-filter: blur(2px);
   }
+  /* THEME COLOURS, NOT WHITE. These three rules assumed every stage was dark.
+     The linen theme's cards are cream, so hardcoded white text rendered the
+     whole detail panel invisible — legible only because the photo behind it
+     happened to be dark. Card text follows the card. */
   .stage-viewport .ov-card .ov-act-title {
     font-weight: 700;
-    color: #fff;
+    color: var(--text);
     font-size: calc(1.02rem * var(--fs-body, 1));
   }
   .stage-viewport .ov-card .ov-act-desc {
-    color: rgba(255, 255, 255, 0.86);
+    color: var(--subtext);
     font-weight: 300;
     font-size: calc(0.95rem * var(--fs-body, 1));
     line-height: 1.4;
     margin-top: 3px;
   }
   .stage-viewport .ov-card.info {
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--text);
     font-weight: 300;
     line-height: 1.45;
   }

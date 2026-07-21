@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import type { Slide } from "@/lib/gallery/types";
 import { useTextEnter } from "./textMotion";
+import { isCutout } from "@/components/mattresses/assets";
 
 /**
  * Every animated line sits inside its own .tmask (overflow:hidden) — the
@@ -22,9 +23,18 @@ export function HeroCard({ slide }: { slide: Slide }) {
   const title = useTextEnter(0);
   const sub = useTextEnter(1);
 
+  // A cut-out hero is a product on a flat surface, not a photograph: it needs
+  // the card's own contrast, not the white-on-dark-scrim treatment.
+  const cut = isCutout(slide.heroImage);
+
   return (
-    <div className="card image hoverable hero">
-      <img draggable={false} className="photo" src={slide.heroImage} alt={slide.city} />
+    <div className={`card image hoverable hero${cut ? " cutout" : ""}`}>
+      <img
+        draggable={false}
+        className={`photo${cut ? " contain" : ""}`}
+        src={slide.heroImage}
+        alt={slide.city}
+      />
       <div className="scrim" />
       <div className="hero-copy">
         <div className="tmask">
@@ -54,7 +64,12 @@ export function ImageCard({
 }) {
   return (
     <div className={`card image hoverable ${className}`}>
-      <img draggable={false} className="photo" src={src} alt={alt} />
+      <img
+        draggable={false}
+        className={`photo${isCutout(src) ? " contain" : ""}`}
+        src={src}
+        alt={alt}
+      />
     </div>
   );
 }
@@ -139,7 +154,15 @@ export function CuisineCard({ slide }: { slide: Slide }) {
         </div>
       </div>
       <div className="cuisine-photo hoverable">
-        <img draggable={false} className="photo" src={slide.cuisineImage} alt="Cuisine" />
+        {/* alt was the literal string "Cuisine" — the travel demo's, announced
+            to screen-reader users on every project in both locales. Every other
+            image card on this stage names the project; so does this one now. */}
+        <img
+          draggable={false}
+          className={`photo${isCutout(slide.cuisineImage) ? " contain" : ""}`}
+          src={slide.cuisineImage}
+          alt={slide.city}
+        />
       </div>
     </div>
   );

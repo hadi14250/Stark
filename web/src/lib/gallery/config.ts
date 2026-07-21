@@ -105,9 +105,9 @@ export function applySlideText(slide: Slide, t: SlideText | undefined): Slide {
       ...slide.overlay,
       eyebrow: t.overlayEyebrow,
       title: t.overlayTitle,
-      bestTime: t.overlayBestTime,
+      summary: t.overlayBestTime,
       ctaLabel: t.overlayCtaLabel,
-      activities: t.overlayActivities,
+      specs: t.overlayActivities,
     },
   };
 }

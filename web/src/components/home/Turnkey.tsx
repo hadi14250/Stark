@@ -8,6 +8,7 @@ import { Parallax } from "@/components/motion/Parallax";
 import { Reveal } from "@/components/motion/Reveal";
 import { CountUp } from "@/components/motion/CountUp";
 import { landingImages } from "@/components/landing/assets";
+import { mattressImages } from "@/components/mattresses/assets";
 import { HOME_STATS } from "@/content/facts";
 import { TurnkeyLedger } from "./TurnkeyLedger";
 
@@ -23,7 +24,10 @@ type Feature = { title: string; body: string };
  */
 const ROW_IMAGES = [
   landingImages.categories[0],
-  landingImages.categories[1],
+  // The mattresses row is the one row on Home whose subject the client has
+  // actually photographed, so it gets the real thing rather than a bedroom
+  // from the furniture template.
+  mattressImages.homeCard,
   landingImages.categories[2],
   landingImages.bands[2],
 ] as const;

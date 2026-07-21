@@ -76,9 +76,14 @@ export function toSlide(p: Project, t: Translator): Slide {
     overlay: {
       eyebrow: t("overlayEyebrow"),
       title: t(p.keys.overlayTitle),
-      bestTime: t(p.keys.overlaySummary),
-      activities: specs,
+      summary: t(p.keys.overlaySummary),
+      summaryLabel: t("overlaySummaryLabel"),
+      specs: specs,
+      specsLabel: t("overlaySpecsLabel"),
       ctaLabel: t("overlayCta"),
+      prevLabel: t("prev"),
+      nextLabel: t("next"),
+      closeLabel: t("close"),
       bg: p.overlayBg,
     },
   };

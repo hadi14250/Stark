@@ -32,14 +32,30 @@ export interface Activity {
 }
 
 export interface Overlay {
-  /** cursive eyebrow, e.g. "Visit Japan" */
+  /** Small line above the title. */
   eyebrow: string;
-  /** big title, e.g. "The Zen Experience" */
+  /** The overlay's heading. */
   title: string;
-  /** whether the eyebrow uses the warm/orange or plain white cursive treatment */
-  bestTime: string;
-  activities: Activity[];
+  /**
+   * A paragraph of context under `summaryLabel`.
+   *
+   * WAS `bestTime`, and `specs` below was `activities` — the travel demo's
+   * names, carried into Stark unchanged. That is not cosmetic: because the
+   * fields were called "best time" and "activities", DetailOverlay captioned
+   * them with hardcoded English `Best time to visit` and `Must-do activities`,
+   * and those two lines shipped on every project overlay in both locales. A
+   * mattress page told the reader the best time to visit it. The names are now
+   * what the fields hold, and the captions come from the message deck.
+   */
+  summary: string;
+  summaryLabel: string;
+  specs: Activity[];
+  specsLabel: string;
   ctaLabel: string;
+  /** Accessible names for the overlay's own controls. */
+  prevLabel: string;
+  nextLabel: string;
+  closeLabel: string;
   /** full-bleed background image */
   bg: string;
 }

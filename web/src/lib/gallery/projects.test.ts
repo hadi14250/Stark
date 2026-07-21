@@ -36,12 +36,17 @@ describe("gallery data model", () => {
    * Categories that are empty ON PURPOSE, and why.
    *
    * The content audit removed six fabricated case studies and put back the
-   * three that are evidenced by an approval document. All three are woodworks.
-   * The mattress division has no documented project reference at all, so its
-   * filter shows the empty state rather than a product range dressed up as a
-   * project. Delete an entry from here the day a real reference arrives.
+   * three that are evidenced by an approval document. All three are woodworks,
+   * so this list used to hold "mattresses" — the mattress division has no
+   * documented PROJECT reference and a product range dressed up as a project
+   * is what the audit had just finished deleting.
+   *
+   * The list is empty now, and the exemption did not lapse quietly: the mirror
+   * test below fails the moment a listed category gains entries, which is what
+   * forced this edit when blue's three models arrived. The mattresses category
+   * shows PRODUCTS, labelled as products in every string.
    */
-  const INTENTIONALLY_EMPTY: readonly CategoryId[] = ["mattresses"];
+  const INTENTIONALLY_EMPTY: readonly CategoryId[] = [];
 
   it("no category is empty by accident", () => {
     // byCategory() feeding an empty array into the stage is a real failure
@@ -81,10 +86,17 @@ describe("gallery data model", () => {
      *
      * TO CLOSE IT: put the real photographs in place and change `it.fails` to
      * `it`. The assertion below already checks the right thing.
+     *
+     * NARROWED, NOT WEAKENED: blue's three models now carry the manufacturer's
+     * own product photography, so this no longer covers the whole gallery. It
+     * covers exactly what is still filler — the three woodworks references —
+     * and the count below is the number of cells still waiting on a real
+     * photograph. It goes down as photography arrives; it must never go up.
      */
     const shared = PROJECTS.flatMap((p) => Object.values(p.cells)).filter((src) =>
       src.startsWith("/landing/"),
     );
+    expect(shared.length, "more cells on filler imagery than when this was written").toBeLessThanOrEqual(18);
     expect(shared, "still using landing-set imagery for named projects").toEqual([]);
   });
 
@@ -185,8 +197,8 @@ describe.each([
         expect(s[field], `${p.id}.${field}`).toBeTruthy();
       }
       expect(s.overlay.title).toBeTruthy();
-      expect(s.overlay.activities.length).toBeGreaterThan(0);
-      expect(s.overlay.activities.every((a) => a.title && a.desc)).toBe(true);
+      expect(s.overlay.specs.length).toBeGreaterThan(0);
+      expect(s.overlay.specs.every((a) => a.title && a.desc)).toBe(true);
     }
   });
 
@@ -194,6 +206,6 @@ describe.each([
     // A missing overlaySpecs key must not take the whole SSR render down.
     const broken: Translator = Object.assign((k: string) => t(k), { raw: () => undefined });
     expect(() => toSlide(PROJECTS[0], broken)).not.toThrow();
-    expect(toSlide(PROJECTS[0], broken).overlay.activities).toEqual([]);
+    expect(toSlide(PROJECTS[0], broken).overlay.specs).toEqual([]);
   });
 });

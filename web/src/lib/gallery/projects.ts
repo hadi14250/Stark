@@ -1,4 +1,5 @@
 import type { Theme } from "./types";
+import { blueShot, type BlueModel, type ShotType } from "@/components/mattresses/assets";
 
 /**
  * The gallery's data model.
@@ -74,7 +75,7 @@ export interface Project {
  * look coherent — on a site being rebuilt precisely because it had three
  * palettes. Projects pick a theme; they do not invent one.
  */
-export type ThemeName = "forest" | "moss" | "pine";
+export type ThemeName = "forest" | "moss" | "pine" | "linen";
 
 /**
  * ONE GREEN FAMILY, THREE DEPTHS — not three different worlds.
@@ -125,7 +126,38 @@ export const THEMES: Record<ThemeName, Theme> = {
     overlayCard: "rgba(27, 50, 38, 0.62)",
     overlayAccent: "#dbcaad",
   },
-  /** Lightest of the three — for mattress and residential work. */
+  /**
+   * THE ONE LIGHT STAGE — for mattresses.
+   *
+   * The three greens above were chosen for woodworks, where the subject is
+   * dark timber and a deep stage reads as the material. Mattresses are the
+   * opposite subject: every one of them is cream, ivory or pale grey, and on
+   * a near-black green they looked like cut-outs pasted onto a hole. The photo
+   * and the stage were fighting for the same job.
+   *
+   * So this inverts. Cream surfaces, green type, sand for the accent — the
+   * same ivory register the /mattresses route already runs in, which means the
+   * gallery now agrees with the page it links to instead of contradicting it.
+   *
+   * It is still the brand's palette: every colour here is a --white/--sand
+   * step or a --green step, and the anti-grey rule in projects.test.ts still
+   * applies to it (every DARK colour in the set must be a green, and all four
+   * of these are). A light stage is not a loose stage.
+   */
+  linen: {
+    bg: "#faf5ef",
+    cardBg: "#f4eee6",
+    cardBg2: "#ece4d5",
+    cardDark: "#dbcaad",
+    accent: "#1c3d2e",
+    accent2: "#496357",
+    accentText: "#faf5ef",
+    text: "#1c3d2e",
+    subtext: "#496357",
+    overlayCard: "rgba(250, 245, 239, 0.82)",
+    overlayAccent: "#1c3d2e",
+  },
+  /** Lightest of the three greens — for residential and mixed work. */
   pine: {
     bg: "#16271e",
     cardBg: "#21382a",
@@ -142,6 +174,16 @@ export const THEMES: Record<ThemeName, Theme> = {
 };
 
 const img = (name: string) => `/landing/${name}`;
+
+/**
+ * The one honest image helper in this file.
+ *
+ * `img()` above points at the recoloured furniture-template set — filler, and
+ * the reason the photography gate in projects.test.ts is a deliberate failure.
+ * `mat()` points at the client's own blue product photography, so anything
+ * routed through it is a real picture of the thing it is captioned as.
+ */
+const mat = (model: BlueModel, shot: ShotType) => blueShot(model, shot);
 
 /**
  * THE THREE REAL REFERENCES, replacing six that were invented.
@@ -253,6 +295,109 @@ export const PROJECTS: readonly Project[] = [
       overlaySpecs: "ngha.overlaySpecs",
     },
     overlayBg: img("6ef0b9569b029eeb.png"),
+  },
+
+  /**
+   * ── blue mattress ────────────────────────────────────────────────────────
+   *
+   * PRODUCTS, NOT PROJECTS, and the copy says so. The woodworks entries above
+   * are approved submittals for named developments; these three are models in
+   * a catalogue. The mattress division has no documented project reference at
+   * all, and dressing a product range up as a delivered project is precisely
+   * what the content audit stripped out of this file. Every string in the
+   * `blue*` message keys names a model and describes a construction; none of
+   * them claims a client, a site or a completion.
+   *
+   * Why these three of the eight. They are the models whose story is carried
+   * by construction and certification rather than by a health claim: Sky is
+   * memory foam, Pure latex is organic latex with certificates that can be
+   * looked up, Comfy zone adjusts its firmness per side. The other five lead
+   * on PUROTEX+ allergen percentages, INTENSE(TM)/cortisol or SKIN+(TM)
+   * carotenoid, and the standing decision is that none of that ships.
+   *
+   * Cell shapes were measured on the rendered stage, not read off the CSS:
+   * hero is 2.59, intro and portraitA are 1.31, feature and portraitB are
+   * near-square, detail is 1.13. The "portrait" names are inherited from the
+   * travel demo and describe nothing. Shots are assigned to the cell whose
+   * real aspect ratio they already fit, so nothing is cropped to a sliver.
+   */
+  {
+    id: "blue-sky",
+    category: "mattresses",
+    theme: "linen",
+    cells: {
+      hero: mat("sky", "product"),
+      intro: mat("sky", "banner"),
+      portraitA: mat("sky", "room-b"),
+      feature: mat("sky", "cutaway"),
+      portraitB: mat("sky", "room-a"),
+      detail: mat("sky", "fabric"),
+    },
+    keys: {
+      title: "blueSky.title",
+      subtitle: "blueSky.subtitle",
+      headline: "blueSky.headline",
+      paragraph: "blueSky.paragraph",
+      scope: "blueSky.scope",
+      delivery: "blueSky.delivery",
+      materials: "blueSky.materials",
+      overlayTitle: "blueSky.overlayTitle",
+      overlaySummary: "blueSky.overlaySummary",
+      overlaySpecs: "blueSky.overlaySpecs",
+    },
+    overlayBg: mat("sky", "room-a"),
+  },
+  {
+    id: "blue-pure-latex",
+    category: "mattresses",
+    theme: "linen",
+    cells: {
+      hero: mat("pure-latex", "product"),
+      intro: mat("pure-latex", "banner"),
+      portraitA: mat("pure-latex", "room-b"),
+      feature: mat("pure-latex", "cutaway"),
+      portraitB: mat("pure-latex", "room-a"),
+      detail: mat("pure-latex", "fabric"),
+    },
+    keys: {
+      title: "bluePureLatex.title",
+      subtitle: "bluePureLatex.subtitle",
+      headline: "bluePureLatex.headline",
+      paragraph: "bluePureLatex.paragraph",
+      scope: "bluePureLatex.scope",
+      delivery: "bluePureLatex.delivery",
+      materials: "bluePureLatex.materials",
+      overlayTitle: "bluePureLatex.overlayTitle",
+      overlaySummary: "bluePureLatex.overlaySummary",
+      overlaySpecs: "bluePureLatex.overlaySpecs",
+    },
+    overlayBg: mat("pure-latex", "room-a"),
+  },
+  {
+    id: "blue-comfy-zone",
+    category: "mattresses",
+    theme: "linen",
+    cells: {
+      hero: mat("comfy-zone", "product"),
+      intro: mat("comfy-zone", "banner"),
+      portraitA: mat("comfy-zone", "room-b"),
+      feature: mat("comfy-zone", "cutaway"),
+      portraitB: mat("comfy-zone", "room-a"),
+      detail: mat("comfy-zone", "fabric"),
+    },
+    keys: {
+      title: "blueComfyZone.title",
+      subtitle: "blueComfyZone.subtitle",
+      headline: "blueComfyZone.headline",
+      paragraph: "blueComfyZone.paragraph",
+      scope: "blueComfyZone.scope",
+      delivery: "blueComfyZone.delivery",
+      materials: "blueComfyZone.materials",
+      overlayTitle: "blueComfyZone.overlayTitle",
+      overlaySummary: "blueComfyZone.overlaySummary",
+      overlaySpecs: "blueComfyZone.overlaySpecs",
+    },
+    overlayBg: mat("comfy-zone", "room-a"),
   },
 ];
 

@@ -260,6 +260,28 @@ export const FACTS = {
       "Stated on 7 of the 8 product sheets. Pure latex leaves the warranty field blank; confirm it is also 10 years before this is read as covering the whole range.",
   },
 
+  /**
+   * Pure Latex's core material.
+   *
+   * ⚠ THE ONE blue MODEL WITH NO WARRANTY ON ITS SHEET (see blueWarrantyYears),
+   * so its gallery entry leads on certificates instead. Do not add "10-year
+   * warranty" to Pure Latex to make it match the other two.
+   */
+  latexOrganicPurity: {
+    value: 100,
+    source: "blue dossier, Products/Pure latex/Pure latex info 2026.docx (LATEX)",
+    caveat: "Stated as 100% natural organic latex. The sheet does not say which component is measured.",
+  },
+
+  /**
+   * Pure Latex's textile certificate. Kept as a string, not a number: "Class
+   * 01" is an identifier and the leading zero is part of it.
+   */
+  oekoTexClass: {
+    value: "Standard 100 Class 01",
+    source: "blue dossier, Products/Pure latex/Pure latex info 2026.docx (LATEX)",
+  },
+
   /** blue's home trial. Its own terms document, on SLIC letterhead. */
   blueTrialNights: {
     value: 50,

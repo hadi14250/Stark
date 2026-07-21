@@ -13,6 +13,7 @@ import { MattressHero } from "@/components/mattresses/MattressHero";
 import { BrandDuet, type BrandPanel } from "@/components/mattresses/BrandDuet";
 import { ComfortLayers, type Layer } from "@/components/mattresses/ComfortLayers";
 import { landingImages } from "@/components/landing/assets";
+import { mattressImages } from "@/components/mattresses/assets";
 import "@/styles/mattresses.css";
 
 export function generateStaticParams() {
@@ -85,17 +86,23 @@ export default async function MattressesPage({
   const credentials = t.raw("credentials.items") as Item[];
 
   /**
-   * TODO(F-content): the duet's photographs are placeholders, as everything on
-   * this route is. They are the two least Home-associated bedroom-ish frames in
-   * the landing set. Real product photography for `blue mattress` and `siesta`
-   * is a client dependency — and a real one, because these two brands are the
-   * only place on the site where a photograph would be making a claim about a
-   * specific product rather than about a capability.
+   * HALF OF THIS IS NOW REAL, and the halves must not be levelled up to match.
+   *
+   * blue's panel carries the manufacturer's own photography. siesta's does not
+   * and still cannot: there is no siesta photography in the client's product
+   * folder, and siesta is the HOSPITALITY brand — a different buyer, different
+   * models, warranties from one year to ten. Putting a blue mattress under
+   * siesta's heading would tell a hotel it was looking at the contract range
+   * when it was looking at a consumer product. That is the one photograph on
+   * this route that would be a false statement rather than a placeholder.
+   *
+   * TODO(F-content): siesta product photography is a client dependency. Until
+   * it lands, its panel keeps a landing-set frame, which claims nothing.
    */
   const panels: BrandPanel[] = brands.map((b, i) => ({
     ...b,
     brand: i === 0 ? "blue" : "siesta",
-    image: landingImages.gallery[i === 0 ? 3 : 6],
+    image: i === 0 ? mattressImages.blueBrand : landingImages.gallery[6],
   }));
 
   return (
@@ -106,7 +113,7 @@ export default async function MattressesPage({
         line2={t("hero.line2")}
         sub={t("hero.sub")}
         cta={t("hero.cta")}
-        image={landingImages.categories[1]}
+        image={mattressImages.hero}
         imageAlt={t("hero.alt")}
       />
 

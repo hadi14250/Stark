@@ -194,3 +194,57 @@ Ordered by what it costs to get wrong.
 7. **Does blue's Pure latex carry the 10-year warranty?** Seven of eight product sheets state
    it; Pure latex leaves the field blank, and the site's chip implies the whole range.
 8. **Real social handles.** The footer links are still `#`, and the JSON-LD `sameAs` is empty.
+
+---
+
+## A correction to this audit
+
+**The audit's own scope was stated wrong, and it missed real copy.**
+
+This file previously rested on the claim that all user-visible text lives in
+`src/messages/{en,ar}.json` and that a sweep of the components found no
+hardcoded strings. The second half of that was false, and it was not a near
+miss:
+
+- `DetailOverlay` captioned its two info panels with the literal English
+  strings **"Best time to visit"** and **"Must-do activities"** — headings from
+  the travel demo this route was ported from. They rendered on every project
+  overlay in BOTH locales, so an Arabic reader was told, in English, the best
+  time to visit a mattress.
+- The same component hardcoded English `aria-label`s on its prev / next / close
+  controls, where only a screen-reader user would ever have met them.
+- `cards.tsx` shipped `alt="Cuisine"` on one image in every project.
+
+None of it was reachable from the message files, so key parity, the dash rule,
+the Arabic-consistency tests and the numeric provenance guard were all green
+throughout — they can only police text that made it into the deck. The route's
+own field names (`bestTime`, `activities`) had been kept from the demo too,
+which is how the captions read as intentional for three rounds of review.
+
+Fixed, and pinned by `components/gallery/localisation.test.ts`, which fails on
+any JSX sentence or hardcoded accessible name in that directory. **The lesson
+generalises: a ported route is where untranslated copy hides, and message-file
+coverage says nothing about it.**
+
+## Mattress photography (added after the audit)
+
+blue's eight 2026 models ship with the manufacturer's own product photography,
+in `public/mattresses/`, six shots per model. This is the first real article
+photography on the site. Three models — Sky, Pure Latex, Comfy Zone — are in
+the gallery under the mattresses filter, and the copy for each comes from that
+model's own `info 2026.docx`.
+
+Two things it is NOT:
+
+- **Not projects.** They are catalogue models, and every string says so. The
+  mattress division still has no documented project reference.
+- **Not siesta.** These are blue (B2C) products only. siesta is the hospitality
+  brand with different models and warranties from one to ten years, and there
+  is no siesta photography in the client's folder. The siesta half of the
+  mattresses page keeps a neutral placeholder rather than borrow one of these,
+  which would tell a hotel it was looking at the contract range.
+
+Held back per the standing decision on health claims: PUROTEX+ allergen
+percentages, INTENSE(TM)/cortisol and SKIN+(TM) carotenoid appear in five of
+the eight sheets and none of it ships. That is why the three models chosen lead
+on construction and certificates instead.
