@@ -8,6 +8,7 @@ import { Parallax } from "@/components/motion/Parallax";
 import { Reveal } from "@/components/motion/Reveal";
 import { CountUp } from "@/components/motion/CountUp";
 import { landingImages } from "@/components/landing/assets";
+import { HOME_STATS } from "@/content/facts";
 import { TurnkeyLedger } from "./TurnkeyLedger";
 
 type Feature = { title: string; body: string };
@@ -28,26 +29,19 @@ const ROW_IMAGES = [
 ] as const;
 
 /**
- * The four figures, from the STARK company profile (p.2, the stat row under
- * "WHO WE ARE"). They are the client's own published numbers, confirmed for use
- * on the site in the round-2 review.
+ * THE FOUR FIGURES NOW COME FROM `content/facts.ts`, with a document and page
+ * attached to each. They used to be four literals right here, which is how the
+ * most quotable numbers on the site ended up outside every check that governs
+ * the copy deck: the content audit swept the message files, and these were in a
+ * component, so nothing looked at them.
  *
- * `grouping` is off for the year and on for the area, and that distinction is
- * the whole reason the flag exists: "1,967" is a quantity and "1967" is a date,
- * and the separator is what decides which one a reader sees.
- *
- * ⚠ THE FOUNDING YEAR IS CONTESTED. The profile says 1967; research notes on
- * the Trust Wood factory behind the woodworks division say 2019. Both cannot be
- * right, and this is the most quotable number on the site. It ships because the
- * client confirmed it against their own document, but it is worth one more
- * question before anyone external reads it.
+ * ⚠ THE 1967-vs-2019 ALARM THIS FILE USED TO CARRY IS RETIRED, and the note is
+ * kept rather than deleted because the apparent conflict is still there in the
+ * documents and the next person will find it too. STARK is a brand over two
+ * factories: 1967 is Saudi Light Industries' founding, 2019 is Trust Wood's.
+ * Two companies, two dates, no contradiction. What IS still open is 1967 vs
+ * 1968 — the client's own catalogue prints both. See the fact's caveat.
  */
-const STATS = [
-  { to: 1967, suffix: "", grouping: false },
-  { to: 60000, suffix: " m²", grouping: true },
-  { to: 200, suffix: "+", grouping: true },
-  { to: 2, suffix: "", grouping: false },
-] as const;
 
 /**
  * Turnkey — the dark band, and the page's one `[data-surface="dark"]` subtree.
@@ -140,7 +134,7 @@ export async function Turnkey() {
           competing treatments of the same idea one scroll apart.
         */}
         <dl className="mt-[clamp(40px,5vw,68px)] grid grid-cols-2 gap-x-[clamp(20px,3vw,44px)] gap-y-[clamp(24px,3vw,36px)] nav:grid-cols-4">
-          {STATS.map((stat, i) => (
+          {HOME_STATS.map((stat, i) => (
             <Reveal
               key={statItems[i]?.label ?? i}
               y={22}
@@ -150,7 +144,7 @@ export async function Turnkey() {
               <dt className="sr-only">{statItems[i]?.label}</dt>
               <dd>
                 <CountUp
-                  to={stat.to}
+                  to={stat.value}
                   suffix={stat.suffix}
                   grouping={stat.grouping}
                   locale={locale}
