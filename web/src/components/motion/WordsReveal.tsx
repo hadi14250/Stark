@@ -56,7 +56,7 @@ export function WordsReveal({
   delay?: number;
   justify?: string;
 }) {
-  const ref = useRevealOnce<HTMLElement>({ amount: 0.4 });
+  const ref = useRevealOnce<HTMLElement>();
   const Element = as;
   const words = text.split(/\s+/).filter(Boolean);
 
@@ -120,7 +120,7 @@ export function LineReveal({
   style?: CSSProperties;
   delay?: number;
 }) {
-  const ref = useRevealOnce<HTMLDivElement>({ amount: 0.4 });
+  const ref = useRevealOnce<HTMLDivElement>();
 
   return (
     <div

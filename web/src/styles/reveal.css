@@ -49,6 +49,78 @@
   .reveal-word {
   }
 
+  /* =========================================================================
+     THE ARMED POSE — the one place a reveal is allowed to be hidden.
+     =========================================================================
+
+     Everything above is still true: no element is BORN hidden, and no base
+     class hides anything. `.is-armed` is put on by JS, and only ever from
+     inside an IntersectionObserver callback, and only while the element is
+     below the fold. See useRevealOnce.ts for the full argument — the short
+     version is that a reveal which starts visible must SNAP when it finally
+     animates, the client reported exactly that, and 48 of 56 reveals on
+     Woodworks were doing it.
+
+     Three properties keep this from becoming the bug it looks like:
+
+       - No observer, no `is-armed`. A dead observer leaves every element in
+         its visible base state, which is precisely the old behaviour.
+       - Nothing on screen is ever armed, so nothing visible is taken away.
+       - Two independent mechanisms remove it, and the bottom of the document
+         removes it unconditionally.
+
+     Each pose below MUST match the `from` of the keyframe that follows it.
+     If they drift, the element jumps at the start of the animation — the same
+     snap, just smaller. `Reveal.test.tsx` compares them property by property
+     so they cannot drift silently.
+
+     The whole block is scoped to `no-preference`: for a reader who asked for
+     reduced motion the hidden pose does not exist as a rule at all, so the
+     reduced-motion path cannot strand content the way it would if this were
+     merely overridden further down.
+     ====================================================================== */
+
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal-clip.is-armed {
+      clip-path: inset(0% 100% 0% 0%);
+    }
+
+    [dir="rtl"] .reveal-clip.is-armed {
+      clip-path: inset(0% 0% 0% 100%);
+    }
+
+    .reveal-fade.is-armed {
+      opacity: 0;
+      transform: translate3d(var(--reveal-x, 0px), var(--reveal-y, 40px), 0)
+        scale(var(--reveal-scale, 1));
+      filter: blur(var(--reveal-blur, 0px));
+    }
+
+    [dir="rtl"] .reveal-fade.is-armed {
+      transform: translate3d(calc(-1 * var(--reveal-x, 0px)), var(--reveal-y, 40px), 0)
+        scale(var(--reveal-scale, 1));
+    }
+
+    .reveal-word.is-armed > span {
+      opacity: 0;
+      transform: translate3d(0, 115%, 0);
+    }
+
+    .reveal-line-x.is-armed {
+      transform: scaleX(0);
+      transform-origin: left center;
+    }
+
+    [dir="rtl"] .reveal-line-x.is-armed {
+      transform-origin: right center;
+    }
+
+    .reveal-line-y.is-armed {
+      transform: scaleY(0);
+      transform-origin: top center;
+    }
+  }
+
   /* ---- clip wipe: photographs and panels ---- */
 
   .reveal-clip.is-revealed {

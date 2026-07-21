@@ -49,7 +49,7 @@ export function Reveal({
   className,
   as = "div",
 }: RevealProps) {
-  const ref = useRevealOnce<HTMLElement>({ amount: 0.15 });
+  const ref = useRevealOnce<HTMLElement>();
   const Tag = as;
 
   return (
