@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { renderWithIntl as render, screen, fireEvent, cleanup } from "@/test/render";
 import { GalleryShell } from "./GalleryShell";
-import { byCategory, CATEGORIES } from "@/lib/gallery/projects";
+import { CATEGORIES, PROJECTS } from "@/lib/gallery/projects";
 import { toSlide } from "@/lib/gallery/toSlide";
 import type { CategoryId } from "@/lib/gallery/projects";
 import type { Slide } from "@/lib/gallery/types";
@@ -30,9 +30,9 @@ const sliderSrc = readFileSync(join(here, "PushSlider.tsx"), "utf8");
  * effect pulled the index the other way, and the pair oscillated with period 2
  * until React gave up.
  *
- * Both categories hold exactly three projects, which is why the slider's
- * bounds clamp never caught it: the stale index was always in range, just
- * wrong.
+ * Both categories in the fixture hold exactly three projects, which is why the
+ * slider's bounds clamp never caught it: the stale index was always in range,
+ * just wrong.
  */
 
 /** Localised on the server in the real route; these stand in for that. */
@@ -45,26 +45,54 @@ const LABELS = {
 };
 
 /**
- * Real project ids (the URL assertions depend on them) with synthetic display
- * names. Labelling a category "woodworks" and a project's subtitle "woodworks"
- * — as the data does — makes every accessible-name query ambiguous, and the
- * ambiguity would be the test's, not the app's.
+ * THE FIXTURE IS SYNTHETIC ON PURPOSE, and it did not used to be.
+ *
+ * It read `byCategory()` straight from production data, which meant this
+ * test's scenario — switch between two POPULATED categories — was true only
+ * for as long as the real gallery happened to have projects in both. The
+ * content audit emptied the mattresses category (every documented reference
+ * the company holds is a woodworks one) and these tests started throwing on
+ * `projects[2]` of an empty array.
+ *
+ * That is the test depending on content, which is backwards: the oscillation
+ * bug below is a bug in the SHELL, and it must stay guarded no matter what the
+ * gallery currently contains. So the shape the bug needs is built here, and
+ * only the project ids are borrowed from real data because the URL assertions
+ * check them.
+ *
+ * Display names stay synthetic for a separate reason: the real data labels a
+ * category "woodworks" AND gives projects a "woodworks" subtitle, which makes
+ * every accessible-name query ambiguous. That ambiguity would be the test's,
+ * not the app's.
  */
+const PER_CATEGORY = 3;
+
 function fixture() {
   // Stands in for next-intl's `t`. The real route resolves copy on the server;
   // none of it matters here, so keys pass through as their own text.
   const t = Object.assign((key: string) => key, { raw: () => [] });
+
+  // Enough distinct entries to fill every category, cycling real projects for
+  // their ids and giving each a unique slug so the URL assertions stay sharp.
+  const synthetic = CATEGORIES.flatMap((id, ci) =>
+    Array.from({ length: PER_CATEGORY }, (_, pi) => {
+      const base = PROJECTS[(ci * PER_CATEGORY + pi) % PROJECTS.length];
+      return { ...base, id: `${base.id}-${ci}${pi}`, category: id };
+    }),
+  );
+  const inCategory = (id: CategoryId) => synthetic.filter((p) => p.category === id);
+
   const categories = CATEGORIES.map((id, ci) => ({
     id,
     label: `Category ${ci}`,
-    projects: byCategory(id).map((p, pi) => ({
+    projects: inCategory(id).map((p, pi) => ({
       id: p.id,
       title: `Project ${ci}-${pi}`,
       subtitle: "Sector",
     })),
   }));
   const slidesByCategory = Object.fromEntries(
-    CATEGORIES.map((id) => [id, byCategory(id).map((p) => toSlide(p, t))]),
+    CATEGORIES.map((id) => [id, inCategory(id).map((p) => toSlide(p, t))]),
   ) as Record<CategoryId, Slide[]>;
   return { categories, slidesByCategory };
 }

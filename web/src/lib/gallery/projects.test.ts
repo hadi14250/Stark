@@ -6,6 +6,7 @@ import en from "@/messages/en.json";
 import ar from "@/messages/ar.json";
 import {
   CATEGORIES,
+  type CategoryId,
   PROJECTS,
   byCategory,
   findProject,
@@ -31,14 +32,60 @@ function makeTranslator(messages: Record<string, unknown>): Translator {
 }
 
 describe("gallery data model", () => {
-  it("every category has at least one project", () => {
+  /**
+   * Categories that are empty ON PURPOSE, and why.
+   *
+   * The content audit removed six fabricated case studies and put back the
+   * three that are evidenced by an approval document. All three are woodworks.
+   * The mattress division has no documented project reference at all, so its
+   * filter shows the empty state rather than a product range dressed up as a
+   * project. Delete an entry from here the day a real reference arrives.
+   */
+  const INTENTIONALLY_EMPTY: readonly CategoryId[] = ["mattresses"];
+
+  it("no category is empty by accident", () => {
     // byCategory() feeding an empty array into the stage is a real failure
     // mode: PushSlider's preload does `% count`, which is NaN at zero. The
-    // component guards it, but a category that is empty by ACCIDENT (a typo in
-    // `category`) should fail here rather than render an empty-state in prod.
+    // component guards it, but a category emptied by a TYPO in `category`
+    // should fail here rather than render an empty-state in prod. So emptiness
+    // is allowed only where it has been declared above.
     for (const c of CATEGORIES) {
+      if (INTENTIONALLY_EMPTY.includes(c)) continue;
       expect(byCategory(c).length, `category "${c}" has no projects`).toBeGreaterThan(0);
     }
+  });
+
+  it("does not keep an empty-category exemption that is no longer needed", () => {
+    // The mirror of the above: once mattress references exist, this fails and
+    // the exemption gets deleted, instead of quietly masking a future typo.
+    const populated = INTENTIONALLY_EMPTY.filter((c) => byCategory(c).length > 0);
+    expect(populated, "these categories are no longer empty").toEqual([]);
+  });
+
+  it.fails("has real photography for the named projects", () => {
+    /**
+     * A DELIBERATE FAILURE, and the only honest state this can be in.
+     *
+     * The gallery now names three real projects: the Mataf Extension, King
+     * Salman Park CP04, and the National Guard hospitals. Every photograph
+     * under those names is still generic imagery from the landing set.
+     *
+     * That is a BIGGER problem than the invented projects it replaced, not a
+     * smaller one. Filler under a made-up project name was obviously filler.
+     * The same filler captioned "Mataf Extension" reads as a photograph OF the
+     * Mataf Extension, which is a claim nobody has made and nobody can back.
+     *
+     * So this fails until real project photography arrives, and the failure is
+     * the reminder. Everything else about these three references can ship; the
+     * pictures cannot.
+     *
+     * TO CLOSE IT: put the real photographs in place and change `it.fails` to
+     * `it`. The assertion below already checks the right thing.
+     */
+    const shared = PROJECTS.flatMap((p) => Object.values(p.cells)).filter((src) =>
+      src.startsWith("/landing/"),
+    );
+    expect(shared, "still using landing-set imagery for named projects").toEqual([]);
   });
 
   it("project ids are unique — they are URL slugs", () => {

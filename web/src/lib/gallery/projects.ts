@@ -144,18 +144,40 @@ export const THEMES: Record<ThemeName, Theme> = {
 const img = (name: string) => `/landing/${name}`;
 
 /**
- * TODO(F-content): six SEEDED projects.
+ * THE THREE REAL REFERENCES, replacing six that were invented.
  *
- * Both the photography and the specifics are placeholders drawn from existing
- * site imagery. Every one of these needs a real project, real photographs and
- * client sign-off before any demo — the copy is written to be plausible for
- * STARK's actual business rather than invented detail (no client names, no
- * dates, no figures), so nothing here asserts something untrue, but nothing
- * here is a real reference either.
+ * ===========================================================================
+ * READ THIS BEFORE EDITING ANY COPY BELOW
+ * ===========================================================================
+ *
+ * ALL THREE ARE APPROVALS, NOT COMPLETIONS. The source documents are submittal
+ * and prequalification forms with a box ticked "Approved as Noted" -- they
+ * prove the factory was reviewed and accepted as a supplier on the project.
+ * They prove nothing whatsoever about what was installed, or by whom.
+ *
+ * So every line of copy says "approved supplier for" or "prequalified", and
+ * none says "delivered", "completed" or "built". That is not lawyerly hedging:
+ * one of these is the Mataf Extension at the Holy Mosque, and a false
+ * completion claim there is about the worst thing this site could say.
+ *
+ * Ironically the approval is the more persuasive artifact anyway. Anyone can
+ * photograph a lobby; being accepted through Dar Al-Handasah's review, or
+ * prequalified by Parsons and WSP, is a thing that had to be earned and can be
+ * checked.
+ *
+ * ⚠ THE PHOTOGRAPHY IS STILL PLACEHOLDER, and that is now a HARDER problem
+ * than it was, not a softer one. Generic factory imagery under an invented
+ * project name was merely filler; the same imagery under "Mataf Extension"
+ * reads as a photograph OF the Mataf Extension. `projects.test.ts` holds a
+ * deliberately failing gate on this so it cannot be forgotten.
+ *
+ * ⚠ CLIENT NAMES NEED PERMISSION. These names come from the factory's own
+ * profile deck, so they are already used commercially -- but a deck shown to
+ * one prospect is not a public website. See SOURCES.md, open question 5.
  */
 export const PROJECTS: readonly Project[] = [
   {
-    id: "hospitality-fit-out",
+    id: "mataf-extension",
     category: "woodworks",
     theme: "moss",
     cells: {
@@ -167,21 +189,21 @@ export const PROJECTS: readonly Project[] = [
       detail: img("9bc56e8ed0aded95.jpg"),
     },
     keys: {
-      title: "hospitalityFitOut.title",
-      subtitle: "hospitalityFitOut.subtitle",
-      headline: "hospitalityFitOut.headline",
-      paragraph: "hospitalityFitOut.paragraph",
-      scope: "hospitalityFitOut.scope",
-      delivery: "hospitalityFitOut.delivery",
-      materials: "hospitalityFitOut.materials",
-      overlayTitle: "hospitalityFitOut.overlayTitle",
-      overlaySummary: "hospitalityFitOut.overlaySummary",
-      overlaySpecs: "hospitalityFitOut.overlaySpecs",
+      title: "mataf.title",
+      subtitle: "mataf.subtitle",
+      headline: "mataf.headline",
+      paragraph: "mataf.paragraph",
+      scope: "mataf.scope",
+      delivery: "mataf.delivery",
+      materials: "mataf.materials",
+      overlayTitle: "mataf.overlayTitle",
+      overlaySummary: "mataf.overlaySummary",
+      overlaySpecs: "mataf.overlaySpecs",
     },
     overlayBg: img("8244b28836385a29.png"),
   },
   {
-    id: "joinery-package",
+    id: "king-salman-park",
     category: "woodworks",
     theme: "forest",
     cells: {
@@ -193,120 +215,42 @@ export const PROJECTS: readonly Project[] = [
       detail: img("f264f5dea2782694.jpg"),
     },
     keys: {
-      title: "joineryPackage.title",
-      subtitle: "joineryPackage.subtitle",
-      headline: "joineryPackage.headline",
-      paragraph: "joineryPackage.paragraph",
-      scope: "joineryPackage.scope",
-      delivery: "joineryPackage.delivery",
-      materials: "joineryPackage.materials",
-      overlayTitle: "joineryPackage.overlayTitle",
-      overlaySummary: "joineryPackage.overlaySummary",
-      overlaySpecs: "joineryPackage.overlaySpecs",
+      title: "royalArts.title",
+      subtitle: "royalArts.subtitle",
+      headline: "royalArts.headline",
+      paragraph: "royalArts.paragraph",
+      scope: "royalArts.scope",
+      delivery: "royalArts.delivery",
+      materials: "royalArts.materials",
+      overlayTitle: "royalArts.overlayTitle",
+      overlaySummary: "royalArts.overlaySummary",
+      overlaySpecs: "royalArts.overlaySpecs",
     },
     overlayBg: img("815f8b5fd0db3732.png"),
   },
   {
-    id: "fitted-furniture",
+    id: "ngha-hospitals",
     category: "woodworks",
     theme: "pine",
     cells: {
-      hero: img("d1c0e28eb1c679aa.png"),
-      intro: img("46cb9cc7e202b440.jpg"),
-      portraitA: img("6ef0b9569b029eeb.png"),
-      feature: img("e84ce9bd89e1844a.png"),
-      portraitB: img("d41cceabf062f878.png"),
-      detail: img("9147afdc9d8c4223.png"),
-    },
-    keys: {
-      title: "fittedFurniture.title",
-      subtitle: "fittedFurniture.subtitle",
-      headline: "fittedFurniture.headline",
-      paragraph: "fittedFurniture.paragraph",
-      scope: "fittedFurniture.scope",
-      delivery: "fittedFurniture.delivery",
-      materials: "fittedFurniture.materials",
-      overlayTitle: "fittedFurniture.overlayTitle",
-      overlaySummary: "fittedFurniture.overlaySummary",
-      overlaySpecs: "fittedFurniture.overlaySpecs",
-    },
-    overlayBg: img("d1c0e28eb1c679aa.png"),
-  },
-  {
-    id: "hotel-bedding",
-    category: "mattresses",
-    theme: "forest",
-    cells: {
-      hero: img("847c93f88825cbef.png"),
-      intro: img("9bc56e8ed0aded95.jpg"),
-      portraitA: img("bf46cb0e0db7539f.jpg"),
-      feature: img("42737a5b8707da10.jpg"),
-      portraitB: img("763ba2c7f4c29838.jpg"),
-      detail: img("f7965388e07b0b0c.jpg"),
-    },
-    keys: {
-      title: "hotelBedding.title",
-      subtitle: "hotelBedding.subtitle",
-      headline: "hotelBedding.headline",
-      paragraph: "hotelBedding.paragraph",
-      scope: "hotelBedding.scope",
-      delivery: "hotelBedding.delivery",
-      materials: "hotelBedding.materials",
-      overlayTitle: "hotelBedding.overlayTitle",
-      overlaySummary: "hotelBedding.overlaySummary",
-      overlaySpecs: "hotelBedding.overlaySpecs",
-    },
-    overlayBg: img("847c93f88825cbef.png"),
-  },
-  {
-    id: "serviced-residences",
-    category: "mattresses",
-    theme: "pine",
-    cells: {
-      hero: img("9147afdc9d8c4223.png"),
-      intro: img("f264f5dea2782694.jpg"),
-      portraitA: img("5d5c40ccbb6b257b.jpg"),
-      feature: img("f26d3ba55447fc47.jpg"),
-      portraitB: img("08f1f8d97cb5f63f.jpg"),
-      detail: img("46cb9cc7e202b440.jpg"),
-    },
-    keys: {
-      title: "servicedResidences.title",
-      subtitle: "servicedResidences.subtitle",
-      headline: "servicedResidences.headline",
-      paragraph: "servicedResidences.paragraph",
-      scope: "servicedResidences.scope",
-      delivery: "servicedResidences.delivery",
-      materials: "servicedResidences.materials",
-      overlayTitle: "servicedResidences.overlayTitle",
-      overlaySummary: "servicedResidences.overlaySummary",
-      overlaySpecs: "servicedResidences.overlaySpecs",
-    },
-    overlayBg: img("9147afdc9d8c4223.png"),
-  },
-  {
-    id: "retail-programme",
-    category: "mattresses",
-    theme: "moss",
-    cells: {
       hero: img("6ef0b9569b029eeb.png"),
-      intro: img("d41cceabf062f878.png"),
-      portraitA: img("e84ce9bd89e1844a.png"),
-      feature: img("d1c0e28eb1c679aa.png"),
-      portraitB: img("44e767d2df80b104.png"),
-      detail: img("815f8b5fd0db3732.png"),
+      intro: img("46cb9cc7e202b440.jpg"),
+      portraitA: img("5d5c40ccbb6b257b.jpg"),
+      feature: img("42737a5b8707da10.jpg"),
+      portraitB: img("08f1f8d97cb5f63f.jpg"),
+      detail: img("763ba2c7f4c29838.jpg"),
     },
     keys: {
-      title: "retailProgramme.title",
-      subtitle: "retailProgramme.subtitle",
-      headline: "retailProgramme.headline",
-      paragraph: "retailProgramme.paragraph",
-      scope: "retailProgramme.scope",
-      delivery: "retailProgramme.delivery",
-      materials: "retailProgramme.materials",
-      overlayTitle: "retailProgramme.overlayTitle",
-      overlaySummary: "retailProgramme.overlaySummary",
-      overlaySpecs: "retailProgramme.overlaySpecs",
+      title: "ngha.title",
+      subtitle: "ngha.subtitle",
+      headline: "ngha.headline",
+      paragraph: "ngha.paragraph",
+      scope: "ngha.scope",
+      delivery: "ngha.delivery",
+      materials: "ngha.materials",
+      overlayTitle: "ngha.overlayTitle",
+      overlaySummary: "ngha.overlaySummary",
+      overlaySpecs: "ngha.overlaySpecs",
     },
     overlayBg: img("6ef0b9569b029eeb.png"),
   },

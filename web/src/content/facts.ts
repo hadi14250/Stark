@@ -213,6 +213,36 @@ export const FACTS = {
     source: "Trust Wood profile p17 (machine list after expansion, item 29)",
   },
 
+  // ── Gallery references ─────────────────────────────────────────────────
+  // Dates on the approval documents themselves. They matter: an approval is a
+  // dated event, and a reference with no date invites the reader to assume it
+  // is current.
+
+  /** Mataf Extension material submittal, and the King Salman Park prequalification. */
+  matafApprovalYear: {
+    value: 2022,
+    source:
+      "Trust Wood profile p100 (SBG submittal 1109-00-AR-MT-060000-W-00-03, approved 22-09-2022; KSP-MBL-RAC-COM-ARC-PQD-0195, 11-Sep-2022)",
+  },
+
+  /** NGHA vendor submittal SHR1-SAR-NAP-00121. */
+  nghaApprovalYear: {
+    value: 2020,
+    source: "Trust Wood profile p101 (NGHA submittal SHR1-SAR-NAP-00121, 24-08-2020)",
+  },
+
+  /** The King Salman Park work package the factory was prequalified for. */
+  royalArtsPackage: {
+    value: "CP04",
+    source: "Trust Wood profile p100 (Project: CP04 - Royal Arts Complex)",
+  },
+
+  /** Saudi Vision 2030, which the company profile positions the group against. */
+  visionYear: {
+    value: 2030,
+    source: "STARK company profile 2026 p3 (COMPANY HISTORY)",
+  },
+
   // ── Mattresses ─────────────────────────────────────────────────────────
 
   /**
