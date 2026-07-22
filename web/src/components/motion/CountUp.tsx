@@ -11,10 +11,31 @@ import { useMotionConfig } from "./useMotionConfig";
  * 1. FAIL-SAFE. If the IntersectionObserver never fires — an ancestor with
  *    `content-visibility`, a display:none parent at mount, a browser quirk —
  *    the number would sit at 0 forever, silently showing the WRONG figure
- *    rather than no figure. A 1500ms timeout snaps it to its final value.
- *    Content must never be missing because an observer misbehaved.
+ *    rather than no figure. Content must never be missing because an observer
+ *    misbehaved. See below for why this is a POLL and not a timeout.
  * 2. LOCALE-CORRECT DIGITS. Arabic pages render Eastern Arabic numerals, so
  *    the value goes through Intl.NumberFormat rather than String().
+ *
+ * ===========================================================================
+ * THE BUG THE FAIL-SAFE USED TO CAUSE
+ * ===========================================================================
+ *
+ * The fail-safe was `setTimeout(run, 1500)` — unconditional. It fired whether
+ * or not the element had ever been near the viewport, so any stat below the
+ * fold finished counting 1.5 seconds after page load and was sitting at its
+ * final value long before the reader scrolled down to it.
+ *
+ * The effect: on a page where the stat band is several screens down, the
+ * count-up was invisible to every human being who used the site. The client
+ * reported it as "the numbers don't animate" and they were right — the
+ * feature was built, tested, and shipped, and it had never once run where
+ * anybody could see it. Nothing failed; a guard against one failure mode had
+ * quietly disabled the whole feature.
+ *
+ * It is a poll now rather than a timeout: same protection against a dead
+ * observer, but it only fires the count once the element is genuinely within
+ * the viewport, and otherwise waits. The cost is one `getBoundingClientRect`
+ * per element per interval, and only until that element has counted.
  */
 export function CountUp({
   to,
@@ -49,10 +70,12 @@ export function CountUp({
     if (!el) return;
 
     let raf = 0;
+    let poll = 0;
     let started = false;
     const run = () => {
       if (started) return;
       started = true;
+      window.clearInterval(poll);
       const t0 = performance.now();
       const tick = (t: number) => {
         const p = Math.min(1, (t - t0) / (duration * 1000));
@@ -68,11 +91,21 @@ export function CountUp({
       { threshold: 0.4 },
     );
     io.observe(el);
-    const failSafe = window.setTimeout(run, 1500);
+
+    // The fail-safe, gated on actually being on screen. `isIntersecting` is
+    // the observer's own judgement and we cannot ask it directly, so this
+    // asks the layout the same question: does the element's box overlap the
+    // viewport vertically? If it does and the observer still has not fired,
+    // the observer is broken and we count. If it does not, we wait — which is
+    // the whole point, and what the old unconditional timeout got wrong.
+    poll = window.setInterval(() => {
+      const r = el.getBoundingClientRect();
+      if (r.top < window.innerHeight && r.bottom > 0) run();
+    }, 1500);
 
     return () => {
       io.disconnect();
-      window.clearTimeout(failSafe);
+      window.clearInterval(poll);
       cancelAnimationFrame(raf);
     };
   }, [to, duration, reduce]);

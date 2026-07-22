@@ -101,13 +101,26 @@ export const FACTS = {
     value: 1967,
     grouping: false,
     source: "Siesta catalogue 2026 p3 (EN); STARK company profile p2",
-    caveat: "Siesta catalogue p2 (AR) says 1968. Client must rule.",
+    caveat:
+      "TWO OPEN QUESTIONS ON ONE NUMBER. (1) Siesta catalogue p2 (AR) says 1968. (2) Profile v3 slide 1 tells the story from 1967 as 'over six decades', while slide 6 states the headline stat as '45+ years experience' - which is the WOOD family's inherited expertise, not SLIC's age. Both now appear on the site: 45+ in the stat band (the client asked for it explicitly) and 1967 in the About and Mattresses narrative. Client must rule which represents the company.",
   },
 
-  /** SLIC's Jeddah plant on Old Makkah Road, not the Trust Wood site. */
+  /**
+   * SLIC's Jeddah plant on Old Makkah Road, not the Trust Wood site.
+   *
+   * The suffix carries a NON-BREAKING space on purpose. In the home stat band
+   * the figure sits in a `clamp(30px,4vw,54px)` display face inside one column
+   * of five, and with an ordinary space "60,000 m²" breaks after the comma so
+   * the unit drops to its own line under the number. The client reported that
+   * exact wrap. A nbsp is the fix that survives every column width rather than
+   * one that happens to hold at the viewport it was checked at.
+   */
   factoryArea: {
     value: 60000,
-    suffix: " m²",
+    // The nbsp is written as an escape, not typed. A literal one is invisible
+    // in a diff, so the next person to touch this line would "tidy" it back to
+    // an ordinary space without ever seeing what they had changed.
+    suffix: "\u00A0m²",
     grouping: true,
     source: "Siesta catalogue 2026 pp2-3 (both languages); STARK company profile p2",
   },
@@ -120,10 +133,40 @@ export const FACTS = {
     source: "Siesta catalogue 2026 pp2-3 (both languages); STARK company profile p2",
   },
 
+  /**
+   * ⚠ WAS 2. Profile v3 raises it to three a year, and adds an annual value of
+   * SAR 100M that the site does not currently print.
+   */
   megaProjects: {
-    value: 2,
+    value: 3,
     grouping: false,
-    source: "STARK company profile 2026 p5 (MANUFACTURING & FACILITY)",
+    source: "STARK company profile v3 (2026) slide 6",
+  },
+
+  /**
+   * Years of experience, as the client's own headline stat.
+   *
+   * ⚠ THIS IS NOT THE COMPANY'S AGE. Slide 1 attributes it to the wood-industry
+   * family STARK partnered with in 2026: "more than 45 years of inherited
+   * expertise in the wood industry". SLIC has been making foam since 1967,
+   * which is nearly six decades, so the two figures describe different things
+   * and the deck prints both without reconciling them. See `established`.
+   */
+  yearsExperience: {
+    value: 45,
+    suffix: "+",
+    grouping: false,
+    source: "STARK company profile v3 (2026) slide 6; attributed on slide 1",
+    caveat:
+      "Reads as the company's age beside a story that starts in 1967. The client asked for it in the stat band regardless. Not resolved, only recorded.",
+  },
+
+  /** Completed projects to date. */
+  projectsCompleted: {
+    value: 500,
+    suffix: "+",
+    grouping: true,
+    source: "STARK company profile v3 (2026) slide 6",
   },
 
   /**
@@ -328,18 +371,28 @@ export const FACTS = {
  * The home page's count-up band, in reading order.
  *
  * These used to be a bare array of literals inside `Turnkey.tsx`, which put
- * the four most quotable numbers on the site outside every check that governs
+ * the most quotable numbers on the site outside every check that governs
  * the copy deck — the message files were audited and these were not, purely
  * because of which file they happened to live in.
  *
  * The labels stay in the message files, because they are translated and these
  * are not.
+ *
+ * ⚠ ORDER IS THE CONTRACT. The labels are joined to these figures BY INDEX
+ * from `landing.stats.items` in the message files, so reordering this array
+ * silently relabels every column rather than failing. `facts.test.ts` can only
+ * check that the two lists are the same LENGTH; it cannot check that "500+"
+ * still has "Projects completed" under it. Reorder both or neither.
+ *
+ * This is profile v3 slide 6, left to right, and it replaced a four-stat band
+ * that opened with `1967 / ESTABLISHED`.
  */
 export const HOME_STATS: readonly StatFact[] = [
-  FACTS.established,
+  FACTS.yearsExperience,
   FACTS.factoryArea,
   FACTS.specialists,
   FACTS.megaProjects,
+  FACTS.projectsCompleted,
 ];
 
 /**

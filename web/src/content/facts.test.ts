@@ -100,12 +100,20 @@ describe("the fact registry is usable as a citation", () => {
      * 108-page deck. The citation has to make verification a LOOKUP, which is
      * the difference between a ledger somebody maintains and one they abandon.
      *
-     * A page reference is the usual form. Not every source is paginated,
-     * though: blue's product data is one file per model, so the file name is
-     * the locator and a page number would be a fiction. Both are accepted;
-     * "somewhere in that document" is not.
+     * Three forms of locator are accepted, because the sources genuinely come
+     * in three shapes:
+     *
+     *   p3 / pp2-3    a page, for the PDFs
+     *   slide 6       a slide, for the PowerPoint company profile — the deck
+     *                 is not paginated and its slide numbers ARE how the
+     *                 client refers to it on calls ("page 14 has the wood
+     *                 sections"), so a page number here would be a fiction
+     *   info.docx     a file name, for blue's product data, which is one
+     *                 document per model rather than one paginated book
+     *
+     * "Somewhere in that document" remains unacceptable in all three.
      */
-    const locatable = /\bpp?\.?\s?\d|\.\w{3,5}\b/i;
+    const locatable = /\bpp?\.?\s?\d|\bslide\s?\d|\.\w{3,5}\b/i;
     const vague = Object.entries(FACTS as Record<string, SourcedFact>)
       .filter(([, f]) => !locatable.test(f.source))
       .map(([id, f]) => `${id}: "${f.source}"`);
@@ -141,11 +149,20 @@ describe("the home stat band reads from the ledger", () => {
     ).toBeNull();
   });
 
-  it("still supplies the four figures the labels describe", () => {
-    // The labels live in the message files and are positional. Four labels,
-    // four figures, or the band renders a stat with no number under it.
+  it("supplies exactly as many figures as there are labels", () => {
+    // The labels live in the message files and are joined to the figures BY
+    // INDEX. One label too few and the last column renders a number with no
+    // caption; one too many and a caption sits under nothing.
+    //
+    // This can only check the COUNT. It cannot check that "500+" still has
+    // "Projects completed" under it rather than "Specialists" — reordering
+    // HOME_STATS relabels every column and every test here stays green. See
+    // the ordering warning on HOME_STATS itself.
     const labels = (en.landing.stats.items as { label: string }[]).length;
     expect(HOME_STATS).toHaveLength(labels);
+
+    // Both locales, or the Arabic band is the one that renders wrong.
+    expect((ar.landing.stats.items as { label: string }[]).length).toBe(labels);
   });
 
   it("renders the year without a thousands separator", () => {

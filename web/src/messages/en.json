@@ -77,7 +77,7 @@
     "about": {
       "heading": "More than a manufacturer.",
       "paragraphs": [
-        "STARK provides integrated manufacturing solutions across woodworks, furniture and mattresses, for hospitality, residential, commercial, administrative, healthcare and government projects.",
+        "Strategic Trust for Advanced and Reliable Knowledge. STARK provides integrated manufacturing solutions across woodworks, furniture and mattresses, for hospitality, residential, commercial, administrative, healthcare and government projects.",
         "It was formed in 2026, when Saudi Light Industries, making foam and mattresses in Jeddah since 1967, joined with Trust Wood and the Haidar family's decades in the wood industry. Two factories, one company.",
         "That is why design, manufacturing and on-site execution sit in a single accountable process here rather than across four contracts. Every element is engineered for durability and finished to the standard hospitality demands."
       ],
@@ -90,11 +90,11 @@
       "pillars": [
         {
           "title": "Vision",
-          "body": "To be a leading industrial company delivering integrated manufacturing solutions that contribute to strengthening national industry and improving quality of life."
+          "body": "To be a leading industrial company delivering integrated industrial solutions that contribute to strengthening national industry and improving quality of life."
         },
         {
           "title": "Mission",
-          "body": "To serve our clients by delivering reliable industrial products and integrated manufacturing solutions, supported by accumulated expertise, specialized capabilities and the highest standards of quality, creating sustainable value for our partners and the communities we serve."
+          "body": "We meet our customers' needs by delivering reliable industrial products and services, supported by accumulated expertise, specialized talent, and the highest quality standards, creating sustainable value for our partners and society."
         }
       ]
     },
@@ -231,16 +231,19 @@
       "heading": "Built to last, trusted at scale.",
       "items": [
         {
-          "label": "Established"
+          "label": "Years of experience"
         },
         {
-          "label": "Manufacturing facility"
+          "label": "Production and support facilities"
         },
         {
           "label": "Specialists"
         },
         {
           "label": "Mega-projects a year"
+        },
+        {
+          "label": "Projects completed"
         }
       ]
     },

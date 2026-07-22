@@ -133,7 +133,7 @@ it is the client's own words either, and it should be read back to them.
 | Woodworks `capabilities`, `materials` | woodworks | Invented specifications |
 | Mattresses `engineering`, `credentials` | mattresses | Invented |
 | `landing.process` — incl. "responsibly sourced solid hardwoods" | home | A sustainability claim STARK never made. Ironically **provable** via TW's FSC certificate, so it is rewritten rather than cut. |
-| "Strategic Trust for Advanced and Reliable Knowledge (STARK)" | `landing.about.paragraphs[0]` | **In no document.** The site opened by telling readers the company's name means something the company has never said it means. |
+| ~~"Strategic Trust for Advanced and Reliable Knowledge (STARK)"~~ | `landing.about.paragraphs[0]` | ❌ **THIS ROW WAS WRONG. RETRACTED — see "The full name" below.** It is set in the company's own logo. |
 | Vision "a trusted regional leader in hospitality solutions"; the matching mission | `landing.about.pillars` | Not the company's. The real vision is industrial and national and does not mention hospitality. |
 | Prices, bed sizes | anywhere | **Neither exists in any source document.** |
 | blue's health claims — cortisol/electrons, carotenoid ×10, allergen percentages | mattresses | Client decision: hard specs only. None of it ships. |
@@ -248,3 +248,80 @@ Held back per the standing decision on health claims: PUROTEX+ allergen
 percentages, INTENSE(TM)/cortisol and SKIN+(TM) carotenoid appear in five of
 the eight sheets and none of it ships. That is why the three models chosen lead
 on construction and certificates instead.
+
+## The full name: an audit finding that was wrong
+
+This audit deleted `Strategic Trust for Advanced and Reliable Knowledge` from
+the About section and recorded, in the table above, that it was **"in no
+document"** and that the site was "telling readers the company's name means
+something the company has never said it means."
+
+That was false, and the evidence was on every page of the site while the claim
+was being written:
+
+- **`public/brand/logo-lockup-white.png`** — the lockup rendered in the nav and
+  the footer of every route — sets `STARK` over the line
+  `STRATEGIC TRUST FOR ADVANCED AND RELIABLE KNOWLEDGE`.
+- **Company profile v3 (2026), slide 1** spells the acronym out letter by
+  letter: S Strategic · T Trust · A Advanced · R Reliability · K Knowledge.
+
+**Why it was missed.** The audit's method was to read the five source documents
+and grep the copy deck. Both are text. A PNG is neither, so an asset that had
+been shipping in the header since the first commit was never in the search
+space at all — and "I did not find it" was written down as "it does not exist."
+
+**The cost.** The client had already told their own customer the name was on
+the site. It was removed between that conversation and their next look at it.
+
+**The rule this sets.** *Brand assets are source documents.* A logo, a lockup,
+a favicon, artwork with type in it — anything the company has approved and put
+its name on carries claims, and those claims count. Before recording any string
+as unsourced, check `public/brand/` and the brand guidelines' artwork pages,
+not only the prose.
+
+The name is restored at `landing.about.paragraphs[0]` in both locales. In
+Arabic it stays in Latin script and untranslated: the expansion only works as
+an acronym in English, no document renders it in Arabic, and inventing an
+Arabic version to make the sentence flow would be precisely the failure mode
+this whole audit exists to prevent.
+
+## Company profile v3 (2026): what changed
+
+The client returned a commented deck after the round-3 review. It is the
+authority for the following, and it OVERRIDES the earlier profile where they
+disagree:
+
+| Claim | Slide | Note |
+|---|---|---|
+| Vision and mission, EN and AR | 2 | Now verbatim from the client, both locales |
+| `45+` years of experience | 6 | ⚠ See below |
+| `60,000 m²` production and support facilities | 6 | Label changed from "manufacturing facility" |
+| `200+` specialists | 6 | Unchanged |
+| `3` mega-projects a year, SAR 100M annual value | 6 | **Was 2.** The SAR value is available and not yet printed |
+| `500+` projects completed | 6 | New fifth stat |
+| Six-step process | 6 | Design, Engineering, Value Engineering, Manufacturing, Quality Assurance, Delivery & Installation |
+| Six wood product types | 14 | Replaces the substrate list |
+| Woodworks annual capacity | 12 | 75M SAR, 1,500 hotel rooms, 30,000 doors, 90,000 m² wardrobes, 150,000 m² cladding, 35,000 LM kitchens |
+| 60,000 mattresses a year | 15 | |
+| BLUE and SIESTA brand copy | 16, 17 | siesta's tagline is finally correct: "You Deserve a Great Night" |
+| 31 client logos | 10, 11 | Exported by the client themselves, which settles the permission question |
+
+### ⚠ 45+ years against 1967
+
+The deck states both and reconciles neither. Slide 1 tells the story from 1967
+("over six decades"); slide 6 prints `45+ YEARS EXPERIENCE` as the headline
+stat. Slide 1 shows where 45 comes from: the wood-industry family STARK
+partnered with in 2026 has "more than 45 years of inherited expertise". So the
+two figures measure different things, and a reader seeing `45+` above the fold
+and "since 1967" below it has no way to know that.
+
+Both ship. The client asked for `45+` in the stat band explicitly, and 1967 is
+load-bearing for the SLIC heritage narrative on the About and Mattresses pages.
+The contradiction is recorded on `FACTS.established.caveat` and on the client
+question list. **It is not resolved, only disclosed.**
+
+### The instruction that was dropped, and why
+
+Deck slide 16 asks to mention retail showrooms and online sales. No document
+gives a showroom address, a city list or a store URL, so there is nothing to
+state. It is on the client question list rather than on the page.
