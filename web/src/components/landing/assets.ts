@@ -33,12 +33,43 @@ export const landingImages = {
     `${base}/815f8b5fd0db3732.png`,
   ] as const,
 
-  /** Category cards — Woodworks / Mattresses / Turnkey. */
+  /**
+   * Category cards — Woodworks / Mattresses / Turnkey.
+   *
+   * ⚠ INDEX 1 IS NOT RENDERED HERE ANY MORE. `DivisionIndex.tsx:176` swaps it
+   * for `mattressImages.homeCard` (a real blue product) and `Turnkey.tsx` skips
+   * it. The slot is kept rather than removed because this array is the design's
+   * tile order and indexes 0 and 2 are read from it positionally.
+   */
   categories: [
     `${base}/d1c0e28eb1c679aa.png`,
     `${base}/847c93f88825cbef.png`,
     `${base}/9147afdc9d8c4223.png`,
   ] as const,
+
+  /**
+   * A hotel bedroom, for siesta's panel on the mattresses route.
+   *
+   * ⚠ THE SAME FILE AS `categories[1]`, DELIBERATELY, AND IT IS FREE. That slot
+   * stopped rendering when Home's mattress card became a real blue product, so
+   * this is a re-use of a file, not a second appearance of an image: it renders
+   * in exactly one place on the site.
+   *
+   * WHAT IT REPLACED WAS THE ACTUAL PROBLEM. siesta's panel was pointed at
+   * `gallery[6]`, which is byte-identical to the WOODWORKS HERO: one photograph
+   * doing two unrelated jobs on two different routes, and on siesta's side it
+   * was a grey wall with framed prints and a black sofa. A hospitality mattress
+   * brand was being illustrated by a living room with no bed in it.
+   *
+   * This frame is a made-up hotel bedroom: headboard, bedside lamps, a bench at
+   * the foot. It claims nothing — no mattress brand is legible in it, which is
+   * the whole reason it is safe. A blue product shot would have been sharper
+   * and would have told a hotel buyer it was looking at the contract range.
+   *
+   * TODO(F-content): still a placeholder. Real siesta photography is a client
+   * dependency and is on the open-questions list.
+   */
+  hospitalityRoom: `${base}/847c93f88825cbef.png`,
 
   /**
    * TODO(F-content): Woodworks' own set.

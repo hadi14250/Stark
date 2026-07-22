@@ -56,6 +56,35 @@ export const BLUE_MODELS = [
 
 export type BlueModel = (typeof BLUE_MODELS)[number];
 
+/**
+ * How each model is written when a reader sees it.
+ *
+ * NOT IN THE MESSAGE FILES, and that is the decision worth recording. These
+ * are proper nouns: "Comfy Zone" is the same string on the Arabic page as on
+ * the English one, exactly as `blue` and `siesta` already are in the copy deck.
+ * Putting them in `en.json`/`ar.json` would mean maintaining two identical
+ * lists whose ONLY possible divergence is a mistake, and would invite a
+ * translator to render "Sky" as "سماء" — turning a product you can ask for by
+ * name into a description of one.
+ *
+ * The alt text around them IS translated: `mattresses.models.alt` is a
+ * template with a `{name}` hole, so the sentence is Arabic and the noun is not.
+ *
+ * The spellings come from the product sheets' own file names ("Comfy zone",
+ * "Skin care") title-cased for display, because a sheet's file name is not a
+ * typographic decision. "Blue 1" keeps its space and its digit.
+ */
+export const BLUE_MODEL_NAMES: Record<BlueModel, string> = {
+  "blue-1": "Blue 1",
+  "comfy-zone": "Comfy Zone",
+  loft: "Loft",
+  luna: "Luna",
+  "pure-latex": "Pure Latex",
+  retro: "Retro",
+  "skin-care": "Skin Care",
+  sky: "Sky",
+};
+
 export type ShotType = "banner" | "product" | "cutaway" | "room-a" | "room-b" | "fabric";
 
 /** Cut-outs are webp (alpha); scenes are jpg. */
@@ -99,11 +128,35 @@ export function isCutout(src: string): boolean {
 }
 
 export const mattressImages = {
-  /** Full-bleed hero band on the mattresses route. */
-  hero: blueShot("loft", "room-a"),
+  /**
+   * Full-bleed hero band on the mattresses route.
+   *
+   * WAS `loft-room-a`, WHICH WAS THE WRONG KIND OF CORRECT. It is a real blue
+   * product in a real room, so nothing about it was false — it was just beige
+   * on beige, with the mattress the same value as the wall behind it and the
+   * floor the same value as both. As a full-viewport opener under an ivory
+   * veil, a low-contrast frame has nothing left once the veil takes the bottom
+   * third: the client's note was that the page still felt like Home reordered,
+   * and an opener you cannot describe afterwards is part of why.
+   *
+   * `blue-1-room-a` was chosen by laying all sixteen room shots out side by
+   * side rather than by picking a plausible-sounding file name. It is the only
+   * frame in the set with three distinct depth planes (window and planting,
+   * bed, veined headboard wall), it carries the brand mark legibly on the
+   * mattress border, and its warmth sits under an ivory veil instead of
+   * fighting it. Its one weakness, a strongly saturated parquet floor, is in
+   * the bottom third, which is precisely the part the veil washes to ivory.
+   */
+  hero: blueShot("blue-1", "room-a"),
 
   /** The blue half of the brand duet. siesta's half is NOT from this set. */
   blueBrand: blueShot("sky", "room-b"),
+
+  /**
+   * The eight models, in the range band. Cut-outs, so they sit on the page's
+   * ivory with no plate behind them and `isCutout` renders them `contain`.
+   */
+  rangeShot: (model: BlueModel) => blueShot(model, "product"),
 
   /** Home's "Mattresses" division card. */
   homeCard: blueShot("luna", "room-a"),

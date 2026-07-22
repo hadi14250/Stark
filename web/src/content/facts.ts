@@ -406,11 +406,27 @@ export const FACTS = {
     source: "blue dossier, Products/Pure latex/Pure latex info 2026.docx (LATEX)",
   },
 
-  /** blue's home trial. Its own terms document, on SLIC letterhead. */
-  blueTrialNights: {
-    value: 50,
-    source: "blue mattress 50-Night Trial Terms p1",
-  },
+  /**
+   * ⚠ `blueTrialNights` (50) WAS HERE AND WAS DELIBERATELY REMOVED. Do not
+   * re-add it from the source document, which is still in the client folder
+   * and still says what it always said.
+   *
+   * The client withdrew the offer: profile v3 slide 16, comment column,
+   * "الغاء فترة التجربة 50 يوم والابقاء على الضمان" — cancel the 50-day trial,
+   * keep the warranty. Their own slide strikes the clause through mid-sentence.
+   *
+   * THE FACT WAS TRUE AND IS STILL TRUE OF THE DOCUMENT; it is the OFFER that
+   * no longer stands. That distinction is why this tombstone exists rather
+   * than a caveat on a live entry: a fact left in the registry keeps the token
+   * "50" whitelisted for the whole copy deck, so some unrelated future "50
+   * showrooms" would sail through the provenance guard on the authority of a
+   * trial-terms PDF. An entry nobody consumes is not a citation, it is a hole.
+   *
+   * Removing it also deleted the only other place the trial appeared, which
+   * was NOT the brand panel everybody remembers: `gallery.bluePureLatex`
+   * carried "50 nights at home" as an overlay spec. One instruction, two
+   * sites, and the second one is invisible from the mattresses route.
+   */
 
   /** Models in each catalogue. siesta: 5 luxury + 8 economic + 3 hospitality. */
   siestaModels: {
@@ -445,6 +461,44 @@ export const FACTS = {
   slicHotelRoomsYear: {
     value: 2017,
     source: "Siesta catalogue 2026 p3 (EN, ABOUT US)",
+  },
+
+  /**
+   * The mattress division's annual output, from the client's own annotation.
+   *
+   * ⚠ READ THE UNIT DIFFERENTLY FROM THE WOOD DIVISION'S. `capacityAnnualSar`
+   * and its siblings are a CEILING — what the wood plant is equipped to make.
+   * This one is written "60,000 مرتبة في السنة", sixty thousand mattresses in
+   * the year, with no word for capacity, ability or equipment anywhere in the
+   * line. The copy therefore says "a year", not "capacity", and the two pages
+   * deliberately do not use the same phrasing for what look like the same kind
+   * of number. If the client later confirms this is also a ceiling, the copy
+   * changes, not this entry.
+   */
+  mattressesPerYear: {
+    value: 60000,
+    grouping: true,
+    source: "STARK company profile v3 (2026) slide 15 (client annotation column)",
+  },
+
+  /**
+   * siesta's warranty ceiling, now confirmed by the client twice over.
+   *
+   * ⚠ IT IS A CEILING AND MUST NEVER LOSE ITS "UP TO". The catalogue grades it
+   * by range: 10 years on SENSICE, 5 on COMFORT, 3 on STANDARD, 1 on SLEEP.
+   * Slide 17 states it as "warranties of up to 10 years on SELECTED models",
+   * which agrees. Dropping the qualifier turns a top-of-range figure into a
+   * promise about a one-year mattress.
+   *
+   * It shares the value 10 with `blueWarrantyYears` and is a SEPARATE ENTRY
+   * anyway, because they are separate claims from separate documents about
+   * separate products, and the note on `blueWarrantyYears` says the two brands
+   * must never share one warranty number. Deduplicating these to save a line
+   * would erase exactly the distinction that warning exists to protect.
+   */
+  siestaWarrantyMaxYears: {
+    value: 10,
+    source: "STARK company profile v3 (2026) slide 17 (Trusted Quality); Siesta catalogue 2026 p7",
   },
 } as const satisfies Record<string, SourcedFact | StatFact>;
 

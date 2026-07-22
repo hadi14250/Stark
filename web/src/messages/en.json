@@ -719,38 +719,47 @@
       "sub": "STARK manufactures mattresses for two very different customers, through two focused brands: one built for the home, one built for hotels that replace a floor at a time.",
       "cta": "Let's talk",
       "ctaSecondary": "See our work",
-      "alt": "Finished bedroom interior with a STARK mattress."
+      "alt": "A blue mattress on a low wooden bed, against a veined stone headboard wall."
     },
     "brands": {
       "eyebrowLabel": "Two brands",
-      "heading": "One factory, two very different buyers.",
+      "heading": "One manufacturing standard. Two comfort identities.",
       "sub": "A family choosing a bed once a decade and a hotel replacing two hundred of them need different products, different warranties and different conversations. Pretending otherwise is how one of them ends up badly served.",
       "items": [
         {
           "name": "blue mattress",
           "audience": "For the home · B2C",
-          "body": "Spring and foam mattresses designed for modern homes and everyday rest, with the construction explained rather than hidden behind a marketing name.",
+          "tagline": "Where dreams begin.",
+          "body": "STARK's specialised mattress brand, created for modern homes, hospitality projects, healthcare environments and commercial spaces. Its models run from cooling comfort and motion isolation to natural latex, recovery support and customisable firmness.",
           "points": [
             "8 models",
             "10-year warranty",
-            "50-night trial"
+            "Foam, latex and pocket spring"
           ],
           "cta": "Let's talk",
-          "alt": "Bedroom with a blue mattress product."
+          "alt": "A blue mattress on a wooden platform bed in a bright bedroom."
         },
         {
           "name": "siesta mattresses",
           "audience": "For hospitality · B2B",
-          "body": "Durable, high-performance mattresses engineered to hotel and resort standards, consistent across a large order and delivered against a programme rather than a promise.",
+          "tagline": "You Deserve a Great Night",
+          "body": "STARK's established mattress brand, built for homes, hotels and commercial environments. Spring, foam, memory foam, orthopaedic and hospitality mattresses across a range of comfort levels and price points, with warranties of up to 10 years on selected models.",
           "points": [
             "16 models",
             "Three ranges",
             "Fire-resistant hospitality range"
           ],
           "cta": "Request a specification",
-          "alt": "Hotel room with siesta mattresses."
+          "alt": "A hotel bedroom with an upholstered headboard and bedside lamps."
         }
       ]
+    },
+    "models": {
+      "eyebrowLabel": "The blue range",
+      "heading": "Eight models, one line.",
+      "sub": "Each model is a different combination of springs, foams and comfort layers. The names are blue's own.",
+      "alt": "The {name} mattress by blue.",
+      "note": "siesta's range is not shown here: there is no siesta product photography yet."
     },
     "engineering": {
       "eyebrowLabel": "Inside the mattress",
@@ -778,11 +787,15 @@
     "credentials": {
       "eyebrowLabel": "Manufacturing",
       "heading": "The Kingdom's first foam factory.",
-      "sub": "STARK's mattress division is Saudi Light Industries, and it has been making foam in Jeddah since 1967.",
+      "sub": "STARK is the modern face of Saudi Light Industries, the Kingdom's first foam and mattress factory, established in 1967.",
+      "output": {
+        "label": "Mattresses a year"
+      },
+      "reach": "Sold through retail points of sale and distribution partners across the Kingdom, and supplied directly to hospitality and healthcare projects.",
       "items": [
         {
           "title": "Founded in 1967",
-          "body": "The first foam factory in the Kingdom, started by 15 people in a 6,000 m² plant on Madinah Road, making foam mattresses and pillows. It works today from the Al Fadel district on Old Makkah Road."
+          "body": "The first foam factory in the Kingdom, started by 15 people in a 6,000 m² plant, making foam mattresses and pillows."
         },
         {
           "title": "Re-equipped in 1998",
@@ -962,10 +975,6 @@
         {
           "label": "Certification",
           "value": "GOLS, Oeko-Tex Standard 100 Class 01"
-        },
-        {
-          "label": "Trial",
-          "value": "50 nights at home"
         }
       ]
     },

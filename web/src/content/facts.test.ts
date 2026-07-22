@@ -194,6 +194,48 @@ describe("the home stat band reads from the ledger", () => {
     ).toBe(enItems.length);
   });
 
+  it("keeps the mattress output figure phrased as output, not capacity", () => {
+    /**
+     * THE FAILURE THIS CATCHES: somebody tidies the two divisions into
+     * consistency.
+     *
+     * Woodworks says "Annual production capacity" because slide 12's annotation
+     * is explicitly about what the plant is EQUIPPED to make. Slide 15 says
+     * "60,000 مرتبة في السنة" and nothing else — no word for capacity, ability
+     * or equipment. So one page states a ceiling and the other states an
+     * output, the wording differs on purpose, and the difference is invisible
+     * to anyone who has not read both slides. It looks exactly like an
+     * inconsistency somebody should fix.
+     *
+     * Fixing it upgrades a production figure into a capacity claim, which is a
+     * bigger number about the same factory without a bigger factory.
+     */
+    for (const [locale, messages] of [["en", en], ["ar", ar]] as const) {
+      const label = (messages.mattresses.credentials.output as { label: string }).label;
+      expect(label, `${locale}: the mattress figure must not be labelled a capacity`).not.toMatch(
+        /capacity|الطاقة/i,
+      );
+    }
+  });
+
+  it("states siesta's warranty as a ceiling, never as a flat number", () => {
+    /**
+     * "Up to 10 years" is the only honest summary of a catalogue that grades
+     * the warranty by range: 10 on SENSICE, 5 on COMFORT, 3 on STANDARD, 1 on
+     * SLEEP. Drop the qualifier and the site promises a decade on a mattress
+     * that carries twelve months.
+     *
+     * The qualifier is two words in the middle of a sentence, which is exactly
+     * the kind of thing a copy edit removes for tightness.
+     */
+    const en10 = en.mattresses.brands.items[1].body;
+    expect(en10, "siesta's warranty lost its 'up to'").toMatch(/up to 10 years/i);
+    expect(
+      ar.mattresses.brands.items[1].body,
+      "siesta's Arabic warranty lost its 'يصل إلى'",
+    ).toMatch(/يصل إلى 10/);
+  });
+
   it("renders the year without a thousands separator", () => {
     // "1,967" is a quantity. "1967" is a date. The reader has nothing else to
     // go on, so the flag is the whole distinction.

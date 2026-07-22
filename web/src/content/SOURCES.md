@@ -457,3 +457,114 @@ least-bad mapping available and documented at
 `landingImages.woodworks.products`, but no reordering fixes it — there is no
 photograph of a door, wall cladding, an outdoor structure or a retail podium
 anywhere in the set. Treat as a launch blocker.
+
+## Mattresses: two brands in their own words, and one offer withdrawn (slides 15, 16, 17)
+
+Profile v3 gives the mattress division three slides where it previously had a
+catalogue and a folder of product sheets. Slide 15 is the division; 16 is blue;
+17 is siesta. Between them they supply the copy this page had been paraphrasing,
+plus two corrections and one deletion.
+
+### The 50-night trial was removed, and the fact was deleted rather than caveated
+
+Slide 16's own artwork strikes the clause through mid-sentence, and the comment
+column says it plainly: *"الغاء فترة التجربة 50 يوم والابقاء على الضمان"* — cancel
+the 50-day trial, keep the warranty.
+
+The trial-terms document is real and still says what it always said. What changed
+is the offer, not the paperwork, so the question was whether to leave
+`blueTrialNights` in the ledger with a caveat. It was **deleted**, with a
+tombstone comment in its place explaining why and warning against re-adding it
+from the source document. The reason is mechanical: every registered fact
+whitelists its digits for the whole copy deck, so an entry nobody consumes stops
+being a citation and becomes a hole — a future "50 showrooms" would have passed
+the provenance guard on the authority of a withdrawn trial offer.
+
+⚠ **The instruction had two sites, and the second one is invisible from this
+page.** Besides the brand panel, the trial was an overlay spec on the gallery's
+Pure Latex slide (`gallery.bluePureLatex.overlaySpecs`). Anyone applying this
+change by looking at the mattresses route would have shipped half of it.
+
+### siesta's warranty is a ceiling and must keep its "up to"
+
+Slide 17 states *"warranties of up to 10 years on selected models"*, which agrees
+with the catalogue's own grading: 10 years on SENSICE, 5 on COMFORT, 3 on
+STANDARD, 1 on SLEEP. `siestaWarrantyMaxYears` is registered separately from
+`blueWarrantyYears` even though both are 10, because they are different claims
+about different products from different documents, and the existing note on
+blue's entry says the two brands must never share one warranty number.
+
+`facts.test.ts` now fails if either locale loses the qualifier. Two words in the
+middle of a sentence is exactly what a copy edit removes for tightness, and
+removing them promises a decade on a mattress that carries twelve months.
+
+### 60,000 is an output, not a capacity, and the wording is deliberate
+
+Slide 15's annotation reads *"60,000 مرتبة في السنة"* — sixty thousand mattresses
+in the year. There is no word for capacity, ability or equipment anywhere in the
+line, unlike slide 12's wood figures, which are explicitly annotated as what the
+division is *equipped* to produce.
+
+So the woodworks page says "Annual production capacity" and this page says
+"Mattresses a year", and the difference between them is invisible to anyone who
+has not read both slides. It looks exactly like an inconsistency somebody should
+tidy up. `facts.test.ts` fails if this label ever acquires the word "capacity" in
+either locale, because tidying it would turn a production figure into a bigger
+claim about the same factory.
+
+### Retail and distribution are mentioned. Online sales is not.
+
+The client asked twice: slide 15 for *"نقاط بيع التجزئة"* and *"نقاط التوزيع
+المنتشرين في المملكة"*, slide 16 for *"معارض تجارية"* and *"البيع اون لاين"*.
+
+Retail points, distribution partners and direct project supply are now stated in
+the credentials band. They are claims about *how* the company sells, they need no
+destination, and they name no address — which matters, because **no showroom
+address exists in any document supplied**.
+
+**Online sales was left out.** There is no store URL anywhere in the five source
+documents. A site that says "buy online" with nothing to click is a worse answer
+to the request than not answering it yet. Needs a URL, then it ships.
+
+### The first factory keeps its size and loses its street
+
+`credentials.items[0]` said the plant was "on Madinah Road" and that the company
+"works today from the Al Fadel district on Old Makkah Road". The client asked for
+both to go. What survives is what the Siesta catalogue p3 supports and the client
+did not object to: a first foam factory, 15 people, 6,000 m², foam mattresses and
+pillows.
+
+### Photography: one real gain, one placeholder replaced, one gap unchanged
+
+- **The range band is real.** Eight product cut-outs of blue's eight 2026 models,
+  from the client's own folders. The page previously used three photographs while
+  forty-eight sat unused — the client's note was that it "lacks a lot of
+  pictures".
+- **No per-model copy ships with them.** Three of the eight product sheets carry
+  health claims (allergen-reduction percentages, cortisol, carotenoid) which do
+  not go on the site. Writing a paragraph per model would mean repeating those or
+  inventing eight substitutes, so the band carries names and photographs only.
+- **siesta stopped borrowing the woodworks hero.** Its panel was pointed at a file
+  byte-identical to the photograph that opens the woodworks route, so one image
+  did two unrelated jobs and siesta's was being illustrated by a living room with
+  no bed in it. It now has a hotel bedroom with no legible mattress brand — which
+  is the point, since a blue product under siesta's name would tell a hotel buyer
+  it was looking at the contract range.
+
+⚠ **TODO(F-content): there is still no siesta photography.** The range band says
+so on the page rather than leaving a reader to assume eight models is the whole
+catalogue. Real siesta shots remain a client dependency.
+
+### An alt-text bug that shipped and was caught by grep
+
+`models.alt` is a template with a `{name}` hole. next-intl reads `{name}` as an
+ICU argument, so `t("models.alt")` did not return the template — it failed and
+emitted the KEY, and all eight images rendered `alt="mattresses.models.alt"`.
+
+It type-checked, it rendered, the pictures looked right, and no test failed,
+because alt text is the one string on a page that nobody sighted ever sees. The
+only people affected were the ones who could not check it themselves. Found by
+curling the HTML and grepping for a dot-separated key; now guarded by
+`BlueRange.test.tsx`, which asserts no rendered alt can look like a message key.
+
+Use `t.raw` for any string containing braces that are not ICU arguments.

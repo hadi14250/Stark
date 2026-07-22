@@ -191,7 +191,85 @@
     box-shadow: var(--shadow-card);
   }
 
+  /* ---------- the blue range ----------
+     Eight product cut-outs on the page's own ivory.
+
+     `object-fit: contain` IS THE WHOLE POINT OF THIS RULE, and it has to live
+     here rather than on the component. `Photo` hard-codes `object-cover` as a
+     Tailwind utility on its <img> and offers no way past it: its `className`
+     goes to the wrapper, and a `style` prop passed through would replace the
+     one carrying `--image-filter`, silently dropping the site-wide grade.
+
+     Cover is right for a photograph and wrong for a product cut out of its
+     background. It scales the mattress up until it bleeds past the card on
+     every side, so the corners and the `blue` mark on the border are the first
+     things cropped: the subject of the picture is the part you lose. This is
+     the same defect the gallery hit and solved its own way, in its own stage
+     CSS. `@layer page` outranks `utilities`, which is what lets one selector
+     here beat the utility class without touching a shared component.
+
+     No border and no card fill. The cut-outs carry real alpha, so a plate
+     behind them would be a visible rectangle around a floating object; the
+     tinted wash gives them a surface to sit on without drawing an edge. */
+
+  .mt-model {
+    border-radius: var(--radius-card);
+    background: color-mix(in srgb, var(--color-accent) 5%, transparent);
+    padding: clamp(10px, 1.4vw, 18px);
+    transition:
+      transform 600ms var(--ease-cushion),
+      background-color 600ms var(--ease-cushion);
+  }
+
+  .mt-model img {
+    object-fit: contain;
+  }
+
+  @media (hover: hover) {
+    .mt-model:hover {
+      transform: translateY(-4px);
+      background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+    }
+  }
+
+  .mt-model-name {
+    margin-block-start: clamp(6px, 1vw, 12px);
+    text-align: center;
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: var(--eyebrow-transform);
+    color: var(--color-ink-body);
+  }
+
   /* ---------- credentials ---------- */
+
+  /* The output figure and the reach sentence, side by side on desktop.
+
+     A count-up needs to be big to be worth animating, and a sentence needs a
+     measure to be readable, so they are NOT a two-column grid of equal halves:
+     the figure takes what it needs and the sentence takes the rest. On a phone
+     they stack, figure first, because the number is the reason the block is
+     there. */
+
+  .mt-output {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(16px, 2.4vw, 32px);
+    padding-block: clamp(24px, 3vw, 40px);
+    border-block: 1px solid var(--color-line);
+  }
+
+  @media (min-width: 860px) {
+    .mt-output {
+      flex-direction: row;
+      align-items: baseline;
+      gap: clamp(32px, 5vw, 72px);
+    }
+    /* `baseline` above aligns the figure with the first line of the sentence,
+       which is what makes them read as one statement rather than as a number
+       parked next to a paragraph. */
+  }
 
   .mt-cred {
     border-block-start: 1px solid var(--color-line);
