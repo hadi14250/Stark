@@ -2,7 +2,9 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { describe, it, expect } from "vitest";
-import { stepIndexAt, STEP_PARTS, CLOSING_PARTS } from "./ProcessSection";
+import { stepIndexAt, STEP_PARTS } from "./ProcessSection";
+import en from "../../messages/en.json";
+import ar from "../../messages/ar.json";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const src = readFileSync(join(here, "ProcessSection.tsx"), "utf8");
@@ -10,18 +12,18 @@ const divisionIndex = readFileSync(join(here, "../home/DivisionIndex.tsx"), "utf
 const divisions = readFileSync(join(here, "../home/Divisions.tsx"), "utf8");
 
 describe("the pinned process's scrub-to-step mapping", () => {
-  const COUNT = 4;
+  const COUNT = 6;
 
   it("gives each step an equal, ordered slice", () => {
     expect(stepIndexAt(0, COUNT)).toBe(0);
-    expect(stepIndexAt(0.24, COUNT)).toBe(0);
-    expect(stepIndexAt(0.25, COUNT)).toBe(1);
-    expect(stepIndexAt(0.5, COUNT)).toBe(2);
-    expect(stepIndexAt(0.75, COUNT)).toBe(3);
+    expect(stepIndexAt(0.16, COUNT)).toBe(0);
+    expect(stepIndexAt(0.17, COUNT)).toBe(1);
+    expect(stepIndexAt(0.5, COUNT)).toBe(3);
+    expect(stepIndexAt(0.84, COUNT)).toBe(5);
   });
 
   it("does not run off the end of the array at full scroll", () => {
-    // `Math.floor(1 * 4)` is 4. Unclamped this indexes past the last step and
+    // `Math.floor(1 * 6)` is 6. Unclamped this indexes past the last step and
     // the copy column goes blank exactly as the reader finishes the section.
     expect(stepIndexAt(1, COUNT)).toBe(COUNT - 1);
   });
@@ -39,16 +41,70 @@ describe("the mark assembles completely and without repeats", () => {
     // The idea only lands if the logo is WHOLE at the end. A missing part
     // reads as a rendering fault rather than as completion, and a repeated
     // one wastes a step.
-    const all = [...STEP_PARTS, ...CLOSING_PARTS];
-    expect(new Set(all).size).toBe(all.length);
-    expect(new Set(all)).toEqual(
+    expect(new Set(STEP_PARTS).size).toBe(STEP_PARTS.length);
+    expect(new Set(STEP_PARTS)).toEqual(
       new Set(["#lg-b1", "#lg-b2", "#lg-b3", "#lg-b4", "#lg-b5", "#lg-core"]),
     );
   });
 
-  it("has one part per step, plus the closing pair", () => {
-    expect(STEP_PARTS).toHaveLength(4);
-    expect(CLOSING_PARTS).toHaveLength(2);
+  it("lands the core LAST, because that is the step that means something", () => {
+    // Five blades closing around a core (brand book p.8). The core is the
+    // moment the parts become a whole, so it belongs on Delivery &
+    // Installation and nowhere else. Reordering the array would still pass
+    // the completeness check above while destroying the only bit of the
+    // sequence that carries meaning.
+    expect(STEP_PARTS[STEP_PARTS.length - 1]).toBe("#lg-core");
+  });
+
+  it("gives every step exactly one part, in both locales", () => {
+    /**
+     * THE INVARIANT THE SIX-STEP VERSION BOUGHT, and the one most likely to be
+     * broken by someone editing copy rather than code.
+     *
+     * The four-step version could not hold this: four steps against six parts
+     * meant `#lg-b5` and `#lg-core` had to be fired together on the last step,
+     * via a separate `CLOSING_PARTS` array, purely to use up the leftovers.
+     * Now the counts match exactly.
+     *
+     * Adding a seventh step in the copy deck is therefore a SILENT failure:
+     * `AssemblingMark` maps over STEP_PARTS, so the extra step scrubs with no
+     * part of its own and the mark finishes assembling before the list does.
+     * TypeScript cannot see it, because the steps come out of a JSON file.
+     */
+    for (const [locale, msgs] of [["en", en], ["ar", ar]] as const) {
+      const steps = msgs.landing.process.steps;
+      expect(steps.length, `${locale}: step count drifted from the mark`).toBe(
+        STEP_PARTS.length,
+      );
+    }
+  });
+
+  it("keeps the two locales telling the same story", () => {
+    expect(en.landing.process.steps).toHaveLength(ar.landing.process.steps.length);
+    for (const s of [...en.landing.process.steps, ...ar.landing.process.steps]) {
+      expect(s.title.trim().length).toBeGreaterThan(0);
+      expect(s.body.trim().length).toBeGreaterThan(0);
+    }
+  });
+
+  it("does not let the intro count a different number of steps than it shows", () => {
+    /**
+     * A REAL DEFECT THIS ROUND, caught by reading rather than by any test: the
+     * intro said "the same four steps, inside one company" and the list below
+     * it had six. The number is spelled out in words in both locales, so no
+     * digit-level check (facts.test.ts) can see it, and both files stayed
+     * perfectly parallel while both were wrong together.
+     */
+    const banned: Record<string, RegExp> = {
+      en: /\b(three|four|five|seven|eight)\b/i,
+      ar: /الأربع|الثلاث|الخمس|السبع/,
+    };
+    for (const [locale, msgs] of [["en", en], ["ar", ar]] as const) {
+      expect(
+        msgs.landing.process.sub,
+        `${locale}: the intro counts a number of steps the list does not have`,
+      ).not.toMatch(banned[locale]);
+    }
   });
 });
 

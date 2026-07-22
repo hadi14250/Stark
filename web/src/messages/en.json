@@ -342,23 +342,31 @@
     "process": {
       "eyebrow": "How we work",
       "heading": "Our Process",
-      "sub": "From the first drawing to the installed room, the same four steps, inside one company.",
+      "sub": "From the first drawing to the installed room, the same six steps, inside one company.",
       "steps": [
         {
           "title": "Design",
-          "body": "Drawings, mood boards and material selections worked through with the client until the intent is unambiguous and the drawing is the thing that gets built."
+          "body": "Drawings, mood boards and materials worked through with the client until the drawing is the thing that gets built."
         },
         {
-          "title": "Source",
-          "body": "Material bought against the specification and inside our FSC chain of custody, so what a drawing calls for is what can be documented on delivery."
+          "title": "Engineering",
+          "body": "Shop drawings and technical detail: the design resolved into parts, fixings and tolerances a machine can run."
         },
         {
-          "title": "Make",
-          "body": "Cut, sized, moulded, assembled and finished on automated lines, with every stage inspected against a written quality plan rather than a fitter's judgement."
+          "title": "Value Engineering",
+          "body": "Alternatives costed against the specification, so savings come out of the method and not out of the approved finish."
         },
         {
-          "title": "Install",
-          "body": "Delivery and installation by our own teams. The project ends when the space is ready, not when the truck leaves."
+          "title": "Manufacturing",
+          "body": "Cut, sized, moulded, assembled and finished on automated lines inside our own factories."
+        },
+        {
+          "title": "Quality Assurance",
+          "body": "Every stage checked against a written quality plan with stated tolerances, rather than against a fitter's judgement."
+        },
+        {
+          "title": "Delivery & Installation",
+          "body": "Delivered and installed by our own teams. The project ends when the space is ready, not when the truck leaves."
         }
       ]
     },

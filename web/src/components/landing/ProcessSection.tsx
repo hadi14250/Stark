@@ -21,8 +21,9 @@ type Step = { title: string; body: string };
 /**
  * "Our Process" — a pinned, scroll-scrubbed chapter.
  *
- * The section holds the viewport for four screens while the mark assembles and
- * the highlight walks down a permanently-visible list of the four steps. Every
+ * The section holds the viewport for six screens' worth of scroll while the
+ * mark assembles and the highlight walks down a permanently-visible list of the
+ * six steps. Every
  * piece of motion is SCRUBBED to scroll position rather than triggered, so it
  * responds continuously to the wheel instead of firing once and going still.
  *
@@ -38,8 +39,8 @@ type Step = { title: string; body: string };
  *
  * THE MARK IS THE PROGRESS INDICATOR. The brand book (p.8) has the five blades
  * as parts of one ecosystem closing around a core, so the mark assembles as
- * the process advances: one blade per step, with the fifth blade and the core
- * landing together at handover, when the thing is whole. Brand geometry doing
+ * the process advances: one blade per step, and the core landing last, on
+ * Delivery & Installation, when the thing is whole. Brand geometry doing
  * structural work rather than applied as a sticker.
  *
  * ONE TREE, NOT TWO. This used to fork into a pinned desktop version and a
@@ -53,29 +54,54 @@ type Step = { title: string; body: string };
  * that budget is written out above StepIndex — redo it if a step is added.
  */
 
-/** How much scroll each step gets while the section is pinned. */
-const STEP_VH = 72;
+/**
+ * How much scroll each step gets while the section is pinned.
+ *
+ * ⚠ LOWERED FROM 72 WHEN THE PROCESS WENT FROM FOUR STEPS TO SIX. This is a
+ * per-step figure, so it multiplies: six steps at 72vh is 432vh of pinned
+ * track, against 288vh before. An extra screen and a half of a section that
+ * will not let go of the viewport reads as the page having stopped responding.
+ * 52 keeps the whole run at 312vh, close to what the four-step version asked
+ * of a reader, and each step still gets half a screen of scroll to itself.
+ */
+const STEP_VH = 52;
 
 /**
  * Which part of the mark each step completes.
  *
- * Four steps, six parts: the first four blades map one-to-one, then `#lg-b5`
- * and `#lg-core` fill together at the end. "Deliver" is the point at which the
- * parts become a whole, so the core arriving last is the one moment in the
- * sequence that means something.
+ * SIX STEPS, SIX PARTS, ONE-TO-ONE. This is what the new process chain bought.
+ * The four-step version needed a separate `CLOSING_PARTS` pair, because four
+ * steps could not consume six parts: `#lg-b5` and `#lg-core` had to land
+ * together at 0.94, two parts arriving on one step because the arithmetic
+ * demanded it rather than because anything happened there.
+ *
+ * The client's own chain has exactly six stages, and the brand book (p.8) has
+ * exactly five blades closing around a core. So every step now completes
+ * precisely one part, and the core, the moment the parts become a whole, lands
+ * on Delivery & Installation, which is where the thing actually becomes whole.
+ * The sequence got MORE correct by growing, not less.
  */
-export const STEP_PARTS = ["#lg-b1", "#lg-b2", "#lg-b3", "#lg-b4"] as const;
-export const CLOSING_PARTS = ["#lg-b5", "#lg-core"] as const;
+export const STEP_PARTS = [
+  "#lg-b1",
+  "#lg-b2",
+  "#lg-b3",
+  "#lg-b4",
+  "#lg-b5",
+  "#lg-core",
+] as const;
 
 /**
  * Which step a scroll progress of `p` (0-1) lands on.
  *
- * Pure and exported because the clamp is the whole thing: `Math.floor(1 * 4)`
- * is 4, and a scroll that reaches the very end of the track therefore indexes
- * one past the last step. Unclamped, `steps[4]` is undefined and the copy
+ * Pure and exported because the clamp is the whole thing: `Math.floor(1 * 6)`
+ * is 6, and a scroll that reaches the very end of the track therefore indexes
+ * one past the last step. Unclamped, `steps[6]` is undefined and the copy
  * column renders blank at exactly the moment the reader finishes the section —
  * a bug that only appears at the bottom of the scrub, which is the hardest
  * place to catch by looking.
+ *
+ * `count`-generic on purpose, which is why going from four steps to six needed
+ * no change here at all.
  */
 export function stepIndexAt(p: number, count: number): number {
   return Math.min(count - 1, Math.max(0, Math.floor(p * count)));
@@ -92,18 +118,18 @@ export function stepIndexAt(p: number, count: number): number {
  * only visible title becomes a different title, the reader has no evidence that
  * they moved through a sequence rather than that the page redrew.
  *
- * All four titles are now permanently on screen and the highlight moves down
+ * All six titles are now permanently on screen and the highlight moves down
  * them. The transition needs no emphasis machinery at all, because you can see
- * where it started and where it ended: the marker slides from Design to Source
- * while both are in front of you. Three competing devices (giant numeral, sweep,
+ * where it started and where it ended: the marker slides from Design to
+ * Engineering while both are in front of you. Three competing devices (giant numeral, sweep,
  * separate rail) are gone; the list IS the rail.
  *
  * SO SAND DOES EXACTLY TWO THINGS HERE — the moving marker, and the active
  * numeral. That is the whole colour budget for the section. Titles live in the
  * ink ramp, bodies in ink-body. Nothing floods, nothing sweeps.
  *
- * INACTIVE TITLES ARE HOLLOW rather than dimmed. Four greyed-out titles read as
- * disabled; four outlined ones read as "not yet filled in", which is what a
+ * INACTIVE TITLES ARE HOLLOW rather than dimmed. Six greyed-out titles read as
+ * disabled; six outlined ones read as "not yet filled in", which is what a
  * process index means. See outline-type.css for the Arabic handling — cursive
  * does not take a stroke, so that locale gets low-opacity solid type instead.
  */
@@ -134,7 +160,7 @@ export function ProcessSection() {
       <div
         ref={trackRef}
         // Under reduced motion the track collapses to its content: there is no
-        // scrub to perform, so holding the viewport for 288vh would be four
+        // scrub to perform, so holding the viewport for 312vh would be six
         // screens of a section that never moves.
         style={{ height: reduce ? "auto" : `calc(${steps.length} * ${STEP_VH}vh)` }}
       >
@@ -171,9 +197,42 @@ export function ProcessSection() {
                     delay={0.08}
                     className="font-display text-h2 font-bold leading-h2 tracking-display text-[color:var(--color-ink)]"
                   />
-                  {/* Desktop only — see the header comment. The pinned stage
-                      has a fixed height budget and the steps come first. */}
-                  <LineReveal delay={0.26} className="hidden max-w-[46ch] nav:block">
+                  {/*
+                    Desktop only, AND tall-enough-desktop only. The pinned stage
+                    has a fixed height budget and the steps come first.
+
+                    The width half of that rule was always here. The HEIGHT half
+                    is new with the sixth step: a 1024x640 or 1280x720 window is
+                    "desktop" by width and gets the intro, the two-column layout
+                    and full-size titles, on a stage shorter than a phone's. That
+                    is the combination that cut the last step off. Dropping three
+                    lines of intro on a short window is the same trade already
+                    made on mobile, for the same reason.
+
+                    ⚠ STACKED VARIANTS, NOT ONE COMBINED QUERY. The obvious way
+                    to write this is a single arbitrary variant joining a
+                    min-width and a min-height with the CSS keyword for "both"
+                    — and it does not work. Tailwind does not restore the spaces
+                    around that keyword inside a media feature list, so the two
+                    conditions are emitted run together, which is a PARSE ERROR:
+                    the whole of globals.css is rejected and every page on the
+                    site renders unstyled. tsc stays clean, the tests stay
+                    green, and only loading a page in a browser shows it.
+
+                    ⚠⚠ AND DO NOT PASTE THE BROKEN STRING INTO A COMMENT TO
+                    EXPLAIN IT. Tailwind scans raw file text, comments included,
+                    so quoting the malformed class here regenerates it and
+                    breaks the stylesheet again from inside the note warning you
+                    not to. That is why this paragraph describes it in words.
+
+                    Stacking `nav:` with a height variant nests the two queries
+                    instead, which is valid and needs no keyword. Ordering is
+                    not a concern: it is one class, not two competing ones.
+                  */}
+                  <LineReveal
+                    delay={0.26}
+                    className="hidden max-w-[46ch] nav:[@media(min-height:800px)]:block"
+                  >
                     <p className="text-lead leading-lead text-[color:var(--color-ink-body)]">
                       {t("sub")}
                     </p>
@@ -190,7 +249,7 @@ export function ProcessSection() {
   );
 }
 /* ------------------------------------------------------------------ */
-/* The step index — all four steps, always visible                      */
+/* The step index — all six steps, always visible                       */
 /* ------------------------------------------------------------------ */
 
 /**
@@ -200,32 +259,57 @@ export function ProcessSection() {
 const SWAP_S = 0.45;
 
 /**
- * The four steps as a permanent list, with the current one filled in.
+ * The six steps as a permanent list, with the current one filled in.
  *
  * HEIGHT BUDGET — this sits inside a pinned stage, so it cannot grow past the
  * viewport or the bottom of the list is simply cut off by the stage's
  * `overflow-hidden`, silently, on exactly the short screens nobody tests on.
- * The numbers, at 390x667 (stage = 100svh - 64px header = 603px):
  *
- *     mark            133   min(46vw, 20svh, 180px), square
- *     column gap       16
- *     eyebrow + gaps   34
- *     heading         ~70   two lines
- *     step list      ~154   4 titles at the 26px floor + gaps
- *     active growth     4   the 1.12 scale on one 26px title, half of which
- *                           falls below its own centre line
- *     open body       ~70   three lines of body-sm
- *                     ----
- *                      481   under 603, with room for Arabic to wrap a title
+ * ⚠ THE STAGE IS SMALLER THAN THE OLD ARITHMETIC HERE CLAIMED. It said
+ * "100svh - 64px header = 603px" at 390x667. Measured, it is 563px: `svh` is
+ * the SMALL viewport height, the one you get with the browser's chrome
+ * showing, and it is not the device's CSS pixel height. The four-step version
+ * was living inside 40px less than its own comment assumed. It fit anyway,
+ * which is precisely why nobody noticed.
+ *
+ * Measured at 390x667 EN, stage 563px:
+ *
+ *                        4 steps   6 steps
+ *     titles              ~116      ~132    26px floor -> 20px floor
+ *     row gaps              24        30    3 x 8px -> 5 x 6px
+ *     one open body       ~110       ~95    bodies shortened to suit
+ *                        -----     -----
+ *     list height          250      ~257
+ *     headroom below        42       ~35
+ *
+ * Two extra steps cost roughly 74px at the OLD type size and gap, against 42px
+ * of headroom. They do not fit by simply being added, and the three changes
+ * that pay for them have to be made TOGETHER:
+ *
+ *   1. title floor 26px -> 20px  (the largest single saving, and the only one
+ *      that also stops "Delivery & Installation" wrapping to two lines at 390)
+ *   2. row gap floor 8px -> 6px
+ *   3. shorter bodies in the copy deck
+ *
+ * None of this touches the desktop end of either clamp: at 1440 the titles are
+ * still 46px and the gap ~16px, because there the stage is 784px and the
+ * budget was never tight.
  *
  * The intro paragraph is desktop-only for this reason and no other. If a title
- * is ever added, re-do this arithmetic — do not assume it still fits.
+ * is ever added, re-do this arithmetic — do not assume it still fits. And
+ * MEASURE it rather than trusting the table above: scratchpad `p5.mjs` walks
+ * the scrub to every step at four viewports in both locales and reports the
+ * deepest painted pixel against the stage's bottom edge.
  */
 function StepIndex({ steps, index }: { steps: Step[]; index: number }) {
   const { reduce, dir } = useMotionConfig();
 
+  // Spacing is trimmed at the DESKTOP end as well as the mobile one, and
+  // deliberately before the type is: 44px of margin plus five 16px gaps is
+  // 123px of pure air, and giving some of it back costs a reader nothing,
+  // where shrinking six titles is immediately visible.
   return (
-    <ol className="mt-[clamp(18px,3vw,44px)] flex flex-col gap-[clamp(8px,1.1vw,16px)]">
+    <ol className="mt-[clamp(18px,3vw,32px)] flex flex-col gap-[clamp(6px,0.9vw,14px)]">
       {steps.map((step, i) => (
         <StepRow
           key={step.title}
@@ -260,15 +344,32 @@ function StepRow({
    *
    * Not a nicety — the previous version rendered the three non-current steps at
    * `opacity: 0`, and under reduced motion the scrub never advances, so the
-   * index stayed at 0 forever and three quarters of the section's copy was
+   * index stayed at 0 forever and five sixths of the section's copy was
    * permanently invisible. A preference for less motion is not a request for
    * less content. With no scrub to perform, this degrades to what it should
-   * always have been: a plain, complete, four-item list.
+   * always have been: a plain, complete, six-item list.
    */
   const open = reduce || active;
 
+  /**
+   * ⚠ EVERY TERM IN THIS CLAMP IS LOAD-BEARING. See the height budget above
+   * StepIndex.
+   *
+   * `20px` floor — at the old 26px floor, six titles do not fit the pinned
+   * stage on a short phone, and "Delivery & Installation" wraps to two lines
+   * at 390, costing another title's worth of height on top.
+   *
+   * `5.2svh` — the term that is easy to leave out and expensive to omit. Going
+   * to six steps clipped the last step on LAPTOPS, not phones: 1366x768,
+   * 1280x720 and 1024x640 all cut the bottom of the list, because desktop also
+   * renders the intro paragraph and sizes these titles off `vw` alone. A wide,
+   * short window has plenty of the axis the type was measured against and none
+   * of the axis it actually needs. This is the same fix the mark already uses
+   * (`min(vw, svh, px)`) applied to the type: shrink on whichever axis is
+   * scarce. It does not bite at all on a tall screen.
+   */
   const titleClass =
-    "font-display text-[clamp(26px,3.2vw,46px)] font-bold leading-[1.1] tracking-display";
+    "font-display text-[clamp(20px,min(3.2vw,4.6svh),46px)] font-bold leading-[1.1] tracking-display";
 
   return (
     <li>
@@ -372,8 +473,8 @@ function StepRow({
         copy wraps to.
 
         DELIBERATELY LEFT IN THE ACCESSIBILITY TREE when collapsed. A screen
-        reader user cannot perceive a scroll scrub at all, so gating three
-        quarters of the copy behind one would make the section unreadable to
+        reader user cannot perceive a scroll scrub at all, so gating five
+        sixths of the copy behind one would make the section unreadable to
         them; leaving it exposed means they get the whole process in one pass,
         which is strictly the better reading of it. There is nothing focusable
         inside, so no keyboard trap comes with that.
@@ -431,11 +532,11 @@ function AssemblingMark({
       {/* Ghost: the finished mark, always present, barely there. */}
       <use href="#lg-all" fill="var(--color-ink)" opacity={0.07} />
 
+      {/* One part per step, evenly spaced down the scrub. The last lands at
+          0.925, so the mark completes just before the section releases rather
+          than exactly as it does. */}
       {STEP_PARTS.map((href, i) => (
         <MarkPart key={href} href={href} progress={progress} at={(i + 0.55) / stepCount} />
-      ))}
-      {CLOSING_PARTS.map((href) => (
-        <MarkPart key={href} href={href} progress={progress} at={0.94} />
       ))}
     </svg>
   );

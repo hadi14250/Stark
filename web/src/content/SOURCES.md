@@ -568,3 +568,85 @@ curling the HTML and grepping for a dot-separated key; now guarded by
 `BlueRange.test.tsx`, which asserts no rendered alt can look like a message key.
 
 Use `t.raw` for any string containing braces that are not ICU arguments.
+
+---
+
+## The process becomes six steps, in the client's own words (slide 6)
+
+Slide 6 carries a header, "Core Manufacturing Services :", and then a single
+arrow chain:
+
+> Design → Engineering → Value Engineering → Manufacturing → Quality Assurance
+> → Delivery & Installation
+
+Six titles, in that order, and nothing else. No bodies, no numbers, no
+descriptions. The titles are therefore quoted; **the bodies below them are
+written, not sourced**, and each clause was kept to something already evidenced
+elsewhere in this file: the written quality plan with stated tolerances (TW),
+installation by STARK's own teams and finishing on automated lines in its own
+factories (both already live and unchallenged). No digit appears in any of the
+six bodies, deliberately, because slide 6 supplies none for the chain and a
+number here would need a `facts.ts` entry it cannot have.
+
+### What was replaced, and the one claim that moved
+
+The four steps this displaces were **Design, Source, Make, Install**. All four
+titles are gone, not extended, because the client's chain is a replacement
+rather than an addition.
+
+⚠ **"Source" as a stage no longer exists on the home page.** Its body carried
+the FSC chain-of-custody sentence, which is a real, certificated claim
+(BMC-COC-010074) and not something to lose quietly. It was checked before the
+step was removed: FSC survives twice on the woodworks route, in
+`woodworks.materials.sub` and as a certification label, which is where the
+certificate actually applies — it is Trust Wood's, not a group-wide mark. So
+the claim did not leave the site, it stopped being made in the one place it was
+least anchored. Nothing else in the four old bodies was unique to them.
+
+### Why six steps made the animation more correct rather than less
+
+The mark has six parts: five blades closing around a core (brand book p.8). The
+four-step version could not consume them one-to-one, so it carried a separate
+`CLOSING_PARTS` array that fired `#lg-b5` and `#lg-core` together on the last
+step — two parts landing at once because four does not divide six, not because
+anything happened there. The client's chain has exactly six stages. Every step
+now completes exactly one part and the core lands on Delivery & Installation,
+which is the step at which the parts genuinely become a whole.
+
+`CLOSING_PARTS` is deleted. A new test asserts the step count and the part count
+are equal in both locales, because adding a seventh step is otherwise a silent
+failure: the extra step would scrub with no part of its own, and TypeScript
+cannot see it, since the steps come out of a JSON file.
+
+### The height budget, which broke on laptops rather than phones
+
+This list lives in a pinned, `overflow-hidden` stage, so anything that does not
+fit is cut off with no scrollbar and no error. The risk was known and written
+into the component: *"if a title is ever added, re-do this arithmetic — do not
+assume it still fits."* Two were added.
+
+Two things the measurement found that the arithmetic did not:
+
+1. **The stage is 563px at 390x667, not the 603px the comment claimed.** `svh`
+   is the *small* viewport height, not the device's CSS pixel height. The
+   four-step version had been living inside 40px less than its own docblock
+   said, and fit anyway, which is exactly why nobody noticed.
+2. **The clipping appeared on laptops, not phones.** Everyone expected 390x667
+   to be the failure point. After the mobile end was paid for, the phone was
+   clean at every width and **1366x768, 1280x720, 1440x800 and 1024x640 all cut
+   the last step**, because desktop also renders the intro paragraph and sized
+   these titles off `vw` alone. A wide, short window has plenty of the axis the
+   type was measured against and none of the axis it needs.
+
+The fix for (2) is the one the mark in this same section already uses:
+`min(vw, svh, px)`, so the type shrinks on whichever axis is scarce. Spacing was
+trimmed at the desktop end before type was, on the grounds that 123px of margin
+and gaps costs a reader nothing to give back, where six visibly smaller titles
+does.
+
+⚠ **Do not trust the table in the docblock over the harness.** Scratchpad
+`p5.mjs` walks the scrub to every step at four viewports in both locales and
+reports the deepest *painted* pixel against the stage's bottom edge. It has to
+skip collapsed accordion bodies explicitly: a closed step's `<p>` keeps its full
+natural rect and is merely clipped by an `overflow-hidden` child, so measuring
+it reports a page that is visibly fine as overflowing by 43px.
