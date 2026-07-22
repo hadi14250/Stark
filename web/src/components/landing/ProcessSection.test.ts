@@ -134,9 +134,18 @@ describe("the process section stays usable when motion is off", () => {
     // step and the rail. Sized off `vw` alone it is ~180px tall on any phone,
     // which pushes the rail off the bottom of a short screen. Taking the min
     // with an `svh` term makes it shrink on whichever axis is actually scarce.
-    const markClass = src.match(/className="relative w-\[([^"]+)"/)?.[1] ?? "";
-    expect(markClass).toContain("svh");
-    expect(markClass).toContain("vw");
+    //
+    // AIMED AT THE STAGE BOX, not the mark's own <svg>. The redesign wraps the
+    // mark in a square stage that also carries the ring, the guide circle and
+    // the registration ticks, and the svg is now sized as a PERCENTAGE of that
+    // box. So the box is what has to be viewport-clamped — a check on the svg
+    // would read `w-[64%]` and pass while the thing actually consuming the
+    // stage's height went unconstrained.
+    const stageClass = src.match(/aspect-square w-\[([^\]]+)\]/)?.[1] ?? "";
+    expect(stageClass, "the mark stage box lost its viewport clamp").toContain("svh");
+    expect(stageClass).toContain("vw");
+    // And the svg inside it is measured against the box, not the viewport.
+    expect(src).toMatch(/className="relative w-\[64%\]/);
   });
 });
 
@@ -165,25 +174,116 @@ describe("the step change is legible because the whole list is on screen", () =>
   });
 
   it("moves ONE marker rather than crossfading two", () => {
-    // A shared layoutId is what makes the bar travel from the previous row to
-    // this one. Without it Framer fades one out and another in, and the
-    // movement — the only thing that says "you advanced" — disappears.
-    expect(src).toMatch(/layoutId="process-step-marker"/);
+    /**
+     * The requirement is unchanged and it is the whole point of the marker: ONE
+     * bar travels from the previous row to this one. Two bars crossfading would
+     * delete the movement, which is the only thing on screen that says "you
+     * advanced" rather than "the page redrew".
+     *
+     * WHAT CHANGED IS HOW. This used to be a shared `layoutId`, and that is
+     * subtly wrong here: the body accordion reflows the rows over 0.55s while
+     * the marker is travelling, so Framer measures a target that has already
+     * stopped being true and lands the bar where the row used to be. The
+     * redesign chases the live offset every frame instead.
+     *
+     * So: exactly one marker element, and it is TRANSLATED rather than
+     * re-rendered per row. A regression to two elements would show up as a
+     * second `y: markerY` — or as the marker moving back inside StepRow, which
+     * is what the row-count assertion catches.
+     */
+    expect(src, "the marker is no longer driven by a motion value").toMatch(
+      /y: markerY/,
+    );
+    expect(src.match(/y: markerY/g) ?? [], "more than one marker element").toHaveLength(1);
+    // It lives on the list, not inside a row — one bar for six rows.
+    expect(src).toMatch(/markerY\.set\(/);
+    expect(src, "the marker is back inside StepRow").not.toMatch(
+      /function StepRow[\s\S]*?markerY/,
+    );
   });
 
-  it("crossfades two title layers instead of tweening a stroke", () => {
-    // `-webkit-text-stroke` does not interpolate, and fading a fill in under a
-    // stroke that stays put gives a heavy outlined-AND-filled title mid-swap.
-    // Hollow layer underneath, solid on top, opacity between them.
-    expect(src).toMatch(/outline-type block/);
-    expect(src).toMatch(/opacity: active \? 1 : 0/);
+  it("inks the title in behind a wipe instead of tweening a stroke", () => {
+    /**
+     * TWO LAYERS, AND THE REASON IS UNCHANGED: `-webkit-text-stroke` does not
+     * interpolate, so anything that animates a hollow title into a solid one by
+     * touching the stroke gives a heavy outlined-AND-filled title mid-swap.
+     *
+     * The redesign drops the stroke entirely — inactive titles are now solid
+     * ink at 26%, which is what Arabic was already getting, so both locales
+     * finally share one treatment — and reveals the active one with a clip-path
+     * wipe rather than an opacity crossfade. The wipe is not decoration: it
+     * rhymes with the pen tracing a blade of the mark beside it, at the same
+     * moment, which is what makes the two halves of the section read as one.
+     */
+    // Scoped to class strings: the component still REFERENCES that stylesheet
+    // by name in a comment explaining why it stopped using it, and that
+    // explanation is the thing most worth keeping.
+    expect(src, "the hollow stroke treatment is back").not.toMatch(
+      /className="[^"]*outline-type/,
+    );
+    expect(src).toMatch(/clipPath: open \? opened : closed/);
+    expect(src).toMatch(/transition-\[clip-path\]/);
+    // The wipe must run start-to-end in BOTH scripts, or in Arabic the title
+    // appears to be erased rather than written.
+    expect(src, "the wipe does not flip for RTL").toMatch(
+      /const closed = dir === -1 \?/,
+    );
+    expect(src).toMatch(/const opened = dir === -1 \?/);
+  });
+
+  it("draws the mark rather than fading it, and scrubs it off progress", () => {
+    /**
+     * The one genuinely new mechanic. Each part is pen-traced along its own
+     * path — `pathLength="100"` is set on every path in LogoDefs precisely so
+     * all six draw at the same visual rate despite being very different
+     * lengths — and its ink fill lands while the outline is still finishing.
+     *
+     * Both values are SCRUBBED off scroll progress, never derived from the step
+     * index. Driving them off `index` would make the mark advance in six jumps,
+     * which is the fade-in it replaces wearing a different name: between steps
+     * nothing would move, and the section would stop reporting that the wheel
+     * is connected to anything.
+     */
+    expect(src).toMatch(/strokeDasharray: 100/);
+    expect(src).toMatch(/strokeDashoffset: reduce \? 0 : dashoffset/);
+    // Both derived from the progress MotionValue, inside MarkPart.
+    // `\n}\n` is the top-level close. Stopping at the first `\n}` would land in
+    // the destructured parameter list and slice the body off entirely, which
+    // makes every assertion below vacuously fail rather than vacuously pass.
+    const part = src.match(/function MarkPart\([\s\S]*?\n\}\n/)?.[0] ?? "";
+    expect(part, "MarkPart no longer reads scroll progress").toMatch(
+      /useTransform\(progress/,
+    );
+    expect(part, "the trace is driven by the step index, not the scrub").not.toMatch(
+      /\bindex\b/,
+    );
   });
 
   it("announces each title once", () => {
-    // Both layers carry the same string. The solid overlay must be hidden from
+    // Both layers carry the same string. The inked overlay must be hidden from
     // assistive tech or every step is read out twice.
-    const solid = src.match(/<span\s+aria-hidden\s+className="absolute inset-0 block transition-opacity/);
-    expect(solid, "the solid title layer lost its aria-hidden").not.toBeNull();
+    const solid = src.match(
+      /<span\s+aria-hidden\s+className="absolute inset-0 block transition-\[clip-path\]/,
+    );
+    expect(solid, "the inked title layer lost its aria-hidden").not.toBeNull();
+  });
+
+  it("does not read the six step titles out a second time as a readout", () => {
+    /**
+     * The redesign adds a live `02 / 06 · ENGINEERING` under the mark. It
+     * duplicates a string that is already in the list beside it, so without
+     * aria-hidden a screen reader gets all six titles twice, the second time in
+     * an order driven by scroll position — noise to someone who cannot perceive
+     * the scrub, which is exactly the person it would be read to.
+     */
+    const readout = src.match(/function Readout\([\s\S]*?\n\}\n/)?.[0] ?? "";
+    expect(readout, "the Readout component vanished").not.toBe("");
+    expect(readout, "the readout is announced as well as the list").toMatch(
+      /aria-hidden/,
+    );
+    // Latin digits either side of a spaced slash can be reordered by bidi in an
+    // Arabic run — `06 / 01`. The numeral group carries its own direction.
+    expect(readout, "the counter can be reordered in Arabic").toMatch(/dir="ltr"/);
   });
 
   it("never tries to tween between two token colours in Framer", () => {
@@ -193,6 +293,54 @@ describe("the step change is legible because the whole list is on screen", () =>
     // why the numeral uses `transition-colors` and not a Framer animation.
     expect(src).not.toMatch(/(?:color|background(?:Color)?):\s*\[/);
     expect(src).toMatch(/transition-colors/);
+  });
+});
+
+describe("a pinned stage is a scroll-reveal dead zone", () => {
+  it("never puts a scroll reveal on the step rows", () => {
+    /**
+     * A REAL BUG THAT REACHED THE CLIENT'S BROWSER, and it took under an hour
+     * to write, ship and have reported.
+     *
+     * The design asks for a staggered row entrance, so the rows were given the
+     * site's shared `reveal-fade`. That system arms an element at opacity 0
+     * while it is below the fold and reveals it when its TOP CROSSES 60% OF THE
+     * VIEWPORT — a contract that assumes the element travels up the screen.
+     *
+     * Inside a pinned stage it does not travel. The stage sticks at
+     * `top: var(--header-h)` and stops, freezing every row at whatever height
+     * it landed on. At 1440x900 the rows settle between about 40% and 80% of
+     * the viewport, so steps 01-03 crossed the line and appeared and steps
+     * 04, 05 and 06 sat there armed and invisible for the entire section. The
+     * text was in the DOM, the rects were full size, and the document-bottom
+     * backstop released them two sections later where nobody was looking.
+     *
+     * WHY NO EXISTING CHECK CAUGHT IT: an armed element has a full-size
+     * bounding rect. The height-budget harness measures rects, so it reported
+     * no clipping on a section with half its copy invisible — the same class of
+     * mistake as proving content exists with `curl | grep`. Presence is not
+     * visibility.
+     *
+     * The eyebrow, heading and intro above are safe ONLY because they sit high
+     * enough in the stage to cross the line. That is luck of layout, not a
+     * guarantee, and it is not a licence to add a reveal further down.
+     */
+    // Scoped to CODE, not prose. StepRow carries a long comment naming both the
+    // class and the hook to explain why neither may be used, and a bare
+    // substring match flags that explanation as the offence it warns about.
+    const row = src.match(/function StepRow\([\s\S]*?\n\}\n/)?.[0] ?? "";
+    expect(row, "StepRow vanished").not.toBe("");
+    expect(row, "a scroll reveal is back on the step rows").not.toMatch(
+      /className="[^"]*reveal-(fade|clip|word|line)/,
+    );
+    // The hook CALLED, not the hook mentioned.
+    expect(row, "useRevealOnce is back on the step rows").not.toMatch(
+      /useRevealOnce\s*[<(]/,
+    );
+    // The import too, so the next person cannot reach for it without noticing.
+    expect(src, "ProcessSection re-imported the reveal hook").not.toMatch(
+      /^import .*useRevealOnce/m,
+    );
   });
 });
 
@@ -208,10 +356,30 @@ describe("reduced motion gets the whole section, not a quarter of it", () => {
     expect(src).toMatch(/const open = reduce \|\| active/);
   });
 
-  it("still shows which step is current without sliding a marker", () => {
-    // The layoutId marker is motion, so it is correctly withheld — but the
-    // section still has to answer "which one". A static bar on the active row.
-    expect(src).toMatch(/active && reduce/);
+  it("presents the section as COMPLETE rather than as stuck on step one", () => {
+    /**
+     * This assertion changed shape with the redesign, and the reasoning is
+     * worth keeping because the naive version is actively wrong.
+     *
+     * It used to require a static bar drawn on the active row — "the marker is
+     * motion, so withhold it, but still answer which one". Under reduced motion
+     * the scrub never advances, so `index` is 0 forever, and that bar therefore
+     * pointed at step one permanently. It was not answering "which one", it was
+     * asserting something false about where the reader had got to.
+     *
+     * The redesign withholds the marker entirely and instead presents the whole
+     * chapter finished: rail full, mark drawn and inked, every body open, every
+     * title at full ink. That is honest — with no scroll to report, the section
+     * is a complete six-item list rather than a stalled animation.
+     */
+    expect(src, "the marker is drawn under reduced motion").toMatch(/\{!reduce && \(/);
+    expect(src, "the rail still reports partial progress").toMatch(
+      /height: reduce \? "100%"/,
+    );
+    expect(src, "the ring still reports partial progress").toMatch(
+      /strokeDashoffset: reduce \? 0/,
+    );
+    expect(src, "the mark stays half-drawn").toMatch(/opacity: reduce \? 1/);
   });
 });
 

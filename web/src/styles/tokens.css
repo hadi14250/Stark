@@ -68,6 +68,18 @@
   --sand-300: #ece4d5;
   --sand-200: #f4eee6;
 
+  /* Sand, taken down far enough to be READ rather than merely seen.
+     From the Process redesign handoff, which specifies it and says why: sand-500
+     is 1.35:1 on off-white, so the moment the accent has to carry a small
+     GLYPH — the active `01` in the process rail, 13px of mono — it stops being
+     a colour and becomes an absence. Every other use of sand on this site is a
+     fill, a hairline or a large mark, where 1.35:1 is the point.
+
+     Deliberately NOT mirrored into tokens.ts. That mirror's parity test
+     requires hex literals, and round-tripping this through hex would throw away
+     the exact value the design specifies. Nothing in JS needs it. */
+  --sand-deep: oklch(58% 0.07 78);
+
   /* ======================= DOCUMENTED EXTENSIONS ========================= */
   /* The book stops at one brand green, but the nav / footer / panel ladder
      needs three steps below it. These are OURS, not official — never present
@@ -260,6 +272,19 @@
   --tracking-eyebrow: 0.09em;
   --eyebrow-transform: uppercase;
 
+  /* Wider than the eyebrow, and it has to be its own dial rather than borrowing
+     one. The process readout ("02 / 06 · ENGINEERING") is a machine label
+     sitting under a drawn mark — the design tracks it to 0.16em precisely so it
+     reads as instrumentation rather than as a second, smaller heading. Pointing
+     it at --tracking-eyebrow would mean the next eyebrow adjustment silently
+     retunes a component nobody was looking at.
+
+     A TOKEN AND NOT A CLASS STRING, for the reason the eyebrow block above
+     spells out: the readout's label is a STEP TITLE, so in Arabic this applies
+     to cursive text, and tracking does not merely widen cursive — it breaks the
+     joins. Zeroed under [lang="ar"] with the others. */
+  --tracking-readout: 0.16em;
+
   /* ---------------------------------------------------------------------
      SPACING & SHAPE
      --------------------------------------------------------------------- */
@@ -296,6 +321,27 @@
      it is not supposed to have. Verified in the A0a spike. */
   --header-h: 104px;
 
+  /* How much scroll ONE step of the pinned Process chapter gets. Six steps, so
+     the track is six times this and nothing else decides its length.
+
+     TWO VALUES, AND THE UNITS DIFFER ON PURPOSE. Mobile is `svh` — the SMALL
+     viewport height, what you get with the browser chrome showing — because a
+     track measured in `vh` on a phone is quietly longer than the screen the
+     reader actually has. Desktop has no retracting chrome, so `vh` is honest
+     there and avoids `svh`'s resize churn.
+
+     THE NUMBERS ARE THE DESIGN'S, and they are not arbitrary. 52 was set when
+     this went from four steps to six: at the old 72 the run came to 432vh,
+     which reads as a section that will not let go of the page. Desktop moves to
+     58 (348vh) because the redesign DRAWS the mark rather than fading it, and a
+     pen stroke needs more scroll to be legible as a stroke than a crossfade
+     needs to be legible as a crossfade. Mobile stays at 52 — the trace is
+     smaller there, and a phone reaches 348vh of thumb-scrolling far sooner.
+
+     Declared here and overridden in a media query below, like --header-h, for
+     the same reason: @theme has no media-query form. */
+  --process-step: 52svh;
+
   /* Ambient animations (landing set-pieces). Registering the --animate-* var
      generates the `animate-<name>` utility; the @keyframes are defined below,
      at the stylesheet top level. All are decorative loops — each consumer also
@@ -303,6 +349,11 @@
      neutralizes duration as a safety net. */
   --animate-glow-pulse: glow-pulse 7s ease-in-out infinite;
   --animate-spin-slow: spin-slow 26s linear infinite;
+  /* Same keyframe, near enough to stopped. The process mark's guide circle sits
+     directly behind a progress ring that IS meaningful, so the guide has to
+     read as a fixed track rather than as a second thing in motion. At 26s the
+     two compete and the eye cannot tell which one is reporting progress. */
+  --animate-spin-slower: spin-slow 44s linear infinite;
   --animate-floaty: floaty 6s ease-in-out infinite;
   /* 30s -> 18s at the client's request ("make the slider faster"). This band
      is watchwords, not information: nobody reads it word by word, they read
@@ -355,6 +406,9 @@
 @media (min-width: 860px) {
   :root {
     --header-h: 116px;
+    /* See --process-step above: 58 gives the drawn mark room to read as drawn.
+       `vh` rather than `svh` — a desktop viewport does not retract. */
+    --process-step: 58vh;
   }
 }
 
@@ -682,6 +736,7 @@
 
   --tracking-display: 0;
   --tracking-eyebrow: 0;
+  --tracking-readout: 0;
   --eyebrow-transform: none;
 
   --text-eyebrow: 14px;
