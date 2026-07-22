@@ -15,22 +15,21 @@ import { CLIENT_ROWS, SETS_PER_HALF, type ClientLogo } from "@/components/landin
  * declarations already do, on a section that is pure decoration until the real
  * logos arrive.
  *
- * HOW THE SEAMLESS LOOP WORKS: each row renders its logos SIX times and
- * travels -50%, so at the moment the animation restarts, the fourth copy is
- * sitting exactly where the first began and the jump is invisible. The gaps
- * live on the items as horizontal padding rather than as a `gap` on the track,
- * which is what keeps the seam gap identical to every other gap — a `gap`
- * would leave a double space where the copies meet, and that pulse is the
- * giveaway that makes a ticker look cheap.
+ * HOW THE SEAMLESS LOOP WORKS: each row renders its logos `SETS_PER_HALF * 2`
+ * times and travels -50%, so at the moment the animation restarts, the copy
+ * halfway along is sitting exactly where the first began and the jump is
+ * invisible. The gaps live on the items as horizontal padding rather than as a
+ * `gap` on the track, which is what keeps the seam gap identical to every other
+ * gap — a `gap` would leave a double space where the copies meet, and that
+ * pulse is the giveaway that makes a ticker look cheap.
  *
- * SIX, NOT TWO, AND THE NUMBER IS LOad-BEARING. Half the track has to be at
- * least as wide as the viewport, or the tail of the loop drags an empty gap
- * across the screen. Four logos at these widths make a set about 970px wide;
- * with two copies, half the track is 970px and any viewport past that — every
- * laptop — shows a hole for part of every cycle. Three sets per half is about
- * 2900px, which covers a 2560px display with room over. `Clients.test.ts`
- * does this arithmetic from the manifest, so adding or removing logos cannot
- * quietly reintroduce the gap.
+ * THE COPY COUNT IS LOAD-BEARING. Half the track has to be at least as wide as
+ * the viewport, or the tail of the loop drags an empty gap across the screen.
+ * It was six copies when the wall held eight logos, because a set of four was
+ * only ~970px and any laptop showed a hole for part of every cycle. With 31
+ * logos a set is ~2.5k, so it is four copies now — see the arithmetic on
+ * SETS_PER_HALF in clients.ts, which `Clients.test.ts` recomputes from the
+ * manifest so adding or removing logos cannot quietly reintroduce the gap.
  *
  * TWO ROWS, OPPOSITE DIRECTIONS, DIFFERENT SPEEDS (52s and 64s). Same speed
  * would let the rows beat against each other into a visible repeating pattern;
@@ -39,9 +38,16 @@ import { CLIENT_ROWS, SETS_PER_HALF, type ClientLogo } from "@/components/landin
  * THE LOGOS ARE GREYED AND HELD AT 70%, lifting to full on hover. This is the
  * one treatment that makes a wall of mixed-source logos cohere: real client
  * assets arrive in clashing brand colours at clashing weights, and left alone
- * they fight both each other and the page. It is a no-op on the current
- * monochrome placeholders, which is deliberate — the treatment is in place
- * BEFORE the messy real ones land, rather than being discovered afterwards.
+ * they fight both each other and the page. It used to be a no-op, because the
+ * placeholders were monochrome wordmarks — the treatment was put in place
+ * BEFORE the messy real ones landed rather than being discovered afterwards.
+ * The 31 real marks have now landed and it is doing its job: gold script,
+ * teal, navy and full-colour crests all read as one wall.
+ *
+ * The other half of that cohering job is NOT here — it is in the assets. Each
+ * mark is optically sized inside a fixed-height canvas by the build script, so
+ * this component can keep a single rule (everything renders at one height) and
+ * still have a square crest and a long wordmark balance. See clients.ts.
  *
  * It was 55% at a 34px render height, which together made the marks
  * unreadable — a wall of grey smudges argues against the company rather than

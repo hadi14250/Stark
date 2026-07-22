@@ -8,7 +8,17 @@ import type { DivisionKey } from "@/components/brand/LogoDefs";
 type Item = { title: string; body: string; cta: string; alt: string };
 
 const ROUTES = ["/woodworks", "/mattresses", "/#contact"] as const;
-const DIVISION_KEYS: DivisionKey[] = ["woodworks", "mattresses", "turnkey"];
+/**
+ * The third card was Turnkey and is now Engineering & Technical Services
+ * (profile v3 slide 8, "Three main sectors"). Same blade — see the note on
+ * `engineering` in LogoDefs — and the same route, because engineering is not
+ * a page, it is a conversation.
+ *
+ * ⚠ INDEX-COUPLED to `landing.categories.items`. Both arrays are read by
+ * position, so reordering one without the other silently gives a card the
+ * wrong destination and the wrong blade. Nothing type-checks that.
+ */
+const DIVISION_KEYS: DivisionKey[] = ["woodworks", "mattresses", "engineering"];
 
 /**
  * The three divisions.

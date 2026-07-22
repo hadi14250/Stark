@@ -37,6 +37,19 @@ export function Footer() {
               className="h-14 w-auto"
               sizes="184px"
             />
+            {/*
+              ⚠ `footer.tagline` CONTAINS A NON-BREAKING SPACE, in both
+              locales, between the last two words. At this measure the line
+              broke as "Complete environments. Fully / delivered." and the
+              client asked for the second sentence to stay whole.
+
+              It is noted here because the character is invisible in the JSON:
+              anyone retyping that string, or running it through a translation
+              tool, gets an ordinary space back and the wrap returns with
+              nothing to explain it. Widening `max-w` instead was the wrong
+              lever — it would relayout the whole footer brand column to fix
+              one break.
+            */}
             <p className="mt-5 max-w-[28ch] font-display text-xl font-light text-[color:var(--ink-green-strong)]">
               {t("tagline")}
             </p>

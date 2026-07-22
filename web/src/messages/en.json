@@ -15,7 +15,7 @@
     "switchTo": "العربية"
   },
   "footer": {
-    "tagline": "Complete environments. Fully delivered.",
+    "tagline": "Complete environments. Fully delivered.",
     "divisions": "Divisions",
     "company": "Company",
     "contact": "Contact",
@@ -25,7 +25,7 @@
     "siesta": "siesta · B2B",
     "gallery": "Gallery",
     "email": "info@stark.com.sa",
-    "location": "Jeddah, Saudi Arabia",
+    "location": "Jeddah, Kingdom of Saudi Arabia",
     "rights": "All rights reserved."
   },
   "pages": {
@@ -137,7 +137,7 @@
     },
     "categories": {
       "heading": "What we deliver",
-      "sub": "Two divisions and full turnkey execution, one standard across everything we make.",
+      "sub": "Two manufacturing divisions and the engineering that ties them together, one standard across everything we make.",
       "viewMore": "View gallery",
       "prev": "Previous",
       "next": "Next",
@@ -155,8 +155,8 @@
           "alt": "Mattress and bedroom environment."
         },
         {
-          "title": "Turnkey",
-          "body": "Design, manufacture, deliver, install. One partner for complete, made-to-measure interiors.",
+          "title": "Engineering & Technical Services",
+          "body": "Design development, technical office support, shop drawings, value engineering and project coordination.",
           "cta": "Let's talk",
           "alt": "Complete turnkey interior environment."
         }
@@ -166,45 +166,137 @@
     "clients": {
       "eyebrow": "Clients",
       "heading": "Who we build for",
-      "sub": "Contractors, developers and consultants across the Kingdom's hospitality, healthcare and public projects.",
+      "sub": "Hotel operators, contractors and developers behind hospitality, healthcare, government and commercial projects across the Kingdom.",
       "logos": [
         {
-          "key": "saudiBinladinGroup",
+          "key": "saudi-binladin-group",
           "alt": "Saudi Binladin Group"
         },
         {
-          "key": "nesmaPartners",
+          "key": "hilton",
+          "alt": "Hilton"
+        },
+        {
+          "key": "nesma-partners",
           "alt": "Nesma & Partners"
         },
         {
-          "key": "modernBuildingLeaders",
-          "alt": "Modern Building Leaders"
+          "key": "intercontinental",
+          "alt": "InterContinental Hotels & Resorts"
         },
         {
-          "key": "redSeaDevelopment",
-          "alt": "The Red Sea Development Company"
-        },
-        {
-          "key": "elSeif",
+          "key": "el-seif",
           "alt": "El Seif"
         },
         {
-          "key": "alshayaGroup",
-          "alt": "Alshaya Group"
+          "key": "novotel",
+          "alt": "Novotel Hotels, Suites & Resorts"
         },
         {
-          "key": "depa",
-          "alt": "Depa"
+          "key": "red-sea",
+          "alt": "The Red Sea Development Company"
+        },
+        {
+          "key": "ramada",
+          "alt": "Ramada"
         },
         {
           "key": "acciona",
           "alt": "Acciona"
+        },
+        {
+          "key": "four-points-by-sheraton",
+          "alt": "Four Points by Sheraton"
+        },
+        {
+          "key": "rolaco",
+          "alt": "Rolaco Hospitality Supplies"
+        },
+        {
+          "key": "swissotel",
+          "alt": "Swissôtel Hotels & Resorts"
+        },
+        {
+          "key": "mbl",
+          "alt": "Modern Building Leaders"
+        },
+        {
+          "key": "movenpick",
+          "alt": "Mövenpick"
+        },
+        {
+          "key": "kayan",
+          "alt": "Kayan Businesses Trading"
+        },
+        {
+          "key": "shaza",
+          "alt": "Shaza Hotels"
+        },
+        {
+          "key": "macc",
+          "alt": "MACC"
+        },
+        {
+          "key": "elaf",
+          "alt": "Elaf Hotels & Suites"
+        },
+        {
+          "key": "unec",
+          "alt": "UNEC"
+        },
+        {
+          "key": "sands-hotel-and-spa",
+          "alt": "Sands Hotel & Spa"
+        },
+        {
+          "key": "awan",
+          "alt": "Awan Development Company"
+        },
+        {
+          "key": "casablanca",
+          "alt": "Casablanca Hotels & Suites"
+        },
+        {
+          "key": "unidecor",
+          "alt": "Unidecor"
+        },
+        {
+          "key": "touq-balad-hotel",
+          "alt": "Touq Balad Hotel"
+        },
+        {
+          "key": "sbcm",
+          "alt": "SBCM"
+        },
+        {
+          "key": "digital-city",
+          "alt": "Digital City"
+        },
+        {
+          "key": "jabal-edsas",
+          "alt": "Jabal Edsas"
+        },
+        {
+          "key": "bmc",
+          "alt": "Batterjee Medical College"
+        },
+        {
+          "key": "menabev",
+          "alt": "MenaBev"
+        },
+        {
+          "key": "al-adwani-general-hospital",
+          "alt": "Al-Adwani General Hospital"
+        },
+        {
+          "key": "royal-saudi-naval-forces",
+          "alt": "Royal Saudi Naval Forces"
         }
       ]
     },
     "gallery": {
       "heading": "Our Gallery",
-      "sub": "Explore selected environments across our divisions: woodworks, furniture and mattress work in real settings.",
+      "sub": "Explore selected environments across our divisions: WOODWORKS, FURNITURE and MATTRESSES.",
       "viewMore": "View gallery",
       "tilesAlt": [
         "Styled seating in a finished interior.",
@@ -280,9 +372,11 @@
       ]
     },
     "turnkey": {
-      "eyebrow": "One partner",
-      "heading": "Design, manufacture, deliver and install.",
-      "sub": "Most projects are assembled from four suppliers and one long argument about whose fault it is. STARK is built to remove that argument: one company, one contract, one standard, one name on the outcome.",
+      "eyebrow": "Why STARK",
+      "heading": "From Design to Installation",
+      "lead": "One Partner. Total Accountability.",
+      "sub": "Most projects don't fail because of capability. They fail because responsibility is fragmented across multiple suppliers.",
+      "promise": "STARK brings every capability under one roof with one contract, one consistent standard, and one accountable partner responsible for the final outcome.",
       "cta": "Let's talk",
       "features": [
         {
@@ -305,7 +399,7 @@
     }
   },
   "contact": {
-    "eyebrow": "GET IN TOUCH",
+    "eyebrow": "Let's talk",
     "heading": "Every project is a journey. Let's start yours.",
     "fields": {
       "name": {
@@ -367,7 +461,7 @@
     "details": {
       "email": "info@stark.com.sa",
       "phone": "+966 56 200 1435",
-      "location": "Old Makkah Road, Kilo 16, Jeddah"
+      "location": "Jeddah, Kingdom of Saudi Arabia"
     },
     "locationLabel": "Location"
   },

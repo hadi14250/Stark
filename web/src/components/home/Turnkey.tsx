@@ -103,10 +103,30 @@ export async function Turnkey() {
         {/* A wider measure than the site default. This intro is the longest on
             the page and came out as five short lines; the client counted them
             and asked for three. */}
+        {/*
+          THREE LINES, NOT ONE, and the split is the client's own. They
+          dictated this copy as a title ("One Partner. Total Accountability.")
+          followed by a problem and then a promise, with the promise explicitly
+          marked to start on a new line. Running all three together in one
+          paragraph loses the beat the copy was written to have.
+
+          `lead` is set as a block inside the intro rather than as a second
+          heading: the h2 above it is already the section's heading, and two
+          headings a line apart compete for the same job. It is the intro's
+          first line, given weight and full-strength ink.
+        */}
         <SectionHeader
           eyebrow={<Eyebrow>{t("eyebrow")}</Eyebrow>}
           heading={t("heading")}
-          intro={t("sub")}
+          intro={
+            <>
+              <span className="block font-display text-[1.15em] font-bold leading-[1.25] tracking-display text-[color:var(--color-ink)]">
+                {t("lead")}
+              </span>
+              <span className="mt-4 block">{t("sub")}</span>
+              <span className="mt-3 block">{t("promise")}</span>
+            </>
+          }
           introMax="86ch"
         />
 

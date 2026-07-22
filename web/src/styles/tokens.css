@@ -304,7 +304,12 @@
   --animate-glow-pulse: glow-pulse 7s ease-in-out infinite;
   --animate-spin-slow: spin-slow 26s linear infinite;
   --animate-floaty: floaty 6s ease-in-out infinite;
-  --animate-marquee: marquee 30s linear infinite;
+  /* 30s -> 18s at the client's request ("make the slider faster"). This band
+     is watchwords, not information: nobody reads it word by word, they read
+     that it is moving. The client wall below runs at 52s/64s and stays there
+     because a LOGO does have to be fixed on and identified — the two bands
+     look alike and are deliberately not the same speed. */
+  --animate-marquee: marquee 18s linear infinite;
   /* The client wall reuses the `marquee` keyframe at two much slower speeds,
      one per row, running against each other. Slower because a logo has to be
      READ, not just registered as passing texture — 30s makes a wordmark hard

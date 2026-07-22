@@ -325,3 +325,50 @@ question list. **It is not resolved, only disclosed.**
 Deck slide 16 asks to mention retail showrooms and online sales. No document
 gives a showroom address, a city list or a store URL, so there is nothing to
 state. It is on the client question list rather than on the page.
+
+## The client wall: 31 real logos (slides 10-11)
+
+The wall carried eight WORDMARKS — each client's name set in type rather than
+their own artwork — because reproducing a third party's trademark on someone
+else's website needs that third party's permission, and nobody had confirmed
+STARK had it. The v3 export settles that: STARK sent the marks themselves, for
+this purpose. The wordmark SVGs are deleted and the real artwork ships.
+
+Provenance for each of the 31 is the same one line — *STARK company profile v3
+(2026) slides 10-11, exported by the client as `Client logos/`* — so they are
+not tabulated individually here. What is worth writing down is the three places
+this differs from a straight import.
+
+### ⚠ Two references were dropped
+
+**Alshaya Group** and **Depa** were on the old wall, sourced from the wood
+factory's own client wall (Trust Wood profile p38). Neither appears in the v3
+export. They are real references and this is a deletion, not a correction — if
+they belong on the wall they need artwork from the client like the other 31.
+On the question list.
+
+### ⚠ Mövenpick is included, and could be the wrong artwork
+
+The old wall deliberately excluded Mövenpick: the mark on the factory's wall
+was the ICE CREAM company, with "THE ART OF SWISS ICE CREAM" printed under it,
+and on a page about hospitality manufacturing every visitor would read that as
+the hotel group.
+
+The v3 export's Mövenpick is 78px wide. Its sub-line is roughly three pixels of
+type and does not resolve at 16x, so it cannot be told apart from the hotel
+lockup by looking. The RELATIONSHIP is the client's own claim and is not in
+question; what cannot be verified is whether this is the right lockup for it.
+Included, and on the question list.
+
+### The marks are processed, and what that does and does not mean
+
+The sources are PowerPoint screenshot crops: 60-214px wide, every one on an
+opaque plate, one reversed out of black, ink density varying seven-fold across
+the set. The build script (`scratchpad/logos31/build.py`) keys off the plates,
+scales each mark to a constant optical weight inside a fixed-height canvas, and
+lifts the very lightest so they do not ghost out when the wall greyscales them.
+
+That is levels, scaling and sharpening. **Nothing is redrawn and no detail is
+invented** — several of these marks are genuinely low-resolution and look it on
+close inspection, which is the honest outcome. Higher-resolution logo files
+from the client would improve the wall and nothing else will.

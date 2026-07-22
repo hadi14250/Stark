@@ -58,7 +58,29 @@ export async function ContactSection() {
               only route is a form is a contact section that fails whenever the
               form does.
              --------------------------------------------------------------- */}
+          {/*
+            `data-surface="dark"` IS THE FIX FOR THE EYEBROW, not decoration.
+
+            This panel has always been a fixed `--green-900` slab sitting
+            inside a LIGHT section, so every role-driven colour inside it
+            resolved from the light theme. `--color-ink-muted` is `--green-400`
+            there, which on `--green-900` is a dark grey-green on near-black:
+            the eyebrow was very nearly invisible, and the client reported it
+            as "it blends with the background". They were reading a real
+            contrast failure, not a preference.
+
+            Everything else in here already worked around this by hand — the
+            heading sets `--white-500` literally, ContactRow sets literal
+            rgba — which is exactly why nobody noticed the one element that
+            did not. Declaring the surface re-points the roles for the whole
+            subtree instead, so `--color-ink-muted` becomes `--green-300`
+            (about 6:1 on this background) and the next component dropped in
+            here inherits the right colours rather than needing its own patch.
+            The form card is a SIBLING and sets `data-surface="light"` itself,
+            so it is unaffected.
+          */}
           <div
+            data-surface="dark"
             className="relative isolate overflow-hidden rounded-[var(--radius-card)] p-[clamp(28px,4vw,52px)] nav:pb-[clamp(96px,10vw,140px)]"
             style={{ background: "var(--green-900)" }}
           >

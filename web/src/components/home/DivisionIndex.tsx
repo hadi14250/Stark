@@ -155,6 +155,23 @@ export function DivisionIndex({ items }: { items: DivisionItem[] }) {
                     : { duration: 9, ease: "linear", repeat: Infinity, repeatType: "reverse" }
                 }
               >
+                {/*
+                  TODO(F-content): panel 3 has no photograph of its subject.
+
+                  It is Engineering & Technical Services now, and it still
+                  shows `categories[2]` — a furnished dining room, chosen back
+                  when the panel was "Turnkey". Under a card about design
+                  development and shop drawings that is a visible mismatch, and
+                  it was not left here out of inattention: the entire
+                  `/landing/` set is recoloured furniture-template interiors,
+                  there is no drawing office, plant or production frame in it,
+                  and the one architectural interior that would read closest is
+                  already on this page in the gallery teaser — putting it here
+                  would reproduce the duplicate-photo problem the client
+                  raised. A wrong-but-unique photo beats the same photo twice.
+                  The fix is a real photograph, which is a client dependency.
+                  The `alt` describes the picture that is actually there.
+                */}
                 <Image
                   src={i === 1 ? mattressImages.homeCard : landingImages.categories[i]}
                   alt={item.alt}
@@ -192,18 +209,29 @@ export function DivisionIndex({ items }: { items: DivisionItem[] }) {
 
               <div>
                 {/*
-                  `whitespace-nowrap` and a size that tops out below the h3
-                  scale. A collapsed panel is roughly a fifth of the row, and
-                  at full h3 the longest division name broke onto two lines
-                  inside it — the client's note was to keep these on one line.
-                  Clamping the size rather than shortening the word is the
-                  version that survives an Arabic translation being longer.
+                  A size that tops out below the h3 scale, because a collapsed
+                  panel is roughly a fifth of the row. Clamping the size rather
+                  than shortening the word is the version that survives an
+                  Arabic translation being longer.
+
+                  ⚠ `whitespace-nowrap` WAS HERE AND HAD TO GO. It was added
+                  when the longest name was "Turnkey Projects" and the client
+                  asked for the names to sit on one line; with two short words
+                  that was a fine way to get it. The third division is
+                  "Engineering & Technical Services" now, which cannot fit one
+                  line of a fifth-width panel at any size a heading can be — so
+                  `nowrap` stopped meaning "keep it on one line" and started
+                  meaning "run it off the edge", and the panel's own
+                  `overflow-hidden` cut it to "Engineering & Te".
+                  `text-balance` splits what is left across even lines instead
+                  of leaving one word stranded. The one-word names are
+                  unaffected: a single word has nowhere to wrap.
                 */}
                 <h3
-                  className="whitespace-nowrap font-display font-bold leading-h3 tracking-display"
+                  className="text-balance font-display font-bold leading-h3 tracking-display"
                   style={{
                     color: "var(--white-500)",
-                    fontSize: "clamp(20px, 2.2vw, 32px)",
+                    fontSize: "clamp(19px, 1.9vw, 28px)",
                   }}
                 >
                   {item.title}

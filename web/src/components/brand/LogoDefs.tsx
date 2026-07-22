@@ -28,6 +28,19 @@ export const DIVISION_ELEMENT = {
   furniture: "#lg-b3",
   mattresses: "#lg-b4",
   turnkey: "#lg-b5",
+  /**
+   * DELIBERATELY THE SAME BLADE AS `turnkey`, and that is not an oversight.
+   *
+   * The mark has five blades and the business has more than five words for
+   * itself. Turnkey delivery and the engineering/technical office are one
+   * function seen from two ends — the part of STARK that carries a project
+   * across the gaps between the things it manufactures — so they share a
+   * blade rather than one of them borrowing a blade that means something
+   * else. The alias exists so a call site can say what it actually means:
+   * the third division card is Engineering & Technical Services now, and
+   * writing `turnkey` there would have read as a leftover.
+   */
+  engineering: "#lg-b5",
 } as const;
 
 export type DivisionKey = keyof typeof DIVISION_ELEMENT;
