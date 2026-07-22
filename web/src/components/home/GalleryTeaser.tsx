@@ -34,13 +34,22 @@ import { GalleryAnchor } from "./GalleryAnchor";
  */
 
 /**
- * Which category each small tile leads to.
+ * Which division each small tile leads to.
  *
  * Alternating rather than 2+2 blocked: the four tiles read as a single group,
  * and grouping them by destination would imply the left pair and right pair
  * are different KINDS of work, which the photographs do not support.
+ *
+ * ⚠ FOUR TILES, THREE DIVISIONS, so one repeats. It repeats at the END rather
+ * than in the middle, which keeps the first three tiles a clean sweep of the
+ * gallery's three divisions in the order the section's own intro names them
+ * ("WOODWORKS, FURNITURE and MATTRESSES"). The alternative — dropping to three
+ * tiles — would break the 2x2 mosaic the anchor tile is composed against.
+ *
+ * These deep-link with `?c=`, which still resolves: the gallery seats a bare
+ * division on its first product type. See the resolution order in gallery/page.
  */
-const TILE_CATEGORY = ["woodworks", "mattresses", "woodworks", "mattresses"] as const;
+const TILE_CATEGORY = ["woodworks", "furniture", "mattresses", "woodworks"] as const;
 
 /**
  * Which of the ten gallery images the anchor tile cycles through.

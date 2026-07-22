@@ -16,7 +16,46 @@ import { blueShot, type BlueModel, type ShotType } from "@/components/mattresses
  * gain, so the cells are renamed in MEANING only — the map is in toSlide.ts.
  */
 
-export type CategoryId = "woodworks" | "mattresses";
+/**
+ * THREE LEVELS, AND WHY THE MIDDLE ONE APPEARED.
+ *
+ * This used to be flat: one `category` scalar, two values, and the two visible
+ * strips were (category, project) rather than two levels of category. The
+ * client's gallery note asks for three divisions -- `landing.gallery.sub` now
+ * reads "WOODWORKS, FURNITURE and MATTRESSES" -- and for each to be browsable
+ * by what the factory actually makes. That is a third level, and it is a new
+ * dimension at every layer above `toSlide`.
+ *
+ *   division      woodworks | furniture | mattresses
+ *   subCategory   the slide-14 product types, blue and siesta
+ *   project       the entries you page through in the stage
+ *
+ * ⚠ FURNITURE IS A GALLERY TAB, NOT A COMPANY SECTOR. Slide 8's "three main
+ * sectors" are Custom Wood Works, Mattresses, and Engineering & Technical
+ * Services, and it files "loose furniture" INSIDE custom wood works. So this
+ * split is a browsing structure the client asked for on the gallery
+ * specifically; it is not the company's own org chart, and nothing here should
+ * be copied into the divisions section, which follows slide 8.
+ *
+ * ⚠ A PROJECT STORES ONLY ITS SUB-CATEGORY. The division is derived through
+ * SUB_CATEGORIES (see `divisionOf`). Storing both would let a project claim a
+ * division its sub-category does not belong to, and nothing would catch it.
+ */
+export type DivisionId = "woodworks" | "furniture" | "mattresses";
+
+export type SubCategoryId =
+  // Woodworks -- slide 14's product types, less Furniture & Joinery.
+  | "doors-panels"
+  | "interior-cladding"
+  | "kitchens-wardrobes"
+  | "outdoor-structures"
+  | "retail-stands"
+  // Furniture -- slide 14's "Custom furniture, fixed joinery", split in two.
+  | "loose-furniture"
+  | "fixed-joinery"
+  // Mattresses -- the two sub-brands, and only those.
+  | "blue"
+  | "siesta";
 
 export interface ProjectCells {
   /** Big hero photograph — the project's establishing shot. */
@@ -36,7 +75,8 @@ export interface ProjectCells {
 export interface Project {
   /** URL slug. Appears in ?p= — changing one breaks shared links. */
   id: string;
-  category: CategoryId;
+  /** The division is DERIVED from this — see `divisionOf`. */
+  subCategory: SubCategoryId;
   /** Which of the three sanctioned Stark palettes this project renders in. */
   theme: ThemeName;
   cells: ProjectCells;
@@ -220,7 +260,7 @@ const mat = (model: BlueModel, shot: ShotType) => blueShot(model, shot);
 export const PROJECTS: readonly Project[] = [
   {
     id: "mataf-extension",
-    category: "woodworks",
+    subCategory: "doors-panels",
     theme: "moss",
     cells: {
       hero: img("8244b28836385a29.png"),
@@ -246,7 +286,7 @@ export const PROJECTS: readonly Project[] = [
   },
   {
     id: "king-salman-park",
-    category: "woodworks",
+    subCategory: "fixed-joinery",
     theme: "forest",
     cells: {
       hero: img("815f8b5fd0db3732.png"),
@@ -272,7 +312,7 @@ export const PROJECTS: readonly Project[] = [
   },
   {
     id: "ngha-hospitals",
-    category: "woodworks",
+    subCategory: "fixed-joinery",
     theme: "pine",
     cells: {
       hero: img("6ef0b9569b029eeb.png"),
@@ -295,6 +335,188 @@ export const PROJECTS: readonly Project[] = [
       overlaySpecs: "ngha.overlaySpecs",
     },
     overlayBg: img("6ef0b9569b029eeb.png"),
+  },
+
+  /**
+   * ── product ranges, not projects ─────────────────────────────────────────
+   *
+   * THE DISTINCTION THAT KEEPS THIS FILE HONEST, and the reason these entries
+   * read differently from the three above.
+   *
+   * The three above are APPROVALS: a named development, a named engineer, a
+   * dated submittal returned "approved as noted". The seven below are
+   * CAPABILITIES — what the factory manufactures, taken from slide 14's product
+   * types and slide 8's sector copy. They exist because the client asked for
+   * the gallery to be browsable by product type, and five of those product
+   * types have no documented project reference at all.
+   *
+   * So not one of them names a client, a site, a date or a completion. The
+   * subtitle says "Product range" in as many words, and each overlay summary
+   * says outright that the entry describes a capability rather than a delivered
+   * job. That framing is doing real work: it is what stops a stock photograph
+   * under "Interior Cladding" from reading as a photograph of cladding STARK
+   * installed somewhere.
+   *
+   * ⚠ THE PHOTOGRAPHY IS STILL THE LAUNCH BLOCKER. Every cell below is
+   * recoloured landing-set filler, which is why the gate in projects.test.ts
+   * had its ceiling raised rather than deleted — see the note there, which
+   * records the number and the reason it moved.
+   */
+  {
+    id: "specialized-doors",
+    subCategory: "doors-panels",
+    theme: "forest",
+    cells: {
+      hero: img("847c93f88825cbef.png"),
+      intro: img("44e767d2df80b104.png"),
+      portraitA: img("42737a5b8707da10.jpg"),
+      feature: img("763ba2c7f4c29838.jpg"),
+      portraitB: img("bf46cb0e0db7539f.jpg"),
+      detail: img("9bc56e8ed0aded95.jpg"),
+    },
+    keys: {
+      title: "specializedDoors.title",
+      subtitle: "specializedDoors.subtitle",
+      headline: "specializedDoors.headline",
+      paragraph: "specializedDoors.paragraph",
+      scope: "specializedDoors.scope",
+      delivery: "specializedDoors.delivery",
+      materials: "specializedDoors.materials",
+      overlayTitle: "specializedDoors.overlayTitle",
+      overlaySummary: "specializedDoors.overlaySummary",
+      overlaySpecs: "specializedDoors.overlaySpecs",
+    },
+    overlayBg: img("847c93f88825cbef.png"),
+  },
+  {
+    id: "interior-cladding",
+    subCategory: "interior-cladding",
+    theme: "moss",
+    cells: {
+      hero: img("9147afdc9d8c4223.png"),
+      intro: img("f7965388e07b0b0c.jpg"),
+      portraitA: img("08f1f8d97cb5f63f.jpg"),
+      feature: img("42737a5b8707da10.jpg"),
+      portraitB: img("5d5c40ccbb6b257b.jpg"),
+      detail: img("f264f5dea2782694.jpg"),
+    },
+    keys: {
+      title: "interiorCladding.title",
+      subtitle: "interiorCladding.subtitle",
+      headline: "interiorCladding.headline",
+      paragraph: "interiorCladding.paragraph",
+      scope: "interiorCladding.scope",
+      delivery: "interiorCladding.delivery",
+      materials: "interiorCladding.materials",
+      overlayTitle: "interiorCladding.overlayTitle",
+      overlaySummary: "interiorCladding.overlaySummary",
+      overlaySpecs: "interiorCladding.overlaySpecs",
+    },
+    overlayBg: img("9147afdc9d8c4223.png"),
+  },
+  {
+    id: "kitchens-wardrobes",
+    subCategory: "kitchens-wardrobes",
+    theme: "pine",
+    cells: {
+      hero: img("d1c0e28eb1c679aa.png"),
+      intro: img("46cb9cc7e202b440.jpg"),
+      portraitA: img("5d5c40ccbb6b257b.jpg"),
+      feature: img("763ba2c7f4c29838.jpg"),
+      portraitB: img("08f1f8d97cb5f63f.jpg"),
+      detail: img("9bc56e8ed0aded95.jpg"),
+    },
+    keys: {
+      title: "kitchensWardrobes.title",
+      subtitle: "kitchensWardrobes.subtitle",
+      headline: "kitchensWardrobes.headline",
+      paragraph: "kitchensWardrobes.paragraph",
+      scope: "kitchensWardrobes.scope",
+      delivery: "kitchensWardrobes.delivery",
+      materials: "kitchensWardrobes.materials",
+      overlayTitle: "kitchensWardrobes.overlayTitle",
+      overlaySummary: "kitchensWardrobes.overlaySummary",
+      overlaySpecs: "kitchensWardrobes.overlaySpecs",
+    },
+    overlayBg: img("d1c0e28eb1c679aa.png"),
+  },
+  {
+    id: "outdoor-structures",
+    subCategory: "outdoor-structures",
+    theme: "forest",
+    cells: {
+      hero: img("d41cceabf062f878.png"),
+      intro: img("f26d3ba55447fc47.jpg"),
+      portraitA: img("bf46cb0e0db7539f.jpg"),
+      feature: img("f264f5dea2782694.jpg"),
+      portraitB: img("42737a5b8707da10.jpg"),
+      detail: img("763ba2c7f4c29838.jpg"),
+    },
+    keys: {
+      title: "outdoorStructures.title",
+      subtitle: "outdoorStructures.subtitle",
+      headline: "outdoorStructures.headline",
+      paragraph: "outdoorStructures.paragraph",
+      scope: "outdoorStructures.scope",
+      delivery: "outdoorStructures.delivery",
+      materials: "outdoorStructures.materials",
+      overlayTitle: "outdoorStructures.overlayTitle",
+      overlaySummary: "outdoorStructures.overlaySummary",
+      overlaySpecs: "outdoorStructures.overlaySpecs",
+    },
+    overlayBg: img("d41cceabf062f878.png"),
+  },
+  {
+    id: "retail-stands",
+    subCategory: "retail-stands",
+    theme: "moss",
+    cells: {
+      hero: img("e84ce9bd89e1844a.png"),
+      intro: img("44e767d2df80b104.png"),
+      portraitA: img("08f1f8d97cb5f63f.jpg"),
+      feature: img("bf46cb0e0db7539f.jpg"),
+      portraitB: img("5d5c40ccbb6b257b.jpg"),
+      detail: img("f264f5dea2782694.jpg"),
+    },
+    keys: {
+      title: "retailStands.title",
+      subtitle: "retailStands.subtitle",
+      headline: "retailStands.headline",
+      paragraph: "retailStands.paragraph",
+      scope: "retailStands.scope",
+      delivery: "retailStands.delivery",
+      materials: "retailStands.materials",
+      overlayTitle: "retailStands.overlayTitle",
+      overlaySummary: "retailStands.overlaySummary",
+      overlaySpecs: "retailStands.overlaySpecs",
+    },
+    overlayBg: img("e84ce9bd89e1844a.png"),
+  },
+  {
+    id: "loose-furniture",
+    subCategory: "loose-furniture",
+    theme: "pine",
+    cells: {
+      hero: img("301336c2a6f33570.jpg"),
+      intro: img("f7965388e07b0b0c.jpg"),
+      portraitA: img("42737a5b8707da10.jpg"),
+      feature: img("5d5c40ccbb6b257b.jpg"),
+      portraitB: img("08f1f8d97cb5f63f.jpg"),
+      detail: img("9bc56e8ed0aded95.jpg"),
+    },
+    keys: {
+      title: "looseFurniture.title",
+      subtitle: "looseFurniture.subtitle",
+      headline: "looseFurniture.headline",
+      paragraph: "looseFurniture.paragraph",
+      scope: "looseFurniture.scope",
+      delivery: "looseFurniture.delivery",
+      materials: "looseFurniture.materials",
+      overlayTitle: "looseFurniture.overlayTitle",
+      overlaySummary: "looseFurniture.overlaySummary",
+      overlaySpecs: "looseFurniture.overlaySpecs",
+    },
+    overlayBg: img("301336c2a6f33570.jpg"),
   },
 
   /**
@@ -323,7 +545,7 @@ export const PROJECTS: readonly Project[] = [
    */
   {
     id: "blue-sky",
-    category: "mattresses",
+    subCategory: "blue",
     theme: "linen",
     cells: {
       hero: mat("sky", "product"),
@@ -349,7 +571,7 @@ export const PROJECTS: readonly Project[] = [
   },
   {
     id: "blue-pure-latex",
-    category: "mattresses",
+    subCategory: "blue",
     theme: "linen",
     cells: {
       hero: mat("pure-latex", "product"),
@@ -375,7 +597,7 @@ export const PROJECTS: readonly Project[] = [
   },
   {
     id: "blue-comfy-zone",
-    category: "mattresses",
+    subCategory: "blue",
     theme: "linen",
     cells: {
       hero: mat("comfy-zone", "product"),
@@ -399,17 +621,111 @@ export const PROJECTS: readonly Project[] = [
     },
     overlayBg: mat("comfy-zone", "room-a"),
   },
+
+  /**
+   * ── siesta ───────────────────────────────────────────────────────────────
+   *
+   * ONE ENTRY, AND DELIBERATELY A RANGE RATHER THAN A MODEL.
+   *
+   * siesta has no photography and no documented model list — blue's three above
+   * come with the manufacturer's own product shots and named constructions;
+   * siesta comes with a paragraph on slide 13 and nothing else. So this entry
+   * describes the RANGE, in the deck's own terms, and names no model.
+   *
+   * ⚠ THE PICTURES ARE ROOMS, NOT PRODUCTS, and that is the point. Putting a
+   * blue product shot under siesta's name would misstate the contract range to
+   * a hotel buyer, which is the specific failure mode flagged when the brand
+   * duet had these two sharing one photograph. A neutral hospitality scene
+   * claims nothing about what a siesta mattress looks like.
+   *
+   * The alternative was leaving the sub-category empty and declaring it in
+   * INTENTIONALLY_EMPTY. That was rejected because a tab you can select and get
+   * nothing from is worse than a tab that honestly describes a range — but the
+   * moment real siesta photography arrives, this entry should become models.
+   */
+  {
+    id: "siesta-range",
+    subCategory: "siesta",
+    theme: "linen",
+    cells: {
+      hero: img("46cb9cc7e202b440.jpg"),
+      intro: img("f7965388e07b0b0c.jpg"),
+      portraitA: img("d1c0e28eb1c679aa.png"),
+      feature: img("301336c2a6f33570.jpg"),
+      portraitB: img("9147afdc9d8c4223.png"),
+      detail: img("f264f5dea2782694.jpg"),
+    },
+    keys: {
+      title: "siestaRange.title",
+      subtitle: "siestaRange.subtitle",
+      headline: "siestaRange.headline",
+      paragraph: "siestaRange.paragraph",
+      scope: "siestaRange.scope",
+      delivery: "siestaRange.delivery",
+      materials: "siestaRange.materials",
+      overlayTitle: "siestaRange.overlayTitle",
+      overlaySummary: "siestaRange.overlaySummary",
+      overlaySpecs: "siestaRange.overlaySpecs",
+    },
+    overlayBg: img("46cb9cc7e202b440.jpg"),
+  },
 ];
 
-export const CATEGORIES: readonly CategoryId[] = ["woodworks", "mattresses"];
+/**
+ * Order is the client's, from `landing.gallery.sub`: "WOODWORKS, FURNITURE and
+ * MATTRESSES". The teaser tiles on the landing page deep-link into these, so
+ * the two orders being the same is what makes the tiles predictable.
+ */
+export const DIVISIONS: readonly DivisionId[] = ["woodworks", "furniture", "mattresses"];
 
-export function byCategory(c: CategoryId): Project[] {
-  return PROJECTS.filter((p) => p.category === c);
+/**
+ * The middle level, and the ONLY place the division/sub-category relation is
+ * written down. Everything else derives from this table.
+ *
+ * Sub-category ids are globally unique rather than unique-within-a-division,
+ * which is what lets `?s=` be a single flat parameter and `slidesBySub` be a
+ * flat record. Two divisions each owning a "general" would have forced a
+ * composite key through every layer for no gain.
+ */
+export const SUB_CATEGORIES: readonly { id: SubCategoryId; division: DivisionId }[] = [
+  { id: "doors-panels", division: "woodworks" },
+  { id: "interior-cladding", division: "woodworks" },
+  { id: "kitchens-wardrobes", division: "woodworks" },
+  { id: "outdoor-structures", division: "woodworks" },
+  { id: "retail-stands", division: "woodworks" },
+  { id: "loose-furniture", division: "furniture" },
+  { id: "fixed-joinery", division: "furniture" },
+  { id: "blue", division: "mattresses" },
+  { id: "siesta", division: "mattresses" },
+];
+
+export const SUB_CATEGORY_IDS: readonly SubCategoryId[] = SUB_CATEGORIES.map((s) => s.id);
+
+export function subsOf(d: DivisionId): SubCategoryId[] {
+  return SUB_CATEGORIES.filter((s) => s.division === d).map((s) => s.id);
 }
 
-/** Narrowing helpers for `?c=` and `?p=`, which are user-controlled input. */
-export function isCategoryId(v: unknown): v is CategoryId {
-  return typeof v === "string" && (CATEGORIES as readonly string[]).includes(v);
+/** The derivation that keeps a project from claiming a division it is not in. */
+export function divisionOf(s: SubCategoryId): DivisionId | undefined {
+  return SUB_CATEGORIES.find((x) => x.id === s)?.division;
+}
+
+export function bySubCategory(s: SubCategoryId): Project[] {
+  return PROJECTS.filter((p) => p.subCategory === s);
+}
+
+/** Every project in a division, across all of its sub-categories. */
+export function byDivision(d: DivisionId): Project[] {
+  return PROJECTS.filter((p) => divisionOf(p.subCategory) === d);
+}
+
+/** Narrowing helpers for `?c=`, `?s=` and `?p=` — all user-controlled input. */
+export function isDivisionId(v: unknown): v is DivisionId {
+  return typeof v === "string" && (DIVISIONS as readonly string[]).includes(v);
+}
+
+export function isSubCategoryId(v: unknown): v is SubCategoryId {
+  return typeof v === "string" && (SUB_CATEGORY_IDS as readonly string[]).includes(v);
 }
 
 export function findProject(id: unknown): Project | undefined {

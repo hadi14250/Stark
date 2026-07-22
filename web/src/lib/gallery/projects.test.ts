@@ -5,12 +5,18 @@ import { describe, it, expect } from "vitest";
 import en from "@/messages/en.json";
 import ar from "@/messages/ar.json";
 import {
-  CATEGORIES,
-  type CategoryId,
+  DIVISIONS,
+  SUB_CATEGORIES,
+  SUB_CATEGORY_IDS,
+  type SubCategoryId,
   PROJECTS,
-  byCategory,
+  byDivision,
+  bySubCategory,
+  divisionOf,
   findProject,
-  isCategoryId,
+  isDivisionId,
+  isSubCategoryId,
+  subsOf,
   THEMES,
 } from "./projects";
 import { toSlide, type Translator } from "./toSlide";
@@ -46,24 +52,70 @@ describe("gallery data model", () => {
    * forced this edit when blue's three models arrived. The mattresses category
    * shows PRODUCTS, labelled as products in every string.
    */
-  const INTENTIONALLY_EMPTY: readonly CategoryId[] = [];
+  const INTENTIONALLY_EMPTY: readonly SubCategoryId[] = [];
 
-  it("no category is empty by accident", () => {
-    // byCategory() feeding an empty array into the stage is a real failure
+  it("no sub-category is empty by accident", () => {
+    // bySubCategory() feeding an empty array into the stage is a real failure
     // mode: PushSlider's preload does `% count`, which is NaN at zero. The
-    // component guards it, but a category emptied by a TYPO in `category`
-    // should fail here rather than render an empty-state in prod. So emptiness
-    // is allowed only where it has been declared above.
-    for (const c of CATEGORIES) {
-      if (INTENTIONALLY_EMPTY.includes(c)) continue;
-      expect(byCategory(c).length, `category "${c}" has no projects`).toBeGreaterThan(0);
+    // component guards it, but a sub-category emptied by a TYPO in
+    // `subCategory` should fail here rather than render an empty-state in prod.
+    // So emptiness is allowed only where it has been declared above.
+    //
+    // THIS GOT SHARPER WHEN THE GALLERY WENT THREE-LEVEL. It used to check two
+    // categories; it now checks nine sub-categories, which is nine chances for
+    // a typo to strand a tab — and a stranded tab is fully clickable, so a user
+    // finds it long before a developer does.
+    for (const s of SUB_CATEGORY_IDS) {
+      if (INTENTIONALLY_EMPTY.includes(s)) continue;
+      expect(bySubCategory(s).length, `sub-category "${s}" has no projects`).toBeGreaterThan(0);
     }
   });
 
+  it("every division has at least one sub-category, and every sub-category a home", () => {
+    // A division with no sub-categories renders a strip with nothing in it and
+    // an `activeSub` of undefined, which is a crash rather than an empty state.
+    for (const d of DIVISIONS) {
+      expect(subsOf(d).length, `division "${d}" has no sub-categories`).toBeGreaterThan(0);
+      expect(byDivision(d).length, `division "${d}" has no projects`).toBeGreaterThan(0);
+    }
+    // And nothing dangles the other way: every declared sub-category belongs to
+    // a division that exists.
+    for (const s of SUB_CATEGORIES) {
+      expect(DIVISIONS, `sub-category "${s.id}" names an unknown division`).toContain(
+        s.division,
+      );
+    }
+  });
+
+  it("gives every project a sub-category that actually exists", () => {
+    /**
+     * THE SILENT FAILURE THIS CATCHES, and the reason `Project` stores only its
+     * sub-category rather than a division as well.
+     *
+     * A project's division is DERIVED through SUB_CATEGORIES. If a project
+     * named a sub-category that is not in the table, `divisionOf` returns
+     * undefined, the project belongs to no division, and it simply vanishes
+     * from the gallery — no error, no empty state, no compiler complaint,
+     * because the union type only constrains the string and not the table.
+     */
+    for (const p of PROJECTS) {
+      expect(
+        divisionOf(p.subCategory),
+        `project "${p.id}" is in sub-category "${p.subCategory}", which is in no division`,
+      ).toBeDefined();
+    }
+    // Every project reachable by walking the tree the shell walks. A project
+    // that exists but no strip can reach is the same as one that does not.
+    const reachable = DIVISIONS.flatMap((d) => subsOf(d)).flatMap((s) => bySubCategory(s));
+    expect(reachable.length, "a project is unreachable from the chrome").toBe(PROJECTS.length);
+  });
+
   it("does not keep an empty-category exemption that is no longer needed", () => {
-    // The mirror of the above: once mattress references exist, this fails and
-    // the exemption gets deleted, instead of quietly masking a future typo.
-    const populated = INTENTIONALLY_EMPTY.filter((c) => byCategory(c).length > 0);
+    // The mirror of the above: once a listed sub-category gains entries, this
+    // fails and the exemption gets deleted, instead of quietly masking a future
+    // typo. It is empty right now because siesta, the one sub-category with no
+    // documented content, was given a range entry rather than left blank.
+    const populated = INTENTIONALLY_EMPTY.filter((c) => bySubCategory(c).length > 0);
     expect(populated, "these categories are no longer empty").toEqual([]);
   });
 
@@ -89,14 +141,51 @@ describe("gallery data model", () => {
      *
      * NARROWED, NOT WEAKENED: blue's three models now carry the manufacturer's
      * own product photography, so this no longer covers the whole gallery. It
-     * covers exactly what is still filler — the three woodworks references —
-     * and the count below is the number of cells still waiting on a real
-     * photograph. It goes down as photography arrives; it must never go up.
+     * covers exactly what is still filler, and the count below is the number of
+     * cells still waiting on a real photograph.
+     *
+     * =========================================================================
+     * ⚠ THE CEILING WENT UP, 18 -> 60, AND THAT WAS A DECISION
+     * =========================================================================
+     *
+     * "It goes down as photography arrives; it must never go up" is what this
+     * note used to say, so raising it needs to be an argued act rather than a
+     * quiet edit — otherwise the next person reads a number that has drifted
+     * and concludes the gate means nothing.
+     *
+     * WHAT HAPPENED. The client asked for the gallery to be browsable by
+     * division and then by what the factory makes: three divisions, nine
+     * product types. Five of those product types have no documented project
+     * reference at all, so the structure could only be built by adding seven
+     * CAPABILITY entries, and the only imagery that exists for them is the
+     * recoloured landing set. Seven entries at six cells each is the 42 that
+     * takes 18 to 60.
+     *
+     * WHY THAT IS NOT THE FAILURE IT LOOKS LIKE. The 18 were the dangerous
+     * kind: generic photographs captioned "Mataf Extension", which read as
+     * photographs OF the Mataf Extension. The 42 new ones sit under entries
+     * that name no client, no site and no completion, and whose own copy says
+     * they describe a manufacturing capability rather than a delivered project.
+     * A stock interior under "Interior Cladding, product range" overstates far
+     * less than a stock interior under a named holy-site development.
+     *
+     * WHY IT STILL FAILS. Because it should. Every one of the 60 is a picture
+     * of a room somebody else photographed, and no amount of careful captioning
+     * makes that the factory's own work. This stays red until real photography
+     * arrives, and the two halves want different things: the 18 need PROJECT
+     * photography before those three references can honestly ship, the 42 need
+     * PRODUCT photography before the gallery is a portfolio rather than a
+     * structure. The assertion below already checks the right thing.
+     *
+     * IT MUST NEVER GO UP AGAIN WITHOUT THE SAME ARGUMENT IN WRITING.
      */
     const shared = PROJECTS.flatMap((p) => Object.values(p.cells)).filter((src) =>
       src.startsWith("/landing/"),
     );
-    expect(shared.length, "more cells on filler imagery than when this was written").toBeLessThanOrEqual(18);
+    expect(
+      shared.length,
+      "more cells on filler imagery than the 60 the three-level gallery was built with",
+    ).toBeLessThanOrEqual(60);
     expect(shared, "still using landing-set imagery for named projects").toEqual([]);
   });
 
@@ -156,10 +245,15 @@ describe("gallery data model", () => {
     }
   });
 
-  it("narrows untrusted ?c= and ?p= input", () => {
-    expect(isCategoryId("woodworks")).toBe(true);
-    expect(isCategoryId("../../etc/passwd")).toBe(false);
-    expect(isCategoryId(undefined)).toBe(false);
+  it("narrows untrusted ?c=, ?s= and ?p= input", () => {
+    expect(isDivisionId("woodworks")).toBe(true);
+    expect(isDivisionId("../../etc/passwd")).toBe(false);
+    expect(isDivisionId(undefined)).toBe(false);
+    // `?s=` is a third piece of user-controlled input and needs its own narrow.
+    expect(isSubCategoryId("doors-panels")).toBe(true);
+    expect(isSubCategoryId("woodworks")).toBe(false); // a division, not a sub
+    expect(isSubCategoryId("../../etc/passwd")).toBe(false);
+    expect(isSubCategoryId(undefined)).toBe(false);
     expect(findProject("nope")).toBeUndefined();
     expect(findProject(undefined)).toBeUndefined();
     expect(findProject(PROJECTS[0].id)?.id).toBe(PROJECTS[0].id);

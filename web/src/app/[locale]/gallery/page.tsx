@@ -2,14 +2,19 @@ import type { Metadata } from "next";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { alternates } from "@/lib/seo";
 import { routing, type Locale } from "@/i18n/routing";
-import { GalleryShell, type ShellCategory } from "@/components/gallery/GalleryShell";
+import { GalleryShell, type ShellDivision } from "@/components/gallery/GalleryShell";
 import {
-  CATEGORIES,
+  DIVISIONS,
+  SUB_CATEGORY_IDS,
   PROJECTS,
-  byCategory,
+  bySubCategory,
+  divisionOf,
   findProject,
-  isCategoryId,
-  type CategoryId,
+  isDivisionId,
+  isSubCategoryId,
+  subsOf,
+  type DivisionId,
+  type SubCategoryId,
 } from "@/lib/gallery/projects";
 import { toSlide, type Translator } from "@/lib/gallery/toSlide";
 import type { Slide } from "@/lib/gallery/types";
@@ -69,34 +74,57 @@ export default async function GalleryPage({
    */
   const translator = t as unknown as Translator;
 
-  // `?c=` and `?p=` are user-controlled: narrow, never trust.
-  const rawCategory = Array.isArray(sp.c) ? sp.c[0] : sp.c;
+  // `?c=`, `?s=` and `?p=` are user-controlled: narrow, never trust.
+  const rawDivision = Array.isArray(sp.c) ? sp.c[0] : sp.c;
+  const rawSub = Array.isArray(sp.s) ? sp.s[0] : sp.s;
   const rawProject = Array.isArray(sp.p) ? sp.p[0] : sp.p;
 
+  /**
+   * THE SPECIFIC PARAMETER WINS, because it implies the general ones.
+   *
+   * A project belongs to exactly one sub-category, which belongs to exactly one
+   * division, so a valid `?p=` settles all three levels on its own and beats a
+   * contradictory `?c=` or `?s=`. Likewise a valid `?s=` settles the division.
+   * Resolving in that order is what makes a shared deep link land on the thing
+   * it names rather than on whatever the other two parameters happened to say.
+   *
+   * ⚠ EVERY STEP DOWN RE-DERIVES RATHER THAN TRUSTING. `?c=woodworks&s=blue` is
+   * a well-formed pair of individually-valid values that cannot coexist, and it
+   * is one hand-edited URL away at any time. Checking that the sub-category is
+   * actually in the division — rather than assuming it — is what keeps that
+   * from seating the shell on an empty stage.
+   */
   const requested = findProject(rawProject);
-  // A valid ?p= implies its own category, which beats a contradictory ?c=.
-  const category: CategoryId = requested
-    ? requested.category
-    : isCategoryId(rawCategory)
-      ? rawCategory
-      : CATEGORIES[0];
 
-  const inCategory = byCategory(category);
-  // An invalid or cross-category ?p= falls back to the category's first
-  // project rather than rendering nothing.
-  const projectId = requested?.id ?? inCategory[0]?.id ?? PROJECTS[0].id;
+  const sub: SubCategoryId = requested
+    ? requested.subCategory
+    : isSubCategoryId(rawSub)
+      ? rawSub
+      : isDivisionId(rawDivision)
+        ? (subsOf(rawDivision)[0] ?? SUB_CATEGORY_IDS[0])
+        : SUB_CATEGORY_IDS[0];
 
-  const slidesByCategory = Object.fromEntries(
-    CATEGORIES.map((c) => [c, byCategory(c).map((p) => toSlide(p, translator))]),
-  ) as Record<CategoryId, Slide[]>;
+  const division: DivisionId = divisionOf(sub) ?? DIVISIONS[0];
 
-  const categories: ShellCategory[] = CATEGORIES.map((c) => ({
-    id: c,
-    label: translator(`categories.${c}`),
-    projects: byCategory(c).map((p) => ({
-      id: p.id,
-      title: translator(p.keys.title),
-      subtitle: translator(p.keys.subtitle),
+  // An invalid or cross-sub `?p=` falls back to the sub-category's first entry
+  // rather than rendering nothing.
+  const projectId = requested?.id ?? bySubCategory(sub)[0]?.id ?? PROJECTS[0].id;
+
+  const slidesBySub = Object.fromEntries(
+    SUB_CATEGORY_IDS.map((s) => [s, bySubCategory(s).map((p) => toSlide(p, translator))]),
+  ) as Record<SubCategoryId, Slide[]>;
+
+  const divisions: ShellDivision[] = DIVISIONS.map((d) => ({
+    id: d,
+    label: translator(`categories.${d}`),
+    subs: subsOf(d).map((s) => ({
+      id: s,
+      label: translator(`subCategories.${s}`),
+      projects: bySubCategory(s).map((p) => ({
+        id: p.id,
+        title: translator(p.keys.title),
+        subtitle: translator(p.keys.subtitle),
+      })),
     })),
   }));
 
@@ -104,13 +132,15 @@ export default async function GalleryPage({
     <div style={{ height: "calc(100svh - var(--header-h))" }}>
       <h1 className="sr-only">{t("heading")}</h1>
       <GalleryShell
-        categories={categories}
-        slidesByCategory={slidesByCategory}
-        initialCategory={category}
+        divisions={divisions}
+        slidesBySub={slidesBySub}
+        initialDivision={division}
+        initialSub={sub}
         initialProjectId={projectId}
         labels={{
           selectedWork: t("selectedWork"),
           divisions: t("divisions"),
+          subCategories: t("subCategoriesLabel"),
           projects: t("projects"),
           empty: t("empty"),
           startProject: t("startProject"),

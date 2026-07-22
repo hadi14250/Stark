@@ -5,9 +5,10 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { renderWithIntl as render, screen, fireEvent, cleanup } from "@/test/render";
 import { GalleryShell } from "./GalleryShell";
-import { CATEGORIES, PROJECTS } from "@/lib/gallery/projects";
+import { DIVISIONS, SUB_CATEGORY_IDS, PROJECTS, subsOf } from "@/lib/gallery/projects";
+import { DIVISION_ELEMENT } from "@/components/brand/LogoDefs";
 import { toSlide } from "@/lib/gallery/toSlide";
-import type { CategoryId } from "@/lib/gallery/projects";
+import type { SubCategoryId } from "@/lib/gallery/projects";
 import type { Slide } from "@/lib/gallery/types";
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -42,6 +43,7 @@ const LABELS = {
   projects: "Projects",
   empty: "No projects yet",
   startProject: "Let's talk",
+  subCategories: "Product types",
 };
 
 /**
@@ -60,41 +62,53 @@ const LABELS = {
  * only the project ids are borrowed from real data because the URL assertions
  * check them.
  *
+ * IT IS THREE LEVELS DEEP NOW, and the taxonomy is still borrowed from real
+ * data (DIVISIONS and subsOf) rather than invented, because the shell's job is
+ * to walk whatever tree it is handed. Only the labels and the project lists are
+ * synthetic.
+ *
  * Display names stay synthetic for a separate reason: the real data labels a
  * category "woodworks" AND gives projects a "woodworks" subtitle, which makes
  * every accessible-name query ambiguous. That ambiguity would be the test's,
  * not the app's.
  */
-const PER_CATEGORY = 3;
+const PER_SUB = 3;
 
 function fixture() {
   // Stands in for next-intl's `t`. The real route resolves copy on the server;
   // none of it matters here, so keys pass through as their own text.
   const t = Object.assign((key: string) => key, { raw: () => [] });
 
-  // Enough distinct entries to fill every category, cycling real projects for
-  // their ids and giving each a unique slug so the URL assertions stay sharp.
-  const synthetic = CATEGORIES.flatMap((id, ci) =>
-    Array.from({ length: PER_CATEGORY }, (_, pi) => {
-      const base = PROJECTS[(ci * PER_CATEGORY + pi) % PROJECTS.length];
-      return { ...base, id: `${base.id}-${ci}${pi}`, category: id };
+  // Enough distinct entries to fill every sub-category, cycling real projects
+  // for their ids and giving each a unique slug so the URL assertions stay
+  // sharp. THREE per sub-category is not arbitrary: the oscillation below only
+  // reproduces when a non-first project is selected, so every sub-category has
+  // to be deep enough to have a third one.
+  const synthetic = SUB_CATEGORY_IDS.flatMap((id, si) =>
+    Array.from({ length: PER_SUB }, (_, pi) => {
+      const base = PROJECTS[(si * PER_SUB + pi) % PROJECTS.length];
+      return { ...base, id: `${base.id}-${si}${pi}`, subCategory: id };
     }),
   );
-  const inCategory = (id: CategoryId) => synthetic.filter((p) => p.category === id);
+  const inSub = (id: SubCategoryId) => synthetic.filter((p) => p.subCategory === id);
 
-  const categories = CATEGORIES.map((id, ci) => ({
-    id,
-    label: `Category ${ci}`,
-    projects: inCategory(id).map((p, pi) => ({
-      id: p.id,
-      title: `Project ${ci}-${pi}`,
-      subtitle: "Sector",
+  const divisions = DIVISIONS.map((d, di) => ({
+    id: d,
+    label: `Division ${di}`,
+    subs: subsOf(d).map((sub, si) => ({
+      id: sub,
+      label: `Type ${di}x${si}`,
+      projects: inSub(sub).map((p, pi) => ({
+        id: p.id,
+        title: `Project ${di}x${si}x${pi}`,
+        subtitle: "Sector",
+      })),
     })),
   }));
-  const slidesByCategory = Object.fromEntries(
-    CATEGORIES.map((id) => [id, inCategory(id).map((p) => toSlide(p, t))]),
-  ) as Record<CategoryId, Slide[]>;
-  return { categories, slidesByCategory };
+  const slidesBySub = Object.fromEntries(
+    SUB_CATEGORY_IDS.map((id) => [id, inSub(id).map((p) => toSlide(p, t))]),
+  ) as Record<SubCategoryId, Slide[]>;
+  return { divisions, slidesBySub };
 }
 
 /**
@@ -190,57 +204,158 @@ afterEach(() => {
 
 describe("switching category after selecting a project", () => {
   it("does not send the shell and the stage into an update loop", () => {
-    const { categories, slidesByCategory } = fixture();
-    const woodworks = categories[0];
-    const mattresses = categories[1];
+    const { divisions, slidesBySub } = fixture();
+    const first = divisions[0];
+    const other = divisions[1];
     // Third project — the case that breaks. With the first selected the index
     // is already 0 and the stale-index swap has nothing to go wrong with,
     // which is why this was easy to miss by hand.
-    const third = woodworks.projects[2];
+    const third = first.subs[0].projects[2];
 
     render(
       <GalleryShell
-        categories={categories}
-        slidesByCategory={slidesByCategory}
-        initialCategory={woodworks.id}
-        initialProjectId={woodworks.projects[0].id}
+        divisions={divisions}
+        slidesBySub={slidesBySub}
+        initialDivision={first.id}
+        initialSub={first.subs[0].id}
+        initialProjectId={first.subs[0].projects[0].id}
         labels={LABELS}
       />,
     );
 
-    // Select the third project, then cross to the other category. React throws
+    // Select the third project, then cross to the other division. React throws
     // synchronously inside the click handler when the effects oscillate, so a
     // regression fails this test rather than merely logging.
     clickNamed(third.title, "tab");
-    expect(() => clickNamed(mattresses.label, "tab")).not.toThrow();
+    expect(() => clickNamed(other.label, "tab")).not.toThrow();
 
-    // …and it lands somewhere coherent: the new category's FIRST project, not
-    // whatever happened to sit at the old index.
+    // …and it lands somewhere coherent: the new division's FIRST sub-category
+    // and its FIRST project, not whatever happened to sit at the old indexes.
     const url = new URL(window.location.href);
-    expect(url.searchParams.get("c")).toBe(mattresses.id);
-    expect(url.searchParams.get("p")).toBe(mattresses.projects[0].id);
+    expect(url.searchParams.get("c")).toBe(other.id);
+    expect(url.searchParams.get("s")).toBe(other.subs[0].id);
+    expect(url.searchParams.get("p")).toBe(other.subs[0].projects[0].id);
+  });
+
+  it("resets BOTH levels below a division, so returning to one is coherent", () => {
+    /**
+     * THE BUG THE THIRD LEVEL INTRODUCED, and it takes a ROUND TRIP to see.
+     *
+     * `selectCategory` used to reset exactly one hop, because there was exactly
+     * one hop below it. Port that unchanged to three levels and a division
+     * switch leaves `subId` pointing into the division you just left.
+     *
+     * Going one way looks fine, which is the trap: `activeSub` falls back to
+     * `subs[0]` when the stored sub is not in the division, so the render and
+     * even the URL stay coherent. It is coming BACK that breaks. The stale
+     * `subId` is valid again in its original division, so `activeSub` resolves
+     * to it — while `projectId` was set from `subs[0]`. The strip then shows
+     * one sub-category's projects with a project from another selected, and the
+     * stage is handed slides that do not contain its `activeId`.
+     *
+     * So the assertion is the invariant, not the mechanism: whatever the URL
+     * names as the project must live inside whatever it names as the
+     * sub-category. A one-hop reset passes every single-switch check and fails
+     * this one.
+     */
+    const { divisions, slidesBySub } = fixture();
+    const first = divisions[0];
+    const other = divisions[1];
+    // A non-first sub-category, so a one-hop reset leaves something stale
+    // behind rather than coincidentally landing back on index 0.
+    const deepSub = first.subs[1];
+
+    render(
+      <GalleryShell
+        divisions={divisions}
+        slidesBySub={slidesBySub}
+        initialDivision={first.id}
+        initialSub={first.subs[0].id}
+        initialProjectId={first.subs[0].projects[0].id}
+        labels={LABELS}
+      />,
+    );
+
+    clickNamed(deepSub.label, "tab");
+    clickNamed(other.label, "tab");
+    clickNamed(first.label, "tab"); // ...and back. This is the half that fails.
+
+    const url = new URL(window.location.href);
+    const sub = url.searchParams.get("s");
+    const project = url.searchParams.get("p");
+    const home = divisions.flatMap((d) => d.subs).find((x) => x.id === sub);
+
+    expect(url.searchParams.get("c")).toBe(first.id);
+    expect(
+      first.subs.some((x) => x.id === sub),
+      "the URL names a sub-category that is not in the selected division",
+    ).toBe(true);
+    expect(
+      home?.projects.some((x) => x.id === project),
+      `project "${project}" is not inside sub-category "${sub}"`,
+    ).toBe(true);
+  });
+
+  it("does not keep a stale index when the SUB-CATEGORY changes", () => {
+    /**
+     * THE SAME CRASH, ONE LEVEL DOWN. The stage used to be keyed by category,
+     * which was sufficient when a category owned the slide list. It does not
+     * any more: moving between two product types INSIDE one division swaps the
+     * slides while the division is unchanged, so a division-keyed stage would
+     * keep its index and reproduce the original oscillation exactly.
+     *
+     * Every sub-category in the fixture holds three projects, so a stale index
+     * of 2 stays in range here — which is the point. The bounds clamp cannot
+     * save you from an index that is valid and wrong.
+     */
+    const { divisions, slidesBySub } = fixture();
+    const division = divisions[0];
+    const [subA, subB] = division.subs;
+
+    render(
+      <GalleryShell
+        divisions={divisions}
+        slidesBySub={slidesBySub}
+        initialDivision={division.id}
+        initialSub={subA.id}
+        initialProjectId={subA.projects[0].id}
+        labels={LABELS}
+      />,
+    );
+
+    clickNamed(subA.projects[2].title, "tab");
+    expect(() => clickNamed(subB.label, "tab")).not.toThrow();
+
+    const url = new URL(window.location.href);
+    expect(url.searchParams.get("s")).toBe(subB.id);
+    expect(url.searchParams.get("p")).toBe(subB.projects[0].id);
   });
 
   it("survives being bounced back and forth", () => {
     // The oscillation needed two crossings to show up reliably by hand. Doing
     // it four times with a non-first project selected each way is the shape of
     // the original report.
-    const { categories, slidesByCategory } = fixture();
+    const { divisions, slidesBySub } = fixture();
     render(
       <GalleryShell
-        categories={categories}
-        slidesByCategory={slidesByCategory}
-        initialCategory={categories[0].id}
-        initialProjectId={categories[0].projects[0].id}
+        divisions={divisions}
+        slidesBySub={slidesBySub}
+        initialDivision={divisions[0].id}
+        initialSub={divisions[0].subs[0].id}
+        initialProjectId={divisions[0].subs[0].projects[0].id}
         labels={LABELS}
       />,
     );
 
+    // Now walks all THREE strips on every pass, because a three-level shell has
+    // three places to strand an index rather than one.
     expect(() => {
       for (let i = 0; i < 4; i++) {
-        const c = categories[i % 2];
-        clickNamed(c.label, "tab");
-        clickNamed(c.projects[2].title, "tab");
+        const d = divisions[i % divisions.length];
+        clickNamed(d.label, "tab");
+        const sub = d.subs[i % d.subs.length];
+        clickNamed(sub.label, "tab");
+        clickNamed(sub.projects[2].title, "tab");
       }
     }).not.toThrow();
   });
@@ -261,32 +376,68 @@ describe("every control in the chrome is a word", () => {
    * sighted user guessing.
    */
   function renderShell() {
-    const { categories, slidesByCategory } = fixture();
+    const { divisions, slidesBySub } = fixture();
     render(
       <GalleryShell
-        categories={categories}
-        slidesByCategory={slidesByCategory}
-        initialCategory={categories[0].id}
-        initialProjectId={categories[0].projects[0].id}
+        divisions={divisions}
+        slidesBySub={slidesBySub}
+        initialDivision={divisions[0].id}
+        initialSub={divisions[0].subs[0].id}
+        initialProjectId={divisions[0].subs[0].projects[0].id}
         labels={LABELS}
       />,
     );
-    return categories;
+    return divisions;
   }
 
   it("gives every tab a visible text label", () => {
-    const categories = renderShell();
+    const divisions = renderShell();
     for (const tab of screen.getAllByRole("tab")) {
       expect(
         tab.textContent?.trim(),
         `a tab renders no visible text — it is a glyph again`,
       ).toBeTruthy();
     }
-    // Specifically: the divisions are named, not drawn.
-    for (const c of categories) {
-      expect(screen.getAllByRole("tab", { name: new RegExp(c.label) }).length)
+    // Specifically: the divisions are named, not drawn — and so is the level
+    // below them, which is the one that arrived carrying a decorative dot.
+    for (const d of divisions) {
+      expect(screen.getAllByRole("tab", { name: new RegExp(d.label) }).length)
         .toBeGreaterThan(0);
     }
+    for (const sub of divisions[0].subs) {
+      expect(
+        screen.getAllByRole("tab", { name: new RegExp(sub.label) }).length,
+        `sub-category "${sub.label}" is not reachable by name`,
+      ).toBeGreaterThan(0);
+    }
+  });
+
+  it("gives every division its OWN blade rather than the nearest one", () => {
+    /**
+     * COUPLING #5, AND THE ONLY ONE HERE THAT NOTHING WOULD HAVE CAUGHT.
+     *
+     * The glyph used to be chosen by `c.id === "woodworks" ? "woodworks" :
+     * "mattresses"` — a binary ternary, written when a binary was all there
+     * was. Adding a third division does not break it. It typechecks, it
+     * renders, and it silently stamps the MATTRESSES blade on Furniture, so
+     * the gallery tells a visitor that furniture is a mattress product line.
+     *
+     * DIVISION_ELEMENT has carried a `furniture` key the whole time (#lg-b3).
+     * The ternary just had no way to reach it.
+     *
+     * Asserting DISTINCTNESS as well as identity is deliberate: identity alone
+     * would pass if someone re-pointed two divisions at one blade on purpose,
+     * and the blades are a brand-book mapping ("nobody on the build ever picks
+     * one at random"), not decoration to be deduplicated.
+     */
+    const divisions = renderShell();
+    const hrefs = screen
+      .getAllByRole("tab")
+      .filter((t) => t.classList.contains("gl-cat"))
+      .map((t) => t.querySelector("use")?.getAttribute("href"));
+
+    expect(hrefs).toEqual(divisions.map((d) => DIVISION_ELEMENT[d.id]));
+    expect(new Set(hrefs).size, "two divisions share a blade").toBe(divisions.length);
   });
 
   it("spells out the call to action instead of drawing a plus", () => {
@@ -314,20 +465,29 @@ describe("every control in the chrome is a word", () => {
   it("keeps a roving tabindex on both strips", () => {
     // One Tab stop per tablist, arrows move within it. Without this a keyboard
     // user tabs through every project before reaching the stage.
-    const categories = renderShell();
+    const divisions = renderShell();
     const selected = screen
       .getAllByRole("tab")
       .filter((t) => t.getAttribute("tabindex") === "0");
-    // Exactly one per strip: the active division and the active project.
-    expect(selected).toHaveLength(2);
-    expect(categories.length).toBeGreaterThan(1);
+    // Exactly one per strip: the active division, product type and project.
+    // Three now, not two — a strip that forgets to rove puts every one of its
+    // tabs in the tab order and buries the stage behind them.
+    expect(selected).toHaveLength(3);
+    expect(divisions.length).toBeGreaterThan(2);
   });
 });
 
 describe("selection travels in one direction per cause", () => {
-  it("keys the stage by category so an index never outlives its slides", () => {
+  it("keys the stage by the DEEPEST selection so an index never outlives its slides", () => {
+    /**
+     * The key must contain the sub-category. Keyed by division alone — which is
+     * what it was, correctly, when a division owned the slide list — the stage
+     * survives a division switch and breaks on a product-type switch, because
+     * that swaps `slides` without changing `division`. The behavioural test
+     * above catches it; this catches it at the line that causes it.
+     */
     const shell = readFileSync(join(here, "GalleryShell.tsx"), "utf8");
-    expect(shell).toMatch(/<PushSlider\s+key=\{category\}/);
+    expect(shell).toMatch(/<PushSlider\s+key=\{`\$\{division\}:\$\{activeSub\.id\}`\}/);
   });
 
   it("never reports the active slide back up from an effect", () => {

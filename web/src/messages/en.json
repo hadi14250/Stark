@@ -832,10 +832,11 @@
     "divisions": "Divisions",
     "categories": {
       "woodworks": "Woodworks",
+      "furniture": "Furniture",
       "mattresses": "Mattresses"
     },
     "projects": "Projects",
-    "empty": "Selected work from both divisions.",
+    "empty": "Nothing in this selection yet.",
     "startProject": "Let's talk",
     "cta": "View details",
     "overlayEyebrow": "Selected work",
@@ -1015,10 +1016,225 @@
         }
       ]
     },
+    "specializedDoors": {
+      "title": "Doors & Panels",
+      "subtitle": "Product range · Custom Wood Works",
+      "headline": "Doors made to a performance rating, not only to a finish",
+      "paragraph": "Manufactured wood doors, panels and customized interior elements. Doors, panels and solid timber each run on their own line: programmed cutting, edge work and through-boring, then an automated paint line. The range covers fire-rated, non-fire-rated and acoustic doors.",
+      "scope": "Doors, panels and interior elements",
+      "delivery": "Product range",
+      "materials": "Fire-rated, non-fire-rated, acoustic",
+      "overlayTitle": "What the factory makes",
+      "overlaySummary": "This entry describes a manufacturing capability rather than a delivered project. It names no client and no site: it is what the door and panel lines produce, and the specification a project would be quoted against.",
+      "overlaySpecs": [
+        {
+          "label": "Division",
+          "value": "Custom Wood Works"
+        },
+        {
+          "label": "Applications",
+          "value": "Interior doors, wall panels, custom elements"
+        },
+        {
+          "label": "Ratings",
+          "value": "Fire-rated, non-fire-rated, acoustic"
+        },
+        {
+          "label": "Production",
+          "value": "Programmed cutting, edge work, automated paint line"
+        }
+      ]
+    },
+    "interiorCladding": {
+      "title": "Interior Cladding",
+      "subtitle": "Product range · Custom Wood Works",
+      "headline": "Wall surfaces that arrive as a system, not as loose boards",
+      "paragraph": "Wall cladding, decorative surfaces and architectural wood finishes, produced to a project's setting-out drawings so panels arrive numbered and in sequence. Cladding is where tolerance work shows: the joints are the design.",
+      "scope": "Wall cladding and decorative surfaces",
+      "delivery": "Product range",
+      "materials": "Veneered, laminated and lacquered panels",
+      "overlayTitle": "What the factory makes",
+      "overlaySummary": "This entry describes a manufacturing capability rather than a delivered project. Cladding is quoted from the architect's setting-out, so what is shown here is the product type and the finish options, not a room that has been handed over.",
+      "overlaySpecs": [
+        {
+          "label": "Division",
+          "value": "Custom Wood Works"
+        },
+        {
+          "label": "Applications",
+          "value": "Wall cladding, decorative surfaces, ceilings"
+        },
+        {
+          "label": "Finishes",
+          "value": "Veneer, laminate, lacquer"
+        },
+        {
+          "label": "Sequencing",
+          "value": "Numbered and sequenced to project drawings"
+        }
+      ]
+    },
+    "kitchensWardrobes": {
+      "title": "Kitchens & Wardrobes",
+      "subtitle": "Product range · Custom Wood Works",
+      "headline": "The fitted work a room is judged by",
+      "paragraph": "Functional wood products for residential, hospitality and commercial spaces: kitchens, wardrobes and vanity units built to the room's own dimensions rather than to a catalogue size.",
+      "scope": "Kitchens, wardrobes and vanities",
+      "delivery": "Product range",
+      "materials": "Panel, solid timber and applied finishes",
+      "overlayTitle": "What the factory makes",
+      "overlaySummary": "This entry describes a manufacturing capability rather than a delivered project. Fitted furniture is made to a surveyed opening, so the product is the specification and the tolerance, not a particular kitchen.",
+      "overlaySpecs": [
+        {
+          "label": "Division",
+          "value": "Custom Wood Works"
+        },
+        {
+          "label": "Applications",
+          "value": "Residential, hospitality, commercial"
+        },
+        {
+          "label": "Products",
+          "value": "Kitchens, wardrobes, vanity units"
+        },
+        {
+          "label": "Fit",
+          "value": "Made to surveyed room dimensions"
+        }
+      ]
+    },
+    "outdoorStructures": {
+      "title": "Outdoor Structures",
+      "subtitle": "Product range · Custom Wood Works",
+      "headline": "Wood that has to survive the weather it is placed in",
+      "paragraph": "Bungalows, outdoor features and wooden structures for private and project environments. Outdoor work is a different material problem from interior joinery: the specification is chosen for movement and exposure before it is chosen for appearance.",
+      "scope": "Bungalows and outdoor wooden structures",
+      "delivery": "Product range",
+      "materials": "Treated timber for exposed conditions",
+      "overlayTitle": "What the factory makes",
+      "overlaySummary": "This entry describes a manufacturing capability rather than a delivered project. Outdoor timber is specified against exposure and movement, so what is shown is the product type rather than a structure that has been installed.",
+      "overlaySpecs": [
+        {
+          "label": "Division",
+          "value": "Custom Wood Works"
+        },
+        {
+          "label": "Applications",
+          "value": "Private and project environments"
+        },
+        {
+          "label": "Products",
+          "value": "Bungalows, outdoor features, structures"
+        },
+        {
+          "label": "Specification",
+          "value": "Selected for movement and exposure"
+        }
+      ]
+    },
+    "retailStands": {
+      "title": "Retail Stands",
+      "subtitle": "Product range · Custom Wood Works",
+      "headline": "Display units that carry someone else's brand",
+      "paragraph": "Custom display units and branded wood structures for commercial use. Retail work runs to a shorter programme than fit-out and to a tighter finish tolerance, because the customer stands close enough to touch it.",
+      "scope": "Display units and branded structures",
+      "delivery": "Product range",
+      "materials": "Panel, solid timber and applied graphics",
+      "overlayTitle": "What the factory makes",
+      "overlaySummary": "This entry describes a manufacturing capability rather than a delivered project. Retail units are made to a brand's own guidelines, so the product here is the build standard, not a stand in a particular store.",
+      "overlaySpecs": [
+        {
+          "label": "Division",
+          "value": "Custom Wood Works"
+        },
+        {
+          "label": "Applications",
+          "value": "Retail and commercial display"
+        },
+        {
+          "label": "Products",
+          "value": "Stands, podiums, branded structures"
+        },
+        {
+          "label": "Programme",
+          "value": "Short runs at a tight finish tolerance"
+        }
+      ]
+    },
+    "looseFurniture": {
+      "title": "Loose Furniture",
+      "subtitle": "Product range · Furniture manufacturing",
+      "headline": "Furniture that is delivered, not built into the wall",
+      "paragraph": "Comprehensive furniture manufacturing for interior and exterior applications, with diverse materials, finishes and designs. Loose furniture is the half of the wood package that arrives finished and is placed, rather than fixed and jointed on site.",
+      "scope": "Custom interior and exterior furniture",
+      "delivery": "Product range",
+      "materials": "Timber, panel, upholstery and applied finishes",
+      "overlayTitle": "What the factory makes",
+      "overlaySummary": "This entry describes a manufacturing capability rather than a delivered project. Loose furniture is made to a project's own drawings, so what is shown is the range and the finish options rather than a room that has been furnished.",
+      "overlaySpecs": [
+        {
+          "label": "Division",
+          "value": "Furniture manufacturing"
+        },
+        {
+          "label": "Applications",
+          "value": "Interior and exterior"
+        },
+        {
+          "label": "Products",
+          "value": "Case goods, seating, tables, custom pieces"
+        },
+        {
+          "label": "Finishes",
+          "value": "Diverse materials, finishes and designs"
+        }
+      ]
+    },
+    "siestaRange": {
+      "title": "siesta",
+      "subtitle": "Product range · Mattress division",
+      "headline": "A wide range, built for the room it is bought for",
+      "paragraph": "A wide mattress range serving luxury, economic and hospitality needs through practical comfort, durable construction and accessible quality. siesta and blue run to one manufacturing standard and two comfort identities.",
+      "scope": "Luxury, economic and hospitality ranges",
+      "delivery": "Product range",
+      "materials": "Spring, foam and hybrid constructions",
+      "overlayTitle": "A range, not a model",
+      "overlaySummary": "siesta is shown here as a range rather than as named models, because the mattress division's documented model list belongs to blue. The photographs are rooms rather than products for the same reason: nothing here should be read as a picture of a particular siesta mattress.",
+      "overlaySpecs": [
+        {
+          "label": "Division",
+          "value": "Mattress division"
+        },
+        {
+          "label": "Sectors",
+          "value": "Luxury, economic, hospitality"
+        },
+        {
+          "label": "Positioning",
+          "value": "Practical comfort, durable construction"
+        },
+        {
+          "label": "Standard",
+          "value": "One manufacturing standard with blue"
+        }
+      ]
+    },
     "overlaySummaryLabel": "In brief",
     "overlaySpecsLabel": "Details",
     "prev": "Previous",
     "next": "Next",
-    "close": "Close"
+    "close": "Close",
+    "subCategoriesLabel": "Product types",
+    "subCategories": {
+      "doors-panels": "Doors & Panels",
+      "interior-cladding": "Interior Cladding",
+      "kitchens-wardrobes": "Kitchens & Wardrobes",
+      "outdoor-structures": "Outdoor Structures",
+      "retail-stands": "Retail Stands",
+      "loose-furniture": "Loose Furniture",
+      "fixed-joinery": "Fixed Joinery",
+      "blue": "blue",
+      "siesta": "siesta"
+    }
   }
 }

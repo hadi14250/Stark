@@ -1,5 +1,5 @@
 /* =============================================================================
-   GALLERY CHROME — two labelled strips above the stage.
+   GALLERY CHROME — three labelled strips above the stage.
    =============================================================================
 
    WHAT THIS REPLACED, AND WHY.
@@ -21,18 +21,20 @@
        Stark green, so the one route whose job is to look coherent shipped a
        grey-on-green clash.
 
-   THE REPLACEMENT IS TWO STRIPS, AND EVERY CONTROL IS A WORD.
+   THE REPLACEMENT IS THREE STRIPS, AND EVERY CONTROL IS A WORD.
 
-     [ SELECTED WORK ][ Woodworks | Mattresses ]        [ Let's talk ]
-     [ 01 Hospitality Fit-Out   02 Joinery Package   03 Fitted Furniture ]
-     [                      the stage                                    ]
+     [ SELECTED WORK ][ Woodworks | Furniture | Mattresses ]  [ Let's talk ]
+     [ · Doors & Panels   Interior Cladding   Kitchens & Wardrobes  ...     ]
+     [ 01 Mataf Extension   02 Doors & Panels                               ]
+     [                      the stage                                       ]
 
-   The two strips are deliberately given DIFFERENT visual mechanics even though
-   both are tablists. Categories are a segmented control (a filled active chip);
-   projects are underline tabs (a sand rule that slides). Two identical-looking
-   tab rows stacked on top of each other read as one confusing control — the
-   difference in mechanic is what makes the hierarchy legible without a label
-   explaining it.
+   The three strips are deliberately given DIFFERENT visual mechanics even
+   though all three are tablists. Divisions are a segmented control (a filled
+   active chip); product types are a marker dot; projects are underline tabs (a
+   sand rule that slides). Identical-looking tab rows stacked on top of each
+   other read as one confusing control — the difference in mechanic is what
+   makes the hierarchy legible without a label explaining it, and it is why a
+   THIRD row could not simply reuse one of the first two treatments.
 
    COLOUR: ONE DARK-GREEN WORLD. Surfaces are the green ramp, type is off-white
    at descending opacities, and there is no grey anywhere on the route. Sand
@@ -74,7 +76,7 @@
     overflow: hidden;
   }
 
-  /* ---------- the two strips ---------- */
+  /* ---------- the three strips ---------- */
 
   .gallery-chrome .gl-strip {
     flex: 0 0 auto;
@@ -91,6 +93,23 @@
 
   .gallery-chrome .gl-strip--top {
     min-height: 54px;
+  }
+
+  /* ---------- the middle strip's height budget ----------
+     THE STAGE PAYS FOR THIS STRIP, so it is the one that had to be cheap.
+
+     The chrome sits in `calc(100svh - var(--header-h))` and the stage takes
+     whatever the strips leave. Two strips cost 102px; a third at the same 48px
+     would have cost 150px, and on the short laptops that already run this route
+     tightest (1024x640 leaves 576px in total) that is a tenth of the stage gone
+     to a row of nine words.
+
+     40px, not 48: this level carries no numeral and no rule beneath it, so it
+     needs less vertical room than the project strip and reads as subordinate
+     for that reason rather than because it was told to. */
+  .gallery-chrome .gl-strip--subs {
+    min-height: 40px;
+    padding-inline-end: 0;
   }
 
   .gallery-chrome .gl-strip--projects {
@@ -212,6 +231,75 @@
     transform: translateX(-2px);
   }
 
+  /* ---------- sub-category tabs: a marker dot ----------
+     THE THIRD MECHANIC, and it has to be a third one.
+
+     The divisions above are a segmented control; the projects below are
+     underline tabs. That difference is the whole reason two stacked tablists do
+     not read as one confusing control. Giving this row either of those two
+     treatments would have collapsed the distinction they were making — three
+     segmented controls, or three underline rows, and the hierarchy is gone.
+
+     So: no chip, no rule, no numeral. A sand dot that only the active tab
+     carries, and a weight change. Quieter than both neighbours, which is also
+     what says "this is the level between them". */
+
+  .gallery-chrome .gl-subs {
+    display: flex;
+    align-items: center;
+    gap: clamp(14px, 2.4vw, 30px);
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow-x: auto;
+    scroll-snap-type: inline proximity;
+    scrollbar-width: none;
+    padding-inline-end: clamp(14px, 3vw, 40px);
+  }
+
+  .gallery-chrome .gl-subs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .gallery-chrome .gl-sub {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 0;
+    border: 0;
+    background: none;
+    color: var(--gl-faint);
+    font-size: clamp(11.5px, 1.25vw, 13px);
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: color 200ms ease;
+  }
+
+  .gallery-chrome .gl-sub:hover {
+    color: var(--gl-dim);
+  }
+
+  .gallery-chrome .gl-sub[aria-selected="true"] {
+    color: var(--gl-text);
+  }
+
+  /* The dot holds its space at every state, so selecting a tab changes its
+     colour and not the position of every tab after it. */
+  .gallery-chrome .gl-sub-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: transparent;
+    transition: background-color 200ms ease;
+  }
+
+  .gallery-chrome .gl-sub[aria-selected="true"] .gl-sub-dot {
+    background: var(--gl-accent);
+  }
+
   /* ---------- project tabs: underline row ---------- */
 
   .gallery-chrome .gl-projects {
@@ -300,6 +388,7 @@
      an outside ring on the first or last tab is shaved off at the container
      edge and the user sees half a focus indicator. */
   .gallery-chrome .gl-cat:focus-visible,
+  .gallery-chrome .gl-sub:focus-visible,
   .gallery-chrome .gl-project:focus-visible,
   .gallery-chrome .gl-cta:focus-visible {
     outline: 2px solid var(--gl-accent);
@@ -308,7 +397,7 @@
   }
 
   /* ---------- narrow ----------
-     No rail, no panel and no FAB to special-case any more: the same two strips
+     No rail, no panel and no FAB to special-case any more: the same three strips
      compress. The eyebrow is the only thing that goes, because it labels the
      row rather than operating it. */
   @media (max-width: 700px) {
@@ -318,8 +407,14 @@
     .gallery-chrome .gl-strip {
       padding-inline: 12px;
     }
-    .gallery-chrome .gl-strip--projects {
+    .gallery-chrome .gl-strip--projects,
+    .gallery-chrome .gl-strip--subs {
       padding-inline-end: 0;
+    }
+    /* The whole point of the middle strip is that it is cheap. At 390px the
+       stage is the scarcest thing on the route, so it gets 4px back. */
+    .gallery-chrome .gl-strip--subs {
+      min-height: 36px;
     }
     /* The header's own pill is ~45px above this and says the same thing. At
        390px the strip needs the width more than the page needs the offer
@@ -331,6 +426,8 @@
 
   @media (prefers-reduced-motion: reduce) {
     .gallery-chrome .gl-cat,
+    .gallery-chrome .gl-sub,
+    .gallery-chrome .gl-sub-dot,
     .gallery-chrome .gl-project,
     .gallery-chrome .gl-cta,
     .gallery-chrome .gl-cta svg {

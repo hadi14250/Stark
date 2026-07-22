@@ -650,3 +650,90 @@ reports the deepest *painted* pixel against the stage's bottom edge. It has to
 skip collapsed accordion bodies explicitly: a closed step's `<p>` keeps its full
 natural rect and is merely clipped by an `overflow-hidden` child, so measuring
 it reports a page that is visibly fine as overflowing by 43px.
+
+---
+
+## The gallery becomes three levels (slides 8 and 14)
+
+The client's gallery note asks for three tabs, and `landing.gallery.sub` now
+names them in their order: **WOODWORKS, FURNITURE and MATTRESSES**. Under each,
+the browsable level is what the factory makes.
+
+⚠ **Furniture is a GALLERY tab, not a company sector, and the two must not be
+conflated.** Slide 8's "three main sectors" are **Custom Wood Works**,
+**Mattresses** and **Engineering & Technical Services**, and it files *"loose
+furniture"* **inside** custom wood works. So the divisions section keeps
+following slide 8, and nothing in the gallery's taxonomy should be copied back
+into it. The gallery split is a browsing structure the client asked for on that
+page specifically.
+
+**The middle level is slide 14, verbatim**, less one type promoted upward:
+Doors & Panels · Interior Cladding · Kitchens, Wardrobes & Vanities · Outdoor
+Wooden Structures · Retail Stands & Podiums, with **Furniture & Joinery** lifted
+out to become the Furniture tab and split into **Loose Furniture** (slide 8's
+own term) and **Fixed Joinery** (slide 14's). Mattresses keeps exactly two:
+blue and siesta.
+
+### The three real references were filed by their own submittals' words
+
+This is the part that could most easily have become an invented claim, so the
+rule was: a project goes where the source document's scope language puts it, and
+nowhere else.
+
+| Reference | The document's own scope wording | Filed under |
+|---|---|---|
+| Mataf Extension | "Interior wood work, **door architrave**" | Woodworks ▸ Doors & Panels |
+| King Salman Park CP04 | "**Joinery** and fit-out scope" | Furniture ▸ Fixed Joinery |
+| NGHA Specialized Hospitals | "**Millworks**, architectural discipline" | Furniture ▸ Fixed Joinery |
+
+Millwork and joinery are the same trade under two regional names (it is what the
+AWI on slide 13 certifies), so NGHA lands there by the document's own term rather
+than by resemblance. **None of the copy changed**: all three still say "approved
+supplier for" and "prequalified", never "delivered". The sub-category is a filing
+decision, and it was made to match the paperwork rather than to fill a tab.
+
+### Seven entries are capabilities, not projects
+
+Five product types have no documented project reference at all, so the structure
+could only be built by adding entries that describe **what the factory makes**:
+five woodworks types, Loose Furniture, and a siesta range entry. Their copy comes
+from slide 14's product descriptions and slide 8's sector copy.
+
+Not one of them names a client, a site, a date or a completion. Each subtitle
+says "Product range" in as many words and each overlay summary states outright
+that the entry describes a manufacturing capability rather than a delivered job.
+That framing is load-bearing: it is what stops a stock photograph under
+"Interior Cladding" from reading as cladding STARK installed somewhere.
+
+**siesta is a range, not models, and its pictures are rooms, not products.** blue
+has the manufacturer's own product photography and named constructions; siesta
+has one paragraph on slide 13 and nothing else. Putting a blue product shot under
+siesta's name would misstate the contract range to a hotel buyer, which is the
+same failure flagged when the two brands shared one photograph in the duet.
+
+### ⚠ The photography gate was raised, 18 cells to 60
+
+`projects.test.ts` holds a deliberately failing gate on filler imagery, and its
+note said "it must never go up". It went up, so the argument is recorded here as
+well as there: seven new entries at six cells each is 42, on top of the 18 that
+were already filler.
+
+The 42 are a **less** dangerous kind than the 18. Generic photography captioned
+"Mataf Extension" reads as a photograph *of* the Mataf Extension; the same
+photograph under "Interior Cladding, product range" overstates far less. But it
+still fails, and it should: every one of the 60 is a room somebody else
+photographed. The two halves need different things to close, and both are open:
+
+1. **Project photography** for the three named references.
+2. **Product photography** for the seven capability entries, without which the
+   gallery is a structure rather than a portfolio.
+
+### For the client
+
+- **The blue-room stock photograph under Loose Furniture** is a domestic
+  interior with a wall painting, a toy and a houseplant. It is filler like the
+  rest, but it reads worse than the rest, and it is the first thing a visitor to
+  the Furniture tab sees after the hero. Real furniture photography retires it.
+- **Nine sub-tabs is the client's structure, not a proposal.** Five of the nine
+  currently hold a single capability entry each. That is honest, but it is thin,
+  and it is thin in a way only real work photographs will fix.
