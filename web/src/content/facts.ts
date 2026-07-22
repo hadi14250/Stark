@@ -256,6 +256,87 @@ export const FACTS = {
     source: "Trust Wood profile p17 (machine list after expansion, item 29)",
   },
 
+  // ── Wood division annual capacity ──────────────────────────────────────
+  //
+  // All seven come off ONE annotation block: the right-hand column the client
+  // added to slide 12 of profile v3, beside the WOOD DIVISION slide. That is
+  // worth stating once here rather than seven times below — they were written
+  // together, in one hand, and if one is wrong they are probably all wrong.
+  //
+  // ⚠ CAPACITY IS NOT OUTPUT, and the distinction is the difference between a
+  // spec and a boast. These are the volumes the division is equipped to
+  // produce in a year, not volumes it has produced. The copy says so in as
+  // many words (`woodworks.capacity.sub`) — do not "tighten" that sentence
+  // away, it is the sentence that keeps the section defensible.
+
+  /**
+   * Annual production capacity in money rather than units.
+   *
+   * Stored as 75 with the unit supplied by the copy deck, NOT as 75000000.
+   * The slide says "75M SAR" and a reader checking the site against the deck
+   * should find the same figure, not a translation of it — and a count-up
+   * animating to seventy-five million would spend its whole run unreadable.
+   */
+  capacityAnnualSar: {
+    value: 75,
+    grouping: false,
+    source: "STARK company profile v3 (2026) slide 12 (client annotation column)",
+  },
+
+  /** Hotel rooms' worth of joinery a year. */
+  capacityHotelRooms: {
+    value: 1500,
+    grouping: true,
+    source: "STARK company profile v3 (2026) slide 12 (client annotation column)",
+  },
+
+  capacityDoors: {
+    value: 30000,
+    grouping: true,
+    source: "STARK company profile v3 (2026) slide 12 (client annotation column)",
+  },
+
+  capacityWardrobes: {
+    value: 90000,
+    grouping: true,
+    source: "STARK company profile v3 (2026) slide 12 (client annotation column)",
+  },
+
+  /**
+   * Wall cladding.
+   *
+   * ⚠ OPEN, AND VISIBLE ON THE PAGE: the same annotation lists both
+   * "150,000 m² Cladding" and "40,000 sqm of closets Cladding", and does not
+   * say whether the second is part of the first or additional to it. Both
+   * ship, as two line items, because that is exactly how the client wrote
+   * them — and because the section prints no total, so the page asserts
+   * nothing about the relationship either way. If they turn out to be nested,
+   * the fix is to merge the rows, not to change a number.
+   */
+  capacityCladding: {
+    value: 150000,
+    grouping: true,
+    source: "STARK company profile v3 (2026) slide 12 (client annotation column)",
+    caveat:
+      "May or may not include capacityClosetCladding (40,000 m²). The client's annotation lists both without relating them. Open with the client.",
+  },
+
+  /** Kitchens, in linear metres — the trade's own unit for run-length joinery. */
+  capacityKitchens: {
+    value: 35000,
+    grouping: true,
+    source: "STARK company profile v3 (2026) slide 12 (client annotation column)",
+  },
+
+  /** See the caveat on capacityCladding: these two may be one figure. */
+  capacityClosetCladding: {
+    value: 40000,
+    grouping: true,
+    source: "STARK company profile v3 (2026) slide 12 (client annotation column)",
+    caveat:
+      "May be a subset of capacityCladding (150,000 m²) rather than an additional volume. Open with the client.",
+  },
+
   // ── Gallery references ─────────────────────────────────────────────────
   // Dates on the approval documents themselves. They matter: an approval is a
   // dated event, and a reference with no date invites the reader to assume it
@@ -393,6 +474,29 @@ export const HOME_STATS: readonly StatFact[] = [
   FACTS.specialists,
   FACTS.megaProjects,
   FACTS.projectsCompleted,
+];
+
+/**
+ * The wood division's annual capacity band, in the client's own slide order.
+ *
+ * SAME INDEX CONTRACT AS `HOME_STATS`, and the same warning applies with more
+ * force: the units live in the message files beside the labels, so reordering
+ * this array does not merely relabel a column — it can put "m²" after a door
+ * count. `facts.test.ts` checks the lengths agree in both locales and can
+ * check nothing else. Reorder all three or none.
+ *
+ * THE HEADLINE FIGURE IS DELIBERATELY NOT IN HERE. `capacityAnnualSar` is
+ * money and these are volumes; the slide separates them and so does the page,
+ * because a riyal figure sitting in a grid of square metres reads as though
+ * someone forgot a unit. It is rendered on its own above the grid.
+ */
+export const WOODWORKS_CAPACITY: readonly StatFact[] = [
+  FACTS.capacityHotelRooms,
+  FACTS.capacityDoors,
+  FACTS.capacityWardrobes,
+  FACTS.capacityCladding,
+  FACTS.capacityKitchens,
+  FACTS.capacityClosetCladding,
 ];
 
 /**

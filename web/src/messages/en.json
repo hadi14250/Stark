@@ -483,7 +483,7 @@
     },
     "capabilities": {
       "eyebrowLabel": "What we run",
-      "heading": "Built like a factory, finished like a workshop.",
+      "heading": "From design intent to crafted execution.",
       "sub": "Volume production and bespoke joinery are usually different businesses. Running both on the same lines is what lets a single project keep one standard from the lobby to the last guest room.",
       "items": [
         {
@@ -545,10 +545,41 @@
         }
       ]
     },
-    "materials": {
-      "eyebrowLabel": "Materials",
-      "heading": "Specified, not improvised.",
-      "sub": "Every substrate below sits inside our FSC chain-of-custody scope, so the material a drawing calls for is the material that can be documented on delivery.",
+    "products": {
+      "eyebrowLabel": "Products & applications",
+      "heading": "Wood solutions built around project needs.",
+      "sub": "STARK manufactures custom wood applications that support interior, exterior, residential, commercial and project-based environments.",
+      "items": [
+        {
+          "label": "Doors & Panels",
+          "body": "Manufactured wood doors, panels and customized interior elements, including specialized doors: fire-rated, non-fire-rated and acoustic."
+        },
+        {
+          "label": "Interior Cladding",
+          "body": "Wall cladding, decorative surfaces and architectural wood finishes."
+        },
+        {
+          "label": "Furniture & Joinery",
+          "body": "Custom furniture, fixed joinery and project-specific wood solutions."
+        },
+        {
+          "label": "Kitchens, Wardrobes & Vanities",
+          "body": "Functional wood products for residential, hospitality and commercial spaces."
+        },
+        {
+          "label": "Outdoor Wooden Structures",
+          "body": "Bungalows, outdoor features and wooden structures for private and project environments."
+        },
+        {
+          "label": "Retail Stands & Podiums",
+          "body": "Custom display units and branded wood structures for commercial use."
+        }
+      ],
+      "alt": "A furnished interior."
+    },
+    "substrates": {
+      "label": "Substrates",
+      "sub": "Every substrate sits inside our FSC chain-of-custody scope, so the material a drawing calls for is the material that can be documented on delivery.",
       "items": [
         {
           "label": "Solid wood",
@@ -574,8 +605,42 @@
           "label": "Chipboard",
           "body": "Carcass material for the work that will be faced, laminated or hidden."
         }
-      ],
-      "alt": "Timber, panel and finish samples."
+      ]
+    },
+    "capacity": {
+      "eyebrowLabel": "Annual capacity",
+      "heading": "What the division can produce in a year.",
+      "sub": "Capacity is a ceiling, not a forecast: these are the volumes the wood division is equipped to produce in a year.",
+      "headline": {
+        "unit": "M SAR",
+        "label": "Annual production capacity"
+      },
+      "items": [
+        {
+          "unit": "",
+          "label": "Hotel rooms"
+        },
+        {
+          "unit": "",
+          "label": "Doors"
+        },
+        {
+          "unit": " m²",
+          "label": "Wardrobes"
+        },
+        {
+          "unit": " m²",
+          "label": "Cladding"
+        },
+        {
+          "unit": " LM",
+          "label": "Kitchens"
+        },
+        {
+          "unit": " m²",
+          "label": "Closet cladding"
+        }
+      ]
     },
     "standards": {
       "eyebrowLabel": "How we work",
@@ -643,8 +708,7 @@
       "alt": "A completed joinery installation."
     },
     "chapters": {
-      "eyebrowLabel": "On the floor",
-      "heading": "Built like a factory, finished like a workshop."
+      "eyebrowLabel": "On the floor"
     }
   },
   "mattresses": {

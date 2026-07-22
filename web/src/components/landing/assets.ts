@@ -64,13 +64,40 @@ export const landingImages = {
       `${base}/d41cceabf062f878.png`,
       `${base}/f264f5dea2782694.jpg`,
     ] as const,
-    /** Material cards — small, cropped, in a scrolling strip. */
-    materials: [
-      `${base}/763ba2c7f4c29838.jpg`,
-      `${base}/bf46cb0e0db7539f.jpg`,
+    /**
+     * Product cards — small, cropped, in a scrolling strip.
+     *
+     * ⚠ ORDER IS A MAPPING, NOT AN INVENTORY. Each entry sits under one of the
+     * six product types in `woodworks.products.items`, by index, so reordering
+     * this array re-captions every photograph. It was reordered once already,
+     * when the strip stopped being substrates and became products: a close
+     * crop of a room is a fair illustration of "MDF", and a flatly wrong one
+     * of "Retail Stands & Podiums".
+     *
+     * TODO(F-content): AND IT IS STILL WRONG, because no reordering can fix
+     * it. All six files are recoloured domestic-interior stock. There is no
+     * photograph in the entire `/landing/` set showing a door, wall cladding,
+     * an outdoor structure or a retail podium — so the order below is only the
+     * least-bad assignment available:
+     *
+     *   01 Doors & Panels        the stair joinery and panelled kitchen run
+     *   02 Interior Cladding     wall and ceiling surfaces, fitted units
+     *   03 Furniture & Joinery   a sofa; the one card whose subject is real
+     *   04 Kitchens/Wardrobes    a carcass unit with doors and drawers
+     *   05 Outdoor Structures    ⚠ AN INDOOR ROOM. Nothing outdoor exists.
+     *   06 Retail Stands         a styled vignette on stone — closest to a
+     *                            display setup, which is not saying much
+     *
+     * Row 05 is a visible contradiction and should be treated as a launch
+     * blocker, not a nice-to-have. Six real product photographs is the fix and
+     * it is a client dependency.
+     */
+    products: [
       `${base}/08f1f8d97cb5f63f.jpg`,
-      `${base}/5d5c40ccbb6b257b.jpg`,
       `${base}/9bc56e8ed0aded95.jpg`,
+      `${base}/bf46cb0e0db7539f.jpg`,
+      `${base}/763ba2c7f4c29838.jpg`,
+      `${base}/5d5c40ccbb6b257b.jpg`,
       `${base}/42737a5b8707da10.jpg`,
     ] as const,
     projects: `${base}/f7965388e07b0b0c.jpg`,

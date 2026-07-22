@@ -372,3 +372,88 @@ That is levels, scaling and sharpening. **Nothing is redrawn and no detail is
 invented** — several of these marks are genuinely low-resolution and look it on
 close inspection, which is the honest outcome. Higher-resolution logo files
 from the client would improve the wall and nothing else will.
+
+---
+
+## Woodworks: the product range and the capacity band (slides 12, 14)
+
+Profile v3 supplied both, and both replaced copy that was written before anyone
+had a wood-division document to write from.
+
+### "Built like a factory, finished like a workshop" is gone
+
+The client rejected the phrase without saying why, and the reason is on slide 12
+in the annotation column: *"since we've entered the wood sector, we'd like to
+move away from generic talk and focus more on the sector."* The line was a
+rhetorical flourish that could have introduced any manufacturer of anything.
+
+It was replaced with the client's own heading for that slide — **"From design
+intent to crafted execution."** — rather than a new invention. A newly written
+aphorism would have been the same mistake in different words.
+
+A byte-identical duplicate of the old string sat at `woodworks.chapters.heading`
+and reached no call site. Deleted with the original.
+
+### The substrate list was demoted, not deleted
+
+Slide 14's six product types (Doors & Panels, Interior Cladding, Furniture &
+Joinery, Kitchens/Wardrobes/Vanities, Outdoor Wooden Structures, Retail Stands
+& Podiums) took the section the substrates used to occupy.
+
+The substrates — solid wood, wood panel, MDF, veneer, HPL, chipboard, with a
+line each on where each is used — **stayed on the page** as a spec footnote
+under the product strip (`woodworks.substrates`). They are the most checkable
+copy on that page: a specifier reads them and learns something they can hold the
+factory to. Deleting sourced detail to make room for marketing is the trade this
+ledger exists to refuse.
+
+The FSC chain-of-custody sentence moved with them, and had to. Attached to the
+product cards it would have been claiming certification for finished goods,
+which is not what a chain-of-custody certificate covers.
+
+"Specialized wooden doors (FR, NFR, Acoustic)" is the client's own annotation
+under slide 14 and is spelled out in the Doors & Panels body.
+
+### ⚠ 150,000 m² cladding vs 40,000 m² of closet cladding
+
+The slide-12 annotation lists both and does not say whether the second is part
+of the first or additional to it. **Both ship, as two separate line items,
+because that is exactly how the client wrote them** — and the band prints no
+total, so the page asserts nothing about the relationship either way. If they
+turn out to be nested, the fix is to merge two rows, not to change a number.
+On the question list. Caveats are recorded on both facts.
+
+### ⚠ Capacity is not output, and the copy says so
+
+Every figure in that band is a ceiling the division is equipped to reach, not a
+volume it has produced. `woodworks.capacity.sub` states this in as many words.
+That sentence is load-bearing: without it the band reads as a record of last
+year, which is a claim no document supports.
+
+### ⚠ The certification logos on slide 13 were NOT added
+
+Slide 13 is a sheet of marks — Vision 2030, FSC, Local Content, MODON, Saudi
+Made, AWI, USGBC LEED, IFC, Intertek — and the slide-12 annotation asks for
+"the ISO, sustainability and fire-resistance logos" to be placed.
+
+None of them went on the site, and this is the one place in this round where a
+direct client instruction was not carried out. A certification mark is a factual
+claim that a named body has audited and certified this company. The evidence on
+hand is a logo pasted into a slide, which is not that. The standards section
+already prints only what is evidenced (FSC, with its certificate number) and
+deliberately omits the two ISO certificates the factory holds because they
+**expired on 13.12.2025**.
+
+Placing a LEED or Intertek badge on that basis would be the invented-fact
+failure this ledger exists to prevent, with legal exposure attached. What is
+needed per mark: the certificate, its number, its holder and its expiry. On the
+question list.
+
+### ⚠ The product photographs do not show the products
+
+All six product cards use recoloured domestic-interior stock. Card 05 shows an
+indoor room under "Outdoor Wooden Structures". The order was reassigned to the
+least-bad mapping available and documented at
+`landingImages.woodworks.products`, but no reordering fixes it — there is no
+photograph of a door, wall cladding, an outdoor structure or a retail podium
+anywhere in the set. Treat as a launch blocker.

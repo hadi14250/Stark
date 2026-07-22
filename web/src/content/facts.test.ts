@@ -4,7 +4,13 @@ import { dirname, join } from "node:path";
 import { describe, it, expect } from "vitest";
 import en from "@/messages/en.json";
 import ar from "@/messages/ar.json";
-import { FACTS, HOME_STATS, CONTACT_EMAIL, type SourcedFact } from "./facts";
+import {
+  FACTS,
+  HOME_STATS,
+  WOODWORKS_CAPACITY,
+  CONTACT_EMAIL,
+  type SourcedFact,
+} from "./facts";
 
 const here = dirname(fileURLToPath(import.meta.url));
 
@@ -163,6 +169,29 @@ describe("the home stat band reads from the ledger", () => {
 
     // Both locales, or the Arabic band is the one that renders wrong.
     expect((ar.landing.stats.items as { label: string }[]).length).toBe(labels);
+  });
+
+  it("supplies a unit and a label for every capacity figure", () => {
+    /**
+     * THE FAILURE THIS CATCHES, and it is nastier than the home band's.
+     *
+     * On Home the message array carries only a LABEL, so a length mismatch
+     * shows up as a caption missing or orphaned — ugly, obvious. The woodworks
+     * capacity band's array carries a label AND A UNIT, so the same mismatch
+     * slides the units along by one and prints "30,000 m²" under "Doors" and
+     * "90,000" bare under "Wardrobes". Both look completely intentional. The
+     * page would be quietly stating a false specification.
+     *
+     * Length is all this can check. That the third unit is still "m²" and not
+     * "LM" is on whoever reorders the array — see the warning on
+     * WOODWORKS_CAPACITY.
+     */
+    const enItems = (en.woodworks.capacity.items as { unit: string; label: string }[]);
+    expect(WOODWORKS_CAPACITY).toHaveLength(enItems.length);
+    expect(
+      (ar.woodworks.capacity.items as { unit: string; label: string }[]).length,
+      "the Arabic band is the one that renders wrong",
+    ).toBe(enItems.length);
   });
 
   it("renders the year without a thousands separator", () => {

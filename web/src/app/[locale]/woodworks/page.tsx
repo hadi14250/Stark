@@ -11,11 +11,14 @@ import { Reveal } from "@/components/motion/Reveal";
 import { WoodworksHero } from "@/components/woodworks/WoodworksHero";
 import { Chapters, type Chapter } from "@/components/woodworks/Chapters";
 import {
-  MaterialsStrip,
+  ProductStrip,
+  SubstrateList,
+  CapacityBand,
   ServicesList,
   ProjectsBand,
 } from "@/components/woodworks/sections";
 import { landingImages } from "@/components/landing/assets";
+import { FACTS, WOODWORKS_CAPACITY } from "@/content/facts";
 import "@/styles/woodworks.css";
 
 export function generateStaticParams() {
@@ -39,7 +42,10 @@ export async function generateMetadata({
 
 type Cap = { title: string; body: string; meta: string[]; alt: string };
 type Service = { title: string; body: string };
-type Material = { label: string; body: string };
+/** Both the product cards and the substrate footnote use this shape. */
+type Labelled = { label: string; body: string };
+/** A capacity figure's translated half — see CapacityBand for the index join. */
+type Unit = { unit: string; label: string };
 type Row = { stage: string; check: string };
 type Certs = { label: string; items: { label: string; body: string }[] };
 
@@ -71,10 +77,19 @@ type Certs = { label: string; items: { label: string; body: string }[] };
  * AND THE STRUCTURE MOVES, which matters more than any of them:
  *   hero        full-viewport, photograph bleeding off the end edge
  *   chapters    a sticky index beside panels — a device Home does not have
- *   materials   a horizontal scroll-snap strip — changes the page's axis
+ *   products    a horizontal scroll-snap strip — changes the page's axis,
+ *               with the substrate spec list demoted underneath it
+ *   capacity    count-up figures: the page's only quantitative block
  *   standards   the stage/check table (kept: it is unique on the site)
  *   services    a ruled mono list, the page's one quiet block
  *   projects    a full-bleed band with the CTA over it
+ *
+ * SURFACES ALTERNATE STRICTLY down that list. Adding `capacity` shifted every
+ * surface below it by one — `standards` and `services` swapped rather than
+ * staying put, because two adjacent sections on the same surface read as one
+ * very long section and the table would have appeared to belong to the
+ * capacity band. If a section is ever inserted or removed here, re-check the
+ * whole run rather than just its neighbours.
  *
  * NO PROCESS BAND, still. Home has one; a third copy across three pages in one
  * session reads as laziness rather than as a system.
@@ -91,7 +106,10 @@ export default async function WoodworksPage({
   const t = await getTranslations("woodworks");
   const caps = t.raw("capabilities.items") as Cap[];
   const services = t.raw("services.items") as Service[];
-  const materials = t.raw("materials.items") as Material[];
+  const products = t.raw("products.items") as Labelled[];
+  const substrates = t.raw("substrates.items") as Labelled[];
+  const capacityItems = t.raw("capacity.items") as Unit[];
+  const capacityHeadline = t.raw("capacity.headline") as Unit;
   const rows = t.raw("standards.rows") as Row[];
   const certs = t.raw("standards.certs") as Certs;
 
@@ -138,26 +156,64 @@ export default async function WoodworksPage({
         </Container>
       </Section>
 
-      {/* Materials ---------------------------------------------------- */}
-      <Section surface="surface-2" className="overflow-hidden">
+      {/* Products ----------------------------------------------------- */}
+      <Section surface="surface-2" className="overflow-hidden" id="products">
         <Container>
           <SectionHeader
-            eyebrow={<Eyebrow>{t("materials.eyebrowLabel")}</Eyebrow>}
-            heading={t("materials.heading")}
-            intro={t("materials.sub")}
+            eyebrow={<Eyebrow>{t("products.eyebrowLabel")}</Eyebrow>}
+            heading={t("products.heading")}
+            intro={t("products.sub")}
           />
         </Container>
         {/* Outside the Container on purpose — the strip runs to the viewport
             edge so that "there is more this way" needs no chevron. */}
-        <MaterialsStrip
-          items={materials}
-          images={landingImages.woodworks.materials}
-          alt={t("materials.alt")}
+        <ProductStrip
+          items={products}
+          images={landingImages.woodworks.products}
+          alt={t("products.alt")}
         />
+        {/* Back INSIDE the Container, and that is the demotion. The strip
+            breaking the margin is what makes it the section's subject; the
+            substrates returning to the text column is what makes them its
+            footnote. Same section, two ranks, no second heading needed. */}
+        <Container>
+          <SubstrateList
+            label={t("substrates.label")}
+            sub={t("substrates.sub")}
+            items={substrates}
+          />
+        </Container>
+      </Section>
+
+      {/* Capacity ----------------------------------------------------- */}
+      <Section surface="surface" id="capacity">
+        <Container>
+          <SectionHeader
+            eyebrow={<Eyebrow>{t("capacity.eyebrowLabel")}</Eyebrow>}
+            heading={t("capacity.heading")}
+            intro={t("capacity.sub")}
+          />
+          {/*
+            ⚠ THE INDEX JOIN. `WOODWORKS_CAPACITY` supplies the figures and the
+            message array supplies each one's unit and label, matched by
+            position — so the two lists are one data structure split across two
+            files for translation, and reordering either one alone silently
+            reprints "30,000 m²" under "Doors". facts.test.ts checks they are
+            the same length in both locales and can check nothing more.
+          */}
+          <CapacityBand
+            locale={locale}
+            headlineValue={FACTS.capacityAnnualSar.value}
+            headlineGrouping={FACTS.capacityAnnualSar.grouping}
+            headline={capacityHeadline}
+            stats={WOODWORKS_CAPACITY}
+            items={capacityItems}
+          />
+        </Container>
       </Section>
 
       {/* Standards table --------------------------------------------- */}
-      <Section surface="surface">
+      <Section surface="surface-2">
         <Container>
           <SectionHeader
             eyebrow={<Eyebrow>{t("standards.eyebrowLabel")}</Eyebrow>}
@@ -248,7 +304,7 @@ export default async function WoodworksPage({
       </Section>
 
       {/* Services ----------------------------------------------------- */}
-      <Section surface="surface-2">
+      <Section surface="surface">
         <Container>
           <SectionHeader
             eyebrow={<Eyebrow>{t("services.eyebrowLabel")}</Eyebrow>}
