@@ -31,11 +31,16 @@
  * what cannot be verified is whether this is the right artwork for it. If it is
  * the ice-cream lockup, STARK needs to send the hotel one.
  *
- * THE ASSETS ARE PROCESSED, NOT RAW. The sources are PowerPoint screenshot
- * crops: 60-214px wide, all on opaque plates, one reversed out of black, and
- * with ink density varying seven-fold across the set. The build script is kept
- * at scratchpad/logos31/build.py and its header explains each pass. The two
- * decisions that matter to anyone reading THIS file:
+ * THE ASSETS ARE PROCESSED, NOT RAW. The sources are the client's high-
+ * resolution exports (`~/Downloads/client logo high resolution`): 1254-2126px
+ * wide, every one on a white plate except MBL, which is white type on a grey
+ * plate and is keyed like a reverse (invert to dark-on-white, then key). They
+ * REPLACED the original 60-214px PowerPoint crops in the high-res round — same
+ * 31 marks, same slugs, cleaner pixels — so HILTON is now plain black-on-white
+ * and no longer the black-plate special case it was. The rebuild script is kept
+ * at scratchpad/logos31b/build2.py (it supersedes scratchpad/logos31/build.py)
+ * and its header explains each pass and what changed. The two decisions that
+ * matter to anyone reading THIS file:
  *
  *   1. OPTICAL SIZE IS BAKED INTO THE ASSET. Every canvas is exactly 96px tall
  *      and the mark inside it is scaled so the set balances — a square crest
@@ -72,37 +77,37 @@ export type ClientLogo = {
  * brands, and sorted any other way they clump.
  */
 export const CLIENTS: readonly ClientLogo[] = [
-  { key: "saudi-binladin-group", src: "/clients/saudi-binladin-group.png", width: 92, height: 96 },
-  { key: "hilton", src: "/clients/hilton.png", width: 73, height: 96 },
-  { key: "nesma-partners", src: "/clients/nesma-partners.png", width: 111, height: 96 },
-  { key: "intercontinental", src: "/clients/intercontinental.png", width: 137, height: 96 },
-  { key: "el-seif", src: "/clients/el-seif.png", width: 91, height: 96 },
-  { key: "novotel", src: "/clients/novotel.png", width: 131, height: 96 },
-  { key: "red-sea", src: "/clients/red-sea.png", width: 126, height: 96 },
-  { key: "ramada", src: "/clients/ramada.png", width: 118, height: 96 },
-  { key: "acciona", src: "/clients/acciona.png", width: 103, height: 96 },
-  { key: "four-points-by-sheraton", src: "/clients/four-points-by-sheraton.png", width: 82, height: 96 },
-  { key: "rolaco", src: "/clients/rolaco.png", width: 65, height: 96 },
-  { key: "swissotel", src: "/clients/swissotel.png", width: 134, height: 96 },
-  { key: "mbl", src: "/clients/mbl.png", width: 82, height: 96 },
-  { key: "movenpick", src: "/clients/movenpick.png", width: 151, height: 96 },
-  { key: "kayan", src: "/clients/kayan.png", width: 90, height: 96 },
-  { key: "shaza", src: "/clients/shaza.png", width: 127, height: 96 },
-  { key: "macc", src: "/clients/macc.png", width: 89, height: 96 },
-  { key: "elaf", src: "/clients/elaf.png", width: 75, height: 96 },
-  { key: "unec", src: "/clients/unec.png", width: 71, height: 96 },
-  { key: "sands-hotel-and-spa", src: "/clients/sands-hotel-and-spa.png", width: 65, height: 96 },
-  { key: "awan", src: "/clients/awan.png", width: 94, height: 96 },
-  { key: "casablanca", src: "/clients/casablanca.png", width: 81, height: 96 },
-  { key: "unidecor", src: "/clients/unidecor.png", width: 104, height: 96 },
-  { key: "touq-balad-hotel", src: "/clients/touq-balad-hotel.png", width: 91, height: 96 },
-  { key: "sbcm", src: "/clients/sbcm.png", width: 83, height: 96 },
-  { key: "digital-city", src: "/clients/digital-city.png", width: 88, height: 96 },
-  { key: "jabal-edsas", src: "/clients/jabal-edsas.png", width: 102, height: 96 },
-  { key: "bmc", src: "/clients/bmc.png", width: 82, height: 96 },
-  { key: "menabev", src: "/clients/menabev.png", width: 84, height: 96 },
-  { key: "al-adwani-general-hospital", src: "/clients/al-adwani-general-hospital.png", width: 109, height: 96 },
-  { key: "royal-saudi-naval-forces", src: "/clients/royal-saudi-naval-forces.png", width: 63, height: 96 },
+  { key: "saudi-binladin-group", src: "/clients/saudi-binladin-group.png", width: 96, height: 96 },
+  { key: "hilton", src: "/clients/hilton.png", width: 65, height: 96 },
+  { key: "nesma-partners", src: "/clients/nesma-partners.png", width: 83, height: 96 },
+  { key: "intercontinental", src: "/clients/intercontinental.png", width: 90, height: 96 },
+  { key: "el-seif", src: "/clients/el-seif.png", width: 78, height: 96 },
+  { key: "novotel", src: "/clients/novotel.png", width: 90, height: 96 },
+  { key: "red-sea", src: "/clients/red-sea.png", width: 111, height: 96 },
+  { key: "ramada", src: "/clients/ramada.png", width: 106, height: 96 },
+  { key: "acciona", src: "/clients/acciona.png", width: 95, height: 96 },
+  { key: "four-points-by-sheraton", src: "/clients/four-points-by-sheraton.png", width: 78, height: 96 },
+  { key: "rolaco", src: "/clients/rolaco.png", width: 84, height: 96 },
+  { key: "swissotel", src: "/clients/swissotel.png", width: 111, height: 96 },
+  { key: "mbl", src: "/clients/mbl.png", width: 87, height: 96 },
+  { key: "movenpick", src: "/clients/movenpick.png", width: 104, height: 96 },
+  { key: "kayan", src: "/clients/kayan.png", width: 75, height: 96 },
+  { key: "shaza", src: "/clients/shaza.png", width: 107, height: 96 },
+  { key: "macc", src: "/clients/macc.png", width: 97, height: 96 },
+  { key: "elaf", src: "/clients/elaf.png", width: 93, height: 96 },
+  { key: "unec", src: "/clients/unec.png", width: 58, height: 96 },
+  { key: "sands-hotel-and-spa", src: "/clients/sands-hotel-and-spa.png", width: 87, height: 96 },
+  { key: "awan", src: "/clients/awan.png", width: 91, height: 96 },
+  { key: "casablanca", src: "/clients/casablanca.png", width: 105, height: 96 },
+  { key: "unidecor", src: "/clients/unidecor.png", width: 75, height: 96 },
+  { key: "touq-balad-hotel", src: "/clients/touq-balad-hotel.png", width: 75, height: 96 },
+  { key: "sbcm", src: "/clients/sbcm.png", width: 84, height: 96 },
+  { key: "digital-city", src: "/clients/digital-city.png", width: 83, height: 96 },
+  { key: "jabal-edsas", src: "/clients/jabal-edsas.png", width: 80, height: 96 },
+  { key: "bmc", src: "/clients/bmc.png", width: 67, height: 96 },
+  { key: "menabev", src: "/clients/menabev.png", width: 97, height: 96 },
+  { key: "al-adwani-general-hospital", src: "/clients/al-adwani-general-hospital.png", width: 116, height: 96 },
+  { key: "royal-saudi-naval-forces", src: "/clients/royal-saudi-naval-forces.png", width: 60, height: 96 },
 ] as const;
 
 /**
@@ -127,15 +132,15 @@ export const CLIENT_ROWS: readonly (readonly ClientLogo[])[] = [
  *
  * WAS 3, FOR EIGHT LOGOS. One set of four was roughly 970px, so a half-track
  * needed three sets to clear a wide display. With 31 logos a single set is
- * already ~2.4-2.7k, so the same guarantee costs two sets instead of three —
+ * already ~2.4-2.5k, so the same guarantee costs two sets instead of three —
  * and that matters, because this number multiplies the DOM: each step of it
  * adds ~62 `<img>` elements across the two rows for a band that is decoration.
  *
  * IT CANNOT GO TO 1, and the margin is the interesting part. The two rows come
- * to ~5.1k combined, so even split perfectly evenly neither half would clear
- * 2560 on its own — the set is about 100px short of the wide-display ceiling.
- * `Clients.test.ts` recomputes this from the widths in the manifest, so
- * dropping a logo cannot silently reintroduce the gap.
+ * to ~5.0k combined, so neither half clears 2560 on its own — the sets land
+ * roughly 20-130px short of the wide-display ceiling. `Clients.test.ts`
+ * recomputes this from the widths in the manifest, so dropping a logo (or a
+ * re-export that shrinks the marks) cannot silently reintroduce the gap.
  */
 export const SETS_PER_HALF = 2;
 
@@ -145,18 +150,19 @@ export const WIDEST_SUPPORTED_VIEWPORT = 2560;
 /**
  * Rendered logo height, and the item padding, both at their desktop ceiling.
  *
- * 34 → 44px in the polish round. At 34px against a 55% opacity these read as
- * grey smudges on the sand surface rather than as marks anyone could identify,
- * which defeats the only purpose a client wall has. The row heights grow with
- * them; the loop arithmetic below is recomputed from these numbers, so the
- * change cannot silently open a gap in the ticker.
+ * 34 → 44px in the polish round, then up to 60px on request. At 34px against a
+ * 55% opacity these read as grey smudges on the sand surface rather than as
+ * marks anyone could identify, which defeats the only purpose a client wall
+ * has. The row heights grow with them; the loop arithmetic below is recomputed
+ * from these numbers, so the change cannot silently open a gap in the ticker
+ * (bigger only ever widens the track, so it stays seamless).
  *
- * NOTE that 44px is the height of the CANVAS, not of the mark: every asset is a
+ * NOTE that 60px is the height of the CANVAS, not of the mark: every asset is a
  * 96px-tall canvas with the mark optically sized inside it, so the ink renders
  * shorter than 44px by a different amount per logo. That is the point — see the
  * manifest docblock.
  */
-export const LOGO_RENDER_HEIGHT = 44;
+export const LOGO_RENDER_HEIGHT = 60;
 export const ITEM_PADDING_X = 60;
 
 /** Width one repetition of a row occupies at desktop scale, in px. */

@@ -157,7 +157,7 @@ function LogoRow({
                 // Ceiling matches LOGO_RENDER_HEIGHT in clients.ts, which is
                 // what the loop-width arithmetic is computed from — they move
                 // together or the ticker opens a gap.
-                className="h-[clamp(30px,3.2vw,44px)] w-auto opacity-70 grayscale transition-[opacity,filter] duration-500 hover:opacity-100 hover:grayscale-0 motion-reduce:transition-none"
+                className="h-[clamp(38px,4.4vw,60px)] w-auto opacity-70 grayscale transition-[opacity,filter] duration-500 hover:opacity-100 hover:grayscale-0 motion-reduce:transition-none"
                 // Decorative-scale asset that is on screen immediately below
                 // the fold; letting it lazy-load produces a row of holes.
                 loading="eager"
