@@ -77,7 +77,7 @@
     "about": {
       "heading": "More than a manufacturer.",
       "paragraphs": [
-        "Strategic Trust for Advanced and Reliable Knowledge (STARK) provides integrated manufacturing solutions across woodworks, furniture and mattresses, for hospitality, residential, commercial, administrative, healthcare and government projects.",
+        "Strategic Trust for Advanced and Reliable Knowledge (STARK) provides integrated manufacturing solutions across woodworks, furniture and mattresses, for hospitality, residential, commercial, administrative, healthcare, government, educational and mixed-use projects.",
         "It was formed in 2026, when Saudi Light Industries, making foam and mattresses in Jeddah since 1967, joined with Trust Wood and the Haidar family's decades in the wood industry. Two factories, one company.",
         "That is why design, manufacturing and on-site execution sit in a single accountable process here rather than across four contracts. Every element is engineered for durability and finished to the standard hospitality demands."
       ],
@@ -96,6 +96,17 @@
           "title": "Mission",
           "body": "We meet our customers' needs by delivering reliable industrial products and services, supported by accumulated expertise, specialized talent, and the highest quality standards, creating sustainable value for our partners and society."
         }
+      ],
+      "sectorsLabel": "Sectors we serve",
+      "sectors": [
+        "Hospitality",
+        "Residential",
+        "Commercial",
+        "Administrative",
+        "Healthcare",
+        "Government",
+        "Educational",
+        "Mixed-use developments"
       ]
     },
     "features": {
@@ -161,7 +172,18 @@
           "alt": "Complete turnkey interior environment."
         }
       ],
-      "eyebrowLabel": "Our divisions"
+      "eyebrowLabel": "Our divisions",
+      "engineeringServices": {
+        "label": "Engineering & technical services",
+        "items": [
+          "Design development",
+          "Technical office support",
+          "Shop drawings",
+          "Value engineering",
+          "Interior design",
+          "Project coordination"
+        ]
+      }
     },
     "clients": {
       "eyebrow": "Clients",
@@ -403,6 +425,30 @@
           "title": "Delivered, not shipped",
           "body": "Coordinated delivery and installation. The project ends when the space is ready, not when the truck leaves."
         }
+      ]
+    },
+    "markets": {
+      "eyebrowLabel": "Where we work",
+      "heading": "Rooted in the Kingdom, reaching the region.",
+      "sub": "Our focus is Saudi Arabia across every region, with active markets in Bahrain and Yemen and a planned expansion across the wider region.",
+      "currentLabel": "Current markets",
+      "current": [
+        "Saudi Arabia, all regions",
+        "Bahrain",
+        "Yemen"
+      ],
+      "futureLabel": "Future expansion",
+      "future": [
+        "United Arab Emirates",
+        "Kuwait",
+        "Qatar",
+        "Lebanon",
+        "Syria",
+        "Oman",
+        "Jordan",
+        "Iraq",
+        "Egypt",
+        "Sudan"
       ]
     }
   },
@@ -767,7 +813,34 @@
       "heading": "Eight models, one line.",
       "sub": "Each model is a different combination of springs, foams and comfort layers. The names are blue's own.",
       "alt": "The {name} mattress by blue.",
-      "note": "siesta's range is not shown here: there is no siesta product photography yet."
+      "note": "siesta's range is not shown here: there is no siesta product photography yet.",
+      "techLabel": "Built with",
+      "techItems": [
+        {
+          "name": "Memory Foam",
+          "body": "Body-contouring comfort for pressure relief and support."
+        },
+        {
+          "name": "Natural Latex",
+          "body": "Organic latex for durability and natural comfort."
+        },
+        {
+          "name": "Pocket Springs",
+          "body": "Motion isolation and adaptive support for shared sleep."
+        },
+        {
+          "name": "Micro / Mini Pocket",
+          "body": "Precise support with enhanced stability."
+        },
+        {
+          "name": "TPE Support",
+          "body": "An adaptive layer that distributes weight and eases pressure points."
+        },
+        {
+          "name": "Custom Comfort",
+          "body": "Adjustable firmness for personalised sleep preferences."
+        }
+      ]
     },
     "engineering": {
       "eyebrowLabel": "Inside the mattress",

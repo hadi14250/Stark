@@ -32,7 +32,19 @@ import { BLUE_MODELS, BLUE_MODEL_NAMES, mattressImages } from "./assets";
  * heading would read as the whole catalogue. The heading names blue and the
  * note under the grid names the gap.
  */
-export function BlueRange({ alt, note }: { alt: string; note: string }) {
+type Tech = { name: string; body: string };
+
+export function BlueRange({
+  alt,
+  note,
+  techLabel,
+  techItems,
+}: {
+  alt: string;
+  note: string;
+  techLabel: string;
+  techItems: Tech[];
+}) {
   return (
     <>
       <ul className="mt-[clamp(32px,4vw,60px)] grid grid-cols-2 gap-[clamp(12px,1.6vw,24px)] nav:grid-cols-4">
@@ -71,6 +83,43 @@ export function BlueRange({ alt, note }: { alt: string; note: string }) {
           );
         })}
       </ul>
+
+      {/*
+        BUILT WITH: blue's construction technologies (profile p22). Names and
+        neutral one-line descriptions only. The trademarked health-claim
+        technologies on the same profile page — PUROTEX+ (allergen), INTENSE
+        (relaxation), COMBOCOOL (cooling) and SKIN+ — are deliberately omitted,
+        per the standing decision that a mattress is not a medical device and a
+        sales-sheet percentage is not a clinical result. See the docblock above
+        and SOURCES.md.
+      */}
+      {techItems.length > 0 && (
+        <div className="mt-[clamp(32px,4vw,56px)]">
+          <p
+            className="text-center font-mono text-eyebrow tracking-eyebrow text-[color:var(--color-ink-muted)]"
+            style={{ textTransform: "var(--eyebrow-transform)" as "uppercase" }}
+          >
+            {techLabel}
+          </p>
+          <ul className="mt-[clamp(16px,2vw,28px)] grid grid-cols-2 gap-[clamp(10px,1.4vw,18px)] nav:grid-cols-3">
+            {techItems.map((item, i) => (
+              <Reveal
+                as="li"
+                key={item.name}
+                delay={(i % 3) * 0.06}
+                className="h-full list-none rounded-[var(--radius-card)] border p-[clamp(16px,1.6vw,22px)] text-start [border-color:var(--color-line)]"
+              >
+                <p className="font-display text-[clamp(15px,1.3vw,18px)] font-semibold text-[color:var(--color-ink)]">
+                  {item.name}
+                </p>
+                <p className="mt-1.5 text-body-sm leading-body text-[color:var(--color-ink-body)]">
+                  {item.body}
+                </p>
+              </Reveal>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {/* Centred, because this page's section headers are: the mattresses
           theme sets `--align-axis: center` in both locales, and a note

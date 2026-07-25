@@ -42,6 +42,7 @@ const DIVISION_KEYS: DivisionKey[] = ["woodworks", "mattresses", "engineering"];
 export async function Divisions() {
   const t = await getTranslations("landing.categories");
   const items = t.raw("items") as Item[];
+  const engineering = t.raw("engineeringServices") as { label: string; items: string[] };
 
   const divisions: DivisionItem[] = items.map((item, i) => ({
     ...item,
@@ -58,6 +59,40 @@ export async function Divisions() {
           intro={t("sub")}
         />
         <DivisionIndex items={divisions} />
+
+        {/* Engineering & technical services, named.
+            The third division panel has no photograph of its own subject (see
+            the TODO in DivisionIndex), so its substance lives here as a service
+            list rather than in an image, from the new profile's product-lines
+            page (p9): the two genuinely new names are Interior design and Shop
+            drawings. Same mono-tag language as the capability strips. */}
+        <div className="mt-[clamp(28px,3.5vw,48px)] border-t pt-5 [border-color:var(--color-line)]">
+          <div className="flex flex-col gap-3 nav:flex-row nav:items-baseline nav:gap-6">
+            <p
+              className="shrink-0 font-mono text-eyebrow tracking-eyebrow text-[color:var(--color-ink-muted)]"
+              style={{ textTransform: "var(--eyebrow-transform)" as "uppercase" }}
+            >
+              {engineering.label}
+            </p>
+            <ul
+              className="flex flex-wrap gap-x-4 gap-y-2 font-mono text-[11px] tracking-eyebrow text-[color:var(--color-ink-muted)]"
+              style={{ textTransform: "var(--eyebrow-transform)" as "uppercase" }}
+            >
+              {engineering.items.map((s, i) => (
+                <li key={s} className="flex items-center gap-4">
+                  {i > 0 && (
+                    <span
+                      aria-hidden
+                      className="h-1 w-1 shrink-0 rounded-full"
+                      style={{ background: "var(--color-accent)" }}
+                    />
+                  )}
+                  {s}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
       </Container>
     </Section>
   );

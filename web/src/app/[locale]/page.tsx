@@ -7,6 +7,7 @@ import { About } from "@/components/home/About";
 import { Capabilities } from "@/components/home/Capabilities";
 import { Divisions } from "@/components/home/Divisions";
 import { Clients } from "@/components/home/Clients";
+import { Markets } from "@/components/home/Markets";
 import { Turnkey } from "@/components/home/Turnkey";
 import { GalleryTeaser } from "@/components/home/GalleryTeaser";
 import { Marquee } from "@/components/landing/Marquee";
@@ -46,6 +47,10 @@ export async function generateMetadata({
  * claim, and "here is who we delivered it to" is the evidence, so they belong
  * adjacent. It also keeps the surface rhythm alternating (surface-2, surface,
  * surface-2, dark) rather than putting two identical bands back to back.
+ *
+ * Markets follows Clients — "who we build for" then "where we work" — and takes
+ * the surface role so the run stays surface-2, surface, then the dark Turnkey
+ * band. It carries the geographic reach the 2026 profile added (p27).
  */
 export default async function HomePage({ params }: PageProps<"/[locale]">) {
   const { locale } = await params;
@@ -59,6 +64,7 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
       <Capabilities />
       <Divisions />
       <Clients />
+      <Markets />
       <Turnkey />
       <GalleryTeaser />
       <ProcessSection />

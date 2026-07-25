@@ -38,7 +38,14 @@ describe("the blue range names its photographs", () => {
       // Scoped to THIS render's container, not to `screen`. Auto-cleanup is
       // not configured in this project, so a document-wide query picks up the
       // previous locale's eight images too and the count assertion reads 16.
-      const { container } = render(<BlueRange alt={template} note="" />);
+      const { container } = render(
+        <BlueRange
+          alt={template}
+          note=""
+          techLabel={(locale === "en" ? en : ar).mattresses.models.techLabel}
+          techItems={(locale === "en" ? en : ar).mattresses.models.techItems}
+        />,
+      );
       const alts = [...container.querySelectorAll("img")].map(
         (el) => el.getAttribute("alt") ?? "",
       );

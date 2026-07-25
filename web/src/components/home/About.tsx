@@ -27,6 +27,7 @@ export async function About() {
   const paragraphs = t.raw("paragraphs") as string[];
   const collageAlt = t.raw("collageAlt") as string[];
   const pillars = t.raw("pillars") as Pillar[];
+  const sectors = t.raw("sectors") as string[];
 
   return (
     <Section surface="surface" id="about" className="scroll-mt-[var(--header-h)]">
@@ -89,6 +90,40 @@ export async function About() {
                   </Reveal>
                 ))}
               </dl>
+
+              {/* Sectors STARK serves. Extended to eight on the new profile
+                  (p11, adds Educational and Mixed-use developments). A quiet
+                  footer to the positioning column, in the same mono-tag
+                  language as the capability strips. */}
+              <Reveal
+                y={20}
+                delay={0.5}
+                className="w-full border-t pt-4 [border-color:var(--color-line)]"
+              >
+                <p
+                  className="font-mono text-eyebrow tracking-eyebrow text-[color:var(--color-ink-muted)]"
+                  style={{ textTransform: "var(--eyebrow-transform)" as "uppercase" }}
+                >
+                  {t("sectorsLabel")}
+                </p>
+                <ul
+                  className="mt-3 flex flex-wrap gap-x-4 gap-y-2 font-mono text-[11px] tracking-eyebrow text-[color:var(--color-ink-muted)]"
+                  style={{ textTransform: "var(--eyebrow-transform)" as "uppercase" }}
+                >
+                  {sectors.map((s, i) => (
+                    <li key={s} className="flex items-center gap-4">
+                      {i > 0 && (
+                        <span
+                          aria-hidden
+                          className="h-1 w-1 shrink-0 rounded-full"
+                          style={{ background: "var(--color-accent)" }}
+                        />
+                      )}
+                      {s}
+                    </li>
+                  ))}
+                </ul>
+              </Reveal>
             </div>
           </Reveal>
 

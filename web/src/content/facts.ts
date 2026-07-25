@@ -134,13 +134,18 @@ export const FACTS = {
   },
 
   /**
-   * ⚠ WAS 2. Profile v3 raises it to three a year, and adds an annual value of
-   * SAR 100M that the site does not currently print.
+   * ⚠ WENT 2 → 3 → 2. The v3 comment deck raised it to three a year; the new
+   * polished STARK Company Profile (2026) reverts to two ("Two mega-projects /
+   * year", p8, MANUFACTURING & FACILITY), and the client confirmed the site
+   * should follow the new profile. Two also resolves a live self-contradiction:
+   * `landing.features.items[1]` already read "Capable of two mega-projects per
+   * year" while this stat counted to 3. The SAR 100M annual value the v3 deck
+   * added is still not printed.
    */
   megaProjects: {
-    value: 3,
+    value: 2,
     grouping: false,
-    source: "STARK company profile v3 (2026) slide 6",
+    source: "STARK Company Profile (2026, 29pp) p8 (MANUFACTURING & FACILITY)",
   },
 
   /**
@@ -187,7 +192,7 @@ export const FACTS = {
     value: "+966 56 200 1435",
     source: "STARK company profile 2026 p20 (back page)",
     caveat:
-      "One digit from blue's customer-care line (0562001434). Most likely a consecutive block rather than a typo, but worth one confirmation since a wrong number fails silently.",
+      "One digit from blue's customer-care line (0562001434). Most likely a consecutive block rather than a typo, but worth one confirmation since a wrong number fails silently. NOTE: the newer 29-page profile's back page (p28) prints only email, city and STARK.com.sa and OMITS the phone, so this stays sourced to the earlier back page; the client asked to keep it live regardless.",
   },
 
   /** Kilo 16 on Old Makkah Road, the address the profile publishes. */
@@ -568,9 +573,11 @@ export const WOODWORKS_CAPACITY: readonly StatFact[] = [
  * (`slic-ksa.net`, `siesta.sa`), which is suggestive but is a designer's
  * artwork, not a statement that the mailbox exists.
  *
- * ⚠ STILL OPEN: which domain is real. Both are plausible and they cannot both
- * be the inbox. Everything that prints an address now reads this constant, so
- * settling it is a one-line change instead of a hunt.
+ * ✓ RESOLVED by the new STARK Company Profile (2026): its back page (p28)
+ * prints `info@stark.com.sa` and the domain `STARK.com.sa`, the one a
+ * human-approved brand-level document publishes. `stark-ksa.net` was a
+ * designer's artwork pattern and does not win. The constant already held the
+ * right value; this note records that the open question is now closed.
  */
 export const CONTACT_EMAIL = "info@stark.com.sa";
 

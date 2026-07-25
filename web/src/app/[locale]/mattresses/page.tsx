@@ -190,7 +190,12 @@ export default async function MattressesPage({
             `{name}` rather than interpolated here: the component owns the loop
             over the models and the page does not know their names.
           */}
-          <BlueRange alt={t.raw("models.alt")} note={t("models.note")} />
+          <BlueRange
+            alt={t.raw("models.alt")}
+            note={t("models.note")}
+            techLabel={t("models.techLabel")}
+            techItems={t.raw("models.techItems")}
+          />
         </Container>
       </Section>
 

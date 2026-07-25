@@ -45,6 +45,7 @@ raised the first two as a fatal conflict and was wrong.
 | Code | Document | Pages | What it is good for |
 |---|---|---|---|
 | **SP** | STARK Company Profile 2026 | 20 | The authority for anything STARK-level. Company history and the group structure, the real vision and mission, 6 core services, manufacturing stats, sectors served, both mattress brands with full model lists, and the contact block. |
+| **SP29** | STARK Company Profile 2026 (polished) | 29 | The client's finished, designed profile. Supersedes SP / v3 where they differ. Same content, finalised: reverts mega-projects to **two** (p8), adds a geographic-reach map (p27: Bahrain, Yemen, regional expansion), lists eight sectors incl. Educational and Mixed-use (p11), a BLUE technologies page (p22), Interior Design + Shop Drawings as named services (p9), and confirms the domain `STARK.com.sa` on the back page (p28, which omits the phone). |
 | **BG** | STARK Brand Guidelines | 53 | Identity only. **Zero business facts.** Prints the domain `stark-ksa.net`. |
 | **TW** | Trust Wood Company Profile | 108 | ISO 9001, ISO 45001, FSC CoC, quality plan with tolerances, machinery list, 26 client marks, 3 named projects. |
 | **SIESTA** | Siesta Catalogue 2026 | 60 | SLIC's history, 16 models in 3 ranges, layer construction per model, warranties, fire-resistant hospitality range. |
@@ -284,6 +285,32 @@ Arabic it stays in Latin script and untranslated: the expansion only works as
 an acronym in English, no document renders it in Arabic, and inventing an
 Arabic version to make the sentence flow would be precisely the failure mode
 this whole audit exists to prevent.
+
+## The 29-page profile (SP29): the sweep
+
+The client delivered a finished, designed 29-page company profile and asked for the site
+to be walked page by page against it. The site was already built to the v3 comment deck
+below, so most of SP29 was already live verbatim (vision and mission, the six-step
+process, the wood capacity grid, product ranges, brand copy and taglines, the 31 logos).
+The deltas that shipped:
+
+| Change | SP29 | Note |
+|---|---|---|
+| Mega-projects `3` → `2` | p8 | The stat band now agrees with `landing.features` ("two mega-projects"); the v3 deck's 3 is superseded. `FACTS.megaProjects`. |
+| Sectors `6` → `8` | p11 | Adds Educational and Mixed-use developments. `landing.about.paragraphs[0]` plus new `landing.about.sectors` chips. |
+| Geographic reach (new) | p27 | Current markets: KSA all regions, Bahrain, Yemen. Future expansion: UAE, Kuwait, Qatar, Lebanon, Syria, Oman, Jordan, Iraq, Egypt, Sudan. New `landing.markets` + `Markets.tsx`. Typographic, not the map. |
+| BLUE technologies (new) | p22 | Six construction technologies (Memory Foam, Natural Latex, Pocket Springs, Micro/Mini Pocket, TPE Support, Custom Comfort). `mattresses.models.tech`. **Health-claim tech held back:** PUROTEX+, INTENSE, COMBOCOOL, SKIN+ omitted per the standing decision. |
+| Engineering services named | p9 | Design development, Technical office support, Shop drawings, Value engineering, Interior design, Project coordination. `landing.categories.engineeringServices`. |
+| Domain **resolved** | p28 | Back page prints `info@stark.com.sa` and `STARK.com.sa`, closing the `stark-ksa.net` question in favour of `stark.com.sa`. `CONTACT_EMAIL`. |
+
+⚠ **The back page omits the phone.** SP29 p28 shows only email, city and domain; the site
+keeps `+966 56 200 1435` (still sourced to SP p20), at the client's request. See
+`FACTS.contactPhone`.
+
+**Kept, not changed:** the mattresses page still says SLIC was the Kingdom's "first" foam
+factory (sourced to SIESTA p3); SP29 softens this to "one of the pioneering national
+companies in foam manufacturing". The stronger claim has its own source, so it stays; the
+softer wording is recorded here as a nuance only.
 
 ## Company profile v3 (2026): what changed
 
