@@ -12,10 +12,10 @@ import { ContactSection } from "@/components/contact/ContactSection";
 import { MattressHero } from "@/components/mattresses/MattressHero";
 import { BrandDuet, type BrandPanel } from "@/components/mattresses/BrandDuet";
 import { BlueRange } from "@/components/mattresses/BlueRange";
+import { SiestaRange } from "@/components/mattresses/SiestaRange";
 import { ComfortLayers, type Layer } from "@/components/mattresses/ComfortLayers";
 import { CountUp } from "@/components/motion/CountUp";
-import { landingImages } from "@/components/landing/assets";
-import { mattressImages } from "@/components/mattresses/assets";
+import { mattressImages, siestaImages } from "@/components/mattresses/assets";
 import { FACTS } from "@/content/facts";
 import "@/styles/mattresses.css";
 
@@ -63,34 +63,31 @@ type Item = { title: string; body: string };
  * page's motion signature now.
  *
  * STRUCTURE:
- *   hero        full-viewport photograph, headline lying on it, one CTA
- *   duet        the two sub-brands as tinted full-height panels, side by side
- *   range       blue's eight models, real product photography
- *   layers      the set-piece — a CSS cross-section that comes apart on scroll
- *   credentials output figure, reach, and a light band of manufacturing claims
- *   turnkey     the link across to woodworks
+ *   hero          full-viewport photograph, headline lying on it, one CTA
+ *   duet          the two sub-brands as tinted full-height panels, side by side
+ *   range         blue's nine models, real product photography
+ *   siesta-range  siesta's sixteen models, now with real product photography
+ *   layers        the set-piece — a CSS cross-section that comes apart on scroll
+ *   credentials   output figure, reach, and a light band of manufacturing claims
+ *   turnkey       the link across to woodworks
  *
- * SURFACES ALTERNATE, AND ADDING `range` COST A PARITY THAT CANNOT BE PAID.
+ * SURFACES ALTERNATE, AND SIX SECTIONS FINALLY MAKE THE PARITY CLEAN.
  *
- * Two adjacent sections on one surface read as a single very long section, so
- * inserting a section flips every surface below it: `layers`, `credentials` and
- * `turnkey` all changed for a section added above them.
+ * The run is pinned at BOTH ends: the hero's veil fades to `--color-surface` so
+ * the first section wants `surface`, and `ContactSection` hard-codes
+ * `surface="surface"` so the last section wants `surface-2` before it. With FIVE
+ * sections that was impossible — strict alternation from `surface` landed on
+ * `surface` again at the end, so `turnkey→contact` had to share a surface and
+ * leaned on contact's near-black opening panel to hide the seam.
  *
- * But the run is pinned at BOTH ends. The hero's veil fades to `--color-surface`
- * so the section under it wants to be `surface`; `ContactSection` hard-codes
- * `surface="surface"` so the section above it wants to be `surface-2`. Four
- * sections satisfied both. Five cannot: strict alternation from `surface` lands
- * on `surface` again at position five, and no reordering changes that, because
- * it is the COUNT that is now odd rather than the arrangement.
- *
- * So one boundary has to give, and it is turnkey→contact. That is the cheapest
- * one on the page and the choice was made by looking at it: contact opens with
- * a full-width near-black panel, which separates the two sections far more
- * forcefully than a 1.5% shift in ivory ever did. The backgrounds are identical
- * there and nobody can tell.
- *
- * ⚠ A verification harness that asserts "every section differs from the one
- * before it" will report this page as failing. It is not. Check WHICH pair.
+ * Adding `siesta-range` makes SIX, and six alternates perfectly:
+ *   surface, surface-2, surface, surface-2, surface, surface-2 → contact surface.
+ * Every boundary now differs, including turnkey→contact, so the old masked seam
+ * is gone. Inserting the section flipped `layers`, `credentials` and `turnkey`
+ * one step each — that is the cost the parity note always warned an inserted
+ * section would cost, paid here to buy a cleaner page rather than a hidden
+ * collision. blue's range and siesta's range are DELIBERATELY on different
+ * surfaces so the two brands read as two sections, not one very long range.
  *
  * NO DTC TRUST BAR, still. The template's warranty / trial-period / free-
  * delivery triplet came from an e-commerce store; STARK has no cart, no trial
@@ -113,30 +110,24 @@ export default async function MattressesPage({
   const output = t.raw("credentials.output") as { label: string };
 
   /**
-   * HALF OF THIS IS NOW REAL, and the halves must not be levelled up to match.
+   * BOTH HALVES ARE NOW REAL, and they still must not be crossed.
    *
-   * blue's panel carries the manufacturer's own photography. siesta's does not
-   * and still cannot: there is no siesta photography in the client's product
-   * folder, and siesta is the HOSPITALITY brand — a different buyer, different
-   * models, warranties from one year to ten. Putting a blue mattress under
-   * siesta's heading would tell a hotel it was looking at the contract range
-   * when it was looking at a consumer product. That is the one photograph on
-   * this route that would be a false statement rather than a placeholder.
+   * blue's panel carries the manufacturer's own photography; siesta's now does
+   * too — the client supplied a full product folder, so its panel shows the
+   * Comfort model's hospitality room instead of the furniture-template
+   * placeholder it wore for months. The old dependency (TODO(F-content)) is
+   * resolved.
    *
-   * WHAT CHANGED THIS ROUND: siesta stopped borrowing the WOODWORKS HERO. Its
-   * panel pointed at `gallery[6]`, which is byte-identical to the photograph
-   * that opens the woodworks route, so one file was doing two unrelated jobs on
-   * two routes and siesta's job was being done by a living room with no bed in
-   * it. It now has a hotel bedroom of its own. Still a placeholder, but a
-   * placeholder about the right subject.
-   *
-   * TODO(F-content): siesta product photography is a client dependency. Until
-   * it lands, its panel keeps a landing-set frame, which claims nothing.
+   * ⚠ THE ONE RULE THAT SURVIVES: never put a blue shot under siesta's heading
+   * or the reverse. siesta is the HOSPITALITY brand, a different buyer with
+   * different models and warranties, and a crossed photograph would tell a hotel
+   * it was looking at the contract range when it was looking at a consumer
+   * product. `siestaImages` and `mattressImages` are separate for exactly this.
    */
   const panels: BrandPanel[] = brands.map((b, i) => ({
     ...b,
     brand: i === 0 ? "blue" : "siesta",
-    image: i === 0 ? mattressImages.blueBrand : landingImages.hospitalityRoom,
+    image: i === 0 ? mattressImages.blueBrand : siestaImages.brand,
   }));
 
   return (
@@ -199,8 +190,20 @@ export default async function MattressesPage({
         </Container>
       </Section>
 
+      {/* siesta's range — the collection the client asked for ---------- */}
+      <Section surface="surface" id="siesta-range">
+        <Container>
+          <SectionHeader
+            eyebrow={<Eyebrow>{t("siestaCollection.eyebrowLabel")}</Eyebrow>}
+            heading={t("siestaCollection.heading")}
+            intro={t("siestaCollection.sub")}
+          />
+          <SiestaRange alt={t.raw("siestaCollection.alt")} />
+        </Container>
+      </Section>
+
       {/* Comfort layers — the set-piece ------------------------------- */}
-      <Section surface="surface" className="overflow-hidden">
+      <Section surface="surface-2" className="overflow-hidden">
         <MarkTexture
           variant="mark"
           color="var(--green-500)"
@@ -219,7 +222,7 @@ export default async function MattressesPage({
       </Section>
 
       {/* Manufacturing credentials ----------------------------------- */}
-      <Section surface="surface-2">
+      <Section surface="surface">
         <Container>
           <SectionHeader
             eyebrow={<Eyebrow>{t("credentials.eyebrowLabel")}</Eyebrow>}
@@ -308,7 +311,7 @@ export default async function MattressesPage({
       </Section>
 
       {/* Turnkey link-out -------------------------------------------- */}
-      <Section surface="surface">
+      <Section surface="surface-2">
         <Container>
           <SectionHeader
             eyebrow={<Eyebrow>{t("turnkey.eyebrowLabel")}</Eyebrow>}

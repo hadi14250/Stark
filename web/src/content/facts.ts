@@ -386,7 +386,7 @@ export const FACTS = {
     value: 10,
     source: "blue dossier, Products/Luna/Luna info 2026.docx (الضمان)",
     caveat:
-      "Stated on 7 of the 8 product sheets. Pure latex leaves the warranty field blank; confirm it is also 10 years before this is read as covering the whole range.",
+      "Stated on 7 of the now-9 product sheets. Pure latex leaves the warranty field blank, and Blue 2 arrived as photography with no sheet at all; neither carries the 10-year claim on the site, so this figure is not read as covering the whole range.",
   },
 
   /**
@@ -439,9 +439,9 @@ export const FACTS = {
     source: "Siesta catalogue 2026 pp7-59 (model pages)",
   },
   blueModels: {
-    value: 8,
+    value: 9,
     source:
-      "blue dossier, Products/*/info 2026.docx (Blue 1, Comfy zone, Loft, Luna, Pure latex, Retro, Skin care, Sky)",
+      "blue dossier, Products/*/info 2026.docx (Blue 1, Comfy zone, Loft, Luna, Pure latex, Retro, Skin care, Sky) + the client's `blue` photo folder, which adds Blue 2 (photos only, no sheet)",
   },
 
   /** siesta's three ranges: Luxury, Economic, Hospitality. */

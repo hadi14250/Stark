@@ -124,10 +124,17 @@ export function BlueRange({
       {/* Centred, because this page's section headers are: the mattresses
           theme sets `--align-axis: center` in both locales, and a note
           hard-left under a centred heading and a full-width grid reads as a
-          stray caption rather than as the section's footnote. */}
-      <p className="mx-auto mt-[clamp(16px,2vw,24px)] max-w-[60ch] text-center text-body-sm leading-body text-[color:var(--color-ink-muted)]">
-        {note}
-      </p>
+          stray caption rather than as the section's footnote.
+
+          RENDERED ONLY WHEN PRESENT. The note used to say siesta's range was
+          not shown here because it had no photography. siesta now has a whole
+          section of its own below, so the note is empty and this collapses
+          rather than leaving a stray blank line. */}
+      {note && (
+        <p className="mx-auto mt-[clamp(16px,2vw,24px)] max-w-[60ch] text-center text-body-sm leading-body text-[color:var(--color-ink-muted)]">
+          {note}
+        </p>
+      )}
     </>
   );
 }

@@ -32,19 +32,32 @@
  * removed by dropping alpha components under 5000px and dilating the survivor
  * so the mattress's own soft edge was not clipped. Nothing else was retouched.
  *
- * ⚠ THESE ARE blue (B2C) PRODUCTS AND ONLY blue PRODUCTS. siesta is the
- * hospitality brand, sold to a different buyer with different warranties, and
- * there is no siesta photography in this set. Using one of these for siesta
- * would attach a consumer product to a contract range — a factual claim about
- * what a hotel would be buying. The siesta panel keeps its placeholder until
- * the client supplies siesta shots.
+ * blue AND siesta NOW BOTH HAVE THE MANUFACTURER'S OWN PHOTOGRAPHY. This set
+ * was blue-only for months, with a placeholder standing in for siesta because
+ * the contract brand shipped no product shots. The client has since supplied
+ * both: a `blue 2` folder (blue's ninth model, photos only, no spec sheet) and
+ * a full `siesta` folder, one sub-folder per model. Both were classified into
+ * the same six shot-types by aspect ratio + alpha (see the scratchpad
+ * generator) and written under `blue-2-*` and `siesta-<slug>-*`.
+ *
+ * ⚠ STILL DO NOT CROSS THE BRANDS. A blue shot under a siesta name (or vice
+ * versa) misstates the contract range to a hospitality buyer, which is the
+ * failure the brand duet once shipped. `siestaShot` and `blueShot` are separate
+ * for that reason; nothing should route one brand's model through the other.
  */
 
 const base = "/mattresses";
 
-/** The eight models in blue's 2026 range, as folder slugs. */
+/**
+ * The nine models in blue's 2026 range, as folder slugs.
+ *
+ * `blue-2` is the ninth, added when the client sent its photography. It has NO
+ * product sheet (unlike the other eight), so it carries no construction or
+ * warranty copy anywhere on the site — only its name and its pictures.
+ */
 export const BLUE_MODELS = [
   "blue-1",
+  "blue-2",
   "comfy-zone",
   "loft",
   "luna",
@@ -76,6 +89,7 @@ export type BlueModel = (typeof BLUE_MODELS)[number];
  */
 export const BLUE_MODEL_NAMES: Record<BlueModel, string> = {
   "blue-1": "Blue 1",
+  "blue-2": "Blue 2",
   "comfy-zone": "Comfy Zone",
   loft: "Loft",
   luna: "Luna",
@@ -83,6 +97,60 @@ export const BLUE_MODEL_NAMES: Record<BlueModel, string> = {
   retro: "Retro",
   "skin-care": "Skin Care",
   sky: "Sky",
+};
+
+/**
+ * siesta's sixteen models, in the profile's own order: five Luxury, eight Eco
+ * Range, three Hospitality (profile 2026 p26). The order is the reading order of
+ * the range band and the gallery, so it is category-grouped on purpose — Luxury
+ * first, Hospitality last.
+ *
+ * Folder → slug corrections applied when the client's photography was imported:
+ * `crowa`→`crown`, `medical`→`medical-soft`, `visco point`→`visco-point`. The
+ * display names below are the profile's spellings.
+ */
+export const SIESTA_MODELS = [
+  // Luxury
+  "sensice",
+  "florist",
+  "crown",
+  "gloria",
+  "visco-point",
+  // Eco Range
+  "perfection",
+  "planor",
+  "prestige",
+  "night",
+  "moon",
+  "orthopedic",
+  "softness",
+  "medical-soft",
+  // Hospitality
+  "comfort",
+  "standard",
+  "sleep",
+] as const;
+
+export type SiestaModel = (typeof SIESTA_MODELS)[number];
+
+/** Proper nouns, kept Latin in both locales — same rule as BLUE_MODEL_NAMES. */
+export const SIESTA_MODEL_NAMES: Record<SiestaModel, string> = {
+  sensice: "Sensice",
+  florist: "Florist",
+  crown: "Crown",
+  gloria: "Gloria",
+  "visco-point": "Visco Point",
+  perfection: "Perfection",
+  planor: "Planor",
+  prestige: "Prestige",
+  night: "Night",
+  moon: "Moon",
+  orthopedic: "Orthopedic",
+  softness: "Softness",
+  "medical-soft": "Medical Soft",
+  comfort: "Comfort",
+  standard: "Standard",
+  sleep: "Sleep",
 };
 
 export type ShotType = "banner" | "product" | "cutaway" | "room-a" | "room-b" | "fabric";
@@ -100,6 +168,11 @@ const EXT: Record<ShotType, string> = {
 /** Path to one shot of one model. */
 export function blueShot(model: BlueModel, shot: ShotType): string {
   return `${base}/${model}-${shot}.${EXT[shot]}`;
+}
+
+/** Path to one shot of one siesta model. Files are `siesta-<slug>-<shot>`. */
+export function siestaShot(model: SiestaModel, shot: ShotType): string {
+  return `${base}/siesta-${model}-${shot}.${EXT[shot]}`;
 }
 
 /** The three shot types that are products cut out of their background. */
@@ -160,4 +233,22 @@ export const mattressImages = {
 
   /** Home's "Mattresses" division card. */
   homeCard: blueShot("luna", "room-a"),
+} as const;
+
+export const siestaImages = {
+  /**
+   * The sixteen models, in the range band. Cut-outs (the classifier routes each
+   * folder's `Details` shot here), so they sit on the page's ivory with no plate
+   * behind them and `isCutout` renders them `contain`, exactly like blue's.
+   */
+  rangeShot: (model: SiestaModel) => siestaShot(model, "product"),
+
+  /**
+   * siesta's half of the brand duet. Was `landingImages.hospitalityRoom` — a
+   * furniture-template placeholder — because the contract brand had no
+   * photography. It now has a real hospitality room of its own (Comfort, the
+   * hotel-grade model), so the panel finally shows a siesta bed under siesta's
+   * name instead of a stock interior.
+   */
+  brand: siestaShot("comfort", "room-b"),
 } as const;

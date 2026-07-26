@@ -56,13 +56,24 @@ const ARABIC_INDIC = "٠١٢٣٤٥٦٧٨٩";
  *   "60,000 m²"          -> 60000        (separator stripped, so it matches 60000)
  *   "+10 mm / +5 mm"     -> 10, 5
  *
- * `B2B` and `B2C` are removed first. They are the one place a digit appears in
- * the current copy without being a quantity, and letting the scanner see them
- * would silently whitelist the token "2" for every other use on the site.
+ * `B2B` and `B2C` are removed first. They are one place a digit appears in the
+ * copy without being a quantity, and letting the scanner see them would silently
+ * whitelist the token "2" for every other use on the site.
+ *
+ * `Blue 1` and `Blue 2` are removed for the SAME reason, not a weaker one. They
+ * are blue's model wordmarks — proper nouns the manufacturer prints on the
+ * mattress, exactly like a product called "Series 3". The digit is part of a
+ * NAME, not a measurement, so it has no document and page to cite any more than
+ * "B2B" does. Stripping it keeps the guard pointed at quantities (where an
+ * unsourced number is a false claim) instead of flagging a product's own name.
+ * The strip is deliberately exact — `Blue 1`/`Blue 2`, not `Blue \d+` — so a
+ * future "Blue 10" cannot smuggle an unrelated "10" past the scanner. Both
+ * locales keep these two names in Latin, so one pattern covers en and ar.
  */
 function numericTokens(value: string): string[] {
   const normalised = value
     .replace(/\bB2[BC]\b/g, "")
+    .replace(/\bBlue [12]\b/g, "")
     .replace(/[٠-٩]/g, (d) => String(ARABIC_INDIC.indexOf(d)));
   return [...normalised.matchAll(/\d[\d,]*/g)].map((m) => m[0].replace(/,/g, ""));
 }

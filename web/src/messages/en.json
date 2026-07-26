@@ -786,7 +786,7 @@
           "tagline": "Where dreams begin.",
           "body": "STARK's specialised mattress brand, created for modern homes, hospitality projects, healthcare environments and commercial spaces. Its models run from cooling comfort and motion isolation to natural latex, recovery support and customisable firmness.",
           "points": [
-            "8 models",
+            "9 models",
             "10-year warranty",
             "Foam, latex and pocket spring"
           ],
@@ -810,10 +810,10 @@
     },
     "models": {
       "eyebrowLabel": "The blue range",
-      "heading": "Eight models, one line.",
+      "heading": "Nine models, one line.",
       "sub": "Each model is a different combination of springs, foams and comfort layers. The names are blue's own.",
       "alt": "The {name} mattress by blue.",
-      "note": "siesta's range is not shown here: there is no siesta product photography yet.",
+      "note": "",
       "techLabel": "Built with",
       "techItems": [
         {
@@ -897,6 +897,12 @@
       "heading": "The rest of the room, too.",
       "sub": "Most hospitality buyers are not just buying beds. STARK's woodworks and fit-out divisions deliver the rest of the room under the same contract.",
       "cta": "Explore turnkey"
+    },
+    "siestaCollection": {
+      "eyebrowLabel": "The siesta collection",
+      "heading": "Sixteen models, three ranges.",
+      "sub": "siesta's luxury, everyday and hospitality mattresses, photographed for the first time from the brand's own product range.",
+      "alt": "The {name} mattress by siesta."
     }
   },
   "gallery": {
@@ -1263,35 +1269,6 @@
         }
       ]
     },
-    "siestaRange": {
-      "title": "siesta",
-      "subtitle": "Product range · Mattress division",
-      "headline": "A wide range, built for the room it is bought for",
-      "paragraph": "A wide mattress range serving luxury, economic and hospitality needs through practical comfort, durable construction and accessible quality. siesta and blue run to one manufacturing standard and two comfort identities.",
-      "scope": "Luxury, economic and hospitality ranges",
-      "delivery": "Product range",
-      "materials": "Spring, foam and hybrid constructions",
-      "overlayTitle": "A range, not a model",
-      "overlaySummary": "siesta is shown here as a range rather than as named models, because the mattress division's documented model list belongs to blue. The photographs are rooms rather than products for the same reason: nothing here should be read as a picture of a particular siesta mattress.",
-      "overlaySpecs": [
-        {
-          "label": "Division",
-          "value": "Mattress division"
-        },
-        {
-          "label": "Sectors",
-          "value": "Luxury, economic, hospitality"
-        },
-        {
-          "label": "Positioning",
-          "value": "Practical comfort, durable construction"
-        },
-        {
-          "label": "Standard",
-          "value": "One manufacturing standard with blue"
-        }
-      ]
-    },
     "overlaySummaryLabel": "In brief",
     "overlaySpecsLabel": "Details",
     "prev": "Previous",
@@ -1308,6 +1285,644 @@
       "fixed-joinery": "Fixed Joinery",
       "blue": "blue",
       "siesta": "siesta"
+    },
+    "blue1": {
+      "title": "Blue 1",
+      "subtitle": "blue mattress · Cooling comfort",
+      "headline": "Cooling comfort with zoned support",
+      "paragraph": "Blue 1 pairs a cooling comfort layer with TPE support and zoned body support, so weight is carried where it needs to be and one sleeper's movement stays on their own side.",
+      "scope": "Cooling comfort, zoned support",
+      "delivery": "10-year warranty",
+      "materials": "Cooling comfort layer, TPE support",
+      "overlayTitle": "A model, not a project",
+      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Blue 1 is a mattress in blue's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
+      "overlaySpecs": [
+        {
+          "label": "Brand",
+          "value": "blue mattress, for the home"
+        },
+        {
+          "label": "Comfort layer",
+          "value": "Cooling foam"
+        },
+        {
+          "label": "Support",
+          "value": "TPE, zoned"
+        },
+        {
+          "label": "Warranty",
+          "value": "10 years"
+        }
+      ]
+    },
+    "blue2": {
+      "title": "Blue 2",
+      "subtitle": "blue mattress · The range's newest",
+      "headline": "The newest model in blue's range",
+      "paragraph": "Blue 2 is the most recent addition to blue's 2026 range. Its product sheet has not reached us yet, so it is shown here by its photography rather than by a construction it would be wrong to guess at.",
+      "scope": "blue's newest model",
+      "delivery": "blue mattress",
+      "materials": "Shown by photography",
+      "overlayTitle": "A model, not a project",
+      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Blue 2 is a mattress in blue's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
+      "overlaySpecs": [
+        {
+          "label": "Brand",
+          "value": "blue mattress, for the home"
+        },
+        {
+          "label": "Range",
+          "value": "blue 2026 range"
+        },
+        {
+          "label": "Type",
+          "value": "Mattress"
+        },
+        {
+          "label": "Shown by",
+          "value": "Manufacturer photography"
+        }
+      ]
+    },
+    "blueLoft": {
+      "title": "Loft",
+      "subtitle": "blue mattress · Recovery focus",
+      "headline": "Recovery support on mini pocket springs",
+      "paragraph": "Loft is built for recovery, pairing VITALIZE comfort technology with mini pocket springs that answer the body point by point rather than as one flat surface.",
+      "scope": "Recovery focus, mini pocket springs",
+      "delivery": "10-year warranty",
+      "materials": "VITALIZE layer, mini pocket springs",
+      "overlayTitle": "A model, not a project",
+      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Loft is a mattress in blue's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
+      "overlaySpecs": [
+        {
+          "label": "Brand",
+          "value": "blue mattress, for the home"
+        },
+        {
+          "label": "Support",
+          "value": "Mini pocket springs"
+        },
+        {
+          "label": "Comfort layer",
+          "value": "VITALIZE"
+        },
+        {
+          "label": "Warranty",
+          "value": "10 years"
+        }
+      ]
+    },
+    "blueLuna": {
+      "title": "Luna",
+      "subtitle": "blue mattress · Pocket spring comfort",
+      "headline": "Micro-pocket support that stays quiet",
+      "paragraph": "Luna sits on micro-pocket springs, small enough to follow the body closely and to keep one sleeper's movement from crossing to the other side.",
+      "scope": "Pocket spring comfort, motion isolation",
+      "delivery": "10-year warranty",
+      "materials": "Micro-pocket springs, comfort layers",
+      "overlayTitle": "A model, not a project",
+      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Luna is a mattress in blue's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
+      "overlaySpecs": [
+        {
+          "label": "Brand",
+          "value": "blue mattress, for the home"
+        },
+        {
+          "label": "Support",
+          "value": "Micro-pocket springs"
+        },
+        {
+          "label": "Built for",
+          "value": "Motion isolation"
+        },
+        {
+          "label": "Warranty",
+          "value": "10 years"
+        }
+      ]
+    },
+    "blueRetro": {
+      "title": "Retro",
+      "subtitle": "blue mattress · Classic spring",
+      "headline": "Classic springs under a pillow top",
+      "paragraph": "Retro keeps a classic spring support and finishes it with a pillow-top surface, a balanced, familiar feel for sleepers who want support they can recognise.",
+      "scope": "Classic spring, pillow-top",
+      "delivery": "10-year warranty",
+      "materials": "Classic springs, pillow-top surface",
+      "overlayTitle": "A model, not a project",
+      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Retro is a mattress in blue's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
+      "overlaySpecs": [
+        {
+          "label": "Brand",
+          "value": "blue mattress, for the home"
+        },
+        {
+          "label": "Support",
+          "value": "Classic springs"
+        },
+        {
+          "label": "Surface",
+          "value": "Pillow-top"
+        },
+        {
+          "label": "Warranty",
+          "value": "10 years"
+        }
+      ]
+    },
+    "blueSkinCare": {
+      "title": "Skin Care",
+      "subtitle": "blue mattress · Specialty cover",
+      "headline": "A specialty knitted cover",
+      "paragraph": "Skin Care is finished with a specialty knitted cover over blue's comfort layers. It is photographed here for its construction; the fabric's marketed benefits are the brand's to make, not this gallery's.",
+      "scope": "Specialty knitted cover",
+      "delivery": "10-year warranty",
+      "materials": "Specialty cover, comfort foam layers",
+      "overlayTitle": "A model, not a project",
+      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Skin Care is a mattress in blue's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
+      "overlaySpecs": [
+        {
+          "label": "Brand",
+          "value": "blue mattress, for the home"
+        },
+        {
+          "label": "Cover",
+          "value": "Specialty knit"
+        },
+        {
+          "label": "Comfort layer",
+          "value": "Foam layers"
+        },
+        {
+          "label": "Warranty",
+          "value": "10 years"
+        }
+      ]
+    },
+    "siestaSensice": {
+      "title": "Sensice",
+      "subtitle": "siesta · Luxury · cool-wool cooling",
+      "headline": "Cool-wool cooling with a hotel-style feel",
+      "paragraph": "Sensice tops Mini Pocket support with a Euro Top comfort layer and a cool-wool cover, for the kind of cool, even sleep a hotel room is judged by.",
+      "scope": "Mini Pocket, Euro Top",
+      "delivery": "Luxury",
+      "materials": "Cool-wool cover, Mini Pocket, Euro Top",
+      "overlayTitle": "A model, not a project",
+      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Sensice is a mattress in siesta's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
+      "overlaySpecs": [
+        {
+          "label": "Brand",
+          "value": "siesta, for hospitality"
+        },
+        {
+          "label": "Support",
+          "value": "Mini Pocket"
+        },
+        {
+          "label": "Surface",
+          "value": "Euro Top"
+        },
+        {
+          "label": "Cover",
+          "value": "Cool wool"
+        }
+      ]
+    },
+    "siestaFlorist": {
+      "title": "Florist",
+      "subtitle": "siesta · Luxury · double-spring precision",
+      "headline": "Pocket and Nano Pocket, working together",
+      "paragraph": "Florist runs two spring systems at once, Pocket over Nano Pocket, so support stays precise and the surface stays stable across the whole mattress.",
+      "scope": "Pocket and Nano Pocket springs",
+      "delivery": "Luxury",
+      "materials": "Pocket springs, Nano Pocket springs",
+      "overlayTitle": "A model, not a project",
+      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Florist is a mattress in siesta's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
+      "overlaySpecs": [
+        {
+          "label": "Brand",
+          "value": "siesta, for hospitality"
+        },
+        {
+          "label": "Support",
+          "value": "Pocket and Nano Pocket"
+        },
+        {
+          "label": "Feel",
+          "value": "Precise, stable"
+        },
+        {
+          "label": "Range",
+          "value": "Luxury"
+        }
+      ]
+    },
+    "siestaCrown": {
+      "title": "Crown",
+      "subtitle": "siesta · Luxury · double-sided luxury",
+      "headline": "A double-sided luxury build",
+      "paragraph": "Crown is built to be used on either side, over pocket spring support and premium comfort layers, with motion kept from crossing the bed.",
+      "scope": "Pocket springs, two usable sides",
+      "delivery": "Luxury",
+      "materials": "Pocket springs, premium comfort layers",
+      "overlayTitle": "A model, not a project",
+      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Crown is a mattress in siesta's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
+      "overlaySpecs": [
+        {
+          "label": "Brand",
+          "value": "siesta, for hospitality"
+        },
+        {
+          "label": "Support",
+          "value": "Pocket springs"
+        },
+        {
+          "label": "Construction",
+          "value": "Double-sided"
+        },
+        {
+          "label": "Range",
+          "value": "Luxury"
+        }
+      ]
+    },
+    "siestaGloria": {
+      "title": "Gloria",
+      "subtitle": "siesta · Luxury · flexible Bonnell",
+      "headline": "Flexible Bonnell springs, both sides",
+      "paragraph": "Gloria uses a flexible Bonnell spring core with layered comfort above it, and can be turned and used on both sides to even out wear.",
+      "scope": "Bonnell springs, two sides",
+      "delivery": "Luxury",
+      "materials": "Bonnell springs, layered comfort",
+      "overlayTitle": "A model, not a project",
+      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Gloria is a mattress in siesta's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
+      "overlaySpecs": [
+        {
+          "label": "Brand",
+          "value": "siesta, for hospitality"
+        },
+        {
+          "label": "Support",
+          "value": "Bonnell springs"
+        },
+        {
+          "label": "Construction",
+          "value": "Double-sided"
+        },
+        {
+          "label": "Range",
+          "value": "Luxury"
+        }
+      ]
+    },
+    "siestaViscoPoint": {
+      "title": "Visco Point",
+      "subtitle": "siesta · Luxury · memory foam contour",
+      "headline": "Memory foam that contours deep",
+      "paragraph": "Visco Point is a memory foam mattress that contours closely to the body, spreading weight to ease the load on the joints and the spine.",
+      "scope": "Memory foam, body-contouring",
+      "delivery": "Luxury",
+      "materials": "Memory foam comfort layer",
+      "overlayTitle": "A model, not a project",
+      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Visco Point is a mattress in siesta's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
+      "overlaySpecs": [
+        {
+          "label": "Brand",
+          "value": "siesta, for hospitality"
+        },
+        {
+          "label": "Comfort layer",
+          "value": "Memory foam"
+        },
+        {
+          "label": "Built for",
+          "value": "Body-contouring"
+        },
+        {
+          "label": "Range",
+          "value": "Luxury"
+        }
+      ]
+    },
+    "siestaPerfection": {
+      "title": "Perfection",
+      "subtitle": "siesta · Eco Range · Euro Top value",
+      "headline": "Euro Top softness on pocket springs",
+      "paragraph": "Perfection sets a Euro Top comfort layer over pocket springs, a soft, stable surface pitched at everyday value rather than a premium price.",
+      "scope": "Pocket springs, Euro Top",
+      "delivery": "Eco Range",
+      "materials": "Pocket springs, Euro Top",
+      "overlayTitle": "A model, not a project",
+      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Perfection is a mattress in siesta's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
+      "overlaySpecs": [
+        {
+          "label": "Brand",
+          "value": "siesta, for hospitality"
+        },
+        {
+          "label": "Support",
+          "value": "Pocket springs"
+        },
+        {
+          "label": "Surface",
+          "value": "Euro Top"
+        },
+        {
+          "label": "Range",
+          "value": "Eco Range"
+        }
+      ]
+    },
+    "siestaPlanor": {
+      "title": "Planor",
+      "subtitle": "siesta · Eco Range · breathable knit",
+      "headline": "Pocket springs under a breathable knit",
+      "paragraph": "Planor is a practical pocket spring mattress with comfort layers and a breathable knitted cover, built for dependable everyday sleep.",
+      "scope": "Pocket springs, knitted cover",
+      "delivery": "Eco Range",
+      "materials": "Pocket springs, comfort layers, knitted cover",
+      "overlayTitle": "A model, not a project",
+      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Planor is a mattress in siesta's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
+      "overlaySpecs": [
+        {
+          "label": "Brand",
+          "value": "siesta, for hospitality"
+        },
+        {
+          "label": "Support",
+          "value": "Pocket springs"
+        },
+        {
+          "label": "Cover",
+          "value": "Breathable knit"
+        },
+        {
+          "label": "Range",
+          "value": "Eco Range"
+        }
+      ]
+    },
+    "siestaPrestige": {
+      "title": "Prestige",
+      "subtitle": "siesta · Eco Range · pillow-top comfort",
+      "headline": "A pillow top over spring support",
+      "paragraph": "Prestige adds a pillow-top comfort layer to spring support, a softer top over a familiar spring feel.",
+      "scope": "Spring support, pillow-top",
+      "delivery": "Eco Range",
+      "materials": "Springs, pillow-top layer",
+      "overlayTitle": "A model, not a project",
+      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Prestige is a mattress in siesta's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
+      "overlaySpecs": [
+        {
+          "label": "Brand",
+          "value": "siesta, for hospitality"
+        },
+        {
+          "label": "Support",
+          "value": "Springs"
+        },
+        {
+          "label": "Surface",
+          "value": "Pillow-top"
+        },
+        {
+          "label": "Range",
+          "value": "Eco Range"
+        }
+      ]
+    },
+    "siestaNight": {
+      "title": "Night",
+      "subtitle": "siesta · Eco Range · reliable Bonnell",
+      "headline": "Reliable Bonnell springs, every night",
+      "paragraph": "Night is an affordable Bonnell spring mattress built for reliable, uncomplicated nightly comfort.",
+      "scope": "Bonnell springs",
+      "delivery": "Eco Range",
+      "materials": "Bonnell springs, comfort layers",
+      "overlayTitle": "A model, not a project",
+      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Night is a mattress in siesta's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
+      "overlaySpecs": [
+        {
+          "label": "Brand",
+          "value": "siesta, for hospitality"
+        },
+        {
+          "label": "Support",
+          "value": "Bonnell springs"
+        },
+        {
+          "label": "Built for",
+          "value": "Everyday value"
+        },
+        {
+          "label": "Range",
+          "value": "Eco Range"
+        }
+      ]
+    },
+    "siestaMoon": {
+      "title": "Moon",
+      "subtitle": "siesta · Eco Range · entry-level",
+      "headline": "Simple, practical sleep",
+      "paragraph": "Moon is siesta's entry-level mattress, kept simple and practical for sleepers who want the essentials done well.",
+      "scope": "Entry-level comfort",
+      "delivery": "Eco Range",
+      "materials": "Support core, comfort layer",
+      "overlayTitle": "A model, not a project",
+      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Moon is a mattress in siesta's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
+      "overlaySpecs": [
+        {
+          "label": "Brand",
+          "value": "siesta, for hospitality"
+        },
+        {
+          "label": "Built for",
+          "value": "Simple, practical sleep"
+        },
+        {
+          "label": "Feel",
+          "value": "Everyday"
+        },
+        {
+          "label": "Range",
+          "value": "Eco Range"
+        }
+      ]
+    },
+    "siestaOrthopedic": {
+      "title": "Orthopedic",
+      "subtitle": "siesta · Eco Range · firmer support",
+      "headline": "A firmer, support-focused foam",
+      "paragraph": "Orthopedic is a support-focused foam mattress tuned for a firmer feel, for sleepers who prefer a solid surface under them.",
+      "scope": "Support foam, firmer feel",
+      "delivery": "Eco Range",
+      "materials": "Support foam",
+      "overlayTitle": "A model, not a project",
+      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Orthopedic is a mattress in siesta's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
+      "overlaySpecs": [
+        {
+          "label": "Brand",
+          "value": "siesta, for hospitality"
+        },
+        {
+          "label": "Comfort layer",
+          "value": "Support foam"
+        },
+        {
+          "label": "Feel",
+          "value": "Firmer"
+        },
+        {
+          "label": "Range",
+          "value": "Eco Range"
+        }
+      ]
+    },
+    "siestaSoftness": {
+      "title": "Softness",
+      "subtitle": "siesta · Eco Range · gentle softness",
+      "headline": "A soft, gently contouring foam",
+      "paragraph": "Softness is a soft foam mattress that contours gently to the body, for sleepers who want a plush surface rather than a firm one.",
+      "scope": "Soft foam, gentle contour",
+      "delivery": "Eco Range",
+      "materials": "Soft foam layers",
+      "overlayTitle": "A model, not a project",
+      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Softness is a mattress in siesta's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
+      "overlaySpecs": [
+        {
+          "label": "Brand",
+          "value": "siesta, for hospitality"
+        },
+        {
+          "label": "Comfort layer",
+          "value": "Soft foam"
+        },
+        {
+          "label": "Feel",
+          "value": "Soft"
+        },
+        {
+          "label": "Range",
+          "value": "Eco Range"
+        }
+      ]
+    },
+    "siestaMedicalSoft": {
+      "title": "Medical Soft",
+      "subtitle": "siesta · Eco Range · soft with support",
+      "headline": "Softness balanced with support",
+      "paragraph": "Medical Soft balances a soft foam surface with a supportive core, so it gives underweight without giving way.",
+      "scope": "Soft foam, supportive core",
+      "delivery": "Eco Range",
+      "materials": "Soft foam, support core",
+      "overlayTitle": "A model, not a project",
+      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Medical Soft is a mattress in siesta's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
+      "overlaySpecs": [
+        {
+          "label": "Brand",
+          "value": "siesta, for hospitality"
+        },
+        {
+          "label": "Comfort layer",
+          "value": "Soft foam"
+        },
+        {
+          "label": "Support",
+          "value": "Support core"
+        },
+        {
+          "label": "Range",
+          "value": "Eco Range"
+        }
+      ]
+    },
+    "siestaComfort": {
+      "title": "Comfort",
+      "subtitle": "siesta · Hospitality · hotel-grade, fire-resistant",
+      "headline": "Hotel-grade springs, fire-resistant cover",
+      "paragraph": "Comfort is a hotel-grade pocket spring mattress finished in a fire-resistant fabric, built for the wear and the safety requirements of hospitality rooms.",
+      "scope": "Pocket springs, fire-resistant fabric",
+      "delivery": "Hospitality",
+      "materials": "Pocket springs, fire-resistant fabric",
+      "overlayTitle": "A model, not a project",
+      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Comfort is a mattress in siesta's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
+      "overlaySpecs": [
+        {
+          "label": "Brand",
+          "value": "siesta, for hospitality"
+        },
+        {
+          "label": "Support",
+          "value": "Pocket springs"
+        },
+        {
+          "label": "Cover",
+          "value": "Fire-resistant fabric"
+        },
+        {
+          "label": "Range",
+          "value": "Hospitality"
+        }
+      ]
+    },
+    "siestaStandard": {
+      "title": "Standard",
+      "subtitle": "siesta · Hospitality · durable, fire-resistant",
+      "headline": "Durable Bonnell springs for hotels",
+      "paragraph": "Standard is a fire-resistant Bonnell spring mattress built for safe, durable use in hotels, where a mattress has to last through constant turnover.",
+      "scope": "Bonnell springs, fire-resistant",
+      "delivery": "Hospitality",
+      "materials": "Bonnell springs, fire-resistant fabric",
+      "overlayTitle": "A model, not a project",
+      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Standard is a mattress in siesta's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
+      "overlaySpecs": [
+        {
+          "label": "Brand",
+          "value": "siesta, for hospitality"
+        },
+        {
+          "label": "Support",
+          "value": "Bonnell springs"
+        },
+        {
+          "label": "Cover",
+          "value": "Fire-resistant fabric"
+        },
+        {
+          "label": "Range",
+          "value": "Hospitality"
+        }
+      ]
+    },
+    "siestaSleep": {
+      "title": "Sleep",
+      "subtitle": "siesta · Hospitality · economic hospitality",
+      "headline": "Economic hospitality on Bonnell springs",
+      "paragraph": "Sleep is siesta's economic hospitality mattress, on Bonnell springs under a fire-resistant Jacquard cover, for projects fitting out at scale.",
+      "scope": "Bonnell springs, Jacquard cover",
+      "delivery": "Hospitality",
+      "materials": "Bonnell springs, fire-resistant Jacquard",
+      "overlayTitle": "A model, not a project",
+      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Sleep is a mattress in siesta's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
+      "overlaySpecs": [
+        {
+          "label": "Brand",
+          "value": "siesta, for hospitality"
+        },
+        {
+          "label": "Support",
+          "value": "Bonnell springs"
+        },
+        {
+          "label": "Cover",
+          "value": "Fire-resistant Jacquard"
+        },
+        {
+          "label": "Range",
+          "value": "Hospitality"
+        }
+      ]
     }
   }
 }

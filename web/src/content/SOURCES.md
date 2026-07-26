@@ -227,28 +227,38 @@ any JSX sentence or hardcoded accessible name in that directory. **The lesson
 generalises: a ported route is where untranslated copy hides, and message-file
 coverage says nothing about it.**
 
-## Mattress photography (added after the audit)
+## Mattress photography (added after the audit; siesta added later)
 
-blue's eight 2026 models ship with the manufacturer's own product photography,
-in `public/mattresses/`, six shots per model. This is the first real article
-photography on the site. Three models — Sky, Pure Latex, Comfy Zone — are in
-the gallery under the mattresses filter, and the copy for each comes from that
-model's own `info 2026.docx`.
+Both brands now ship with the manufacturer's own product photography, in
+`public/mattresses/`, six shots per model, classified from the client's source
+folders by aspect ratio and alpha. This is the first real article photography on
+the site.
 
-Two things it is NOT:
+- **blue: nine models.** The eight 2026 models plus **Blue 2**, which the client
+  sent as a `blue` photo folder. Blue 2 has photos only, **no `info` sheet**, so
+  it carries no construction or warranty copy anywhere: it is shown by its
+  pictures and its name, and the `blueModels` fact is 9.
+- **siesta: sixteen models.** The client's `siesta` folder, one sub-folder per
+  model, closed the gap this file used to flag. The mattresses page now has a
+  siesta range band (all 16) and the brand duet shows a real siesta room instead
+  of the old placeholder; the gallery's siesta sub-tab is its sixteen models, in
+  the catalogue's order (5 Luxury, 8 Eco Range, 3 Hospitality, profile p26).
 
-- **Not projects.** They are catalogue models, and every string says so. The
-  mattress division still has no documented project reference.
-- **Not siesta.** These are blue (B2C) products only. siesta is the hospitality
-  brand with different models and warranties from one to ten years, and there
-  is no siesta photography in the client's folder. The siesta half of the
-  mattresses page keeps a neutral placeholder rather than borrow one of these,
-  which would tell a hotel it was looking at the contract range.
+Two things it is still NOT:
+
+- **Not projects.** They are catalogue models, and every overlay says so. The
+  mattress division still has no documented project reference; the copy names a
+  model and a construction and claims no client, site or completion.
+- **Never crossed.** blue photography never appears under a siesta name or the
+  reverse (`siestaShot` / `blueShot` are separate). A crossed shot would tell a
+  hotel it was looking at the contract range.
 
 Held back per the standing decision on health claims: PUROTEX+ allergen
-percentages, INTENSE(TM)/cortisol and SKIN+(TM) carotenoid appear in five of
-the eight sheets and none of it ships. That is why the three models chosen lead
-on construction and certificates instead.
+percentages, INTENSE(TM)/cortisol and SKIN+(TM) carotenoid appear in five of the
+blue sheets and none of it ships — Skin Care's gallery entry describes its cover
+construction and explicitly declines the fabric's marketed benefit. siesta copy
+is drawn from the profile's one-line-per-model constructions (p26); nothing is
+invented for the models whose source is thin.
 
 ## The full name: an audit finding that was wrong
 

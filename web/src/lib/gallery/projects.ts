@@ -1,5 +1,11 @@
 import type { Theme } from "./types";
-import { blueShot, type BlueModel, type ShotType } from "@/components/mattresses/assets";
+import {
+  blueShot,
+  siestaShot,
+  type BlueModel,
+  type SiestaModel,
+  type ShotType,
+} from "@/components/mattresses/assets";
 
 /**
  * The gallery's data model.
@@ -224,6 +230,51 @@ const img = (name: string) => `/landing/${name}`;
  * routed through it is a real picture of the thing it is captioned as.
  */
 const mat = (model: BlueModel, shot: ShotType) => blueShot(model, shot);
+const sie = (model: SiestaModel, shot: ShotType) => siestaShot(model, shot);
+
+/**
+ * Mattress projects are catalogue MODELS, not case studies, so every one wires
+ * its six cells to the six shot-types the same way and takes its copy from the
+ * model's own message namespace. These builders keep that uniform: a new model
+ * is one line rather than twenty, and no cell can be hand-wired to the wrong
+ * shot. blue and siesta differ only in which `*Shot` resolver they close over.
+ */
+const mattressCells = (shot: (s: ShotType) => string): ProjectCells => ({
+  hero: shot("product"),
+  intro: shot("banner"),
+  portraitA: shot("room-b"),
+  feature: shot("cutaway"),
+  portraitB: shot("room-a"),
+  detail: shot("fabric"),
+});
+const mattressKeys = (k: string): Project["keys"] => ({
+  title: `${k}.title`,
+  subtitle: `${k}.subtitle`,
+  headline: `${k}.headline`,
+  paragraph: `${k}.paragraph`,
+  scope: `${k}.scope`,
+  delivery: `${k}.delivery`,
+  materials: `${k}.materials`,
+  overlayTitle: `${k}.overlayTitle`,
+  overlaySummary: `${k}.overlaySummary`,
+  overlaySpecs: `${k}.overlaySpecs`,
+});
+const blueModelProject = (id: string, model: BlueModel, k: string): Project => ({
+  id,
+  subCategory: "blue",
+  theme: "linen",
+  cells: mattressCells((s) => mat(model, s)),
+  keys: mattressKeys(k),
+  overlayBg: mat(model, "room-a"),
+});
+const siestaModelProject = (id: string, model: SiestaModel, k: string): Project => ({
+  id,
+  subCategory: "siesta",
+  theme: "linen",
+  cells: mattressCells((s) => sie(model, s)),
+  keys: mattressKeys(k),
+  overlayBg: sie(model, "room-a"),
+});
 
 /**
  * THE THREE REAL REFERENCES, replacing six that were invented.
@@ -623,52 +674,52 @@ export const PROJECTS: readonly Project[] = [
   },
 
   /**
+   * The rest of blue's nine, added when the client sent the full photo folder.
+   * The first three above were hand-authored; these six use the builder because
+   * they follow the identical shape. Blue 2 arrived as photography with no spec
+   * sheet, so its copy leads on that fact rather than inventing a construction.
+   */
+  blueModelProject("blue-1", "blue-1", "blue1"),
+  blueModelProject("blue-2", "blue-2", "blue2"),
+  blueModelProject("blue-loft", "loft", "blueLoft"),
+  blueModelProject("blue-luna", "luna", "blueLuna"),
+  blueModelProject("blue-retro", "retro", "blueRetro"),
+  blueModelProject("blue-skin-care", "skin-care", "blueSkinCare"),
+
+  /**
    * ── siesta ───────────────────────────────────────────────────────────────
    *
-   * ONE ENTRY, AND DELIBERATELY A RANGE RATHER THAN A MODEL.
+   * SIXTEEN MODELS, AND NO LONGER A PLACEHOLDER RANGE.
    *
-   * siesta has no photography and no documented model list — blue's three above
-   * come with the manufacturer's own product shots and named constructions;
-   * siesta comes with a paragraph on slide 13 and nothing else. So this entry
-   * describes the RANGE, in the deck's own terms, and names no model.
+   * This was ONE entry that described the range and showed rooms, because siesta
+   * had no product photography, and its own note said: "the moment real siesta
+   * photography arrives, this entry should become models." It has arrived. The
+   * client sent a full product folder, one sub-folder per model, so the range is
+   * now its sixteen models in the catalogue's order: five Luxury, eight Eco
+   * Range, three Hospitality (profile 2026 p26).
    *
-   * ⚠ THE PICTURES ARE ROOMS, NOT PRODUCTS, and that is the point. Putting a
-   * blue product shot under siesta's name would misstate the contract range to
-   * a hotel buyer, which is the specific failure mode flagged when the brand
-   * duet had these two sharing one photograph. A neutral hospitality scene
-   * claims nothing about what a siesta mattress looks like.
-   *
-   * The alternative was leaving the sub-category empty and declaring it in
-   * INTENTIONALLY_EMPTY. That was rejected because a tab you can select and get
-   * nothing from is worse than a tab that honestly describes a range — but the
-   * moment real siesta photography arrives, this entry should become models.
+   * PRODUCTS, NOT PROJECTS — the overlays say so, exactly as blue's do. siesta
+   * has no documented project reference; each entry names a model and a
+   * construction and claims no client, no site and no completion. Blue product
+   * shots are never routed here: `sie()` resolves siesta's own photography, so a
+   * hospitality buyer never sees a consumer mattress under a siesta name.
    */
-  {
-    id: "siesta-range",
-    subCategory: "siesta",
-    theme: "linen",
-    cells: {
-      hero: img("46cb9cc7e202b440.jpg"),
-      intro: img("f7965388e07b0b0c.jpg"),
-      portraitA: img("d1c0e28eb1c679aa.png"),
-      feature: img("301336c2a6f33570.jpg"),
-      portraitB: img("9147afdc9d8c4223.png"),
-      detail: img("f264f5dea2782694.jpg"),
-    },
-    keys: {
-      title: "siestaRange.title",
-      subtitle: "siestaRange.subtitle",
-      headline: "siestaRange.headline",
-      paragraph: "siestaRange.paragraph",
-      scope: "siestaRange.scope",
-      delivery: "siestaRange.delivery",
-      materials: "siestaRange.materials",
-      overlayTitle: "siestaRange.overlayTitle",
-      overlaySummary: "siestaRange.overlaySummary",
-      overlaySpecs: "siestaRange.overlaySpecs",
-    },
-    overlayBg: img("46cb9cc7e202b440.jpg"),
-  },
+  siestaModelProject("siesta-sensice", "sensice", "siestaSensice"),
+  siestaModelProject("siesta-florist", "florist", "siestaFlorist"),
+  siestaModelProject("siesta-crown", "crown", "siestaCrown"),
+  siestaModelProject("siesta-gloria", "gloria", "siestaGloria"),
+  siestaModelProject("siesta-visco-point", "visco-point", "siestaViscoPoint"),
+  siestaModelProject("siesta-perfection", "perfection", "siestaPerfection"),
+  siestaModelProject("siesta-planor", "planor", "siestaPlanor"),
+  siestaModelProject("siesta-prestige", "prestige", "siestaPrestige"),
+  siestaModelProject("siesta-night", "night", "siestaNight"),
+  siestaModelProject("siesta-moon", "moon", "siestaMoon"),
+  siestaModelProject("siesta-orthopedic", "orthopedic", "siestaOrthopedic"),
+  siestaModelProject("siesta-softness", "softness", "siestaSoftness"),
+  siestaModelProject("siesta-medical-soft", "medical-soft", "siestaMedicalSoft"),
+  siestaModelProject("siesta-comfort", "comfort", "siestaComfort"),
+  siestaModelProject("siesta-standard", "standard", "siestaStandard"),
+  siestaModelProject("siesta-sleep", "sleep", "siestaSleep"),
 ];
 
 /**
