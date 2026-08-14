@@ -99,7 +99,7 @@ Material that replaced invented copy in steps 2–6. Listed so each replacement 
 
 | Claim | Destined for | Source |
 |---|---|---|
-| ISO 9001:2015 (QAIS-Q-KSA-TW-10.22.020), ISO 45001:2018 (QAIS-OH-KSA-TW-10.22.012), QACS, scope "wood & furniture products manufacturing, supply and installation" | **NOT PUBLISHED** | TW p82 · ⚠ **both expired 13.12.2025.** Held back deliberately: an expired certificate is the class of claim this audit exists to remove. They go up the day a renewal arrives. |
+| ISO 9001, ISO 14001 and ISO 45001, as the "ISO CERTIFIED" mark | woodworks certifications | **SP2.4 p12** · ⚠ **PUBLISHED AT THE CLIENT'S INSTRUCTION — READ THIS BEFORE "FIXING" IT.** See below. |
 | FSC Chain of Custody **BMC-COC-010074**, BMC Assurance, registered 22-01-2024, **expires 21-01-2029** | woodworks certifications | TW p83 · ⚠ **system is "Transfer"**: certified output requires certified input. Never claim all our wood is FSC-certified. |
 | Intertek-certified fire-rated door manufacture, on cores from Halspan, Warm Springs and Ramkor (Intertek SpecID 61199 / 61212 / 61218) | woodworks certifications | TW p84 |
 | Quality Plan TW-QP-01; tolerances cutting +10 mm, sizing +5 mm, molding +3 mm, gluing +2 mm, painting +2 mm; 100% inspection | woodworks `standards` | TW |
@@ -115,6 +115,38 @@ Material that replaced invented copy in steps 2–6. Listed so each replacement 
 | Real vision and mission | `landing.about.pillars` | SP p2, near-verbatim |
 | STARK formed 2026 from SLIC and Trust Wood | `landing.about` | SP p3 |
 | Eight client references: Saudi Binladin Group, Nesma & Partners, Modern Building Leaders, Red Sea Development, El Seif, Alshaya, depa, acciona | `landing/clients.ts` | TW p38 · first three corroborated by TW pp100–101 |
+
+### ⚠ The ISO block, and why it is on the site
+
+For three rounds this audit held ISO 9001 and ISO 45001 OFF the site. The
+certificates in the Trust Wood profile (p82) are real —
+`QAIS-Q-KSA-TW-10.22.020` and `QAIS-OH-KSA-TW-10.22.012`, issued by QACS,
+scope "wood & furniture products manufacturing, supply and installation" — and
+**both expired 13.12.2025**. An expired certificate is the exact class of claim
+this audit exists to remove, so the note here read "they go up the day a
+renewal arrives."
+
+**They are up, and no renewal has arrived.** The client's finished Company
+Profile S.F 2.4 prints an ISO CERTIFIED mark on p12 covering 9001, 14001 and
+45001, and asked for the site's certifications section to match that page. That
+is their document and their claim to make; this entry exists so that it is a
+decision on the record rather than a regression somebody discovers later.
+
+Three things a future reader needs:
+
+1. **ISO 14001 is the weakest of the three.** 9001 and 45001 are expired
+   certificates; 14001 has **no certificate in any document supplied**, at any
+   date. It is not lapsed, it is unevidenced.
+2. **The renewals are an open item with the client**, not a formality somebody
+   has already handled. Nothing on the site says "valid" or gives a date, which
+   is the one mercy of publishing a logo rather than a certificate number.
+3. **The FSC number and the Intertek wording are still the checkable part.**
+   They survive as the caption under the logo grid precisely so the section is
+   not reduced to marks anyone could paste. If the ISO block is ever pulled,
+   that caption is what the section falls back to.
+
+`facts.ts` carries the same warning on `isoQuality`, `isoEnvironment` and
+`isoSafety`, and `facts.test.ts` fails if any of the three loses its caveat.
 
 ### Unsourced but acceptable — opinion, not fact
 

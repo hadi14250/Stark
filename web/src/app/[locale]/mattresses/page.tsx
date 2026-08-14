@@ -5,15 +5,13 @@ import { routing, type Locale } from "@/i18n/routing";
 import { Container } from "@/components/ui/Container";
 import { Section, SectionHeader } from "@/components/ui/Section";
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import { Pill } from "@/components/ui/Pill";
 import { Reveal } from "@/components/motion/Reveal";
-import { MarkTexture } from "@/components/brand/geometry";
 import { ContactSection } from "@/components/contact/ContactSection";
 import { MattressHero } from "@/components/mattresses/MattressHero";
 import { BrandDuet, type BrandPanel } from "@/components/mattresses/BrandDuet";
+import { BrandBand } from "@/components/mattresses/BrandBand";
 import { BlueRange } from "@/components/mattresses/BlueRange";
 import { SiestaRange } from "@/components/mattresses/SiestaRange";
-import { ComfortLayers, type Layer } from "@/components/mattresses/ComfortLayers";
 import { CountUp } from "@/components/motion/CountUp";
 import { mattressImages, siestaImages } from "@/components/mattresses/assets";
 import { FACTS } from "@/content/facts";
@@ -44,58 +42,55 @@ type Item = { title: string; body: string };
 /**
  * MATTRESSES — photography-first, soft, slow.
  *
- * WHAT THE CLIENT SAW BEFORE: a hero that was about 56% centred text on white
- * with the photograph arriving below it as a letterboxed strip, and a theme
- * whose entire delta from Home was `surface-2: white-300` against Home's
- * `sand-200` — roughly four percent of luminance. The page read as Home
- * reordered, and it was.
+ * The register is deliberately the opposite of Woodworks: that page is a spec
+ * sheet hung off a standing rule at 0.8 density; this one is centred, airy and
+ * photographic at 1.15, and every transition runs through `--ease-cushion`,
+ * which overshoots slightly and settles. A mattress page should decelerate.
  *
- * THE DIRECTION IS THE OPPOSITE REGISTER TO WOODWORKS, and the two pages prove
- * the system by being as far apart as it allows while sharing every component.
- * Woodworks is near-black, left-hung, dense, close-cropped: a spec sheet. This
- * is ivory, centred, airy, photographic: rest. A visitor moving between them
- * should not need to read a word to know they have gone somewhere.
+ * ===========================================================================
+ * THE REVIEW REORDERED THE PAGE AND CUT A THIRD OF IT
+ * ===========================================================================
  *
- * The softness is carried by things colour cannot do at this luminance range —
- * radii up (24→32), shadows diffused rather than dropped, and every transition
- * on the page running through `--ease-cushion`, which overshoots slightly and
- * settles. `--ease-cushion` had been declared and never consumed; it is the
- * page's motion signature now.
+ * MANUFACTURING LEADS NOW. The credentials block — 60,000 mattresses a year,
+ * the reach sentence, the four manufacturing claims — used to sit fifth, after
+ * both ranges and the cross-section. The client asked for it directly under the
+ * hero, and it is the right call: everything below it is product, and "we make
+ * sixty thousand of these a year in a factory that has been running since 1967"
+ * is the sentence that makes the product worth looking at. It also gives the
+ * page a number in its first screen, which nothing else here has.
  *
- * STRUCTURE:
- *   hero          full-viewport photograph, headline lying on it, one CTA
- *   duet          the two sub-brands as tinted full-height panels, side by side
- *   range         blue's nine models, real product photography
- *   siesta-range  siesta's sixteen models, now with real product photography
- *   layers        the set-piece — a CSS cross-section that comes apart on scroll
- *   credentials   output figure, reach, and a light band of manufacturing claims
- *   turnkey       the link across to woodworks
+ * THREE SECTIONS WENT:
  *
- * SURFACES ALTERNATE, AND SIX SECTIONS FINALLY MAKE THE PARITY CLEAN.
+ *   engineering   "The same four layers, every model" — the CSS cross-section
+ *                 that came apart on scroll. It was the page's one diagram and
+ *                 its only explanation of how a mattress is built; if the
+ *                 client later misses that, `ComfortLayers` is in git history
+ *                 and its copy is `mattresses.engineering`.
+ *   turnkey       "Beyond the mattress" — the only link from this route across
+ *                 to woodworks. The nav still reaches it.
+ *   the panel CTAs (see BrandDuet).
  *
- * The run is pinned at BOTH ends: the hero's veil fades to `--color-surface` so
- * the first section wants `surface`, and `ContactSection` hard-codes
- * `surface="surface"` so the last section wants `surface-2` before it. With FIVE
- * sections that was impossible — strict alternation from `surface` landed on
- * `surface` again at the end, so `turnkey→contact` had to share a surface and
- * leaned on contact's near-black opening panel to hide the seam.
+ * ===========================================================================
+ * SURFACES, RE-DERIVED FROM SCRATCH
+ * ===========================================================================
  *
- * Adding `siesta-range` makes SIX, and six alternates perfectly:
- *   surface, surface-2, surface, surface-2, surface, surface-2 → contact surface.
- * Every boundary now differs, including turnkey→contact, so the old masked seam
- * is gone. Inserting the section flipped `layers`, `credentials` and `turnkey`
- * one step each — that is the cost the parity note always warned an inserted
- * section would cost, paid here to buy a cleaner page rather than a hidden
- * collision. blue's range and siesta's range are DELIBERATELY on different
- * surfaces so the two brands read as two sections, not one very long range.
+ *   hero           its own photograph, veil fading to `--color-surface`
+ *   credentials    surface
+ *   brands         surface-2
+ *   blue range     BAND — full-bleed navy, outside the alternation
+ *   siesta range   BAND — full-bleed purple, outside the alternation
+ *   contact        surface   (ContactSection hard-codes this)
  *
- * NO DTC TRUST BAR, still. The template's warranty / trial-period / free-
- * delivery triplet came from an e-commerce store; STARK has no cart, no trial
- * and no delivery SLA to promise. That slot carries manufacturing credentials.
+ * THE TWO BANDS ARE NOT PART OF THE RUN, and that is what makes this work. They
+ * paint their own full-bleed colour, so the alternating pair either side of
+ * them is `brands` (surface-2) and `contact` (surface) — which differ. The old
+ * page needed exactly six sections to make strict alternation land; taking
+ * three out would have broken that arithmetic if the ranges had stayed on page
+ * surfaces. They do not, so it holds at four.
  *
- * `[data-brand]` stays contained to the two panel subtrees and never reaches
- * page chrome — that containment is why the sub-brand colours are allowed on
- * the site at all.
+ * Two saturated bands back to back is deliberate and is the section's whole
+ * argument: navy then purple, one after the other, is what "two brands, one
+ * standard" looks like without a word being read.
  */
 export default async function MattressesPage({
   params,
@@ -105,24 +100,15 @@ export default async function MattressesPage({
 
   const t = await getTranslations("mattresses");
   const brands = t.raw("brands.items") as Brand[];
-  const engineering = t.raw("engineering.items") as Layer[];
   const credentials = t.raw("credentials.items") as Item[];
   const output = t.raw("credentials.output") as { label: string };
 
   /**
-   * BOTH HALVES ARE NOW REAL, and they still must not be crossed.
-   *
-   * blue's panel carries the manufacturer's own photography; siesta's now does
-   * too — the client supplied a full product folder, so its panel shows the
-   * Comfort model's hospitality room instead of the furniture-template
-   * placeholder it wore for months. The old dependency (TODO(F-content)) is
-   * resolved.
-   *
-   * ⚠ THE ONE RULE THAT SURVIVES: never put a blue shot under siesta's heading
-   * or the reverse. siesta is the HOSPITALITY brand, a different buyer with
-   * different models and warranties, and a crossed photograph would tell a hotel
-   * it was looking at the contract range when it was looking at a consumer
-   * product. `siestaImages` and `mattressImages` are separate for exactly this.
+   * ⚠ NEVER CROSS THE BRANDS. siesta is the HOSPITALITY brand — a different
+   * buyer, different models, different warranties — so a blue photograph under
+   * siesta's name would tell a hotel it was looking at the contract range when
+   * it was looking at a consumer product. `siestaImages` and `mattressImages`
+   * are separate resolvers for exactly this reason.
    */
   const panels: BrandPanel[] = brands.map((b, i) => ({
     ...b,
@@ -142,86 +128,7 @@ export default async function MattressesPage({
         imageAlt={t("hero.alt")}
       />
 
-      {/* The two brands ---------------------------------------------- */}
-      <Section surface="surface">
-        <Container>
-          <SectionHeader
-            eyebrow={<Eyebrow>{t("brands.eyebrowLabel")}</Eyebrow>}
-            heading={t("brands.heading")}
-            intro={t("brands.sub")}
-          />
-          <BrandDuet panels={panels} />
-        </Container>
-      </Section>
-
-      {/* blue's range — the answer to "lacks a lot of pictures" -------- */}
-      <Section surface="surface-2" id="range">
-        <Container>
-          <SectionHeader
-            eyebrow={<Eyebrow>{t("models.eyebrowLabel")}</Eyebrow>}
-            heading={t("models.heading")}
-            intro={t("models.sub")}
-          />
-          {/*
-            `t.raw`, NOT `t`. The alt string is a template with a `{name}` hole,
-            and next-intl reads `{name}` as an ICU argument: calling `t()`
-            without supplying one does not return the template, it fails and
-            falls back to emitting the KEY. Every one of the eight images
-            shipped with `alt="mattresses.models.alt"` until this was caught by
-            curling the page and grepping for message keys.
-
-            That failure is invisible from every other angle. It type-checks,
-            it renders, no test covers it, and on screen the pictures look
-            perfect, because alt text is the one string on a page that nobody
-            sighted ever sees. The only readers affected are the ones who
-            cannot check.
-
-            `t.raw` hands back the unparsed string and the substitution happens
-            in the component, which is also why the placeholder is written
-            `{name}` rather than interpolated here: the component owns the loop
-            over the models and the page does not know their names.
-          */}
-          <BlueRange
-            alt={t.raw("models.alt")}
-            note={t("models.note")}
-            techLabel={t("models.techLabel")}
-            techItems={t.raw("models.techItems")}
-          />
-        </Container>
-      </Section>
-
-      {/* siesta's range — the collection the client asked for ---------- */}
-      <Section surface="surface" id="siesta-range">
-        <Container>
-          <SectionHeader
-            eyebrow={<Eyebrow>{t("siestaCollection.eyebrowLabel")}</Eyebrow>}
-            heading={t("siestaCollection.heading")}
-            intro={t("siestaCollection.sub")}
-          />
-          <SiestaRange alt={t.raw("siestaCollection.alt")} />
-        </Container>
-      </Section>
-
-      {/* Comfort layers — the set-piece ------------------------------- */}
-      <Section surface="surface-2" className="overflow-hidden">
-        <MarkTexture
-          variant="mark"
-          color="var(--green-500)"
-          opacity={0.04}
-          size={520}
-          style={{ top: "-120px", insetInlineStart: "-140px" }}
-        />
-        <Container className="relative z-[1]">
-          <SectionHeader
-            eyebrow={<Eyebrow>{t("engineering.eyebrowLabel")}</Eyebrow>}
-            heading={t("engineering.heading")}
-            intro={t("engineering.sub")}
-          />
-          <ComfortLayers layers={engineering} />
-        </Container>
-      </Section>
-
-      {/* Manufacturing credentials ----------------------------------- */}
+      {/* Manufacturing — the client asked for this first ---------------- */}
       <Section surface="surface">
         <Container>
           <SectionHeader
@@ -231,48 +138,34 @@ export default async function MattressesPage({
           />
 
           {/*
-            Output and reach: the two things the client asked this section to
-            say, in one block.
-
             THE FIGURE IS NOT A CAPACITY, and the copy is careful about it in a
-            way the woodworks page deliberately is not. Slide 12's wood figures
-            are annotated as what the division is EQUIPPED to produce; slide 15
+            way the woodworks page deliberately was not. Slide 12's wood figures
+            were annotated as what the division is EQUIPPED to produce; slide 15
             says only "60,000 مرتبة في السنة" — sixty thousand mattresses in the
             year, with no word for capacity anywhere near it. So this reads
-            "mattresses a year" under "Current annual production", and the
-            ledger entry carries the same warning. If the client later confirms
-            it is a ceiling, this string changes and the number does not.
+            "mattresses a year", and the ledger entry carries the same warning.
 
-            THE REACH SENTENCE names no address and no store. The client asked
-            twice for retail and distribution to be mentioned (slides 15 and 16)
-            and once for online sales; the first two are claims about how they
-            sell that need no destination, and the third is a link the site does
-            not have. A "buy online" with nowhere to click is a worse answer to
-            the request than not answering it yet, so online sales is on the ask
-            list rather than in this paragraph.
+            ⚠ THE UNIT IS THE CAPTION, NOT A SUFFIX. It first shipped as
+            `suffix=" mattresses a year"` with a non-breaking space gluing the
+            phrase to the figure — the right trick for "60,000 m²" and the wrong
+            one for a four-word unit: at 1440 the line broke to "60,000
+            mattresses a" / "year", orphaning a word. That is the defect the
+            client reported on Home's stat band, at three times the type size.
+
+            THE COUNT RUNS LONGER THAN ANY OTHER ON THE SITE. The client asked
+            for this number to visibly increment; it is the largest numeral on
+            the site and has the furthest to travel, so 3.4s against the 3s
+            default. The reason it was not visibly counting at all is fixed in
+            CountUp.tsx — the fail-safe was firing before the observer.
           */}
           <Reveal>
             <div className="mt-output mt-[clamp(32px,4vw,60px)]">
               <div>
-                {/*
-                  THE UNIT IS THE CAPTION, NOT A SUFFIX, and that is a fix
-                  rather than a preference. It first shipped as
-                  `suffix=" mattresses a year"` with a non-breaking space
-                  gluing the phrase to the figure, which is the right trick
-                  for "60,000 m²" and the wrong one for a four-word unit: at
-                  1440 the line broke to "60,000 mattresses a" / "year",
-                  orphaning a word on the second line. That is precisely the
-                  defect the client reported on Home's stat band, reproduced
-                  at three times the type size.
-
-                  A phrase-length unit cannot be glued to its number. So the
-                  number is the number and the unit joins the label, which is
-                  also how Home's band and the woodworks grid already read.
-                */}
                 <p className="font-display text-[clamp(38px,6vw,72px)] font-bold leading-[1.02] tracking-display text-[color:var(--color-ink)]">
                   <CountUp
                     to={FACTS.mattressesPerYear.value}
                     grouping={FACTS.mattressesPerYear.grouping}
+                    duration={3.4}
                     locale={locale}
                   />
                 </p>
@@ -289,10 +182,9 @@ export default async function MattressesPage({
             </div>
           </Reveal>
 
-          {/* Border-top items rather than bordered cards: this page's other
-              two sections are a photographic duet and a diagram, so the band
-              that follows them should recede. Four boxed cards after a
-              full-bleed duet is three competing frames in a row. */}
+          {/* Border-top items rather than bordered cards: the sections around
+              this are a photographic duet and two saturated bands, so the block
+              that introduces them should recede. */}
           <div className="mt-[clamp(32px,4vw,60px)] grid gap-x-[clamp(28px,4vw,56px)] gap-y-[clamp(20px,3vw,32px)] nav:grid-cols-2">
             {credentials.map((c, i) => (
               <Reveal key={c.title} delay={(i % 2) * 0.07}>
@@ -310,36 +202,53 @@ export default async function MattressesPage({
         </Container>
       </Section>
 
-      {/* Turnkey link-out -------------------------------------------- */}
+      {/* The two brands ---------------------------------------------- */}
       <Section surface="surface-2">
         <Container>
           <SectionHeader
-            eyebrow={<Eyebrow>{t("turnkey.eyebrowLabel")}</Eyebrow>}
-            heading={t("turnkey.heading")}
-            intro={t("turnkey.sub")}
-            /*
-              64ch AT THIS ONE CALL SITE, and only this one.
-
-              The client reported "fit-out" landing alone on the last line. At
-              the shared 74ch default this intro breaks so that the final line
-              is one hyphenated word, which reads as a typo rather than as a
-              line break. Pulling the measure in moves the break earlier and
-              gives the last line company.
-
-              ⚠ DO NOT FIX THIS IN `Section.tsx`. The 74ch default is there
-              because the client counted lines on three OTHER sections and asked
-              for the measure to go UP; the prop exists precisely so one
-              paragraph can differ without moving every section on every page.
-            */
-            introMax="64ch"
+            eyebrow={<Eyebrow>{t("brands.eyebrowLabel")}</Eyebrow>}
+            heading={t("brands.heading")}
+            intro={t("brands.sub")}
           />
-          <div className="mt-8 flex" style={{ justifyContent: "var(--align-axis)" }}>
-            <Pill variant="tan" href="/woodworks">
-              {t("turnkey.cta")}
-            </Pill>
-          </div>
+          <BrandDuet panels={panels} />
         </Container>
       </Section>
+
+      {/* blue's range, on blue's own ground --------------------------- */}
+      <BrandBand
+        brand="blue"
+        logoAlt={t("models.logoAlt")}
+        eyebrow={t("models.eyebrowLabel")}
+        heading={t("models.heading")}
+        intro={t("models.sub")}
+      >
+        {/*
+          `t.raw`, NOT `t`. The alt string is a template with a `{name}` hole,
+          and next-intl reads `{name}` as an ICU argument: calling `t()` without
+          supplying one does not return the template, it fails and emits the
+          KEY. Every one of these images shipped with `alt="mattresses.models.alt"`
+          until it was caught by curling the page and grepping for message keys —
+          a failure invisible from every other angle, because alt text is the one
+          string nobody sighted ever sees.
+        */}
+        <BlueRange
+          alt={t.raw("models.alt")}
+          note={t("models.note")}
+          techLabel={t("models.techLabel")}
+          techItems={t.raw("models.techItems")}
+        />
+      </BrandBand>
+
+      {/* siesta's range, on siesta's ---------------------------------- */}
+      <BrandBand
+        brand="siesta"
+        logoAlt={t("siestaCollection.logoAlt")}
+        eyebrow={t("siestaCollection.eyebrowLabel")}
+        heading={t("siestaCollection.heading")}
+        intro={t("siestaCollection.sub")}
+      >
+        <SiestaRange alt={t.raw("siestaCollection.alt")} />
+      </BrandBand>
 
       <ContactSection />
     </div>

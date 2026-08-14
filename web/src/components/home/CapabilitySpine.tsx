@@ -66,11 +66,17 @@ export function CapabilitySpine() {
     return (
       <SpineFrame>
         <div className="absolute inset-0" style={{ background: "var(--color-accent)" }} />
+        {/* ⚠ THE TWO OFFSETS ARE DERIVED FROM `size`, so they move with it.
+            The glyph is centred on a 1px rule: half its width back along the
+            inline axis (28/2 = 14, less the rule's own half-pixel = 13.5) and
+            half its height up. It went 18 → 28 with every other bullet-scale
+            mark on the site; leaving the offsets at the 18px values would have
+            hung it off the side of its own line. */}
         <MarkGlyph
           division="stark"
-          size={18}
+          size={28}
           color="var(--color-accent)"
-          style={{ position: "absolute", bottom: 0, insetInlineStart: "-8.5px" }}
+          style={{ position: "absolute", bottom: 0, insetInlineStart: "-13.5px" }}
         />
       </SpineFrame>
     );
@@ -95,12 +101,12 @@ export function CapabilitySpine() {
         style={{
           position: "absolute",
           top,
-          insetInlineStart: "-8.5px",
+          insetInlineStart: "-13.5px",
           opacity: glyphOpacity,
         }}
       >
-        <motion.div style={{ rotate, marginTop: "-9px" }}>
-          <MarkGlyph division="stark" size={18} color="var(--color-accent)" />
+        <motion.div style={{ rotate, marginTop: "-14px" }}>
+          <MarkGlyph division="stark" size={28} color="var(--color-accent)" />
         </motion.div>
       </motion.div>
     </SpineFrame>

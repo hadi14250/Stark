@@ -76,9 +76,9 @@
     },
     "about": {
       "heading": "More than a manufacturer.",
+      "lead": "<k>S</k>trategic <k>T</k>rust for <k>A</k>dvanced and <k>R</k>eliable <k>K</k>nowledge (STARK) provides integrated manufacturing solutions across woodworks, furniture and mattresses, for hospitality, residential, commercial, administrative, healthcare, government, educational and mixed-use projects.",
       "paragraphs": [
-        "Strategic Trust for Advanced and Reliable Knowledge (STARK) provides integrated manufacturing solutions across woodworks, furniture and mattresses, for hospitality, residential, commercial, administrative, healthcare, government, educational and mixed-use projects.",
-        "It was formed in 2026, when Saudi Light Industries, making foam and mattresses in Jeddah since 1967, joined with Trust Wood and the Haidar family's decades in the wood industry. Two factories, one company.",
+        "It was formed in 2026, when Saudi Light Industries, making foam and mattresses in Jeddah since 1967, partnered with one of the top ten wood manufacturing factories in Saudi Arabia, run by a family with more than 45 years of inherited expertise in the wood industry. Two factories, one company.",
         "That is why design, manufacturing and on-site execution sit in a single accountable process here rather than across four contracts. Every element is engineered for durability and finished to the standard hospitality demands."
       ],
       "collageAlt": [
@@ -114,33 +114,18 @@
       "sub": "The manufacturing capabilities behind every environment we deliver.",
       "items": [
         {
-          "title": "European machinery",
+          "title": "Automated machinery",
           "body": "Modern automated carpentry and production lines.",
-          "meta": [
-            "CNC and beam saws",
-            "Edge banding",
-            "Through-boring"
-          ],
           "alt": "Precision woodworking machinery on the production floor."
         },
         {
           "title": "Large-scale capacity",
-          "body": "Capable of two mega-projects per year.",
-          "meta": [
-            "Door line",
-            "Panel line",
-            "Paint line"
-          ],
+          "body": "Capable of three mega-projects per year.",
           "alt": "Large-scale manufacturing facility interior."
         },
         {
           "title": "Quality control",
           "body": "Strict checks at every stage to delivery.",
-          "meta": [
-            "Stage checks",
-            "100% inspection",
-            "Signed off with the client"
-          ],
           "alt": "Finished interior demonstrating quality of finish."
         }
       ],
@@ -155,33 +140,47 @@
       "items": [
         {
           "title": "Woodworks",
-          "body": "Everything wood: design, fit-out, furniture, turnkey. Custom wood elements from concept to production.",
+          "body": "A complete range of wood products and joinery works, including wall paneling, doors, decorative elements, joinery works, and loose furniture.",
           "cta": "Explore Woodworks",
           "alt": "Woodworks interior environment."
         },
         {
           "title": "Mattresses",
-          "body": "Comfort engineered for homes and for hospitality. Delivered through two focused brands.",
+          "body": "Premium mattresses for retail, hospitality, healthcare and commercial sectors, offering spring, foam, hybrid, orthopedic, hotel and medical solutions tailored to client requirements.",
           "cta": "Explore Mattresses",
           "alt": "Mattress and bedroom environment."
         },
         {
           "title": "Engineering & Technical Services",
-          "body": "Design development, technical office support, shop drawings, value engineering and project coordination.",
+          "body": "Integrated engineering and technical services, including design development, technical office support, shop drawings, value engineering and project coordination to ensure efficient delivery.",
           "cta": "Let's talk",
           "alt": "Complete turnkey interior environment."
         }
       ],
       "eyebrowLabel": "Our divisions",
-      "engineeringServices": {
-        "label": "Engineering & technical services",
+      "coreServices": {
+        "label": "Core services",
         "items": [
-          "Design development",
-          "Technical office support",
-          "Shop drawings",
-          "Value engineering",
-          "Interior design",
-          "Project coordination"
+          {
+            "title": "Architectural Woodwork",
+            "body": "Wall panelling, doors, decorative elements and joinery, produced to the project's own drawings."
+          },
+          {
+            "title": "Furniture Manufacturing",
+            "body": "Custom interior and exterior furniture in diverse materials, finishes and designs, tailored to every project."
+          },
+          {
+            "title": "Hospitality Mattresses",
+            "body": "Mattresses engineered for comfort, durability and long-term performance, with customisable specifications, dimensions and support levels."
+          },
+          {
+            "title": "Custom Sleep Solutions",
+            "body": "Sleep solutions built to a brief: materials, dimensions, firmness levels and product configurations chosen per application."
+          },
+          {
+            "title": "Design & Drawings",
+            "body": "Interior design worked to each project's vision and operational needs, with the shop drawings and technical specifications that make it buildable."
+          }
         ]
       }
     },
@@ -190,6 +189,10 @@
       "heading": "Who we build for",
       "sub": "Hotel operators, contractors and developers behind hospitality, healthcare, government and commercial projects across the Kingdom.",
       "logos": [
+        {
+          "key": "th-designs",
+          "alt": "TH Designs"
+        },
         {
           "key": "saudi-binladin-group",
           "alt": "Saudi Binladin Group"
@@ -318,7 +321,7 @@
     },
     "gallery": {
       "heading": "Our Gallery",
-      "sub": "Explore selected environments across our divisions: Woodworks, Furniture and Mattresses.",
+      "sub": "Explore selected environments across our divisions: Woodworks, Mattresses and Design.",
       "viewMore": "View gallery",
       "tilesAlt": [
         "Styled seating in a finished interior.",
@@ -348,16 +351,13 @@
           "label": "Years of experience"
         },
         {
-          "label": "Production and support facilities"
+          "label": "Overall facilities"
         },
         {
           "label": "Specialists"
         },
         {
           "label": "Mega-projects a year"
-        },
-        {
-          "label": "Projects completed"
         }
       ]
     },
@@ -392,15 +392,6 @@
         }
       ]
     },
-    "marquee": {
-      "label": "STARK brand values",
-      "words": [
-        "Precision Manufacturing",
-        "Turnkey Delivery",
-        "Saudi Built",
-        "Built to Spec"
-      ]
-    },
     "turnkey": {
       "eyebrow": "Why STARK",
       "heading": "From Design to Installation",
@@ -415,7 +406,7 @@
         },
         {
           "title": "Made to measure",
-          "body": "Every element is drawn for the room it will stand in and built to those dimensions, so the piece fits the space rather than the space being altered to take the piece."
+          "body": "Every piece is drawn for the room it will stand in, and built to those dimensions. The furniture fits the space, not the other way round."
         },
         {
           "title": "One quality standard",
@@ -432,24 +423,22 @@
       "heading": "Rooted in the Kingdom, reaching the region.",
       "sub": "Our focus is Saudi Arabia across every region, with active markets in Bahrain and Yemen and a planned expansion across the wider region.",
       "currentLabel": "Current markets",
-      "current": [
-        "Saudi Arabia, all regions",
-        "Bahrain",
-        "Yemen"
-      ],
-      "futureLabel": "Future expansion",
-      "future": [
-        "United Arab Emirates",
-        "Kuwait",
-        "Qatar",
-        "Lebanon",
-        "Syria",
-        "Oman",
-        "Jordan",
-        "Iraq",
-        "Egypt",
-        "Sudan"
-      ]
+      "names": {
+        "sa": "Saudi Arabia, all regions",
+        "bh": "Bahrain",
+        "ye": "Yemen",
+        "ae": "United Arab Emirates",
+        "kw": "Kuwait",
+        "qa": "Qatar",
+        "lb": "Lebanon",
+        "sy": "Syria",
+        "om": "Oman",
+        "jo": "Jordan",
+        "iq": "Iraq",
+        "eg": "Egypt",
+        "sd": "Sudan"
+      },
+      "futureLabel": "Future expansion"
     }
   },
   "contact": {
@@ -572,129 +561,45 @@
         }
       ]
     },
-    "services": {
-      "eyebrowLabel": "What we deliver",
-      "heading": "Integrated solutions, delivered end to end.",
-      "sub": "Most interiors are assembled from separate suppliers who each own a piece and none of the outcome. These sit under one name.",
-      "items": [
-        {
-          "title": "Wood Design & Manufacturing",
-          "body": "Custom wood elements for hospitality and residential projects, from concept to production."
-        },
-        {
-          "title": "Wood Fit-Out Solutions",
-          "body": "From decorative features to full interior fit-outs, built precisely to specification."
-        },
-        {
-          "title": "Hotel Furniture",
-          "body": "Bespoke beds, headboards, cabinets and loose furniture, made to order."
-        },
-        {
-          "title": "Interior Room Solutions",
-          "body": "Complete guest rooms: furniture, soft furnishings and fit-out components."
-        },
-        {
-          "title": "Turnkey Projects",
-          "body": "Full execution: manufacturing, delivery and installation under one partner."
-        }
-      ]
-    },
     "products": {
       "eyebrowLabel": "Products & applications",
       "heading": "Wood solutions built around project needs.",
-      "sub": "STARK manufactures custom wood applications that support interior, exterior, residential, commercial and project-based environments.",
+      "sub": "STARK delivers integrated wood products and applications through advanced manufacturing and technical expertise.",
       "items": [
         {
-          "label": "Doors & Panels",
-          "body": "Manufactured wood doors, panels and customized interior elements, including specialized doors: fire-rated, non-fire-rated and acoustic."
+          "label": "Loose Furniture & Upholstery",
+          "body": "Custom loose furniture and upholstery crafted for comfort, quality and functionality."
         },
         {
-          "label": "Interior Cladding",
-          "body": "Wall cladding, decorative surfaces and architectural wood finishes."
+          "label": "Doors",
+          "body": "Interior and exterior doors of all types, including solid, flush, fire-rated (FR), non-fire-rated (NFR), acoustic and traditional Najdi doors."
         },
         {
-          "label": "Furniture & Joinery",
-          "body": "Custom furniture, fixed joinery and project-specific wood solutions."
+          "label": "Built-in Furniture & Joinery",
+          "body": "Custom built-in furniture, architectural joinery, reception counters, TV units, beds, headboards and storage solutions."
+        },
+        {
+          "label": "Interior & Exterior Cladding",
+          "body": "Wall and façade cladding, decorative panels, ceiling systems and architectural wood finishes."
         },
         {
           "label": "Kitchens, Wardrobes & Vanities",
-          "body": "Functional wood products for residential, hospitality and commercial spaces."
+          "body": "Custom kitchens, wardrobes, walk-in closets and vanities tailored to meet functional and aesthetic needs."
         },
         {
           "label": "Outdoor Wooden Structures",
-          "body": "Bungalows, outdoor features and wooden structures for private and project environments."
+          "body": "Pergolas, gazebos, decks, bungalows, benches, fences and custom outdoor wood structures."
         },
         {
-          "label": "Retail Stands & Podiums",
-          "body": "Custom display units and branded wood structures for commercial use."
+          "label": "Retail Stands & Display Solutions",
+          "body": "Retail displays, exhibition stands, kiosks, podiums and branded display solutions."
+        },
+        {
+          "label": "Craftsmanship & Artistic Woodworks",
+          "body": "Handcrafted wood creations, artistic carvings, decorative features and custom wood artworks."
         }
       ],
       "alt": "A furnished interior."
-    },
-    "substrates": {
-      "label": "Substrates",
-      "sub": "Every substrate sits inside our FSC chain-of-custody scope, so the material a drawing calls for is the material that can be documented on delivery.",
-      "items": [
-        {
-          "label": "Solid wood",
-          "body": "Where an edge will be touched, seen close, or has to take a knock."
-        },
-        {
-          "label": "Wood panel",
-          "body": "Dimensionally stable substrates for large flat surfaces that have to stay flat."
-        },
-        {
-          "label": "MDF",
-          "body": "Machines cleanly and takes a sprayed finish without a grain telegraphing through it."
-        },
-        {
-          "label": "Veneer",
-          "body": "Book-matched and sequenced across a run so a wall reads as one piece."
-        },
-        {
-          "label": "HPL",
-          "body": "High-traffic and wet areas where the cleaning regime is unforgiving."
-        },
-        {
-          "label": "Chipboard",
-          "body": "Carcass material for the work that will be faced, laminated or hidden."
-        }
-      ]
-    },
-    "capacity": {
-      "eyebrowLabel": "Annual capacity",
-      "heading": "What the division can produce in a year.",
-      "sub": "Capacity is a ceiling, not a forecast: these are the volumes the wood division is equipped to produce in a year.",
-      "headline": {
-        "unit": "M SAR",
-        "label": "Annual production capacity"
-      },
-      "items": [
-        {
-          "unit": "",
-          "label": "Hotel rooms"
-        },
-        {
-          "unit": "",
-          "label": "Doors"
-        },
-        {
-          "unit": " m²",
-          "label": "Wardrobes"
-        },
-        {
-          "unit": " m²",
-          "label": "Cladding"
-        },
-        {
-          "unit": " LM",
-          "label": "Kitchens"
-        },
-        {
-          "unit": " m²",
-          "label": "Closet cladding"
-        }
-      ]
     },
     "standards": {
       "eyebrowLabel": "How we work",
@@ -741,25 +646,19 @@
       "colStage": "Stage",
       "colCheck": "What is checked",
       "certs": {
-        "label": "Certified",
-        "items": [
-          {
-            "label": "FSC Chain of Custody",
-            "body": "Certificate BMC-COC-010074, covering doors and frames, windows, stairs, wall cladding, cabinets, custom furniture, beds, wardrobes and worktops."
-          },
-          {
-            "label": "Fire-rated doors",
-            "body": "Certified by Intertek to manufacture fire-rated doors, built on fire-rated cores from Intertek-certified suppliers."
-          }
-        ]
+        "recognitionLabel": "Industry recognition",
+        "certificationsLabel": "Certifications",
+        "note": "FSC Chain of Custody certificate BMC-COC-010074 covers doors and frames, windows, stairs, wall cladding, cabinets, custom furniture, beds, wardrobes and worktops. Fire-rated doors are manufactured under Intertek certification, on fire-rated cores from Intertek-certified suppliers.",
+        "names": {
+          "awi": "Architectural Woodwork Institute",
+          "leed": "USGBC LEED Certified",
+          "saudi-made": "Saudi Made",
+          "local-content": "Local Content",
+          "fsc": "Forest Stewardship Council",
+          "ifc": "IFC Certification",
+          "iso": "ISO Certified: 9001, 14001 and 45001"
+        }
       }
-    },
-    "projects": {
-      "eyebrowLabel": "Selected work",
-      "heading": "Delivered projects.",
-      "sub": "Fit-outs, joinery packages and furniture programmes across hospitality and residential work.",
-      "cta": "View woodworks projects",
-      "alt": "A completed joinery installation."
     },
     "chapters": {
       "eyebrowLabel": "On the floor"
@@ -790,7 +689,6 @@
             "10-year warranty",
             "Foam, latex and pocket spring"
           ],
-          "cta": "Let's talk",
           "alt": "A blue mattress on a wooden platform bed in a bright bedroom."
         },
         {
@@ -803,7 +701,6 @@
             "Three ranges",
             "Fire-resistant hospitality range"
           ],
-          "cta": "Request a specification",
           "alt": "A hotel bedroom with an upholstered headboard and bedside lamps."
         }
       ]
@@ -816,6 +713,18 @@
       "note": "",
       "techLabel": "Built with",
       "techItems": [
+        {
+          "name": "PUROTEX+™",
+          "body": "Anti-allergy technology supporting a cleaner and healthier sleep environment."
+        },
+        {
+          "name": "INTENSE™",
+          "body": "Relaxation-focused technology designed to support deeper and calmer sleep."
+        },
+        {
+          "name": "COMBOCOOL™",
+          "body": "Cooling technology designed to regulate temperature and moisture."
+        },
         {
           "name": "Memory Foam",
           "body": "Body-contouring comfort for pressure relief and support."
@@ -840,30 +749,8 @@
           "name": "Custom Comfort",
           "body": "Adjustable firmness for personalised sleep preferences."
         }
-      ]
-    },
-    "engineering": {
-      "eyebrowLabel": "Inside the mattress",
-      "heading": "The same four layers, every model.",
-      "sub": "A siesta mattress is built in four blocks, top to bottom. What changes between models is what goes inside each one.",
-      "items": [
-        {
-          "title": "Top quilted layers",
-          "body": "Fabric, fibre and super-soft foam, quilted into one surface. This is what you feel first, and on the hospitality range it is where the fire-resistant fabric sits."
-        },
-        {
-          "title": "The core",
-          "body": "Pocket springs or Bonnell springs depending on the model, with a foam border around the perimeter and a felt layer between the springs and everything above them. The core sets support; the border is what decides whether the usable area matches the size on the label."
-        },
-        {
-          "title": "Comfort layers",
-          "body": "What sits between the core and the sleeper: memory foam, mini pocket springs, high-density or polyurethane layers, combined differently in each model. This is where pressure at the shoulder and the hip is dealt with."
-        },
-        {
-          "title": "Bottom quilted layers",
-          "body": "The underside is built the same way and finished in an anti-slip fabric, so the mattress wears evenly and stays where it is put."
-        }
-      ]
+      ],
+      "logoAlt": "blue mattresses"
     },
     "credentials": {
       "eyebrowLabel": "Manufacturing",
@@ -892,17 +779,12 @@
         }
       ]
     },
-    "turnkey": {
-      "eyebrowLabel": "Beyond the mattress",
-      "heading": "The rest of the room, too.",
-      "sub": "Most hospitality buyers are not just buying beds. STARK's woodworks and fit-out divisions deliver the rest of the room under the same contract.",
-      "cta": "Explore turnkey"
-    },
     "siestaCollection": {
       "eyebrowLabel": "The siesta collection",
       "heading": "Sixteen models, three ranges.",
       "sub": "siesta's luxury, everyday and hospitality mattresses, photographed for the first time from the brand's own product range.",
-      "alt": "The {name} mattress by siesta."
+      "alt": "The {name} mattress by siesta.",
+      "logoAlt": "siesta mattresses"
     }
   },
   "gallery": {
@@ -911,1018 +793,36 @@
     "divisions": "Divisions",
     "categories": {
       "woodworks": "Woodworks",
-      "furniture": "Furniture",
-      "mattresses": "Mattresses"
+      "mattresses": "Mattresses",
+      "design": "Design"
     },
-    "projects": "Projects",
-    "empty": "Nothing in this selection yet.",
-    "startProject": "Let's talk",
-    "cta": "View details",
-    "overlayEyebrow": "Selected work",
-    "overlayCta": "Let's talk",
-    "labels": {
-      "scope": "Scope",
-      "delivery": "Delivery",
-      "materials": "Materials"
-    },
-    "mataf": {
-      "title": "Mataf Extension",
-      "subtitle": "Saudi Binladin Group · Makkah",
-      "headline": "Interior architectural woodwork, approved on submittal",
-      "paragraph": "Our woodworks factory was accepted as the supplier for interior architectural woodwork on the Mataf Extension, on a material submittal reviewed by Dar Al-Handasah and returned approved as noted.",
-      "scope": "Interior architectural woodwork",
-      "delivery": "Approved as noted, 2022",
-      "materials": "Door architrave, North Mukabaria",
-      "overlayTitle": "Approved as a supplier",
-      "overlaySummary": "This is a material approval. It records that our woodwork was reviewed against the project specification and accepted, which is a different and more checkable thing than a finished-project photograph.",
-      "overlaySpecs": [
-        {
-          "label": "Contractor",
-          "value": "Saudi Binladin Group"
-        },
-        {
-          "label": "Engineer",
-          "value": "Dar Al-Handasah, Shair and Partners"
-        },
-        {
-          "label": "Scope",
-          "value": "Interior wood work, door architrave"
-        },
-        {
-          "label": "Status",
-          "value": "Material submittal approved as noted"
-        }
-      ]
-    },
-    "royalArts": {
-      "title": "King Salman Park",
-      "subtitle": "Royal Arts Complex, CP04 · Riyadh",
-      "headline": "Prequalified for the wood package",
-      "paragraph": "Our woodworks factory was submitted as the wood-work subcontractor on CP04, the Royal Arts Complex, and returned approved as noted by the project management team.",
-      "scope": "Wood work, architectural discipline",
-      "delivery": "Prequalified, 2022",
-      "materials": "Joinery and fit-out scope",
-      "overlayTitle": "Prequalified, not completed",
-      "overlaySummary": "Prequalification is the stage where a project's management team checks a factory's licences, quality standards and previous work before it may be contracted. This one was recommended and accepted.",
-      "overlaySpecs": [
-        {
-          "label": "Client",
-          "value": "King Salman Park Foundation"
-        },
-        {
-          "label": "Contractor",
-          "value": "Modern Building Leaders"
-        },
-        {
-          "label": "Management",
-          "value": "Parsons, Faithful and Gould, WSP"
-        },
-        {
-          "label": "Status",
-          "value": "Prequalification approved as noted"
-        }
-      ]
-    },
-    "ngha": {
-      "title": "NGHA Specialized Hospitals",
-      "subtitle": "National Guard Health Affairs · Jeddah",
-      "headline": "Approved millworks supplier for two hospitals",
-      "paragraph": "Our woodworks factory was submitted for millworks on the National Guard Health Affairs hospital programme, covering the Neuroscience and Traumacare Center and the King Abdullah bin Abdulaziz Specialized Hospital for Children, and accepted by the engineer.",
-      "scope": "Millworks, architectural discipline",
-      "delivery": "Approved except as noted, 2020",
-      "materials": "Two medical buildings in Jeddah",
-      "overlayTitle": "Approved as a supplier",
-      "overlaySummary": "Healthcare projects run some of the tightest material and documentation requirements of any sector. The vendor submittal was returned accepted, conditional on delivered items complying with the project specification.",
-      "overlaySpecs": [
-        {
-          "label": "Employer",
-          "value": "National Guard Health Affairs"
-        },
-        {
-          "label": "Contractor",
-          "value": "Nesma and Partners"
-        },
-        {
-          "label": "Engineer",
-          "value": "Dar Al-Handasah"
-        },
-        {
-          "label": "Status",
-          "value": "Vendor submittal approved except as noted"
-        }
-      ]
-    },
-    "blueSky": {
-      "title": "Sky",
-      "subtitle": "blue mattress · Memory foam",
-      "headline": "Foam that takes the shape, then gives it back",
-      "paragraph": "Sky is built on high-density memory foam that adapts to the shape of the body and to how weight sits across it, easing the load on the joints and the spine. The same layer absorbs movement, so one sleeper turning over is not felt by the other.",
-      "scope": "High-density memory foam",
-      "delivery": "10-year warranty",
-      "materials": "Memory foam comfort layer, ventilated cover",
-      "overlayTitle": "A model, not a project",
-      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Sky is a mattress in blue's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
-      "overlaySpecs": [
-        {
-          "label": "Brand",
-          "value": "blue mattress, for the home"
-        },
-        {
-          "label": "Comfort layer",
-          "value": "High-density memory foam"
-        },
-        {
-          "label": "Built for",
-          "value": "Pressure relief and motion isolation"
-        },
-        {
-          "label": "Warranty",
-          "value": "10 years"
-        }
-      ]
-    },
-    "bluePureLatex": {
-      "title": "Pure Latex",
-      "subtitle": "blue mattress · Organic latex",
-      "headline": "Latex that is certified rather than described",
-      "paragraph": "Pure Latex is made from 100% natural organic latex, grown without chemical fertilisers, growth regulators or pesticides. It carries the Global Organic Latex Standard certificate and meets Oeko-Tex Standard 100 Class 01, the class written for products intended for babies.",
-      "scope": "100% natural organic latex",
-      "delivery": "GOLS certified",
-      "materials": "Organic latex core, Oeko-Tex certified cover",
-      "overlayTitle": "Certified, not described",
-      "overlaySummary": "Certificates are the reason this model is here. GOLS and Oeko-Tex are both registries a buyer can check, which is a different kind of claim from a description of how a mattress feels.",
-      "overlaySpecs": [
-        {
-          "label": "Brand",
-          "value": "blue mattress, for the home"
-        },
-        {
-          "label": "Core",
-          "value": "100% natural organic latex"
-        },
-        {
-          "label": "Certification",
-          "value": "GOLS, Oeko-Tex Standard 100 Class 01"
-        }
-      ]
-    },
-    "blueComfyZone": {
-      "title": "Comfy Zone",
-      "subtitle": "blue mattress · Adjustable firmness",
-      "headline": "Two firmness settings inside one mattress",
-      "paragraph": "Comfy Zone can be changed between medium-firm and medium-soft at any point in its life, rather than being chosen once in a showroom. On a double, each side is set on its own, so two people who disagree about firmness do not have to settle it.",
-      "scope": "Adjustable firmness",
-      "delivery": "10-year warranty",
-      "materials": "Supportive foam layers, euro-top surface",
-      "overlayTitle": "The adjustment is the product",
-      "overlaySummary": "The adjustment is the product. Most mattresses ask the buyer to predict what they will want for a decade; this one lets both sides of a double change their mind, which is the kind of feature worth photographing rather than describing.",
-      "overlaySpecs": [
-        {
-          "label": "Brand",
-          "value": "blue mattress, for the home"
-        },
-        {
-          "label": "Adjustment",
-          "value": "Medium-firm to medium-soft, either side"
-        },
-        {
-          "label": "Surface",
-          "value": "Euro-top"
-        },
-        {
-          "label": "Warranty",
-          "value": "10 years"
-        }
-      ]
-    },
-    "specializedDoors": {
-      "title": "Doors & Panels",
-      "subtitle": "Product range · Custom Wood Works",
-      "headline": "Doors made to a performance rating, not only to a finish",
-      "paragraph": "Manufactured wood doors, panels and customized interior elements. Doors, panels and solid timber each run on their own line: programmed cutting, edge work and through-boring, then an automated paint line. The range covers fire-rated, non-fire-rated and acoustic doors.",
-      "scope": "Doors, panels and interior elements",
-      "delivery": "Product range",
-      "materials": "Fire-rated, non-fire-rated, acoustic",
-      "overlayTitle": "What the factory makes",
-      "overlaySummary": "This entry describes a manufacturing capability rather than a delivered project. It names no client and no site: it is what the door and panel lines produce, and the specification a project would be quoted against.",
-      "overlaySpecs": [
-        {
-          "label": "Division",
-          "value": "Custom Wood Works"
-        },
-        {
-          "label": "Applications",
-          "value": "Interior doors, wall panels, custom elements"
-        },
-        {
-          "label": "Ratings",
-          "value": "Fire-rated, non-fire-rated, acoustic"
-        },
-        {
-          "label": "Production",
-          "value": "Programmed cutting, edge work, automated paint line"
-        }
-      ]
-    },
-    "interiorCladding": {
-      "title": "Interior Cladding",
-      "subtitle": "Product range · Custom Wood Works",
-      "headline": "Wall surfaces that arrive as a system, not as loose boards",
-      "paragraph": "Wall cladding, decorative surfaces and architectural wood finishes, produced to a project's setting-out drawings so panels arrive numbered and in sequence. Cladding is where tolerance work shows: the joints are the design.",
-      "scope": "Wall cladding and decorative surfaces",
-      "delivery": "Product range",
-      "materials": "Veneered, laminated and lacquered panels",
-      "overlayTitle": "What the factory makes",
-      "overlaySummary": "This entry describes a manufacturing capability rather than a delivered project. Cladding is quoted from the architect's setting-out, so what is shown here is the product type and the finish options, not a room that has been handed over.",
-      "overlaySpecs": [
-        {
-          "label": "Division",
-          "value": "Custom Wood Works"
-        },
-        {
-          "label": "Applications",
-          "value": "Wall cladding, decorative surfaces, ceilings"
-        },
-        {
-          "label": "Finishes",
-          "value": "Veneer, laminate, lacquer"
-        },
-        {
-          "label": "Sequencing",
-          "value": "Numbered and sequenced to project drawings"
-        }
-      ]
-    },
-    "kitchensWardrobes": {
-      "title": "Kitchens & Wardrobes",
-      "subtitle": "Product range · Custom Wood Works",
-      "headline": "The fitted work a room is judged by",
-      "paragraph": "Functional wood products for residential, hospitality and commercial spaces: kitchens, wardrobes and vanity units built to the room's own dimensions rather than to a catalogue size.",
-      "scope": "Kitchens, wardrobes and vanities",
-      "delivery": "Product range",
-      "materials": "Panel, solid timber and applied finishes",
-      "overlayTitle": "What the factory makes",
-      "overlaySummary": "This entry describes a manufacturing capability rather than a delivered project. Fitted furniture is made to a surveyed opening, so the product is the specification and the tolerance, not a particular kitchen.",
-      "overlaySpecs": [
-        {
-          "label": "Division",
-          "value": "Custom Wood Works"
-        },
-        {
-          "label": "Applications",
-          "value": "Residential, hospitality, commercial"
-        },
-        {
-          "label": "Products",
-          "value": "Kitchens, wardrobes, vanity units"
-        },
-        {
-          "label": "Fit",
-          "value": "Made to surveyed room dimensions"
-        }
-      ]
-    },
-    "outdoorStructures": {
-      "title": "Outdoor Structures",
-      "subtitle": "Product range · Custom Wood Works",
-      "headline": "Wood that has to survive the weather it is placed in",
-      "paragraph": "Bungalows, outdoor features and wooden structures for private and project environments. Outdoor work is a different material problem from interior joinery: the specification is chosen for movement and exposure before it is chosen for appearance.",
-      "scope": "Bungalows and outdoor wooden structures",
-      "delivery": "Product range",
-      "materials": "Treated timber for exposed conditions",
-      "overlayTitle": "What the factory makes",
-      "overlaySummary": "This entry describes a manufacturing capability rather than a delivered project. Outdoor timber is specified against exposure and movement, so what is shown is the product type rather than a structure that has been installed.",
-      "overlaySpecs": [
-        {
-          "label": "Division",
-          "value": "Custom Wood Works"
-        },
-        {
-          "label": "Applications",
-          "value": "Private and project environments"
-        },
-        {
-          "label": "Products",
-          "value": "Bungalows, outdoor features, structures"
-        },
-        {
-          "label": "Specification",
-          "value": "Selected for movement and exposure"
-        }
-      ]
-    },
-    "retailStands": {
-      "title": "Retail Stands",
-      "subtitle": "Product range · Custom Wood Works",
-      "headline": "Display units that carry someone else's brand",
-      "paragraph": "Custom display units and branded wood structures for commercial use. Retail work runs to a shorter programme than fit-out and to a tighter finish tolerance, because the customer stands close enough to touch it.",
-      "scope": "Display units and branded structures",
-      "delivery": "Product range",
-      "materials": "Panel, solid timber and applied graphics",
-      "overlayTitle": "What the factory makes",
-      "overlaySummary": "This entry describes a manufacturing capability rather than a delivered project. Retail units are made to a brand's own guidelines, so the product here is the build standard, not a stand in a particular store.",
-      "overlaySpecs": [
-        {
-          "label": "Division",
-          "value": "Custom Wood Works"
-        },
-        {
-          "label": "Applications",
-          "value": "Retail and commercial display"
-        },
-        {
-          "label": "Products",
-          "value": "Stands, podiums, branded structures"
-        },
-        {
-          "label": "Programme",
-          "value": "Short runs at a tight finish tolerance"
-        }
-      ]
-    },
-    "looseFurniture": {
-      "title": "Loose Furniture",
-      "subtitle": "Product range · Furniture manufacturing",
-      "headline": "Furniture that is delivered, not built into the wall",
-      "paragraph": "Comprehensive furniture manufacturing for interior and exterior applications, with diverse materials, finishes and designs. Loose furniture is the half of the wood package that arrives finished and is placed, rather than fixed and jointed on site.",
-      "scope": "Custom interior and exterior furniture",
-      "delivery": "Product range",
-      "materials": "Timber, panel, upholstery and applied finishes",
-      "overlayTitle": "What the factory makes",
-      "overlaySummary": "This entry describes a manufacturing capability rather than a delivered project. Loose furniture is made to a project's own drawings, so what is shown is the range and the finish options rather than a room that has been furnished.",
-      "overlaySpecs": [
-        {
-          "label": "Division",
-          "value": "Furniture manufacturing"
-        },
-        {
-          "label": "Applications",
-          "value": "Interior and exterior"
-        },
-        {
-          "label": "Products",
-          "value": "Case goods, seating, tables, custom pieces"
-        },
-        {
-          "label": "Finishes",
-          "value": "Diverse materials, finishes and designs"
-        }
-      ]
-    },
-    "overlaySummaryLabel": "In brief",
-    "overlaySpecsLabel": "Details",
-    "prev": "Previous",
-    "next": "Next",
-    "close": "Close",
     "subCategoriesLabel": "Product types",
     "subCategories": {
-      "doors-panels": "Doors & Panels",
-      "interior-cladding": "Interior Cladding",
-      "kitchens-wardrobes": "Kitchens & Wardrobes",
-      "outdoor-structures": "Outdoor Structures",
-      "retail-stands": "Retail Stands",
-      "loose-furniture": "Loose Furniture",
-      "fixed-joinery": "Fixed Joinery",
+      "loose-furniture": "Loose Furniture & Upholstery",
+      "doors": "Doors",
+      "built-in-joinery": "Built-in Furniture & Joinery",
+      "cladding": "Interior & Exterior Cladding",
+      "kitchens-wardrobes": "Kitchens, Wardrobes & Vanities",
+      "outdoor-structures": "Outdoor Wooden Structures",
+      "retail-stands": "Retail Stands & Display Solutions",
+      "craftsmanship": "Craftsmanship & Artistic Woodworks",
       "blue": "blue",
-      "siesta": "siesta"
+      "siesta": "siesta",
+      "renders": "Renders",
+      "mood-boards": "Mood boards",
+      "material-boards": "Material boards"
     },
-    "blue1": {
-      "title": "Blue 1",
-      "subtitle": "blue mattress · Cooling comfort",
-      "headline": "Cooling comfort with zoned support",
-      "paragraph": "Blue 1 pairs a cooling comfort layer with TPE support and zoned body support, so weight is carried where it needs to be and one sleeper's movement stays on their own side.",
-      "scope": "Cooling comfort, zoned support",
-      "delivery": "10-year warranty",
-      "materials": "Cooling comfort layer, TPE support",
-      "overlayTitle": "A model, not a project",
-      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Blue 1 is a mattress in blue's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
-      "overlaySpecs": [
-        {
-          "label": "Brand",
-          "value": "blue mattress, for the home"
-        },
-        {
-          "label": "Comfort layer",
-          "value": "Cooling foam"
-        },
-        {
-          "label": "Support",
-          "value": "TPE, zoned"
-        },
-        {
-          "label": "Warranty",
-          "value": "10 years"
-        }
-      ]
+    "alts": {
+      "placeholder": "A finished interior.",
+      "blueProduct": "A blue mattress, photographed by the manufacturer.",
+      "blueRoom": "A bedroom with a blue mattress.",
+      "siestaProduct": "A siesta mattress, photographed by the manufacturer.",
+      "siestaRoom": "A room with a siesta mattress."
     },
-    "blue2": {
-      "title": "Blue 2",
-      "subtitle": "blue mattress · The range's newest",
-      "headline": "The newest model in blue's range",
-      "paragraph": "Blue 2 is the most recent addition to blue's 2026 range. Its product sheet has not reached us yet, so it is shown here by its photography rather than by a construction it would be wrong to guess at.",
-      "scope": "blue's newest model",
-      "delivery": "blue mattress",
-      "materials": "Shown by photography",
-      "overlayTitle": "A model, not a project",
-      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Blue 2 is a mattress in blue's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
-      "overlaySpecs": [
-        {
-          "label": "Brand",
-          "value": "blue mattress, for the home"
-        },
-        {
-          "label": "Range",
-          "value": "blue 2026 range"
-        },
-        {
-          "label": "Type",
-          "value": "Mattress"
-        },
-        {
-          "label": "Shown by",
-          "value": "Manufacturer photography"
-        }
-      ]
-    },
-    "blueLoft": {
-      "title": "Loft",
-      "subtitle": "blue mattress · Recovery focus",
-      "headline": "Recovery support on mini pocket springs",
-      "paragraph": "Loft is built for recovery, pairing VITALIZE comfort technology with mini pocket springs that answer the body point by point rather than as one flat surface.",
-      "scope": "Recovery focus, mini pocket springs",
-      "delivery": "10-year warranty",
-      "materials": "VITALIZE layer, mini pocket springs",
-      "overlayTitle": "A model, not a project",
-      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Loft is a mattress in blue's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
-      "overlaySpecs": [
-        {
-          "label": "Brand",
-          "value": "blue mattress, for the home"
-        },
-        {
-          "label": "Support",
-          "value": "Mini pocket springs"
-        },
-        {
-          "label": "Comfort layer",
-          "value": "VITALIZE"
-        },
-        {
-          "label": "Warranty",
-          "value": "10 years"
-        }
-      ]
-    },
-    "blueLuna": {
-      "title": "Luna",
-      "subtitle": "blue mattress · Pocket spring comfort",
-      "headline": "Micro-pocket support that stays quiet",
-      "paragraph": "Luna sits on micro-pocket springs, small enough to follow the body closely and to keep one sleeper's movement from crossing to the other side.",
-      "scope": "Pocket spring comfort, motion isolation",
-      "delivery": "10-year warranty",
-      "materials": "Micro-pocket springs, comfort layers",
-      "overlayTitle": "A model, not a project",
-      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Luna is a mattress in blue's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
-      "overlaySpecs": [
-        {
-          "label": "Brand",
-          "value": "blue mattress, for the home"
-        },
-        {
-          "label": "Support",
-          "value": "Micro-pocket springs"
-        },
-        {
-          "label": "Built for",
-          "value": "Motion isolation"
-        },
-        {
-          "label": "Warranty",
-          "value": "10 years"
-        }
-      ]
-    },
-    "blueRetro": {
-      "title": "Retro",
-      "subtitle": "blue mattress · Classic spring",
-      "headline": "Classic springs under a pillow top",
-      "paragraph": "Retro keeps a classic spring support and finishes it with a pillow-top surface, a balanced, familiar feel for sleepers who want support they can recognise.",
-      "scope": "Classic spring, pillow-top",
-      "delivery": "10-year warranty",
-      "materials": "Classic springs, pillow-top surface",
-      "overlayTitle": "A model, not a project",
-      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Retro is a mattress in blue's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
-      "overlaySpecs": [
-        {
-          "label": "Brand",
-          "value": "blue mattress, for the home"
-        },
-        {
-          "label": "Support",
-          "value": "Classic springs"
-        },
-        {
-          "label": "Surface",
-          "value": "Pillow-top"
-        },
-        {
-          "label": "Warranty",
-          "value": "10 years"
-        }
-      ]
-    },
-    "blueSkinCare": {
-      "title": "Skin Care",
-      "subtitle": "blue mattress · Specialty cover",
-      "headline": "A specialty knitted cover",
-      "paragraph": "Skin Care is finished with a specialty knitted cover over blue's comfort layers. It is photographed here for its construction; the fabric's marketed benefits are the brand's to make, not this gallery's.",
-      "scope": "Specialty knitted cover",
-      "delivery": "10-year warranty",
-      "materials": "Specialty cover, comfort foam layers",
-      "overlayTitle": "A model, not a project",
-      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Skin Care is a mattress in blue's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
-      "overlaySpecs": [
-        {
-          "label": "Brand",
-          "value": "blue mattress, for the home"
-        },
-        {
-          "label": "Cover",
-          "value": "Specialty knit"
-        },
-        {
-          "label": "Comfort layer",
-          "value": "Foam layers"
-        },
-        {
-          "label": "Warranty",
-          "value": "10 years"
-        }
-      ]
-    },
-    "siestaSensice": {
-      "title": "Sensice",
-      "subtitle": "siesta · Luxury · cool-wool cooling",
-      "headline": "Cool-wool cooling with a hotel-style feel",
-      "paragraph": "Sensice tops Mini Pocket support with a Euro Top comfort layer and a cool-wool cover, for the kind of cool, even sleep a hotel room is judged by.",
-      "scope": "Mini Pocket, Euro Top",
-      "delivery": "Luxury",
-      "materials": "Cool-wool cover, Mini Pocket, Euro Top",
-      "overlayTitle": "A model, not a project",
-      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Sensice is a mattress in siesta's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
-      "overlaySpecs": [
-        {
-          "label": "Brand",
-          "value": "siesta, for hospitality"
-        },
-        {
-          "label": "Support",
-          "value": "Mini Pocket"
-        },
-        {
-          "label": "Surface",
-          "value": "Euro Top"
-        },
-        {
-          "label": "Cover",
-          "value": "Cool wool"
-        }
-      ]
-    },
-    "siestaFlorist": {
-      "title": "Florist",
-      "subtitle": "siesta · Luxury · double-spring precision",
-      "headline": "Pocket and Nano Pocket, working together",
-      "paragraph": "Florist runs two spring systems at once, Pocket over Nano Pocket, so support stays precise and the surface stays stable across the whole mattress.",
-      "scope": "Pocket and Nano Pocket springs",
-      "delivery": "Luxury",
-      "materials": "Pocket springs, Nano Pocket springs",
-      "overlayTitle": "A model, not a project",
-      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Florist is a mattress in siesta's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
-      "overlaySpecs": [
-        {
-          "label": "Brand",
-          "value": "siesta, for hospitality"
-        },
-        {
-          "label": "Support",
-          "value": "Pocket and Nano Pocket"
-        },
-        {
-          "label": "Feel",
-          "value": "Precise, stable"
-        },
-        {
-          "label": "Range",
-          "value": "Luxury"
-        }
-      ]
-    },
-    "siestaCrown": {
-      "title": "Crown",
-      "subtitle": "siesta · Luxury · double-sided luxury",
-      "headline": "A double-sided luxury build",
-      "paragraph": "Crown is built to be used on either side, over pocket spring support and premium comfort layers, with motion kept from crossing the bed.",
-      "scope": "Pocket springs, two usable sides",
-      "delivery": "Luxury",
-      "materials": "Pocket springs, premium comfort layers",
-      "overlayTitle": "A model, not a project",
-      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Crown is a mattress in siesta's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
-      "overlaySpecs": [
-        {
-          "label": "Brand",
-          "value": "siesta, for hospitality"
-        },
-        {
-          "label": "Support",
-          "value": "Pocket springs"
-        },
-        {
-          "label": "Construction",
-          "value": "Double-sided"
-        },
-        {
-          "label": "Range",
-          "value": "Luxury"
-        }
-      ]
-    },
-    "siestaGloria": {
-      "title": "Gloria",
-      "subtitle": "siesta · Luxury · flexible Bonnell",
-      "headline": "Flexible Bonnell springs, both sides",
-      "paragraph": "Gloria uses a flexible Bonnell spring core with layered comfort above it, and can be turned and used on both sides to even out wear.",
-      "scope": "Bonnell springs, two sides",
-      "delivery": "Luxury",
-      "materials": "Bonnell springs, layered comfort",
-      "overlayTitle": "A model, not a project",
-      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Gloria is a mattress in siesta's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
-      "overlaySpecs": [
-        {
-          "label": "Brand",
-          "value": "siesta, for hospitality"
-        },
-        {
-          "label": "Support",
-          "value": "Bonnell springs"
-        },
-        {
-          "label": "Construction",
-          "value": "Double-sided"
-        },
-        {
-          "label": "Range",
-          "value": "Luxury"
-        }
-      ]
-    },
-    "siestaViscoPoint": {
-      "title": "Visco Point",
-      "subtitle": "siesta · Luxury · memory foam contour",
-      "headline": "Memory foam that contours deep",
-      "paragraph": "Visco Point is a memory foam mattress that contours closely to the body, spreading weight to ease the load on the joints and the spine.",
-      "scope": "Memory foam, body-contouring",
-      "delivery": "Luxury",
-      "materials": "Memory foam comfort layer",
-      "overlayTitle": "A model, not a project",
-      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Visco Point is a mattress in siesta's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
-      "overlaySpecs": [
-        {
-          "label": "Brand",
-          "value": "siesta, for hospitality"
-        },
-        {
-          "label": "Comfort layer",
-          "value": "Memory foam"
-        },
-        {
-          "label": "Built for",
-          "value": "Body-contouring"
-        },
-        {
-          "label": "Range",
-          "value": "Luxury"
-        }
-      ]
-    },
-    "siestaPerfection": {
-      "title": "Perfection",
-      "subtitle": "siesta · Eco Range · Euro Top value",
-      "headline": "Euro Top softness on pocket springs",
-      "paragraph": "Perfection sets a Euro Top comfort layer over pocket springs, a soft, stable surface pitched at everyday value rather than a premium price.",
-      "scope": "Pocket springs, Euro Top",
-      "delivery": "Eco Range",
-      "materials": "Pocket springs, Euro Top",
-      "overlayTitle": "A model, not a project",
-      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Perfection is a mattress in siesta's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
-      "overlaySpecs": [
-        {
-          "label": "Brand",
-          "value": "siesta, for hospitality"
-        },
-        {
-          "label": "Support",
-          "value": "Pocket springs"
-        },
-        {
-          "label": "Surface",
-          "value": "Euro Top"
-        },
-        {
-          "label": "Range",
-          "value": "Eco Range"
-        }
-      ]
-    },
-    "siestaPlanor": {
-      "title": "Planor",
-      "subtitle": "siesta · Eco Range · breathable knit",
-      "headline": "Pocket springs under a breathable knit",
-      "paragraph": "Planor is a practical pocket spring mattress with comfort layers and a breathable knitted cover, built for dependable everyday sleep.",
-      "scope": "Pocket springs, knitted cover",
-      "delivery": "Eco Range",
-      "materials": "Pocket springs, comfort layers, knitted cover",
-      "overlayTitle": "A model, not a project",
-      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Planor is a mattress in siesta's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
-      "overlaySpecs": [
-        {
-          "label": "Brand",
-          "value": "siesta, for hospitality"
-        },
-        {
-          "label": "Support",
-          "value": "Pocket springs"
-        },
-        {
-          "label": "Cover",
-          "value": "Breathable knit"
-        },
-        {
-          "label": "Range",
-          "value": "Eco Range"
-        }
-      ]
-    },
-    "siestaPrestige": {
-      "title": "Prestige",
-      "subtitle": "siesta · Eco Range · pillow-top comfort",
-      "headline": "A pillow top over spring support",
-      "paragraph": "Prestige adds a pillow-top comfort layer to spring support, a softer top over a familiar spring feel.",
-      "scope": "Spring support, pillow-top",
-      "delivery": "Eco Range",
-      "materials": "Springs, pillow-top layer",
-      "overlayTitle": "A model, not a project",
-      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Prestige is a mattress in siesta's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
-      "overlaySpecs": [
-        {
-          "label": "Brand",
-          "value": "siesta, for hospitality"
-        },
-        {
-          "label": "Support",
-          "value": "Springs"
-        },
-        {
-          "label": "Surface",
-          "value": "Pillow-top"
-        },
-        {
-          "label": "Range",
-          "value": "Eco Range"
-        }
-      ]
-    },
-    "siestaNight": {
-      "title": "Night",
-      "subtitle": "siesta · Eco Range · reliable Bonnell",
-      "headline": "Reliable Bonnell springs, every night",
-      "paragraph": "Night is an affordable Bonnell spring mattress built for reliable, uncomplicated nightly comfort.",
-      "scope": "Bonnell springs",
-      "delivery": "Eco Range",
-      "materials": "Bonnell springs, comfort layers",
-      "overlayTitle": "A model, not a project",
-      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Night is a mattress in siesta's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
-      "overlaySpecs": [
-        {
-          "label": "Brand",
-          "value": "siesta, for hospitality"
-        },
-        {
-          "label": "Support",
-          "value": "Bonnell springs"
-        },
-        {
-          "label": "Built for",
-          "value": "Everyday value"
-        },
-        {
-          "label": "Range",
-          "value": "Eco Range"
-        }
-      ]
-    },
-    "siestaMoon": {
-      "title": "Moon",
-      "subtitle": "siesta · Eco Range · entry-level",
-      "headline": "Simple, practical sleep",
-      "paragraph": "Moon is siesta's entry-level mattress, kept simple and practical for sleepers who want the essentials done well.",
-      "scope": "Entry-level comfort",
-      "delivery": "Eco Range",
-      "materials": "Support core, comfort layer",
-      "overlayTitle": "A model, not a project",
-      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Moon is a mattress in siesta's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
-      "overlaySpecs": [
-        {
-          "label": "Brand",
-          "value": "siesta, for hospitality"
-        },
-        {
-          "label": "Built for",
-          "value": "Simple, practical sleep"
-        },
-        {
-          "label": "Feel",
-          "value": "Everyday"
-        },
-        {
-          "label": "Range",
-          "value": "Eco Range"
-        }
-      ]
-    },
-    "siestaOrthopedic": {
-      "title": "Orthopedic",
-      "subtitle": "siesta · Eco Range · firmer support",
-      "headline": "A firmer, support-focused foam",
-      "paragraph": "Orthopedic is a support-focused foam mattress tuned for a firmer feel, for sleepers who prefer a solid surface under them.",
-      "scope": "Support foam, firmer feel",
-      "delivery": "Eco Range",
-      "materials": "Support foam",
-      "overlayTitle": "A model, not a project",
-      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Orthopedic is a mattress in siesta's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
-      "overlaySpecs": [
-        {
-          "label": "Brand",
-          "value": "siesta, for hospitality"
-        },
-        {
-          "label": "Comfort layer",
-          "value": "Support foam"
-        },
-        {
-          "label": "Feel",
-          "value": "Firmer"
-        },
-        {
-          "label": "Range",
-          "value": "Eco Range"
-        }
-      ]
-    },
-    "siestaSoftness": {
-      "title": "Softness",
-      "subtitle": "siesta · Eco Range · gentle softness",
-      "headline": "A soft, gently contouring foam",
-      "paragraph": "Softness is a soft foam mattress that contours gently to the body, for sleepers who want a plush surface rather than a firm one.",
-      "scope": "Soft foam, gentle contour",
-      "delivery": "Eco Range",
-      "materials": "Soft foam layers",
-      "overlayTitle": "A model, not a project",
-      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Softness is a mattress in siesta's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
-      "overlaySpecs": [
-        {
-          "label": "Brand",
-          "value": "siesta, for hospitality"
-        },
-        {
-          "label": "Comfort layer",
-          "value": "Soft foam"
-        },
-        {
-          "label": "Feel",
-          "value": "Soft"
-        },
-        {
-          "label": "Range",
-          "value": "Eco Range"
-        }
-      ]
-    },
-    "siestaMedicalSoft": {
-      "title": "Medical Soft",
-      "subtitle": "siesta · Eco Range · soft with support",
-      "headline": "Softness balanced with support",
-      "paragraph": "Medical Soft balances a soft foam surface with a supportive core, so it gives underweight without giving way.",
-      "scope": "Soft foam, supportive core",
-      "delivery": "Eco Range",
-      "materials": "Soft foam, support core",
-      "overlayTitle": "A model, not a project",
-      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Medical Soft is a mattress in siesta's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
-      "overlaySpecs": [
-        {
-          "label": "Brand",
-          "value": "siesta, for hospitality"
-        },
-        {
-          "label": "Comfort layer",
-          "value": "Soft foam"
-        },
-        {
-          "label": "Support",
-          "value": "Support core"
-        },
-        {
-          "label": "Range",
-          "value": "Eco Range"
-        }
-      ]
-    },
-    "siestaComfort": {
-      "title": "Comfort",
-      "subtitle": "siesta · Hospitality · hotel-grade, fire-resistant",
-      "headline": "Hotel-grade springs, fire-resistant cover",
-      "paragraph": "Comfort is a hotel-grade pocket spring mattress finished in a fire-resistant fabric, built for the wear and the safety requirements of hospitality rooms.",
-      "scope": "Pocket springs, fire-resistant fabric",
-      "delivery": "Hospitality",
-      "materials": "Pocket springs, fire-resistant fabric",
-      "overlayTitle": "A model, not a project",
-      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Comfort is a mattress in siesta's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
-      "overlaySpecs": [
-        {
-          "label": "Brand",
-          "value": "siesta, for hospitality"
-        },
-        {
-          "label": "Support",
-          "value": "Pocket springs"
-        },
-        {
-          "label": "Cover",
-          "value": "Fire-resistant fabric"
-        },
-        {
-          "label": "Range",
-          "value": "Hospitality"
-        }
-      ]
-    },
-    "siestaStandard": {
-      "title": "Standard",
-      "subtitle": "siesta · Hospitality · durable, fire-resistant",
-      "headline": "Durable Bonnell springs for hotels",
-      "paragraph": "Standard is a fire-resistant Bonnell spring mattress built for safe, durable use in hotels, where a mattress has to last through constant turnover.",
-      "scope": "Bonnell springs, fire-resistant",
-      "delivery": "Hospitality",
-      "materials": "Bonnell springs, fire-resistant fabric",
-      "overlayTitle": "A model, not a project",
-      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Standard is a mattress in siesta's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
-      "overlaySpecs": [
-        {
-          "label": "Brand",
-          "value": "siesta, for hospitality"
-        },
-        {
-          "label": "Support",
-          "value": "Bonnell springs"
-        },
-        {
-          "label": "Cover",
-          "value": "Fire-resistant fabric"
-        },
-        {
-          "label": "Range",
-          "value": "Hospitality"
-        }
-      ]
-    },
-    "siestaSleep": {
-      "title": "Sleep",
-      "subtitle": "siesta · Hospitality · economic hospitality",
-      "headline": "Economic hospitality on Bonnell springs",
-      "paragraph": "Sleep is siesta's economic hospitality mattress, on Bonnell springs under a fire-resistant Jacquard cover, for projects fitting out at scale.",
-      "scope": "Bonnell springs, Jacquard cover",
-      "delivery": "Hospitality",
-      "materials": "Bonnell springs, fire-resistant Jacquard",
-      "overlayTitle": "A model, not a project",
-      "overlaySummary": "The woodworks entries in this gallery are approved submittals for named developments. This is not one. Sleep is a mattress in siesta's 2026 catalogue, photographed by the manufacturer, and nothing here claims a client, a site or a completion.",
-      "overlaySpecs": [
-        {
-          "label": "Brand",
-          "value": "siesta, for hospitality"
-        },
-        {
-          "label": "Support",
-          "value": "Bonnell springs"
-        },
-        {
-          "label": "Cover",
-          "value": "Fire-resistant Jacquard"
-        },
-        {
-          "label": "Range",
-          "value": "Hospitality"
-        }
-      ]
-    }
+    "empty": "Nothing in this selection yet.",
+    "startProject": "Let's talk",
+    "prev": "Previous",
+    "next": "Next",
+    "close": "Close"
   }
 }

@@ -1,203 +1,181 @@
 "use client";
 
 import { useCallback, useEffect, useId, useRef, useState } from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { Link } from "@/i18n/navigation";
-import PushSlider from "./PushSlider";
 import { MarkGlyph } from "@/components/brand/geometry";
 import { useMotionConfig } from "@/components/motion/useMotionConfig";
-import type { Slide } from "@/lib/gallery/types";
-import type { DivisionId, SubCategoryId } from "@/lib/gallery/projects";
+import { isCutout } from "@/components/mattresses/assets";
+import { Lightbox } from "./Lightbox";
+import type { DivisionId, GalleryImage, SubCategoryId } from "@/lib/gallery/images";
 
-export type ShellProject = { id: string; title: string; subtitle: string };
-export type ShellSub = {
-  id: SubCategoryId;
-  label: string;
-  projects: ShellProject[];
-};
-export type ShellDivision = {
-  id: DivisionId;
-  label: string;
-  subs: ShellSub[];
-};
+export type ShellSub = { id: SubCategoryId; label: string };
+export type ShellDivision = { id: DivisionId; label: string; subs: ShellSub[] };
 
 /**
- * The gallery chrome: three labelled strips above the stage.
+ * The gallery: two levels of tabs over a grid of pictures, and nothing else.
  *
- * WHAT THIS IS NOT, ANY MORE. It was an editor shell — an icon rail of
- * unlabelled glyphs, a collapsible 300px panel, hover-delayed tooltips, and a
- * duplicate pair of chip bars below 760px. Four controls for two decisions, and
- * on a touch device the tooltips that explained the glyphs never appeared at
- * all. It is now: pick a division, pick a product type, pick an entry. All
- * three are words. See gallery-chrome.css for the visual reasoning.
+ * ===========================================================================
+ * WHAT THE REVIEW CHANGED, AND WHY IT IS A REBUILD
+ * ===========================================================================
  *
- * WHY THERE ARE THREE STRIPS NOW. The client's gallery note asks for three
- * divisions, each browsable by what the factory makes — so the middle level
- * (slide 14's product types, plus blue and siesta) is new, and it is a genuine
- * third dimension rather than a relabelling. The two strips before this were
- * (division, project), NOT two levels of category.
+ * This was a three-level browser (division → product type → project) over a
+ * bento slide stage with a push-transition engine and a ten-field detail
+ * overlay. The client's notes removed the reason for every part of it:
  *
- * STATE IS THREE VARIABLES, AND SELECTION ONLY EVER TRAVELS DOWN.
+ *   "remove all text and put pictures"          → no headline, paragraph, spec
+ *                                                 lines or overlay copy
+ *   "if there's only a text container replace    → the text cards in the bento
+ *    it with a picture that's the same size"       layout have no equivalent
+ *   "remove the view details button"             → no overlay to open
+ *   "only two levels of tabs not 3"              → the project level goes
+ *   "next and previous will move us through      → paging is sub-categories,
+ *    the subtab"                                    not projects
+ *   "when I click on a picture it should         → a lightbox, which the stage
+ *    become bigger to preview it"                   had no concept of
  *
- *   division    always set
- *   subId       always set, always within the active division
- *   projectId   always set, always within the active sub-category
+ * ===========================================================================
+ * STATE IS TWO VARIABLES, AND SELECTION ONLY EVER TRAVELS DOWN
+ * ===========================================================================
  *
- * (`panelOpen` is gone with the panel.) Each selector resets EVERY level below
- * it, not just the next one: picking a division that keeps the old sub-category
- * would leave the stage holding slides from a sub-category the division does
- * not contain. Project selection lives HERE rather than inside the stage, so it
- * survives a switch — and the stage is KEYED by the deepest selection so an
- * index can never outlive the slides it indexes. That key is load-bearing:
- * without it a switch handed the same slider a different array while it still
- * held an index into the old one, and the resulting shell↔stage feedback loop
- * crashed the route. GalleryShell.test.tsx pins both halves of that fix.
+ *   division   always set
+ *   subId      always set, always within the active division
+ *
+ * Picking a division resets the sub-category, because a division that kept the
+ * old one would leave the grid holding images from a sub-category it does not
+ * contain. The grid is KEYED by the sub-category so an open lightbox index can
+ * never outlive the array it indexes — the three-level version crashed the
+ * route exactly this way before it was keyed, and the failure mode survives
+ * the rebuild even though the level that caused it did not.
  */
 export function GalleryShell({
   divisions,
-  slidesBySub,
+  imagesBySub,
   initialDivision,
   initialSub,
-  initialProjectId,
+  alts,
   labels,
 }: {
   divisions: ShellDivision[];
-  /**
-   * Pre-resolved on the server — the client stage never sees an i18n key.
-   *
-   * Keyed by SUB-CATEGORY, not by division, because the sub-category is what
-   * owns a list of slides. Sub-category ids are globally unique (see the note
-   * on SUB_CATEGORIES), which is what lets this stay a flat record instead of
-   * a nested one.
-   */
-  slidesBySub: Record<SubCategoryId, Slide[]>;
+  imagesBySub: Record<SubCategoryId, GalleryImage[]>;
   initialDivision: DivisionId;
   initialSub: SubCategoryId;
-  initialProjectId: string;
+  /** Resolved on the server — the client never sees a message key. */
+  alts: Record<string, string>;
   labels: {
-    /** Strip label — "Selected work". */
     selectedWork: string;
-    /** Accessible name for the division tablist. */
     divisions: string;
-    /** Accessible name for the product-type tablist. */
     subCategories: string;
-    /** Accessible name for the project tablist. */
-    projects: string;
     empty: string;
     startProject: string;
+    prev: string;
+    next: string;
+    close: string;
   };
 }) {
   const [division, setDivision] = useState<DivisionId>(initialDivision);
   const [subId, setSubId] = useState<SubCategoryId>(initialSub);
-  const [projectId, setProjectId] = useState(initialProjectId);
+  const [lightbox, setLightbox] = useState<number | null>(null);
   const { reduce } = useMotionConfig();
   const uid = useId();
-  const stageId = `${uid}-stage`;
+  const gridId = `${uid}-grid`;
 
   const activeDivision = divisions.find((d) => d.id === division) ?? divisions[0];
   const activeSub =
     activeDivision.subs.find((s) => s.id === subId) ?? activeDivision.subs[0];
-  const slides = slidesBySub[activeSub.id] ?? [];
+  const images = imagesBySub[activeSub.id] ?? [];
+
+  /**
+   * Remember which tile opened the lightbox, so focus can go back to it.
+   *
+   * Not `document.activeElement` at close time: by then the lightbox's own
+   * button has it, and on a backdrop click nothing in the grid ever had it.
+   */
+  const openerRef = useRef<HTMLButtonElement | null>(null);
 
   /**
    * Reflect selection into the URL with replaceState, not pushState.
    *
-   * The tradeoff is explicit: Back leaves the gallery rather than stepping
-   * through projects. Three levels deep, a pushState history would make Back
-   * unusable as a way out — and "escape the page I am on" is the job Back is
-   * actually doing for most people.
+   * Back leaves the gallery rather than stepping through tabs — with two levels
+   * a pushState history would make Back unusable as a way out, and "escape the
+   * page I am on" is the job Back is actually doing for most people.
    *
-   * `?c=` and `?p=` keep their names through the restructure. They are in
-   * shared links and in the landing page's teaser tiles, so renaming them would
-   * break every link anyone has already sent.
+   * ⚠ `?p=` IS RETIRED. It addressed the project level, which no longer exists.
+   * Old shared links still work: `page.tsx` reads a legacy `?p=` and resolves it
+   * to the sub-category that project used to live in, rather than 404ing.
    */
   useEffect(() => {
     const url = new URL(window.location.href);
     url.searchParams.set("c", division);
     url.searchParams.set("s", activeSub.id);
-    url.searchParams.set("p", projectId);
+    url.searchParams.delete("p");
     window.history.replaceState(null, "", url);
-  }, [division, activeSub.id, projectId]);
+  }, [division, activeSub.id]);
 
-  /**
-   * Ships anyway, at 10 lines: if anyone later switches to pushState, URL and
-   * state cannot silently desync. Cheap insurance against a subtle bug.
-   */
-  useEffect(() => {
-    const onPop = () => {
-      const q = new URLSearchParams(window.location.search);
-      const c = q.get("c");
-      const s = q.get("s");
-      const p = q.get("p");
-      const d = divisions.find((x) => x.id === c);
-      if (d) setDivision(d.id);
-      // Only accept a sub-category that belongs to the division being restored,
-      // or Back could seat the shell on a pair that cannot coexist.
-      if (s && (d ?? activeDivision).subs.some((x) => x.id === s)) {
-        setSubId(s as SubCategoryId);
-      }
-      if (p) setProjectId(p);
-    };
-    window.addEventListener("popstate", onPop);
-    return () => window.removeEventListener("popstate", onPop);
-  }, [divisions, activeDivision]);
-
-  /**
-   * Selecting a division resets BOTH levels below it.
-   *
-   * Leaving projectId — or subId — pointing into the other division would put
-   * the stage in a state its bounds clamp has to rescue on the next render,
-   * which is the shape of the crash this file's tests exist for.
-   */
   const selectDivision = useCallback(
     (id: DivisionId) => {
+      const next = divisions.find((d) => d.id === id);
+      if (!next) return;
       setDivision(id);
-      const firstSub = divisions.find((d) => d.id === id)?.subs[0];
-      if (firstSub) {
-        setSubId(firstSub.id);
-        const first = firstSub.projects[0];
-        if (first) setProjectId(first.id);
-      }
+      setSubId(next.subs[0].id);
+      setLightbox(null);
     },
     [divisions],
   );
 
-  const selectSub = useCallback(
-    (id: SubCategoryId) => {
-      setSubId(id);
-      const first = activeDivision.subs.find((s) => s.id === id)?.projects[0];
-      if (first) setProjectId(first.id);
-    },
-    [activeDivision],
-  );
+  const selectSub = useCallback((id: SubCategoryId) => {
+    setSubId(id);
+    setLightbox(null);
+  }, []);
 
   /**
-   * Roving arrow-key navigation, per the tablist pattern — one Tab stop per
-   * strip, arrows move within it. Ported from the deleted rail: the chrome
-   * changed, the keyboard contract did not.
-   *
-   * All three strips are horizontal, so Left/Right are the semantic keys;
-   * Up/Down are accepted too because the rail taught this page's users to use
-   * them and it costs one array entry.
+   * PREV / NEXT PAGE THE SUB-CATEGORIES, which is what the client asked for
+   * ("the next and previous will move us through the subtab"). They wrap, and
+   * they wrap ACROSS divisions — running off the end of Woodworks' eight lands
+   * on blue rather than dead-ending, so the arrows are a way to see everything
+   * rather than a way to reach the end of one list.
    */
-  const divisionsRef = useRef<HTMLDivElement>(null);
-  const subsRef = useRef<HTMLDivElement>(null);
-  const projectsRef = useRef<HTMLDivElement>(null);
+  const flatSubs = divisions.flatMap((d) => d.subs.map((s) => ({ ...s, division: d.id })));
+  const flatIndex = flatSubs.findIndex((s) => s.id === activeSub.id);
 
+  const stepSub = useCallback(
+    (delta: number) => {
+      const next = flatSubs[(flatIndex + delta + flatSubs.length) % flatSubs.length];
+      if (!next) return;
+      setDivision(next.division);
+      setSubId(next.id);
+      setLightbox(null);
+    },
+    [flatSubs, flatIndex],
+  );
+
+  const closeLightbox = useCallback(() => {
+    setLightbox(null);
+    openerRef.current?.focus();
+  }, []);
+
+  const stepImage = useCallback(
+    (delta: number) => {
+      setLightbox((i) =>
+        i === null ? i : (i + delta + images.length) % images.length,
+      );
+    },
+    [images.length],
+  );
+
+  /** Roving focus for a tablist. Home/End jump; arrows wrap; RTL mirrors. */
   function rove(
     e: React.KeyboardEvent,
     count: number,
     currentIndex: number,
-    onMove: (index: number) => void,
+    onMove: (i: number) => void,
     container: React.RefObject<HTMLDivElement | null>,
     selector: string,
   ) {
-    const keys = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Home", "End"];
+    const keys = ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown", "Home", "End"];
     if (!keys.includes(e.key)) return;
     e.preventDefault();
-
-    // In RTL the strips render end-to-start, so ArrowLeft must advance. Reading
-    // direction off the document is what keeps the keyboard matching the eye.
     const rtl =
       typeof document !== "undefined" && document.documentElement.dir === "rtl";
     let next: number;
@@ -208,18 +186,18 @@ export function GalleryShell({
         e.key === "ArrowDown" || (rtl ? e.key === "ArrowLeft" : e.key === "ArrowRight");
       next = (currentIndex + (forwardKey ? 1 : -1) + count) % count;
     }
-
     onMove(next);
     container.current?.querySelectorAll<HTMLElement>(selector)[next]?.focus();
   }
 
+  const divisionsRef = useRef<HTMLDivElement>(null);
+  const subsRef = useRef<HTMLDivElement>(null);
   const divisionIndex = divisions.findIndex((d) => d.id === division);
   const subIndex = activeDivision.subs.findIndex((s) => s.id === activeSub.id);
-  const projectIndex = activeSub.projects.findIndex((p) => p.id === projectId);
 
   return (
     <div className="gallery-chrome">
-      {/* ---------- top strip: what this page is, and the three divisions ---- */}
+      {/* ---------- level 1: the three divisions ---------- */}
       <div className="gl-strip gl-strip--top">
         <span className="gl-eyebrow">{labels.selectedWork}</span>
 
@@ -246,41 +224,25 @@ export function GalleryShell({
               role="tab"
               className="gl-cat"
               aria-selected={d.id === division}
-              aria-controls={stageId}
+              aria-controls={gridId}
               tabIndex={d.id === division ? 0 : -1}
               onClick={() => selectDivision(d.id)}
             >
               {/*
-                Accompanies the label, never replaces it — that confusion is
-                exactly what the deleted rail was. MarkGlyph is aria-hidden
-                internally, so the tab's accessible name is just the division.
-
-                ⚠ THE DIVISION IS PASSED THROUGH, NOT DECIDED HERE. This was
-                `c.id === "woodworks" ? "woodworks" : "mattresses"` — a binary
-                ternary written when there were exactly two divisions. Adding
-                Furniture would have silently given it the MATTRESSES blade,
-                and nothing would have failed: the ternary typechecks, renders,
-                and is wrong. DIVISION_ELEMENT has carried a `furniture` key all
-                along (it is #lg-b3); the ternary simply could not reach it.
-
-                Size 20 is the floor MIN_GLYPH enforces rather than a number
-                picked to fit: below it the blade reads as a stray mark instead
-                of the division's signature. It stays at 20 on every screen —
-                once the CTA drops out below 700px there is room for all three
-                chips at full size, so nothing has to be shrunk under the floor.
+                THE WHOLE MARK, NOT A DIVISION BLADE. It was `MarkGlyph
+                division={d.id}` — one of the five blades — which is
+                unidentifiable at any size (see the note on `whole` in
+                geometry.tsx) and, worse, `design` has no blade of its own: the
+                three-division set this replaced was woodworks/furniture/
+                mattresses, and DIVISION_ELEMENT has no `design` key. A single
+                mark beside all three labels is honest about what it is.
               */}
-              <MarkGlyph division={d.id} size={20} color="currentColor" />
+              <MarkGlyph division="stark" whole size={28} color="currentColor" />
               {d.label}
             </button>
           ))}
         </div>
 
-        {/*
-          Replaces the rail's bare "+", which navigated off the page with no
-          indication that it would. A plain anchor rather than the site Pill:
-          this is chrome inside a fixed-height strip, and the Pill's generous
-          section-CTA padding would push the strip 20px taller.
-        */}
         <Link className="gl-cta" href="/#contact">
           {labels.startProject}
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden>
@@ -295,8 +257,25 @@ export function GalleryShell({
         </Link>
       </div>
 
-      {/* ---------- sub-category strip: what the division makes ---------- */}
+      {/* ---------- level 2: what the division makes ---------- */}
       <div className="gl-strip gl-strip--subs">
+        <button
+          type="button"
+          className="gl-step"
+          onClick={() => stepSub(-1)}
+          aria-label={labels.prev}
+        >
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden>
+            <path
+              d="M15 5l-7 7 7 7"
+              stroke="currentColor"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
+
         <div
           ref={subsRef}
           className="gl-subs"
@@ -320,144 +299,87 @@ export function GalleryShell({
               role="tab"
               className="gl-sub"
               aria-selected={s.id === activeSub.id}
-              aria-controls={stageId}
+              aria-controls={gridId}
               tabIndex={s.id === activeSub.id ? 0 : -1}
               onClick={() => selectSub(s.id)}
             >
-              {/*
-                A THIRD MECHANIC, and it has to be a third one. The divisions
-                above are a segmented control and the projects below are
-                underline tabs; that difference is what stops two stacked tab
-                rows from reading as one confusing control. A third row in
-                either of those two styles would collapse the distinction it
-                was making. So this level is a marker dot and a weight change,
-                which is quieter than both and unmistakably not either.
-              */}
-              <span aria-hidden className="gl-sub-dot" />
               {s.label}
             </button>
           ))}
         </div>
-      </div>
 
-      {/* ---------- project strip: the active product type's entries ---------- */}
-      <div className="gl-strip gl-strip--projects">
-        <div
-          ref={projectsRef}
-          className="gl-projects"
-          role="tablist"
-          aria-label={labels.projects}
-          onKeyDown={(e) =>
-            rove(
-              e,
-              activeSub.projects.length,
-              projectIndex,
-              (i) => setProjectId(activeSub.projects[i].id),
-              projectsRef,
-              ".gl-project",
-            )
-          }
+        <button
+          type="button"
+          className="gl-step"
+          onClick={() => stepSub(1)}
+          aria-label={labels.next}
         >
-          {activeSub.projects.length === 0 ? (
-            <p className="gl-eyebrow" style={{ display: "block", padding: "18px 0" }}>
-              {labels.empty}
-            </p>
-          ) : (
-            activeSub.projects.map((p, i) => {
-              const isActive = p.id === projectId;
-              return (
-                <button
-                  key={p.id}
-                  type="button"
-                  role="tab"
-                  className="gl-project"
-                  aria-selected={isActive}
-                  aria-controls={stageId}
-                  tabIndex={isActive ? 0 : -1}
-                  onClick={() => setProjectId(p.id)}
-                >
-                  <span className="gl-project-num">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <span className="gl-project-name">{p.title}</span>
-                  {/*
-                    NO SUBTITLE IN THE TAB. Each tab carried its sector line
-                    too ("Hotel · Public areas"), which put three pieces of
-                    text in every tab across a row of three — the client's word
-                    was "crowded", and on a narrow window the row scrolled
-                    horizontally because of it. The subtitle still appears on
-                    the hero card inside the stage, where it belongs and has
-                    room; a tab only has to be nameable.
-                  */}
-
-                  {/*
-                    ONE rule with a shared layoutId, so Framer moves the SAME
-                    element between tabs instead of crossfading two. The
-                    movement is what says "you navigated along a row" rather
-                    than "the page redrew". Keyed by SUB-CATEGORY, because
-                    across a switch the old and new tab rows are unrelated
-                    lists and sliding between them would animate a relationship
-                    that does not exist.
-                  */}
-                  {isActive &&
-                    (reduce ? (
-                      <span aria-hidden className="gl-project-rule" />
-                    ) : (
-                      <motion.span
-                        aria-hidden
-                        layoutId={`gl-project-rule-${activeSub.id}`}
-                        className="gl-project-rule"
-                        transition={{ duration: 0.42, ease: [0.16, 1, 0.3, 1] }}
-                      />
-                    ))}
-                </button>
-              );
-            })
-          )}
-        </div>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden>
+            <path
+              d="M9 5l7 7-7 7"
+              stroke="currentColor"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
       </div>
 
-      {/* ---------- stage ---------- */}
+      {/* ---------- the pictures ---------- */}
       <div
-        className="gl-stage"
-        id={stageId}
+        id={gridId}
         role="tabpanel"
-        aria-label={`${activeDivision.label}, ${activeSub.label}`}
+        aria-label={activeSub.label}
+        className="gl-grid-scroll"
+        /* KEYED BY SUB-CATEGORY. Remounting on every switch is what guarantees
+           no lightbox index, scroll offset or in-flight layout animation
+           outlives the array it belongs to. */
+        key={activeSub.id}
       >
-        {/* stage-viewport = the design's query container. It must have a
-            definite size or `container: stage / size` never resolves and every
-            cqw/cqh inside collapses. */}
-        <div className="stage-viewport">
-          {/*
-            KEYED BY THE DEEPEST SELECTION, deliberately.
-
-            Without the key, a switch hands the same slider a completely
-            different `slides` array while it still holds an index into the old
-            one. Two things follow, and both are wrong: for one render the stage
-            resolves a project by POSITION rather than by identity (project 3 of
-            Doors & Panels becomes project 3 of blue), and the push transition
-            then animates between two projects that have nothing to do with each
-            other.
-
-            ⚠ IT IS THE SUB-CATEGORY THAT MUST BE IN THIS KEY, not the division.
-            The division alone was enough when a division owned the slide list;
-            it does not any more. Keyed by division, moving between two product
-            types INSIDE one division would keep the stale index and reproduce
-            exactly the crash this key was added to prevent. Both are in the key
-            because reading `division:sub` makes that reasoning visible.
-
-            Remounting gives the new selection a fresh index seeded from
-            `activeId`, and a clean entrance instead of a nonsensical push.
-          */}
-          <PushSlider
-            key={`${division}:${activeSub.id}`}
-            slides={slides}
-            activeId={projectId}
-            onActiveChange={setProjectId}
-            emptyLabel={labels.empty}
-          />
-        </div>
+        {images.length === 0 ? (
+          <p className="gl-empty">{labels.empty}</p>
+        ) : (
+          <ul className="gl-grid">
+            {images.map((img, i) => (
+              <li key={img.src} className="gl-tile">
+                <button
+                  type="button"
+                  className="gl-tile-button"
+                  onClick={(e) => {
+                    openerRef.current = e.currentTarget;
+                    setLightbox(i);
+                  }}
+                >
+                  <span className="sr-only">{alts[img.altKey] ?? ""}</span>
+                  <motion.span
+                    // Paired with the lightbox figure — this is the expansion.
+                    layoutId={reduce ? undefined : `gl-${img.src}`}
+                    className="gl-tile-frame"
+                  >
+                    <Image
+                      src={img.src}
+                      alt=""
+                      fill
+                      sizes="(max-width: 700px) 50vw, (max-width: 1100px) 33vw, 25vw"
+                      className={isCutout(img.src) ? "object-contain" : "object-cover"}
+                    />
+                  </motion.span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
+
+      <Lightbox
+        images={images}
+        index={lightbox}
+        alts={alts}
+        labels={{ close: labels.close, prev: labels.prev, next: labels.next }}
+        onClose={closeLightbox}
+        onStep={stepImage}
+      />
     </div>
   );
 }

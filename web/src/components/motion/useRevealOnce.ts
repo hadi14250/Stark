@@ -136,7 +136,64 @@ let revealObserver: IntersectionObserver | null = null;
 let passScheduled = 0;
 let listening = false;
 
+/* ==========================================================================
+   THE CURTAIN HOLD
+   ==========================================================================
+
+   WHY THIS IS HERE AND NOT IN EntranceGate. That provider exists for exactly
+   this job — hold the page's entrance until the brand curtain has lifted, so
+   the hero's staged reveal is not performed to an opaque green panel. It works
+   through `useRevealPlay`, which every reveal used to consume.
+
+   Then the reveals moved from Framer to this CSS state machine, and NOTHING
+   consumes `useRevealPlay` any more. The gate still mounts, still counts down,
+   still flips `ready` — and reaches nothing. So on a fresh load of `/` the
+   hero's word-by-word entrance plays underneath the 2.4s preloader and is over
+   before anyone sees it: the precise bug EntranceGate was written to fix,
+   quietly restored by a refactor that had no reason to look at it.
+
+   Adding the route curtain would have reproduced it on every internal click as
+   well, so the hold lives where the reveals actually are.
+
+   ⚠ IT CANNOT BE ALLOWED TO HIDE THE PAGE. Everything else in this file is
+   built so that no failure leaves content invisible, and a hold is the one
+   mechanism here that could: held elements stay armed, and armed means hidden.
+   So `holdReveals` takes its own ceiling and arms a timer against itself — if
+   the caller crashes, unmounts, or simply forgets, reveals resume anyway. */
+
+let held = false;
+let holdCeiling = 0;
+
+/**
+ * Keep armed elements hidden until the curtain is gone.
+ *
+ * Returns the release. `maxMs` is a hard ceiling, not a schedule: whatever
+ * happens to the caller, the page reveals within it.
+ */
+export function holdReveals(maxMs: number): () => void {
+  held = true;
+  window.clearTimeout(holdCeiling);
+  holdCeiling = window.setTimeout(releaseReveals, maxMs);
+  return releaseReveals;
+}
+
+/** Let the entrance play. Idempotent — both the caller and the ceiling call it. */
+export function releaseReveals() {
+  if (!held) return;
+  held = false;
+  window.clearTimeout(holdCeiling);
+  schedulePass();
+}
+
 function revealNow(el: HTMLElement) {
+  // THE HOLD IS ENFORCED HERE, not only in `pass()`, because there are two
+  // ways in: the scroll pass and the reveal observer's own callback, which
+  // reveals its entries directly. Guarding one path would have let the observer
+  // play the entrance behind the curtain anyway — and it is the path that fires
+  // first, so it would have looked like the hold did nothing at all.
+  // The element stays armed and observed; the release schedules a pass that
+  // picks it up.
+  if (held) return;
   armed.delete(el);
   revealObserver?.unobserve(el);
   el.classList.add("is-revealed");
@@ -151,6 +208,9 @@ function revealNow(el: HTMLElement) {
  */
 function pass() {
   passScheduled = 0;
+  // Curtain up: leave everything armed and keep listening. `releaseReveals`
+  // schedules another pass, so nothing is lost by returning here.
+  if (held) return;
   if (armed.size === 0) {
     stopListening();
     return;

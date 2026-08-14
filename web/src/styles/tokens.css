@@ -312,14 +312,22 @@
   /* Custom breakpoint → enables `nav:` variant for the 860px burger switch */
   --breakpoint-nav: 860px;
 
-  /* Height of the fixed header: utility strip (40) + bar (64 mobile / 76 at
-     `nav:`). SiteChrome offsets <main> by this, and the gallery stage sizes
-     itself as `100svh - var(--header-h)`. It is a TOKEN rather than two
-     hardcoded paddings because those two consumers must never disagree — when
-     they did (stage assumed 104 while <main> applied 116 at ≥860px) the stage
-     overflowed the viewport by exactly 12px and the gallery gained a scrollbar
-     it is not supposed to have. Verified in the A0a spike. */
-  --header-h: 104px;
+  /* Height of the fixed header: the bar alone, 64 mobile / 76 at `nav:`.
+     SiteChrome offsets <main> by this, and the gallery stage sizes itself as
+     `100svh - var(--header-h)`. It is a TOKEN rather than two hardcoded
+     paddings because those two consumers must never disagree — when they did
+     (stage assumed 104 while <main> applied 116 at ≥860px) the stage overflowed
+     the viewport by exactly 12px and the gallery gained a scrollbar it is not
+     supposed to have. Verified in the A0a spike.
+
+     ⚠ THE 40px UTILITY STRIP IS GONE, AND THIS TOKEN IS HOW YOU KNOW.
+     The header used to be a two-tier green — a thin email/social strip over the
+     nav bar — and these values were 104/116. The client asked for the whole
+     ribbon to come off. Removing the markup alone would have left a 40px band
+     of empty page under a fixed header that is no longer that tall, on every
+     route, because <main>'s top padding comes from here. The strip and this
+     number are one change, not two. */
+  --header-h: 64px;
 
   /* How much scroll ONE step of the pinned Process chapter gets. Six steps, so
      the track is six times this and nothing else decides its length.
@@ -355,12 +363,10 @@
      two compete and the eye cannot tell which one is reporting progress. */
   --animate-spin-slower: spin-slow 44s linear infinite;
   --animate-floaty: floaty 6s ease-in-out infinite;
-  /* 30s -> 18s at the client's request ("make the slider faster"). This band
-     is watchwords, not information: nobody reads it word by word, they read
-     that it is moving. The client wall below runs at 52s/64s and stays there
-     because a LOGO does have to be fixed on and identified — the two bands
-     look alike and are deliberately not the same speed. */
-  --animate-marquee: marquee 18s linear infinite;
+  /* ⚠ `--animate-marquee` WAS HERE AND IS GONE WITH THE WATCHWORD BAND, which
+     the client asked to remove. The `marquee` KEYFRAME below is still live —
+     the client wall is its only consumer now, so do not delete it along with
+     the band it was named after. */
   /* The client wall reuses the `marquee` keyframe at two much slower speeds,
      one per row, running against each other. Slower because a logo has to be
      READ, not just registered as passing texture — 30s makes a wordmark hard
@@ -405,7 +411,7 @@
    --breakpoint-nav. */
 @media (min-width: 860px) {
   :root {
-    --header-h: 116px;
+    --header-h: 76px;
     /* See --process-step above: 58 gives the drawn mark room to read as drawn.
        `vh` rather than `svh` — a desktop viewport does not retract. */
     --process-step: 58vh;
@@ -554,57 +560,104 @@
   --ease-theme: var(--ease-standard);
 }
 
-/* Woodworks — the graphite theme. This REPLACES the old cream/green block of
-   the same name rather than sitting beside it. */
+/* Woodworks — the cream theme, on the company profile's own page colour. */
 [data-theme="woodworks"] {
   /**
-   * THE PAGE IS DARK NOW, and that is the point.
+   * ===========================================================================
+   * THE PAGE WENT LIGHT, AND THIS IS THE SECOND TIME IT HAS CHANGED DIRECTION
+   * ===========================================================================
    *
-   * It used to be off-white surfaces with graphite ink — technically the
-   * neutral column, perceptually indistinguishable from Home. The client's
-   * review said so plainly: the page read as Home with different words. Ink
-   * colour is the weakest differentiation axis there is; a visitor does not
-   * compare hex values between pages, they register light or dark in the first
-   * 200ms.
+   * It was cream once, was rebuilt near-black, and is cream again. That is not
+   * churn, and the reasoning behind the dark version was sound — it is worth
+   * writing down what has and has not changed, because the next person to read
+   * this will find the dark-page argument in DESIGN.md and in git history.
    *
-   * So the ramp inverts. Home is light, centred and airy; Woodworks is the
-   * factory floor — near-black, left-aligned against a standing rule, dense.
-   * Nothing here is invented: --neutral is an official brand column, and the
-   * page simply sits at its dark end instead of using it as ink on white.
+   * The dark build existed because the ORIGINAL cream page was Home with
+   * different words: off-white surfaces, and a theme whose entire delta from
+   * Home was ink colour and a density multiplier. The client said so, and they
+   * were right. Ink colour is the weakest differentiation axis there is.
+   *
+   * The client has now asked for this page to take the exact background of
+   * their own company profile p10. That instruction sits on top of a page that
+   * has since been rebuilt STRUCTURALLY — a full-viewport hero hung off a
+   * standing rule, a sticky chapter index, a scroll-snap product strip. None of
+   * that came from the colour. So going light no longer collapses the page back
+   * into Home, because the two no longer share a skeleton.
+   *
+   * The three axes that are NOT colour therefore stay exactly as they were, and
+   * they are what keeps the pages apart now:
+   *
+   *   --align-axis  start, against Home's center. DESIGN.md §4 records that the
+   *                 A0c comps found alignment does more perceptual work than the
+   *                 entire ink-ramp swap. This is the load-bearing one.
+   *   --density     0.8, against Home's 1.0. A spec sheet, not a brochure.
+   *   ink ramp      the NEUTRAL column, against Home's green. Both are official
+   *                 brand ramps; graphite ink on cream is the book's own pairing.
+   *
+   * ⚠ SURFACE-2 IS WARM GRAY, NOT SAND, and that is the one colour decision
+   * here that is doing real work. Home's surface-2 is `sand-200`; if this page
+   * used the same, the two would share both surfaces and the theme would be
+   * back to differing by ink alone — the exact failure the dark build was made
+   * to fix. `warm-200` is the official Warm Gray step, it sits with the neutral
+   * ink rather than against it, and it is what DESIGN.md §4's table specified
+   * for this page all along.
    */
-  --color-surface: var(--neutral-500);
-  --color-surface-2: var(--neutral-600);
-  --color-ink: var(--white-500);
-  --color-ink-body: var(--warm-300);
-  --color-ink-muted: var(--neutral-200);
+
+  /**
+   * Sampled from the client's own PDF, not eyeballed — `#FCF9EF`, read off a
+   * 150dpi render of Company Profile S.F 2.4 p10 ("Designed to perform. Built
+   * to deliver."), where it is 49% of the page area and all four corners agree.
+   *
+   * It is a LITERAL rather than `var(--white-500)` because it genuinely is not
+   * one: the brand off-white is `#FAF5EF` and this is two red, four green and
+   * zero blue away from it. Individually invisible, and precisely the class of
+   * near-miss DESIGN.md §1.1 exists to record — the difference between "the
+   * brand's off-white" and "the colour on the client's page" is a fact about
+   * where the value came from, so it is written as the sampled value and
+   * commented, rather than rounded to a token that would quietly lose it.
+   */
+  --color-surface: #fcf9ef;
+  --color-surface-2: var(--warm-200);
+  --color-ink: var(--neutral-500);
+  --color-ink-body: var(--neutral-400);
+  --color-ink-muted: var(--neutral-400);
   --color-accent: var(--sand-500);
   --color-accent-2: var(--sand-400);
-  /* Sand, not off-white: on a dark page the accent is the only colour with a
-     job, so it carries every interactive affordance. 11.5:1 on surface-2. */
-  --color-interactive: var(--sand-500);
-  /* One step below the page, so a panel reads as a recess rather than a card.
-     On the light version this role had to be lightened away from neutral-500
-     because a near-black panel punched a hole in the page — inverted, the same
-     value IS the page and the recess is what reads correctly. */
-  --color-panel: var(--neutral-600);
-  --color-line: var(--line-on-graphite-dark);
-  /* Fields go dark with the page. The one light surface on the route is the
-     contact card, which resets these via [data-surface="light"]. */
-  --color-field-surface: rgb(250 245 239 / 0.05);
-  --color-field-border: rgb(250 245 239 / 0.2);
+  /**
+   * Ink, not sand — the rule from DESIGN.md §1.5 applied to a light page.
+   *
+   * On the dark build this was `sand-500`, which was right there (11.5:1 on a
+   * near-black surface) and is 1.5:1 here. Sand on cream fails the 4.5:1 text
+   * floor and the 3:1 non-text floor for borders and rings alike, so it may be
+   * a decorative mark and nothing else. Every interactive affordance on this
+   * page is carried by the ink, with an underline or a sand marker beside it.
+   */
+  --color-interactive: var(--neutral-500);
+  /**
+   * The 400 step, not 500. DESIGN.md §4's panel note, and it applies again now
+   * that the page is light: `neutral-500` at panel scale reads as a hole
+   * punched in the page rather than as a plane on it. Same graphite intent, a
+   * weight the layout can hold.
+   */
+  --color-panel: var(--neutral-400);
+  --color-line: var(--line-on-graphite);
+  /* Light fields again, so `[data-surface="light"]` (the contact card) is a
+     no-op on this route rather than a rescue. */
+  --color-field-surface: var(--field-surface);
+  --color-field-border: var(--field-border);
   --align-axis: start;
   --density: 0.8;
   /**
-   * Timber wants grain and shadow, not brightness.
+   * The grade comes back up with the page.
    *
-   * The placeholder photography is bright, high-key interior stock — on a
-   * near-black page an ungraded version of it glows like a lightbox and the
-   * page stops reading as a workshop and starts reading as a dark theme with
-   * bright pictures pasted on. Pulled down hard and desaturated so photographs
-   * sit IN the page. Contrast is raised to buy back the definition brightness
-   * takes away, which is what keeps grain and machining marks legible.
+   * It was `brightness(0.68)` and heavily desaturated, because on a near-black
+   * page an ungraded bright interior glows like a lightbox. On cream the
+   * opposite is true: that same crush turns every photograph into a grey hole.
+   * What survives is the contrast lift — timber wants grain, and a small
+   * desaturation keeps the placeholder stock from going candy-warm next to the
+   * sand accent.
    */
-  --image-filter: contrast(1.16) saturate(0.82) brightness(0.68);
+  --image-filter: contrast(1.06) saturate(0.94);
   --ease-theme: var(--ease-zoom);
 }
 

@@ -157,17 +157,23 @@ export async function Turnkey() {
           ledger above it — four framed boxes under a ruled ledger would be two
           competing treatments of the same idea one scroll apart.
 
-          FIVE COLUMNS NOW, NOT FOUR (profile v3 slide 6 added "500+ projects
-          completed"), and the figure size had to come down with it. At four
-          columns `clamp(30px,4vw,54px)` was comfortable; at five, the widest
-          figure — "60,000 m²" — is about 260px of type in a column roughly
-          200px wide, so it overflowed. Note it could not WRAP its way out of
-          that either, because the unit is joined to the number by a
-          non-breaking space (see facts.ts), which is deliberate: the client
-          reported the unit dropping to its own line. So the type scale is what
-          gives, not the pairing. Re-measure if a sixth stat is ever added.
+          BACK TO FOUR COLUMNS, AND THE FIGURES GO BACK UP WITH THEM.
+
+          v3 slide 6 added "500+ projects completed" and made it five, which
+          forced the type down: the widest figure — "60,000 m²" — is about 260px
+          of type, and a fifth of this container is roughly 200px, so it
+          overflowed. It could not WRAP its way out either, because the unit is
+          joined to the number by a non-breaking space (see facts.ts), which is
+          itself deliberate — the client reported the unit dropping onto its own
+          line. So the type scale was what gave.
+
+          Company Profile S.F 2.4 p7 states four, the client asked to match it,
+          and `clamp(30px,4vw,54px)` fits again. That is not incidental: the same
+          review asked for the count-up to be more visible, and a bigger numeral
+          is half of that answer — the other half is the timing fix in
+          CountUp.tsx. Re-measure if a fifth stat ever comes back.
         */}
-        <dl className="mt-[clamp(40px,5vw,68px)] grid grid-cols-2 gap-x-[clamp(20px,3vw,44px)] gap-y-[clamp(24px,3vw,36px)] nav:grid-cols-5">
+        <dl className="mt-[clamp(40px,5vw,68px)] grid grid-cols-2 gap-x-[clamp(20px,3vw,44px)] gap-y-[clamp(24px,3vw,36px)] nav:grid-cols-4">
           {HOME_STATS.map((stat, i) => (
             <Reveal
               key={statItems[i]?.label ?? i}
@@ -182,7 +188,7 @@ export async function Turnkey() {
                   suffix={stat.suffix}
                   grouping={stat.grouping}
                   locale={locale}
-                  className="block font-display text-[clamp(26px,2.6vw,40px)] font-bold leading-[1.05] tracking-display text-[color:var(--color-ink)]"
+                  className="block font-display text-[clamp(30px,4vw,54px)] font-bold leading-[1.05] tracking-display text-[color:var(--color-ink)]"
                 />
                 <span
                   className="mt-2 block font-mono text-[11px] tracking-eyebrow text-[color:var(--color-ink-muted)]"

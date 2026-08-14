@@ -5,6 +5,14 @@ import { describe, it, expect } from "vitest";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const tsx = readFileSync(join(here, "Preloader.tsx"), "utf8");
+/**
+ * The constants moved out of Preloader.tsx when the route curtain arrived —
+ * two components play the same mark for the same beat, so the numbers are
+ * shared rather than duplicated. This file is read for them; `tsx` is still
+ * read for the behaviour assertions further down.
+ */
+const timing = readFileSync(join(here, "loader-timing.ts"), "utf8");
+const curtain = readFileSync(join(here, "RouteCurtain.tsx"), "utf8");
 const css = readFileSync(join(here, "../../styles/logo-loader.css"), "utf8");
 const loader = readFileSync(join(here, "LogoLoader.tsx"), "utf8");
 const gate = readFileSync(join(here, "EntranceGate.tsx"), "utf8");
@@ -29,9 +37,9 @@ function num(re: RegExp, src: string, label: string): number {
 }
 
 describe("preloader timing is consistent across TS and CSS", () => {
-  const holdMs = num(/const HOLD_MS = (\d+)/, tsx, "HOLD_MS");
-  const liftMs = num(/const LIFT_MS = (\d+)/, tsx, "LIFT_MS");
-  const speed = num(/const LOADER_SPEED = ([\d.]+)/, tsx, "LOADER_SPEED");
+  const holdMs = num(/export const HOLD_MS = (\d+)/, timing, "HOLD_MS");
+  const liftMs = num(/export const LIFT_MS = (\d+)/, timing, "LIFT_MS");
+  const speed = num(/export const LOADER_SPEED = ([\d.]+)/, timing, "LOADER_SPEED");
   const holdCss = num(/--preloader-hold:\s*([\d.]+)s/, css, "--preloader-hold");
 
   it("the CSS hold matches HOLD_MS", () => {
@@ -120,6 +128,46 @@ describe("preloader timing is consistent across TS and CSS", () => {
     // A loading screen whose entire content is an animation should not be
     // shown-but-frozen to someone who asked for no animation.
     expect(css).toMatch(/prefers-reduced-motion[\s\S]*?\.stark-preloader\s*\{\s*display:\s*none/);
+  });
+
+  it("gives a route change the same curtain as a refresh", () => {
+    /**
+     * The client's report was that the loading animation "doesn't appear the
+     * same as it does when we refresh" — because on an in-app navigation it did
+     * not appear at all: SiteChrome sits in the layout and never remounts, so
+     * Preloader cannot fire on a route change however long it waits.
+     *
+     * RouteCurtain covers that path. What this pins is that it covers it with
+     * the SAME mark for the SAME beat: two loading animations that differ by
+     * how you arrived is the original complaint in a new costume, and it would
+     * happen the moment someone tuned one file's constant and not the other's.
+     */
+    expect(curtain).toMatch(/from "\.\/loader-timing"/);
+    expect(curtain, "RouteCurtain must not carry its own timing").not.toMatch(
+      /const (HOLD_MS|LIFT_MS|LOADER_SPEED)\s*=\s*\d/,
+    );
+    expect(curtain, "both curtains play the same variant").toMatch(/LOADER_VARIANT/);
+  });
+
+  it("holds the page's entrance until the curtain has lifted", () => {
+    /**
+     * EntranceGate was built for this and no longer reaches anything: every
+     * reveal moved to the CSS state machine in useRevealOnce, and nothing
+     * consumes useRevealPlay any more, so `ready` flips into the void. The
+     * symptom is invisible in a typecheck and obvious on screen — the hero's
+     * staged entrance plays underneath an opaque green panel and is over before
+     * it lifts.
+     *
+     * Both curtains must therefore take the hold that actually works.
+     */
+    for (const [name, src] of [
+      ["Preloader", tsx],
+      ["RouteCurtain", curtain],
+    ] as const) {
+      expect(src, `${name} must hold reveals while its curtain is up`).toMatch(
+        /holdReveals\(/,
+      );
+    }
   });
 
   it("no longer gates itself behind sessionStorage", () => {

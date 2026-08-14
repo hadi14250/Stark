@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { Container } from "@/components/ui/Container";
 import { Section, SectionHeader } from "@/components/ui/Section";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { Reveal } from "@/components/motion/Reveal";
 import { DivisionIndex, type DivisionItem } from "./DivisionIndex";
 import type { DivisionKey } from "@/components/brand/LogoDefs";
 
@@ -42,7 +43,10 @@ const DIVISION_KEYS: DivisionKey[] = ["woodworks", "mattresses", "engineering"];
 export async function Divisions() {
   const t = await getTranslations("landing.categories");
   const items = t.raw("items") as Item[];
-  const engineering = t.raw("engineeringServices") as { label: string; items: string[] };
+  const core = t.raw("coreServices") as {
+    label: string;
+    items: { title: string; body: string }[];
+  };
 
   const divisions: DivisionItem[] = items.map((item, i) => ({
     ...item,
@@ -60,38 +64,62 @@ export async function Divisions() {
         />
         <DivisionIndex items={divisions} />
 
-        {/* Engineering & technical services, named.
-            The third division panel has no photograph of its own subject (see
-            the TODO in DivisionIndex), so its substance lives here as a service
-            list rather than in an image, from the new profile's product-lines
-            page (p9): the two genuinely new names are Interior design and Shop
-            drawings. Same mono-tag language as the capability strips. */}
+        {/*
+          THE FIVE NAMED SERVICES, straight off the new profile's p8.
+
+          WHAT WAS HERE: six bare words in a mono tag strip — "Design
+          development · Technical office support · Shop drawings · Value
+          engineering · Interior design · Project coordination". That treatment
+          was right when this was a footnote to the third division panel, which
+          has no photograph of its own subject (see the TODO in DivisionIndex).
+
+          p8 promotes them. The profile's page is a three-service row over a
+          FIVE-service row, and the second row is not a list of words: each entry
+          carries a sentence saying what it is. Six tags cannot explain what
+          "Custom Sleep Solutions" means, and the client asked for this section
+          to follow p8.
+
+          So they are titled entries now, five across, dropping to two and then
+          one. Still a ruled band rather than five cards — the panels above are
+          already the section's photographic weight, and five boxes under three
+          photographs is two competing treatments of one idea a scroll apart.
+          Same argument the stat band makes in Turnkey.tsx.
+
+          ⚠ THE COPY IS TRIMMED, NOT REWRITTEN. p8 prints Architectural
+          Woodwork's description as a verbatim repeat of the Custom Wood Works
+          paragraph above it, which reads as a mistake when both are on one
+          screen — so that one states the distinctive half. The rest are the
+          profile's own sentences with their tails cut. No claim was added.
+        */}
         <div className="mt-[clamp(28px,3.5vw,48px)] border-t pt-5 [border-color:var(--color-line)]">
-          <div className="flex flex-col gap-3 nav:flex-row nav:items-baseline nav:gap-6">
-            <p
-              className="shrink-0 font-mono text-eyebrow tracking-eyebrow text-[color:var(--color-ink-muted)]"
-              style={{ textTransform: "var(--eyebrow-transform)" as "uppercase" }}
-            >
-              {engineering.label}
-            </p>
-            <ul
-              className="flex flex-wrap gap-x-4 gap-y-2 font-mono text-[11px] tracking-eyebrow text-[color:var(--color-ink-muted)]"
-              style={{ textTransform: "var(--eyebrow-transform)" as "uppercase" }}
-            >
-              {engineering.items.map((s, i) => (
-                <li key={s} className="flex items-center gap-4">
-                  {i > 0 && (
-                    <span
-                      aria-hidden
-                      className="h-1 w-1 shrink-0 rounded-full"
-                      style={{ background: "var(--color-accent)" }}
-                    />
-                  )}
-                  {s}
-                </li>
-              ))}
-            </ul>
-          </div>
+          <p
+            className="font-mono text-eyebrow tracking-eyebrow text-[color:var(--color-ink-muted)]"
+            style={{ textTransform: "var(--eyebrow-transform)" as "uppercase" }}
+          >
+            {core.label}
+          </p>
+          <ul className="mt-5 grid gap-x-[clamp(20px,2.5vw,40px)] gap-y-[clamp(20px,2.5vw,28px)] sm:grid-cols-2 nav:grid-cols-5">
+            {core.items.map((s, i) => (
+              <Reveal
+                as="li"
+                key={s.title}
+                y={20}
+                /* Stagger by column so the wave stays short at every
+                   breakpoint. A flat i*0.07 runs the fifth entry a third of a
+                   second behind the first, which on a two-column phone layout
+                   reads as the grid loading rather than as a reveal. */
+                delay={(i % 5) * 0.06}
+                className="h-full list-none border-t pt-3.5 [border-color:var(--color-line)]"
+              >
+                <h3 className="font-display text-h4 font-semibold leading-h3 text-[color:var(--color-ink)]">
+                  {s.title}
+                </h3>
+                <p className="mt-1.5 text-body-sm leading-body text-[color:var(--color-ink-body)]">
+                  {s.body}
+                </p>
+              </Reveal>
+            ))}
+          </ul>
         </div>
       </Container>
     </Section>
