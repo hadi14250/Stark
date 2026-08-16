@@ -133,8 +133,16 @@ const POOL = [
   "f7965388e07b0b0c.jpg",
 ] as const;
 
-/** Five from the pool, starting at `offset`, wrapping. */
-function placeholders(offset: number, count = 5): GalleryImage[] {
+/**
+ * Eight from the pool, starting at `offset`, wrapping.
+ *
+ * EIGHT BECAUSE THE BENTO HAS EIGHT SLOTS. The grid fills every cell from this
+ * list, so a sub-category with fewer than eight would repeat pictures inside a
+ * single view — visible, and the kind of thing a client reads as a bug rather
+ * than as missing assets. Twenty in the pool and a rotating offset means no two
+ * sub-categories open on the same picture.
+ */
+function placeholders(offset: number, count = 8): GalleryImage[] {
   return Array.from({ length: count }, (_, i) => ({
     src: land(POOL[(offset + i) % POOL.length]),
     altKey: "placeholder",
