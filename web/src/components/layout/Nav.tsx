@@ -20,14 +20,26 @@ const LINKS = [
 const SOCIAL_KEYS: readonly SocialKey[] = ["facebook", "instagram", "youtube", "x"];
 
 /**
- * Sticky header, two-tier green (design handoff): a thin utility strip
- * (email + social) on forest, then the main nav bar on the darker nav-bg. Both
- * are always opaque — the design's hero sits BELOW a solid bar (not behind a
- * transparent one), so there is no transparent→blur condense; we only add a
- * soft shadow after 30px of scroll.
+ * Sticky header — one bar, on the dark nav green.
  *
- * Desktop nav + utility strip show above the custom `nav` breakpoint (860px);
- * below it a burger toggles a full-screen overlay. Body scroll locks while open.
+ * IT WAS TWO TIERS, AND THE TOP ONE IS GONE. The design handoff put a thin
+ * utility strip (the info@ address and four social icons) above the nav bar, on
+ * the lighter forest green. The client asked for the address off the top right
+ * and then for the whole ribbon with it. Neither route it carried is lost: the
+ * address and the social links are both in the footer, and the mobile overlay
+ * below still closes with its own contact row.
+ *
+ * ⚠ `--header-h` MOVED WITH IT (tokens.css, 104/116 → 64/76). <main>'s top
+ * padding and the gallery stage's height both read that token, so leaving it at
+ * the two-tier value would have left a 40px empty band under the header on
+ * every route. See the note on the token.
+ *
+ * The bar is always opaque — the design's hero sits BELOW it, not behind a
+ * transparent one, so there is no transparent→blur condense; we only add a soft
+ * shadow after 30px of scroll.
+ *
+ * Desktop nav shows above the custom `nav` breakpoint (860px); below it a
+ * burger toggles a full-screen overlay. Body scroll locks while open.
  */
 export function Nav() {
   const t = useTranslations("nav");
@@ -74,21 +86,7 @@ export function Nav() {
         scrolled ? "shadow-[0_10px_30px_-12px_rgba(12,26,19,0.5)]" : ""
       }`}
     >
-      {/* Utility strip — desktop only (mobile keeps a compact header). */}
-      <div className="bg-[color:var(--green-forest)] text-[color:var(--ink-green-strong)]">
-        <Container className="flex h-10 items-center justify-between !px-5 nav:!px-[clamp(24px,5vw,72px)]">
-          <a
-            href={`mailto:${email}`}
-            className="inline-flex items-center gap-2 text-[11px] transition-colors hover:text-accent nav:text-xs"
-          >
-            <EnvelopeIcon width={15} height={15} />
-            <span>{email}</span>
-          </a>
-          <SocialLinks labels={socialLabels} size={14} className="nav:[&_svg]:h-[15px] nav:[&_svg]:w-[15px]" />
-        </Container>
-      </div>
-
-      {/* Main nav bar. */}
+      {/* Main nav bar — the whole header now. */}
       <div className="bg-[color:var(--color-nav-bg)]">
         <Container className="flex h-16 items-center justify-between nav:h-[76px]">
           {/* Logo.

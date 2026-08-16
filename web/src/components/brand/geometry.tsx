@@ -262,6 +262,39 @@ const MIN_GLYPH = 20;
 type MarkGlyphProps = {
   /** Which division this slot belongs to. Never chosen for looks. */
   division: DivisionKey;
+  /**
+   * Render the COMPLETE mark instead of this division's single blade.
+   *
+   * ===========================================================================
+   * WHY THIS EXISTS
+   * ===========================================================================
+   *
+   * The client reported the same thing twice, on two different pages: the small
+   * logo shape used as a bullet "is small, make it big … so it appears what
+   * this is". Both instances they named are single blades — the woodworks
+   * eyebrow (`#lg-b1`) and the mattresses hero eyebrow (`#lg-b4`).
+   *
+   * Sizing alone cannot answer that, and this file already knew why. `MIN_GLYPH`
+   * exists because the five blades are rotations of ONE wedge around a shared
+   * centre; that is what makes the mark cohere and exactly what makes a single
+   * blade unidentifiable out of it. DESIGN.md §5.4 puts it plainly after the
+   * A0c comps: "a single blade reads as a stray mark, not a division
+   * signature". A bigger stray mark is a bigger stray mark.
+   *
+   * So a slot whose job is to say "STARK" renders the whole pentagon, which is
+   * recognisable at 30px because it is the actual mark. A slot whose job is to
+   * signature a DIVISION keeps its blade — that is what `DIVISION_ELEMENT` is
+   * for, and it still works where the division is named right beside it at card
+   * scale (DivisionIndex, 44px).
+   *
+   * ⚠ THIS IS DERIVED GEOMETRY, NOT THE LOCKUP. The Don'ts govern the logo
+   * presenting AS the logo — the lockup, which lives in nav, footer and
+   * preloader only. Rule 4 in DESIGN.md §5.3 is the one to respect here: a
+   * derived shape must never appear near a real lockup at similar size and
+   * colour. At 30px in a section eyebrow, in accent, nothing on this site is
+   * close.
+   */
+  whole?: boolean;
   size?: number;
   color?: string;
   className?: string;
@@ -270,16 +303,20 @@ type MarkGlyphProps = {
 
 export function MarkGlyph({
   division,
+  whole = false,
   size = 24,
   color = "var(--color-accent)",
   className,
   style,
 }: MarkGlyphProps) {
-  if (process.env.NODE_ENV !== "production" && size < MIN_GLYPH) {
+  // The floor governs the SINGLE-BLADE form only. The whole mark is a closed
+  // pentagon and stays identifiable well below it — that is the entire reason
+  // `whole` is worth having.
+  if (process.env.NODE_ENV !== "production" && !whole && size < MIN_GLYPH) {
     console.warn(
       `MarkGlyph: size ${size} is below the ${MIN_GLYPH}px legibility floor — ` +
         `the blade will read as a stray mark rather than the ${division} signature. ` +
-        `Either give it room or leave it out.`,
+        `Either give it room, pass \`whole\`, or leave it out.`,
     );
   }
   return (
@@ -290,7 +327,7 @@ export function MarkGlyph({
       className={className}
       style={{ display: "block", fill: color, flexShrink: 0, ...style }}
     >
-      <use href={DIVISION_ELEMENT[division]} />
+      <use href={whole ? "#lg-all" : DIVISION_ELEMENT[division]} />
     </svg>
   );
 }

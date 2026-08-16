@@ -36,10 +36,56 @@ import { useMotionConfig } from "./useMotionConfig";
  * observer, but it only fires the count once the element is genuinely within
  * the viewport, and otherwise waits. The cost is one `getBoundingClientRect`
  * per element per interval, and only until that element has counted.
+ *
+ * ===========================================================================
+ * AND THE POLL WAS STILL OUT-RACING THE OBSERVER
+ * ===========================================================================
+ *
+ * The client reported the numbers still "not showing the animation properly"
+ * after all of the above, and they were right a second time. The two mechanisms
+ * were asking DIFFERENT questions: the observer waits for `threshold: 0.4` —
+ * forty percent of the figure on screen — while the poll fired on
+ * `top < innerHeight && bottom > 0`, which is true the instant one pixel of it
+ * clips the bottom edge.
+ *
+ * The poll therefore won almost every time, on a band that sits low in a tall
+ * section. The count ran while the figure was a sliver at the bottom of the
+ * screen and was finished by the time it was somewhere you would read it — so
+ * the number appeared to be simply printed, which is precisely the report.
+ *
+ * `isCounted` asks the observer's own question, so the fail-safe now rescues a
+ * dead observer instead of replacing a live one. That is the same distinction
+ * the paragraph above draws for off-screen elements, applied one level in.
  */
+
+/** Matches the IntersectionObserver's threshold. See the note above. */
+const VISIBLE_RATIO = 0.4;
+
+/**
+ * Is enough of this box on screen for the observer to have fired?
+ *
+ * Exported and pure so the rule can be asserted directly — a fail-safe that
+ * triggers earlier than the mechanism it backs up is not a fail-safe, it is a
+ * replacement, and this file has now shipped that bug twice in two forms.
+ */
+export function isCounted(
+  rect: { top: number; bottom: number; height: number },
+  viewportH: number,
+): boolean {
+  if (rect.height <= 0) return false;
+  const visible = Math.min(rect.bottom, viewportH) - Math.max(rect.top, 0);
+  return visible / rect.height >= VISIBLE_RATIO;
+}
+
 export function CountUp({
   to,
-  duration = 1.6,
+  /**
+   * Seconds. Was 1.6, which the client read as too quick to register as a
+   * count at all — by the time the eye lands on the figure it has stopped
+   * moving. Three seconds is long enough to be seen as counting and short
+   * enough not to hold up a reader who has already moved on.
+   */
+  duration = 3,
   locale,
   suffix,
   grouping = true,
@@ -58,14 +104,23 @@ export function CountUp({
   className?: string;
 }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const [value, setValue] = useState(0);
+  const [counted, setCounted] = useState(0);
   const { reduce } = useMotionConfig();
 
+  /**
+   * Reduced motion is resolved DURING RENDER, not by writing state in an
+   * effect.
+   *
+   * It used to be `useEffect(() => { if (reduce) setValue(to) })`, which is a
+   * cascading render — the component paints 0, then immediately repaints the
+   * final figure — and `react-hooks/set-state-in-effect` flags it. It is also
+   * simply more machinery than the case needs: "no animation" is not a state
+   * to reach, it is the value.
+   */
+  const value = reduce ? to : counted;
+
   useEffect(() => {
-    if (reduce) {
-      setValue(to);
-      return;
-    }
+    if (reduce) return;
     const el = ref.current;
     if (!el) return;
 
@@ -80,7 +135,7 @@ export function CountUp({
       const tick = (t: number) => {
         const p = Math.min(1, (t - t0) / (duration * 1000));
         // easeOutCubic — fast start, settles rather than stopping dead
-        setValue(Math.round(to * (1 - (1 - p) ** 3)));
+        setCounted(Math.round(to * (1 - (1 - p) ** 3)));
         if (p < 1) raf = requestAnimationFrame(tick);
       };
       raf = requestAnimationFrame(tick);
@@ -88,19 +143,18 @@ export function CountUp({
 
     const io = new IntersectionObserver(
       (entries) => entries[0]?.isIntersecting && run(),
-      { threshold: 0.4 },
+      { threshold: VISIBLE_RATIO },
     );
     io.observe(el);
 
     // The fail-safe, gated on actually being on screen. `isIntersecting` is
     // the observer's own judgement and we cannot ask it directly, so this
-    // asks the layout the same question: does the element's box overlap the
-    // viewport vertically? If it does and the observer still has not fired,
-    // the observer is broken and we count. If it does not, we wait — which is
-    // the whole point, and what the old unconditional timeout got wrong.
+    // asks the layout the SAME question the observer was given — is at least
+    // VISIBLE_RATIO of the box showing — rather than the much looser "does it
+    // overlap at all". Asking the looser question is what let the poll fire
+    // first and count the number off-screen; see the docblock.
     poll = window.setInterval(() => {
-      const r = el.getBoundingClientRect();
-      if (r.top < window.innerHeight && r.bottom > 0) run();
+      if (isCounted(el.getBoundingClientRect(), window.innerHeight)) run();
     }, 1500);
 
     return () => {

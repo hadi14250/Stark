@@ -16,6 +16,24 @@ import type { DivisionKey } from "@/components/brand/LogoDefs";
  *
  * `division` is optional and, when present, must have room — MarkGlyph warns
  * below 20px because a single blade is illegible small (A0c).
+ *
+ * THE GLYPH IS THE WHOLE MARK AT 34px, NOT A BLADE AT 22.
+ *
+ * Both halves of that matter, and the second is the one that actually answers
+ * the client. They reported it twice — "the logo part which acts like the
+ * bullet point … is small, make it big and anywhere in the entire website too"
+ * — naming the mattresses hero and the woodworks page. Both were single blades.
+ *
+ * Scaling a blade up does not make it legible, it makes a bigger sliver: the
+ * five blades are rotations of one wedge around a shared centre, which is
+ * exactly what makes any one of them unidentifiable alone (DESIGN.md §5.4, and
+ * the `MIN_GLYPH` floor in geometry.tsx exists for the same reason). The whole
+ * pentagon is recognisable at this size because it is the actual mark.
+ *
+ * `division` is still taken and still meaningful — it says which section this
+ * is, and it is what a future variant would key off — but the eyebrow slot
+ * renders `whole`. The flex gap went up with the size: at `gap-3` a 34px mark
+ * crowds the label.
  */
 export function Eyebrow({
   children,
@@ -28,10 +46,12 @@ export function Eyebrow({
 }) {
   return (
     <span
-      className={`inline-flex items-center gap-3 font-mono text-eyebrow tracking-eyebrow text-[color:var(--color-ink-muted)] ${className ?? ""}`}
+      className={`inline-flex items-center gap-4 font-mono text-eyebrow tracking-eyebrow text-[color:var(--color-ink-muted)] ${className ?? ""}`}
       style={{ textTransform: "var(--eyebrow-transform)" as "uppercase" }}
     >
-      {division && <MarkGlyph division={division} size={22} color="var(--color-accent)" />}
+      {division && (
+        <MarkGlyph division={division} whole size={34} color="var(--color-accent)" />
+      )}
       {children}
       {/*
         `ms-2` on top of the flex gap, so the rule sits ~22px from the last

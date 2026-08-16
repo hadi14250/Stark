@@ -6,6 +6,7 @@ import { Nav } from "./Nav";
 import { Footer } from "./Footer";
 import { ScrollProgress } from "@/components/motion/ScrollProgress";
 import { Preloader } from "@/components/motion/Preloader";
+import { RouteCurtain } from "@/components/motion/RouteCurtain";
 import { EntranceProvider } from "@/components/motion/EntranceGate";
 import { LogoDefs } from "@/components/brand/LogoDefs";
 
@@ -43,6 +44,12 @@ export function SiteChrome({ children }: { children: ReactNode }) {
     return (
       <>
         <LogoDefs />
+        {/* The gallery gets the route curtain too — it is the page you most
+            often leave, and a curtain that appears on three routes out of four
+            reads as a bug rather than as a restraint. It does NOT get the
+            Preloader: that one is for a real page load, and this branch is
+            reached by the same layout the other branch is. */}
+        <RouteCurtain />
         <Nav />
         <main className="flex-1 pt-[var(--header-h)]">{children}</main>
       </>
@@ -53,6 +60,10 @@ export function SiteChrome({ children }: { children: ReactNode }) {
     <EntranceProvider>
       <LogoDefs />
       <Preloader />
+      {/* Same mark, same beat, the other entrance. Preloader cannot cover a
+          route change from here — this component never remounts between
+          routes, which is exactly why it can host a curtain that does. */}
+      <RouteCurtain />
       <ScrollProgress />
       <Nav />
       {/* Offset the fixed header. The height comes from --header-h (tokens.css)

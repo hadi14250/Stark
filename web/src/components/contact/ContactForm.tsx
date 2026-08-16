@@ -196,27 +196,43 @@ export function ContactForm() {
       {/* Message spans full width */}
       <LineReveal delay={0.36}>{renderControl(CONTACT_FIELDS[6])}</LineReveal>
 
-      <LineReveal delay={0.42}>
-        <div className="flex flex-wrap items-center gap-4">
-          <SubmitButton label={t("states.submit")} pendingLabel={t("states.sending")} />
+      {/*
+        ⚠ NOT WRAPPED IN A REVEAL, AND IT MUST NOT BE.
 
-          {/* Live region for the form-level error. Success is not announced
-              here — it replaces the whole form with the panel above, which
-              carries its own status node. */}
-          <p
-            id={statusId}
-            role="status"
-            aria-live="polite"
-            tabIndex={-1}
-            data-form-status={formError ? "error" : undefined}
-            className={
-              formError ? "text-sm font-medium text-[color:var(--color-error)]" : "sr-only"
-            }
-          >
-            {formError ? t("states.error") : ""}
-          </p>
-        </div>
-      </LineReveal>
+        This row sat inside a `<LineReveal delay={0.42}>` and the client
+        reported the Send button as missing until they had scrolled past it.
+        That is exactly what the reveal system does here, working correctly:
+        `useRevealOnce` arms an element while it is below the fold and releases
+        it when its TOP crosses 0.6 of the viewport. This row is the last thing
+        before the footer, so on most screens it never reaches that line — the
+        only thing that ever freed it was the bottom-of-document backstop, i.e.
+        scrolling past the whole form.
+
+        The lesson is bigger than one delay value: an interactive control's
+        visibility must not depend on an animation trigger. A heading that
+        arrives late is a flourish; a submit button that arrives late is a form
+        that looks broken. The fields above still stagger — they are content,
+        and none of them is at the end of the document.
+      */}
+      <div className="flex flex-wrap items-center gap-4">
+        <SubmitButton label={t("states.submit")} pendingLabel={t("states.sending")} />
+
+        {/* Live region for the form-level error. Success is not announced
+            here — it replaces the whole form with the panel above, which
+            carries its own status node. */}
+        <p
+          id={statusId}
+          role="status"
+          aria-live="polite"
+          tabIndex={-1}
+          data-form-status={formError ? "error" : undefined}
+          className={
+            formError ? "text-sm font-medium text-[color:var(--color-error)]" : "sr-only"
+          }
+        >
+          {formError ? t("states.error") : ""}
+        </p>
+      </div>
     </form>
   );
 }

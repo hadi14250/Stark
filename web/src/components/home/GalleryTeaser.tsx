@@ -42,14 +42,22 @@ import { GalleryAnchor } from "./GalleryAnchor";
  *
  * ⚠ FOUR TILES, THREE DIVISIONS, so one repeats. It repeats at the END rather
  * than in the middle, which keeps the first three tiles a clean sweep of the
- * gallery's three divisions in the order the section's own intro names them
- * ("WOODWORKS, FURNITURE and MATTRESSES"). The alternative — dropping to three
- * tiles — would break the 2x2 mosaic the anchor tile is composed against.
+ * gallery's three divisions in the order the section's own intro names them.
+ * The alternative — dropping to three tiles — would break the 2x2 mosaic the
+ * anchor tile is composed against.
+ *
+ * ⚠ "furniture" WAS THE SECOND TILE AND IS NOW "design". The gallery's three
+ * top-level tabs changed in the client's review: Furniture folded into
+ * Woodworks as the "Loose Furniture & Upholstery" product type (which is where
+ * profile p8 files it), and Design took its place. Left as it was, this tile
+ * would have deep-linked to a division that no longer exists — the gallery
+ * would have caught it and fallen back to Woodworks, so the tile would have
+ * silently pointed at the same place as tile one.
  *
  * These deep-link with `?c=`, which still resolves: the gallery seats a bare
  * division on its first product type. See the resolution order in gallery/page.
  */
-const TILE_CATEGORY = ["woodworks", "furniture", "mattresses", "woodworks"] as const;
+const TILE_CATEGORY = ["woodworks", "design", "mattresses", "woodworks"] as const;
 
 /**
  * Which of the ten gallery images the anchor tile cycles through.

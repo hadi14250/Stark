@@ -98,9 +98,20 @@ export async function HomeHero() {
             especially the text" — so the words now rise out of their own masks
             in sequence, and the second line is offset behind the first.
           */}
+          {/*
+            SMALLER THAN THE DISPLAY TOKEN, DELIBERATELY, AND SMALLER AGAIN NOW.
+
+            It ran to `clamp(44px, 7vw, 96px)` — above `--text-display`'s own
+            ceiling of 88px — which on a 1440 screen put a two-line headline
+            across nearly the full container and left the sub-copy and the CTAs
+            fighting for what was left of the fold. The client asked for it to
+            come down. At 72px the same two lines still open the page and the
+            whole composition (rule, two sub lines, two actions, scroll cue) now
+            fits the viewport cap above without the hero scrolling.
+          */}
           <h1
             className="font-display tracking-display text-[color:var(--white-500)]"
-            style={{ fontSize: "clamp(44px, 7vw, 96px)", lineHeight: 0.98 }}
+            style={{ fontSize: "clamp(36px, 5.2vw, 72px)", lineHeight: 1 }}
           >
             <WordsReveal
               as="span"
@@ -172,7 +183,16 @@ export async function HomeHero() {
         </div>
       </Container>
 
-      <div className="absolute inset-x-0 bottom-0 z-[2] flex translate-y-1/2 justify-center">
+      {/*
+        THE CUE SITS INSIDE THE HERO NOW, not straddling its bottom edge.
+
+        It was `bottom-0 translate-y-1/2`, so half the circle hung below the
+        section onto the band beneath — a device inherited from the torn-paper
+        seam this hero no longer has. Without that seam it read as an element
+        that had slipped off the composition, which is the "put the arrow more
+        up" note. Fully inside, with air under it, it reads as part of the hero.
+      */}
+      <div className="absolute inset-x-0 bottom-[clamp(16px,3.5vh,44px)] z-[2] flex justify-center">
         <ScrollCue targetId="about" label={t("scrollCue")} />
       </div>
     </section>

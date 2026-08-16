@@ -131,6 +131,39 @@ describe("CountUp only counts once it is on screen", () => {
     ).toBeTruthy();
   });
 
+  it("waits for the observer's own threshold, not for the first pixel", () => {
+    /**
+     * THE SECOND VERSION OF THE SAME BUG, and the client reported it twice.
+     *
+     * After the fix above, the poll still asked a LOOSER question than the
+     * observer it was backing up: the observer wants 40% of the figure on
+     * screen, the poll fired on any overlap at all. On a stat band low in a
+     * tall section the poll therefore won the race almost every time, and the
+     * count ran while the number was a sliver at the bottom edge — finishing
+     * before it was anywhere a reader would look. "The animation isn't showing
+     * properly" was exactly right.
+     *
+     * Here the element is 60px tall with 18px of it showing (jsdom's viewport
+     * is 768). That is 30% — enough for the old poll, not enough for the
+     * observer, and therefore not enough for the fail-safe either.
+     */
+    stubRect(750);
+    render(<CountUp to={500} duration={1} locale="en" />);
+
+    advance(30_000);
+
+    expect(
+      screen.getByText("0"),
+      "the fail-safe fired on a sliver, so the count is over before the figure is readable",
+    ).toBeTruthy();
+
+    stubRect(600); // now fully on screen
+    advance(1500);
+    advance(1200);
+
+    expect(screen.getByText("500")).toBeTruthy();
+  });
+
   it("counts when that stat is finally scrolled into view", () => {
     // The other half of the promise: waiting must not mean never running.
     stubRect(4000);

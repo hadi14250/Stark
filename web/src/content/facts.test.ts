@@ -4,13 +4,7 @@ import { dirname, join } from "node:path";
 import { describe, it, expect } from "vitest";
 import en from "@/messages/en.json";
 import ar from "@/messages/ar.json";
-import {
-  FACTS,
-  HOME_STATS,
-  WOODWORKS_CAPACITY,
-  CONTACT_EMAIL,
-  type SourcedFact,
-} from "./facts";
+import { FACTS, HOME_STATS, CONTACT_EMAIL, type SourcedFact } from "./facts";
 
 const here = dirname(fileURLToPath(import.meta.url));
 
@@ -182,27 +176,47 @@ describe("the home stat band reads from the ledger", () => {
     expect((ar.landing.stats.items as { label: string }[]).length).toBe(labels);
   });
 
-  it("supplies a unit and a label for every capacity figure", () => {
+  /**
+   * ⚠ "supplies a unit and a label for every capacity figure" WAS HERE.
+   *
+   * It guarded the woodworks annual-capacity band's index join — the nastiest
+   * one on the site, because that array carried a label AND a unit, so a length
+   * mismatch slid the units along by one and printed "30,000 m²" under "Doors"
+   * with "90,000" bare under "Wardrobes". Both look completely intentional; the
+   * page would have been quietly stating a false specification.
+   *
+   * The client removed the band, the seven facts behind it went with it (see
+   * the tombstone in facts.ts), and a test asserting on a section that no
+   * longer exists is not a weaker guard, it is a failing one.
+   *
+   * If the band ever returns, this test returns with it — and it should, first,
+   * before the copy.
+   */
+
+  it("keeps every ISO standard number traceable, expiry and all", () => {
     /**
-     * THE FAILURE THIS CATCHES, and it is nastier than the home band's.
+     * THE THREE NUMBERS THE AUDIT SPENT THREE ROUNDS KEEPING OFF THE SITE.
      *
-     * On Home the message array carries only a LABEL, so a length mismatch
-     * shows up as a caption missing or orphaned — ugly, obvious. The woodworks
-     * capacity band's array carries a label AND A UNIT, so the same mismatch
-     * slides the units along by one and prints "30,000 m²" under "Doors" and
-     * "90,000" bare under "Wardrobes". Both look completely intentional. The
-     * page would be quietly stating a false specification.
+     * ISO 9001 and 45001 are on certificates that EXPIRED 13.12.2025, and no
+     * ISO 14001 certificate exists in any document the client has supplied.
+     * They are published now because the client's own finished profile prints
+     * them on p12 and they asked for the section to match it — which is their
+     * call to make, and is exactly the kind of decision that gets silently
+     * re-litigated a year later by someone who finds an expired PDF.
      *
-     * Length is all this can check. That the third unit is still "m²" and not
-     * "LM" is on whoever reorders the array — see the warning on
-     * WOODWORKS_CAPACITY.
+     * So the guard is not "don't publish these". It is: if they are published,
+     * each one carries a caveat saying what is actually behind it. The
+     * provenance guard above already forces a SOURCE; this forces the part a
+     * source line cannot express.
      */
-    const enItems = (en.woodworks.capacity.items as { unit: string; label: string }[]);
-    expect(WOODWORKS_CAPACITY).toHaveLength(enItems.length);
-    expect(
-      (ar.woodworks.capacity.items as { unit: string; label: string }[]).length,
-      "the Arabic band is the one that renders wrong",
-    ).toBe(enItems.length);
+    for (const key of ["isoQuality", "isoEnvironment", "isoSafety"] as const) {
+      const fact = FACTS[key] as SourcedFact;
+      expect(fact.source, `${key} must name a document and page`).toMatch(/p\d+/);
+      expect(
+        fact.caveat,
+        `${key} is published on the client's instruction and must say so`,
+      ).toMatch(/CLIENT INSTRUCTION/);
+    }
   });
 
   it("keeps the mattress output figure phrased as output, not capacity", () => {

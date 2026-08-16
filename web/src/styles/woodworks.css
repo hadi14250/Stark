@@ -1,6 +1,18 @@
 /* =============================================================================
-   WOODWORKS — the dark workshop page.
+   WOODWORKS — the cream workshop page.
    =============================================================================
+
+   ⚠ THIS FILE WENT LIGHT WITH THE THEME, and it is the half of that change a
+   token swap cannot make. Four rules here were written for a near-black page
+   and hard-code values that assume one: the veil gradients, the strip
+   scrollbar, the row hover and the scroll cue. Each is invisible or actively
+   wrong on cream — sand on `#FCF9EF` is 1.5:1, so a "subtle" 6%-alpha sand
+   hover is not subtle, it is absent.
+
+   The rule after the flip: anything that used SAND to separate itself from a
+   dark ground now uses INK at low alpha to separate itself from a light one.
+   Sand survives only where it is a mark in its own right (accent rules,
+   ordinals), never where it has to read as a surface against the page.
 
    Everything here is in this file for one of two reasons, and no others:
 
@@ -38,38 +50,44 @@
      START edge lands as a hard vertical seam on near-black, which announces
      the crop and undoes the point of bleeding it off the other side. */
 
+  /* The stops are the PAGE colour at falling alpha, so the photograph emerges
+     out of the page itself. They were graphite (`rgb(29 29 27 / …)`) for the
+     dark build; left alone on cream they would have laid a dark smear over the
+     start edge of the image — the opposite of a veil. */
   .ww-veil {
     position: absolute;
     inset: 0;
     background: linear-gradient(
       to right,
-      var(--color-surface) 0%,
-      rgb(29 29 27 / 0.62) 30%,
-      rgb(29 29 27 / 0.15) 58%,
-      transparent 76%
+      rgb(252 249 239 / 1) 0%,
+      rgb(252 249 239 / 0.82) 30%,
+      rgb(252 249 239 / 0.28) 58%,
+      rgb(252 249 239 / 0) 76%
     );
   }
 
   [dir="rtl"] .ww-veil {
     background: linear-gradient(
       to left,
-      var(--color-surface) 0%,
-      rgb(29 29 27 / 0.62) 30%,
-      rgb(29 29 27 / 0.15) 58%,
-      transparent 76%
+      rgb(252 249 239 / 1) 0%,
+      rgb(252 249 239 / 0.82) 30%,
+      rgb(252 249 239 / 0.28) 58%,
+      rgb(252 249 239 / 0) 76%
     );
   }
 
   /* ---------- scroll cue ---------- */
 
+  /* Ink, not accent. A sand hairline on cream is 1.5:1 — the cue simply was
+     not there. */
   .ww-cue {
     display: block;
     width: 1px;
     height: 34px;
     background: linear-gradient(
       to bottom,
-      var(--color-accent),
-      rgb(219 202 173 / 0)
+      var(--color-ink),
+      rgb(29 29 27 / 0)
     );
     transform-origin: top center;
     animation: ww-cue 2.4s cubic-bezier(0.65, 0, 0.35, 1) infinite;
@@ -214,7 +232,7 @@
   }
 
   .ww-strip::-webkit-scrollbar-thumb {
-    background: rgb(219 202 173 / 0.5);
+    background: rgb(29 29 27 / 0.34);
     border-radius: 2px;
   }
 
@@ -225,16 +243,92 @@
   .ww-card {
     flex: 0 0 clamp(220px, 26vw, 300px);
     scroll-snap-align: start;
+    list-style: none;
+    /* The resting value. Every rule below reads `--p`, so a card that never
+       receives one from JS is simply a card — see the docblock in
+       ProductStrip.tsx on why the animation may only ever ADD emphasis. */
+    --p: 0;
   }
 
-  .ww-card img {
-    transition: transform 900ms var(--ease-theme, ease);
+  /* ---------- the strip's one piece of choreography ----------
+     `--p` is 1 when a card is centred in the track and 0 a card-width away,
+     written by ProductStrip.tsx on scroll. Three properties read it, and they
+     are deliberately all on the card's CONTENTS: the flex item's own box never
+     moves, so the native scroll-snap positions stay exactly where the browser
+     computed them. */
+
+  .ww-card-frame {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-radius: var(--radius-image);
+    background: var(--color-surface-2);
+  }
+
+  .is-live .ww-card-frame {
+    transform: translateY(calc(var(--p) * -10px));
+    transition: transform 220ms linear;
+  }
+
+  /* The photograph counter-drifts INSIDE the frame, against the card's travel.
+     Scale is what buys the room to do it — without the 1.06 the drift would
+     expose an edge. */
+  .is-live .ww-card img {
+    transform: scale(calc(1.06 + var(--p) * 0.04))
+      translateX(calc(var(--p) * 8px));
+    transition: transform 220ms linear;
+  }
+
+  [dir="rtl"] .is-live .ww-card img {
+    transform: scale(calc(1.06 + var(--p) * 0.04))
+      translateX(calc(var(--p) * -8px));
+  }
+
+  .ww-card-caption {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    margin-block-start: 16px;
+    padding-block-start: 12px;
+    border-block-start: 1px solid var(--color-line);
+  }
+
+  .ww-card-num {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-accent);
+    opacity: 0.45;
+  }
+
+  .is-live .ww-card-num {
+    opacity: calc(0.45 + var(--p) * 0.55);
+    transition: opacity 220ms linear;
+  }
+
+  /* The one unambiguous "this one": a sand rule that grows under the caption of
+     whichever card is centred. Drawn over the caption's own hairline rather
+     than replacing it, so nothing shifts when it appears. */
+  .ww-card-rule {
+    position: absolute;
+    inset-block-start: -1px;
+    inset-inline-start: 0;
+    height: 2px;
+    width: 100%;
+    background: var(--color-accent);
+    transform: scaleX(0);
+    transform-origin: inline-start center;
+  }
+
+  .is-live .ww-card-rule {
+    transform: scaleX(var(--p));
+    transition: transform 220ms linear;
   }
 
   @media (hover: hover) {
-    .ww-card:hover img,
-    .ww-card:focus-within img {
-      transform: scale(1.05);
+    .ww-card:hover .ww-card-frame,
+    .ww-card:focus-within .ww-card-frame {
+      transform: translateY(-14px);
     }
   }
 
@@ -246,7 +340,7 @@
 
   @media (hover: hover) {
     .ww-row:hover {
-      background: rgb(219 202 173 / 0.06);
+      background: rgb(29 29 27 / 0.045);
     }
   }
 
@@ -261,6 +355,22 @@
     .ww-card img,
     .ww-row {
       transition-duration: 0.001ms;
+    }
+    /* BELT AND BRACES ON THE STRIP. ProductStrip.tsx already returns early
+       under reduced motion, so `.is-live` is never added and none of the rules
+       above can match. This is the safety net for the case where that check is
+       ever refactored away: the strip stays a plain scroll-snap row, which is
+       what it was before the animation and what it must always degrade to. */
+    .is-live .ww-card-frame,
+    .is-live .ww-card img,
+    .is-live .ww-card-num,
+    .is-live .ww-card-rule {
+      transform: none;
+      opacity: 1;
+      transition: none;
+    }
+    .is-live .ww-card img {
+      transform: scale(1.06);
     }
   }
 }

@@ -119,13 +119,30 @@ export function WoodworksHero({
               style={{ fontSize: "clamp(40px, 5.2vw, 68px)" }}
             >
               <WordsReveal as="span" text={line1} justify="flex-start" className="font-light" />
+              {/*
+                ⚠ THE SECOND LINE IS INK, NOT ACCENT, AND THAT IS A CONTRAST FIX
+                RATHER THAN A PREFERENCE.
+
+                It was `--color-accent` — sand — which on the near-black page
+                this hero was designed for is a strong 8:1 and reads as the
+                headline's emphasis. The page is cream now, and sand on
+                `#FCF9EF` is 1.53:1. Not "a bit low": below the 3:1 floor for
+                non-text marks, never mind the 4.5:1 for text, on the largest
+                type on the route.
+
+                The light/semibold pairing is what carried the two-line
+                composition anyway; the colour was doing the smaller half of the
+                job, and DESIGN.md §1.5 already rules that on light surfaces the
+                affordance moves to weight rather than hue. Sand survives on this
+                page as marks on their own — the standing rule, the ordinals —
+                never as type.
+              */}
               <WordsReveal
                 as="span"
                 text={line2}
                 justify="flex-start"
                 delay={0.12}
                 className="font-semibold"
-                style={{ color: "var(--color-accent)" }}
               />
             </h1>
 

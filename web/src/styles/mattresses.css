@@ -283,6 +283,85 @@
     }
   }
 
+  /* ---------- the two brand bands ----------
+     A full-bleed field in one sub-brand's own colours. See BrandBand.tsx for
+     why `data-brand` may only ever sit on the two painted layers below. */
+
+  .mt-brand-band {
+    /* Break the page's container to the viewport edge. `100vw` (not `100%`)
+       because the band is inside <main>, which is padded; the negative margin
+       is half the overflow on each side. `overflow-x-clip` on <main> is what
+       keeps this from creating a horizontal scrollbar. */
+    width: 100vw;
+    margin-inline-start: calc(50% - 50vw);
+    margin-inline-end: calc(50% - 50vw);
+  }
+
+  .mt-brand-ground {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    /* `--color-accent` is what [data-brand] re-points, so one rule paints navy
+       for blue and purple for siesta. The second stop is each brand's own tint
+       token, mixed rather than named, so the gradient stays inside the brand's
+       palette without this file having to know which brand it is. */
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--color-accent) 92%, #000) 0%,
+      var(--color-accent) 46%,
+      color-mix(in srgb, var(--color-accent) 62%, var(--color-accent-2, #fff)) 100%
+    );
+  }
+
+  /* A soft light off the top edge, so the band reads as a lit field rather than
+     a flat rectangle of colour — the same device the Turnkey slab uses. */
+  .mt-brand-glow {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(
+      70% 60% at 50% 0%,
+      rgb(255 255 255 / 0.16),
+      transparent 72%
+    );
+  }
+
+  .mt-brand-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: clamp(14px, 2vw, 24px);
+  }
+
+  /* The light plate the wordmark sits on. See BrandBand.tsx: both marks are
+     fixed-colour trademarks and neither may be knocked out to white. */
+  .mt-brand-plate {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(10px, 1.2vw, 16px) clamp(14px, 1.8vw, 22px);
+    border-radius: var(--radius-image);
+    background: var(--white-500);
+    box-shadow: 0 18px 40px -24px rgb(0 0 0 / 0.5);
+  }
+
+  /* Model cards ON the band: the page-level `.mt-model` wash is mixed from the
+     accent against a light page and disappears on a saturated one. Here the
+     card is a light veil over the brand colour instead. */
+  .mt-brand-band .mt-model {
+    background: rgb(255 255 255 / 0.09);
+  }
+
+  @media (hover: hover) {
+    .mt-brand-band .mt-model:hover {
+      background: rgb(255 255 255 / 0.16);
+    }
+  }
+
+  .mt-brand-band .mt-model-name {
+    color: rgb(250 245 239 / 0.9);
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .mt-panel,
     .mt-panel img,

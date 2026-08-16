@@ -134,18 +134,30 @@ export const FACTS = {
   },
 
   /**
-   * ⚠ WENT 2 → 3 → 2. The v3 comment deck raised it to three a year; the new
-   * polished STARK Company Profile (2026) reverts to two ("Two mega-projects /
-   * year", p8, MANUFACTURING & FACILITY), and the client confirmed the site
-   * should follow the new profile. Two also resolves a live self-contradiction:
-   * `landing.features.items[1]` already read "Capable of two mega-projects per
-   * year" while this stat counted to 3. The SAR 100M annual value the v3 deck
-   * added is still not printed.
+   * ⚠ WENT 2 → 3 → 2 → 3, AND THIS IS THE FOURTH DOCUMENT TO STATE IT.
+   *
+   * The v3 comment deck raised it to three a year; the 29-page profile reverted
+   * to two (p8); the new Company Profile S.F 2.4 prints "3/yr MEGA-PROJECTS
+   * DELIVERED" in the stat band on p7, and the client asked for three
+   * explicitly in the same review. Three it is.
+   *
+   * ⚠ AND THE COPY MOVED WITH IT. `landing.features.items[1]` reads "Capable of
+   * three mega-projects per year" in both locales. Those two have contradicted
+   * each other once already — the band counted to 3 while the sentence said two
+   * — so they are changed together or not at all.
+   *
+   * ⚠ THE LABEL IS A RATE, NOT A TOTAL. The profile writes "3/yr" above
+   * "MEGA-PROJECTS DELIVERED"; the site has no per-unit suffix that survives
+   * translation ("/yr" is English), so the rate is carried by the LABEL —
+   * "Mega-projects a year" / "مشاريع ضخمة سنوياً". Relabelling this to
+   * "Mega-projects delivered" without adding the rate back would turn a yearly
+   * throughput into a claim that STARK has completed three projects in total,
+   * which is a far weaker and quite different statement.
    */
   megaProjects: {
-    value: 2,
+    value: 3,
     grouping: false,
-    source: "STARK Company Profile (2026, 29pp) p8 (MANUFACTURING & FACILITY)",
+    source: "STARK Company Profile S.F 2.4 (2026) p7 (MANUFACTURING & FACILITY)",
   },
 
   /**
@@ -166,13 +178,26 @@ export const FACTS = {
       "Reads as the company's age beside a story that starts in 1967. The client asked for it in the stat band regardless. Not resolved, only recorded.",
   },
 
-  /** Completed projects to date. */
-  projectsCompleted: {
-    value: 500,
-    suffix: "+",
-    grouping: true,
-    source: "STARK company profile v3 (2026) slide 6",
-  },
+  /**
+   * ⚠ `projectsCompleted` (500+) WAS HERE AND WAS DELIBERATELY REMOVED.
+   *
+   * The new Company Profile S.F 2.4 states the headline band as FOUR figures
+   * (p7: +45 years, 60,000 m², +200 specialists, 3/yr mega-projects). "500+
+   * projects completed" was on v3 slide 6 and does not survive into the new
+   * deck, and the client chose to match p7 rather than keep it.
+   *
+   * IT IS DELETED RATHER THAN LEFT UNUSED, for the reason `blueTrialNights`
+   * records below: a fact nobody consumes still whitelists its digits for the
+   * entire copy deck, so some unrelated future "500 m² showroom" would sail
+   * through the provenance guard on the authority of a retired stat. An entry
+   * with no consumer is not a citation, it is a hole.
+   *
+   * The figure was never disproved — if the client wants it back, it is v3
+   * slide 6 and this comment is the trail.
+   *
+   * Dropping to four also fixed a layout problem the five-column band caused:
+   * see the note on the grid in Turnkey.tsx.
+   */
 
   /**
    * The year STARK itself came into existence, as the integration of Saudi
@@ -245,6 +270,57 @@ export const FACTS = {
     source: "Trust Wood profile p103 (Quality Plan TW-QP-01, lines 07 and 08)",
   },
 
+  /**
+   * ===========================================================================
+   * THE THREE ISO STANDARD NUMBERS — PUBLISHED AT THE CLIENT'S INSTRUCTION
+   * ===========================================================================
+   *
+   * These are here because the provenance guard would not let the copy ship
+   * without them, and that is the guard working exactly as intended: it forced
+   * this note to be written before the digits could appear on a page.
+   *
+   * ⚠ READ THE CAVEAT BEFORE TREATING THESE AS SETTLED. The certificates on
+   * file for two of the three are EXPIRED, and the third has no certificate on
+   * file at all:
+   *
+   *   ISO 9001:2015   QAIS-Q-KSA-TW-10.22.020   expired 13.12.2025
+   *   ISO 45001:2018  QAIS-OH-KSA-TW-10.22.012  expired 13.12.2025
+   *   ISO 14001       no certificate in any document supplied
+   *
+   * The site deliberately withheld all of this for three rounds — an expired
+   * certificate is the exact class of claim the content audit exists to remove,
+   * and SOURCES.md recorded them as "NOT PUBLISHED … they go up the day a
+   * renewal arrives".
+   *
+   * They are published now because the client's own finished Company Profile
+   * S.F 2.4 prints the ISO CERTIFIED block on p12 and the client asked for the
+   * site's certifications section to match that page. It is their document and
+   * their claim to make; what this entry does is make sure nobody later reads
+   * it as an oversight, and that the renewal is a named open item rather than a
+   * thing everyone assumed somebody else had checked.
+   *
+   * The `source` is the profile, NOT the certificates — because the profile is
+   * genuinely what backs the claim on the site today.
+   */
+  isoQuality: {
+    value: 9001,
+    source: "STARK Company Profile S.F 2.4 (2026) p12 (Certifications)",
+    caveat:
+      "PUBLISHED AT CLIENT INSTRUCTION. Trust Wood's certificate QAIS-Q-KSA-TW-10.22.020 (TW p82) EXPIRED 13.12.2025. Renewal outstanding.",
+  },
+  isoEnvironment: {
+    value: 14001,
+    source: "STARK Company Profile S.F 2.4 (2026) p12 (Certifications)",
+    caveat:
+      "PUBLISHED AT CLIENT INSTRUCTION. No ISO 14001 certificate appears in ANY document supplied — this one is not expired, it is unevidenced. The weakest of the three.",
+  },
+  isoSafety: {
+    value: 45001,
+    source: "STARK Company Profile S.F 2.4 (2026) p12 (Certifications)",
+    caveat:
+      "PUBLISHED AT CLIENT INSTRUCTION. Trust Wood's certificate QAIS-OH-KSA-TW-10.22.012 (TW p82) EXPIRED 13.12.2025. Renewal outstanding.",
+  },
+
   /** Inspection frequency on nine of the ten quality-plan stages. */
   inspectionFrequency: {
     value: 100,
@@ -261,86 +337,33 @@ export const FACTS = {
     source: "Trust Wood profile p17 (machine list after expansion, item 29)",
   },
 
-  // ── Wood division annual capacity ──────────────────────────────────────
-  //
-  // All seven come off ONE annotation block: the right-hand column the client
-  // added to slide 12 of profile v3, beside the WOOD DIVISION slide. That is
-  // worth stating once here rather than seven times below — they were written
-  // together, in one hand, and if one is wrong they are probably all wrong.
-  //
-  // ⚠ CAPACITY IS NOT OUTPUT, and the distinction is the difference between a
-  // spec and a boast. These are the volumes the division is equipped to
-  // produce in a year, not volumes it has produced. The copy says so in as
-  // many words (`woodworks.capacity.sub`) — do not "tighten" that sentence
-  // away, it is the sentence that keeps the section defensible.
-
   /**
-   * Annual production capacity in money rather than units.
+   * ⚠ THE SEVEN WOOD-DIVISION CAPACITY FACTS WERE HERE AND ARE GONE.
    *
-   * Stored as 75 with the unit supplied by the copy deck, NOT as 75000000.
-   * The slide says "75M SAR" and a reader checking the site against the deck
-   * should find the same figure, not a translation of it — and a count-up
-   * animating to seventy-five million would spend its whole run unreadable.
-   */
-  capacityAnnualSar: {
-    value: 75,
-    grouping: false,
-    source: "STARK company profile v3 (2026) slide 12 (client annotation column)",
-  },
-
-  /** Hotel rooms' worth of joinery a year. */
-  capacityHotelRooms: {
-    value: 1500,
-    grouping: true,
-    source: "STARK company profile v3 (2026) slide 12 (client annotation column)",
-  },
-
-  capacityDoors: {
-    value: 30000,
-    grouping: true,
-    source: "STARK company profile v3 (2026) slide 12 (client annotation column)",
-  },
-
-  capacityWardrobes: {
-    value: 90000,
-    grouping: true,
-    source: "STARK company profile v3 (2026) slide 12 (client annotation column)",
-  },
-
-  /**
-   * Wall cladding.
+   * `capacityAnnualSar` (75M SAR), `capacityHotelRooms` (1,500),
+   * `capacityDoors` (30,000), `capacityWardrobes` (90,000),
+   * `capacityCladding` (150,000 m2), `capacityKitchens` (35,000 LM) and
+   * `capacityClosetCladding` (40,000 m2), plus the `WOODWORKS_CAPACITY` array
+   * that ordered them.
    *
-   * ⚠ OPEN, AND VISIBLE ON THE PAGE: the same annotation lists both
-   * "150,000 m² Cladding" and "40,000 sqm of closets Cladding", and does not
-   * say whether the second is part of the first or additional to it. Both
-   * ship, as two line items, because that is exactly how the client wrote
-   * them — and because the section prints no total, so the page asserts
-   * nothing about the relationship either way. If they turn out to be nested,
-   * the fix is to merge the rows, not to change a number.
+   * The client asked for the whole annual-capacity band off the woodworks page
+   * ("the 75M SAR remove the entire section too with the numbers like 1500"),
+   * and these seven had exactly one consumer between them.
+   *
+   * THEY ARE DELETED RATHER THAN LEFT UNUSED, and that is the rule this file
+   * exists to enforce rather than a tidy-up: a fact nobody renders still
+   * whitelists its digits for the ENTIRE copy deck, so an unrelated future
+   * "30,000 m2 of showroom" would sail through the provenance guard on the
+   * authority of a capacity annotation nothing displays. An entry with no
+   * consumer is not a citation, it is a hole. Same reasoning as the
+   * `blueTrialNights` tombstone below.
+   *
+   * They were never disproved. All seven came off ONE annotation block — the
+   * right-hand column the client added to slide 12 of profile v3 — so if the
+   * band ever returns, that slide is where they are, and the open question
+   * about whether the 40,000 m2 of closet cladding is a subset of the 150,000
+   * m2 of cladding is still open.
    */
-  capacityCladding: {
-    value: 150000,
-    grouping: true,
-    source: "STARK company profile v3 (2026) slide 12 (client annotation column)",
-    caveat:
-      "May or may not include capacityClosetCladding (40,000 m²). The client's annotation lists both without relating them. Open with the client.",
-  },
-
-  /** Kitchens, in linear metres — the trade's own unit for run-length joinery. */
-  capacityKitchens: {
-    value: 35000,
-    grouping: true,
-    source: "STARK company profile v3 (2026) slide 12 (client annotation column)",
-  },
-
-  /** See the caveat on capacityCladding: these two may be one figure. */
-  capacityClosetCladding: {
-    value: 40000,
-    grouping: true,
-    source: "STARK company profile v3 (2026) slide 12 (client annotation column)",
-    caveat:
-      "May be a subset of capacityCladding (150,000 m²) rather than an additional volume. Open with the client.",
-  },
 
   // ── Gallery references ─────────────────────────────────────────────────
   // Dates on the approval documents themselves. They matter: an approval is a
@@ -524,39 +547,34 @@ export const FACTS = {
  * check that the two lists are the same LENGTH; it cannot check that "500+"
  * still has "Projects completed" under it. Reorder both or neither.
  *
- * This is profile v3 slide 6, left to right, and it replaced a four-stat band
- * that opened with `1967 / ESTABLISHED`.
+ * FOUR AGAIN, AND IT IS THE NEW PROFILE'S OWN BAND. This was v3 slide 6's five
+ * (which had itself replaced a four-stat band opening on `1967 / ESTABLISHED`);
+ * Company Profile S.F 2.4 p7 prints four, left to right, exactly as listed
+ * below, and the client asked to match it. `projectsCompleted` is the one that
+ * went — see its tombstone above.
  */
 export const HOME_STATS: readonly StatFact[] = [
   FACTS.yearsExperience,
   FACTS.factoryArea,
   FACTS.specialists,
   FACTS.megaProjects,
-  FACTS.projectsCompleted,
 ];
 
 /**
- * The wood division's annual capacity band, in the client's own slide order.
+ * ⚠ `WOODWORKS_CAPACITY` WAS HERE AND WENT WITH THE SECTION IT FED.
  *
- * SAME INDEX CONTRACT AS `HOME_STATS`, and the same warning applies with more
- * force: the units live in the message files beside the labels, so reordering
- * this array does not merely relabel a column — it can put "m²" after a door
- * count. `facts.test.ts` checks the lengths agree in both locales and can
- * check nothing else. Reorder all three or none.
+ * It ordered the six volume figures for the wood division's annual-capacity
+ * band, joined by index to the units and labels in the message files — an index
+ * contract with a warning on it, because reordering the array alone could print
+ * "30,000 m²" under "Doors".
  *
- * THE HEADLINE FIGURE IS DELIBERATELY NOT IN HERE. `capacityAnnualSar` is
- * money and these are volumes; the slide separates them and so does the page,
- * because a riyal figure sitting in a grid of square metres reads as though
- * someone forgot a unit. It is rendered on its own above the grid.
+ * The client asked for that band removed. See the tombstone on the seven
+ * capacity facts above for what the figures were and where they came from.
+ *
+ * `HOME_STATS` is now the only index join left in this file, which is a small
+ * mercy: it is the one with the mildest failure mode (a relabelled column, not
+ * a wrong unit).
  */
-export const WOODWORKS_CAPACITY: readonly StatFact[] = [
-  FACTS.capacityHotelRooms,
-  FACTS.capacityDoors,
-  FACTS.capacityWardrobes,
-  FACTS.capacityCladding,
-  FACTS.capacityKitchens,
-  FACTS.capacityClosetCladding,
-];
 
 /**
  * The single contact address for the whole site.

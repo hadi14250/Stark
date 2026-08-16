@@ -2,53 +2,16 @@
 
 import { useEffect, useState } from "react";
 import { useEntrance } from "./EntranceGate";
+import { holdReveals } from "./useRevealOnce";
 import { LogoLoader } from "./LogoLoader";
+import {
+  CURTAIN_MS,
+  HOLD_MS,
+  LIFT_MS,
+  LOADER_SPEED,
+  LOADER_VARIANT,
+} from "./loader-timing";
 import "@/styles/logo-loader.css";
-
-/**
- * Which of the handoff's twelve designed loading animations to run.
- *
- * "assemble" — the five blades fly in from the directions they actually sit in
- * and lock around the core. It is the one that says what the mark means (brand
- * book p.8: five elements of one ecosystem interlocking into a closed
- * structure), which makes it the right default for a first impression. Swap
- * this constant for any of the other eleven; see /specimen for all of them.
- */
-const VARIANT = "assemble" as const;
-
-/**
- * How long the mark animates before the curtain lifts. Must be kept in sync
- * with --preloader-hold in logo-loader.css, which drives the no-JS path.
- *
- * THE CONSTRAINT IS THE MARK, NOT THE CLOCK. "assemble" is a loop: the blades
- * fly in, lock for a beat, then fly back out. Lifting the curtain outside that
- * locked beat shows a half-built or dispersing logo, which reads as a glitch
- * rather than an entrance — that is what a 1.2s hold did against the designed
- * 3s cycle, and why the hold was raised to 2100ms.
- *
- * THE HOLD WENT DOWN, THEN BACK UP. A previous round compressed the cycle to
- * ~1.95s (LOADER_SPEED 0.65) and cut the hold to 1100ms, for a 1.7s entrance.
- * The client's review asked for the opposite — "increase the length of
- * loading" — so the cycle is back at the designed speed and the hold sits in
- * the middle of the locked beat rather than at its front edge.
- *
- * At LOADER_SPEED 1.0 the mark is whole from 1200ms (the core is the last part
- * to land: 300ms delay + the 30% lock stop of a 3s cycle) until 1920ms (the
- * 64% release stop, when blade 0 starts leaving). 1800ms sits inside that with
- * 120ms of margin on the late side, so the logo is not merely assembled when
- * the curtain moves — it has visibly been assembled for a beat. Total entrance
- * is 2.4s.
- *
- * Preloader.test.ts recomputes that window from the keyframe stops in
- * logo-loader.css and the per-blade offsets in LogoLoader.tsx, so changing any
- * one of the four numbers without the others fails rather than shipping a
- * glitchy entrance.
- */
-const HOLD_MS = 1800;
-/** The curtain's own lift, matching --dur-curtain. */
-const LIFT_MS = 600;
-/** Playback rate for the mark. 1 = the designer's 3s cycle, as drawn. */
-const LOADER_SPEED = 1;
 
 /**
  * The brand loader: the mark assembles itself, then the curtain lifts.
@@ -60,9 +23,13 @@ const LOADER_SPEED = 1;
  * building it, reviewing it, showing it to a client — that means it may as
  * well not exist. It is part of the entrance, so it plays on entrance.
  *
- * It does NOT run on in-app navigation: SiteChrome lives in the layout and does
- * not remount between routes, so this mounts once per real page load. Clicking
- * around the site never hits a curtain.
+ * IT DOES NOT RUN ON IN-APP NAVIGATION, and that is not an oversight — it is
+ * structural. SiteChrome lives in the layout and does not remount between
+ * routes, so this mounts once per real page load and a client-side navigation
+ * can never reach it. The client asked for the loading animation on route
+ * changes too; that is `RouteCurtain`, which plays the same mark for the same
+ * beat from `loader-timing.ts`. Both exist because neither can do the other's
+ * job from where it sits.
  *
  * RENDERED SERVER-SIDE, not mounted in an effect. The previous version started
  * hidden and revealed itself after mount, which meant the page painted first
@@ -81,11 +48,32 @@ export function Preloader() {
   const [done, setDone] = useState(false);
 
   useEffect(() => {
+    /**
+     * HOLD THE PAGE'S ENTRANCE UNTIL THE CURTAIN IS GONE.
+     *
+     * This is what `EntranceGate` was written to do, and it stopped working
+     * when the reveals moved from Framer to the CSS state machine in
+     * `useRevealOnce` — nothing consumes `useRevealPlay` any more, so `ready`
+     * flips and reaches nothing. The visible symptom: on a fresh load of `/`,
+     * the hero's word-by-word entrance plays underneath this curtain and is
+     * finished by the time it lifts. Every time.
+     *
+     * `release()` is still called below so the gate's own contract holds for
+     * anything that consumes it later; `holdReveals` is what actually defers
+     * the animation people can see.
+     */
+    const releaseReveals = holdReveals(CURTAIN_MS);
+
     const t = window.setTimeout(() => {
       setDone(true);
+      releaseReveals();
       release();
-    }, HOLD_MS + LIFT_MS);
-    return () => window.clearTimeout(t);
+    }, CURTAIN_MS);
+
+    return () => {
+      window.clearTimeout(t);
+      releaseReveals();
+    };
   }, [release]);
 
   if (done) return null;
@@ -93,7 +81,7 @@ export function Preloader() {
   return (
     <div className="stark-preloader" aria-hidden>
       <LogoLoader
-        variant={VARIANT}
+        variant={LOADER_VARIANT}
         size={150}
         color="var(--sand-500)"
         speed={LOADER_SPEED}
@@ -101,3 +89,12 @@ export function Preloader() {
     </div>
   );
 }
+
+/**
+ * Re-exported so `Preloader.test.ts` keeps asserting against the numbers this
+ * component actually runs on, now that they live in `loader-timing.ts`. The
+ * test recomputes the assemble lock window from the CSS keyframes and the
+ * per-blade offsets, which is the check that stops any one of them moving
+ * alone.
+ */
+export { HOLD_MS, LIFT_MS, LOADER_SPEED };

@@ -7,18 +7,11 @@ import { Section, SectionHeader } from "@/components/ui/Section";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { MarkGlyph } from "@/components/brand/geometry";
 import { ContactSection } from "@/components/contact/ContactSection";
-import { Reveal } from "@/components/motion/Reveal";
 import { WoodworksHero } from "@/components/woodworks/WoodworksHero";
 import { Chapters, type Chapter } from "@/components/woodworks/Chapters";
-import {
-  ProductStrip,
-  SubstrateList,
-  CapacityBand,
-  ServicesList,
-  ProjectsBand,
-} from "@/components/woodworks/sections";
+import { ProductStrip, type Product } from "@/components/woodworks/ProductStrip";
+import { Certifications } from "@/components/woodworks/Certifications";
 import { landingImages } from "@/components/landing/assets";
-import { FACTS, WOODWORKS_CAPACITY } from "@/content/facts";
 import "@/styles/woodworks.css";
 
 export function generateStaticParams() {
@@ -41,61 +34,73 @@ export async function generateMetadata({
 }
 
 type Cap = { title: string; body: string; meta: string[]; alt: string };
-type Service = { title: string; body: string };
-/** Both the product cards and the substrate footnote use this shape. */
-type Labelled = { label: string; body: string };
-/** A capacity figure's translated half — see CapacityBand for the index join. */
-type Unit = { unit: string; label: string };
 type Row = { stage: string; check: string };
-type Certs = { label: string; items: { label: string; body: string }[] };
+type Certs = {
+  recognitionLabel: string;
+  certificationsLabel: string;
+  note: string;
+  names: Record<string, string>;
+};
 
 /**
- * WOODWORKS — the dark workshop page.
+ * WOODWORKS — the cream workshop page.
  *
- * WHAT THE CLIENT SAW BEFORE, and they were right about all of it: an off-white
- * page that opened with the same component as Home, then repeated Home's
- * Capabilities section parameter-for-parameter — same component, same order,
- * the SAME THREE IMAGE FILES, one of them appearing three times. Its theme
- * delta from Home was ink colour and a density multiplier, neither of which a
- * visitor perceives. It read as Home with different words, because structurally
- * that is what it was.
+ * ===========================================================================
+ * THE COLOUR CHANGED; THE STRUCTURE IS WHY THAT IS SAFE
+ * ===========================================================================
  *
- * THE DIRECTION IS THE OPPOSITE REGISTER. Home is light, centred, airy, and
- * sells an outcome. This is the factory floor: near-black, left-aligned against
- * a standing rule, dense, and sells a process. The difference is legible in the
- * first 200ms without reading a word, which is the only test that matters —
- * nobody compares two pages side by side, they just feel whether they have
- * arrived somewhere new.
+ * This page was rebuilt once already, from an off-white page that opened with
+ * the same component as Home and repeated Home's Capabilities section
+ * parameter-for-parameter, down to the same three image files. It read as Home
+ * with different words because structurally that is what it was, and the fix
+ * was to make it near-black.
  *
- * FOUR AXES MOVE, all Tier-3 tokens on `data-theme="woodworks"` (tokens.css):
- *   surface   → the graphite ramp at its DARK end, ink inverted to off-white.
- *               An official brand column, used as a page instead of as ink.
- *   axis      → start. A standing rule the copy hangs off, no centred column.
- *   density   → 0.8. A factory page reads as a spec sheet, not a brochure.
- *   image     → contrast(1.1) saturate(.88) brightness(.82) — grain and shadow.
+ * The client has now asked for the background of their own company profile p10
+ * — a cream — so the page goes light again. That does not undo the rebuild,
+ * because what the rebuild actually changed was the skeleton, not the colour:
+ * a full-viewport hero hung off a standing rule, a sticky chapter index, a
+ * scroll-snap product strip. Home has none of those. See the long note on
+ * `[data-theme="woodworks"]` in tokens.css for the three axes that still hold
+ * the two pages apart (alignment, density, the neutral ink ramp).
  *
- * AND THE STRUCTURE MOVES, which matters more than any of them:
- *   hero        full-viewport, photograph bleeding off the end edge
- *   chapters    a sticky index beside panels — a device Home does not have
- *   products    a horizontal scroll-snap strip — changes the page's axis,
- *               with the substrate spec list demoted underneath it
- *   capacity    count-up figures: the page's only quantitative block
- *   standards   the stage/check table (kept: it is unique on the site)
- *   services    a ruled mono list, the page's one quiet block
- *   projects    a full-bleed band with the CTA over it
+ * ===========================================================================
+ * FOUR SECTIONS CAME OUT IN THE SAME REVIEW
+ * ===========================================================================
  *
- * SURFACES ALTERNATE STRICTLY down that list. Adding `capacity` shifted every
- * surface below it by one — `standards` and `services` swapped rather than
- * staying put, because two adjacent sections on the same surface read as one
- * very long section and the table would have appeared to belong to the
- * capacity band. If a section is ever inserted or removed here, re-check the
- * whole run rather than just its neighbours.
+ *   substrates       the six board types, demoted under the product strip
+ *   capacity         75M SAR and six annual volume figures
+ *   services         "Integrated solutions, delivered end to end"
+ *   projects         the "Selected work" band that closed the page
  *
- * NO PROCESS BAND, still. Home has one; a third copy across three pages in one
- * session reads as laziness rather than as a system.
+ * The client asked for each by name. Two consequences worth knowing:
  *
- * NO CAPABILITY BANDS, now. `CapabilityBand` remains Home's; this page having
- * its own structure is the entire point of the rebuild.
+ * `facts.ts` LOST SEVEN ENTRIES with the capacity band — they had exactly one
+ * consumer between them, and an unused fact still whitelists its digits for the
+ * whole copy deck. The tombstone there records what they were.
+ *
+ * THE PAGE NO LONGER ENDS ON ITS OWN WORK. `ProjectsBand` was the last image on
+ * the route and the only link from here into the gallery; the nav still reaches
+ * it, but if the client later misses that hand-off, this is where it was.
+ *
+ * ===========================================================================
+ * SURFACES ALTERNATE STRICTLY, AND THE RUN WAS RE-WALKED
+ * ===========================================================================
+ *
+ *   hero        surface      (the component paints --color-surface itself)
+ *   chapters    surface-2
+ *   products    surface
+ *   standards   surface-2
+ *   contact     surface      (ContactSection hard-codes this)
+ *
+ * Removing four sections shifted every surface below them, so this is not the
+ * old list with gaps closed — the whole run was re-derived. Chapters used to be
+ * `surface` and is `surface-2` now precisely because the page is four sections
+ * shorter and the parity flipped. Two adjacent sections sharing a surface read
+ * as one very long section; the previous arrangement would have ended on
+ * standards→contact, both `surface`.
+ *
+ * NO PROCESS BAND, still. Home has one; a second copy on a four-section page
+ * reads as padding.
  */
 export default async function WoodworksPage({
   params,
@@ -105,11 +110,7 @@ export default async function WoodworksPage({
 
   const t = await getTranslations("woodworks");
   const caps = t.raw("capabilities.items") as Cap[];
-  const services = t.raw("services.items") as Service[];
-  const products = t.raw("products.items") as Labelled[];
-  const substrates = t.raw("substrates.items") as Labelled[];
-  const capacityItems = t.raw("capacity.items") as Unit[];
-  const capacityHeadline = t.raw("capacity.headline") as Unit;
+  const products = t.raw("products.items") as Product[];
   const rows = t.raw("standards.rows") as Row[];
   const certs = t.raw("standards.certs") as Certs;
 
@@ -118,9 +119,7 @@ export default async function WoodworksPage({
    *
    * Deliberately not new writing. That copy was written for this page and
    * approved; what was wrong with the section was its shape and its
-   * photographs, not its words. Rewriting approved copy to justify a structural
-   * change would have put unreviewed claims about a real factory on a live
-   * page — the one thing this project must never do.
+   * photographs, not its words.
    */
   const chapters: Chapter[] = caps.map((c, i) => ({
     ...c,
@@ -143,7 +142,7 @@ export default async function WoodworksPage({
       />
 
       {/* Chapters ----------------------------------------------------- */}
-      <Section surface="surface">
+      <Section surface="surface-2">
         <Container>
           <SectionHeader
             eyebrow={<Eyebrow>{t("chapters.eyebrowLabel")}</Eyebrow>}
@@ -157,7 +156,7 @@ export default async function WoodworksPage({
       </Section>
 
       {/* Products ----------------------------------------------------- */}
-      <Section surface="surface-2" className="overflow-hidden" id="products">
+      <Section surface="surface" className="overflow-hidden" id="products">
         <Container>
           <SectionHeader
             eyebrow={<Eyebrow>{t("products.eyebrowLabel")}</Eyebrow>}
@@ -166,53 +165,21 @@ export default async function WoodworksPage({
           />
         </Container>
         {/* Outside the Container on purpose — the strip runs to the viewport
-            edge so that "there is more this way" needs no chevron. */}
+            edge so that "there is more this way" needs no chevron.
+
+            EIGHT NOW, NOT SIX. Profile p15 replaced the range wholesale: Loose
+            Furniture & Upholstery and Craftsmanship & Artistic Woodworks are
+            new, "Furniture & Joinery" became "Built-in Furniture & Joinery",
+            and cladding gained its exterior half. The substrate list that used
+            to sit underneath this went with the same review. */}
         <ProductStrip
           items={products}
           images={landingImages.woodworks.products}
           alt={t("products.alt")}
         />
-        {/* Back INSIDE the Container, and that is the demotion. The strip
-            breaking the margin is what makes it the section's subject; the
-            substrates returning to the text column is what makes them its
-            footnote. Same section, two ranks, no second heading needed. */}
-        <Container>
-          <SubstrateList
-            label={t("substrates.label")}
-            sub={t("substrates.sub")}
-            items={substrates}
-          />
-        </Container>
       </Section>
 
-      {/* Capacity ----------------------------------------------------- */}
-      <Section surface="surface" id="capacity">
-        <Container>
-          <SectionHeader
-            eyebrow={<Eyebrow>{t("capacity.eyebrowLabel")}</Eyebrow>}
-            heading={t("capacity.heading")}
-            intro={t("capacity.sub")}
-          />
-          {/*
-            ⚠ THE INDEX JOIN. `WOODWORKS_CAPACITY` supplies the figures and the
-            message array supplies each one's unit and label, matched by
-            position — so the two lists are one data structure split across two
-            files for translation, and reordering either one alone silently
-            reprints "30,000 m²" under "Doors". facts.test.ts checks they are
-            the same length in both locales and can check nothing more.
-          */}
-          <CapacityBand
-            locale={locale}
-            headlineValue={FACTS.capacityAnnualSar.value}
-            headlineGrouping={FACTS.capacityAnnualSar.grouping}
-            headline={capacityHeadline}
-            stats={WOODWORKS_CAPACITY}
-            items={capacityItems}
-          />
-        </Container>
-      </Section>
-
-      {/* Standards table --------------------------------------------- */}
+      {/* Standards table + the marks --------------------------------- */}
       <Section surface="surface-2">
         <Container>
           <SectionHeader
@@ -252,7 +219,7 @@ export default async function WoodworksPage({
                       className="w-[38%] py-4 pe-6 ps-3 text-start align-top font-display text-h4 font-semibold text-[color:var(--color-ink)]"
                     >
                       <span className="inline-flex items-center gap-2.5">
-                        <MarkGlyph division="woodworks" size={20} color="var(--color-accent)" />
+                        <MarkGlyph division="woodworks" whole size={30} color="var(--color-accent)" />
                         {r.stage}
                       </span>
                     </th>
@@ -265,65 +232,14 @@ export default async function WoodworksPage({
             </table>
           </div>
 
-          {/*
-            THE CERTIFICATIONS THE FACTORY ACTUALLY HOLDS, under the plan they
-            govern. Two of them, not four: ISO 9001 and ISO 45001 are held but
-            EXPIRED ON 13.12.2025, so they are deliberately absent rather than
-            hedged. See content/facts.ts.
-
-            Deliberately not cards. The table above is the section's structure;
-            a second bordered treatment one scroll down would read as a
-            different section rather than as the plan's footnote.
-          */}
-          <div className="mt-[clamp(28px,3.5vw,44px)]">
-            <Reveal y={18}>
-              <p
-                className="font-mono text-[11px] tracking-eyebrow text-[color:var(--color-ink-muted)]"
-                style={{ textTransform: "var(--eyebrow-transform)" as "uppercase" }}
-              >
-                {certs.label}
-              </p>
-              <ul className="mt-4 grid gap-x-[clamp(20px,3vw,44px)] gap-y-5 nav:grid-cols-2">
-                {certs.items.map((c) => (
-                  <li
-                    key={c.label}
-                    className="border-t pt-4 [border-color:var(--color-line)]"
-                  >
-                    <p className="font-display text-h4 font-semibold text-[color:var(--color-ink)]">
-                      {c.label}
-                    </p>
-                    <p className="mt-1.5 text-body leading-body text-[color:var(--color-ink-body)]">
-                      {c.body}
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            </Reveal>
-          </div>
-        </Container>
-      </Section>
-
-      {/* Services ----------------------------------------------------- */}
-      <Section surface="surface">
-        <Container>
-          <SectionHeader
-            eyebrow={<Eyebrow>{t("services.eyebrowLabel")}</Eyebrow>}
-            heading={t("services.heading")}
-            intro={t("services.sub")}
+          <Certifications
+            recognitionLabel={certs.recognitionLabel}
+            certificationsLabel={certs.certificationsLabel}
+            note={certs.note}
+            names={certs.names}
           />
-          <ServicesList items={services} />
         </Container>
       </Section>
-
-      {/* Projects band ------------------------------------------------ */}
-      <ProjectsBand
-        eyebrow={<Eyebrow>{t("projects.eyebrowLabel")}</Eyebrow>}
-        heading={t("projects.heading")}
-        sub={t("projects.sub")}
-        cta={t("projects.cta")}
-        image={landingImages.woodworks.projects}
-        alt={t("projects.alt")}
-      />
 
       <ContactSection />
     </div>

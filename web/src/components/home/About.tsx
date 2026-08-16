@@ -50,8 +50,41 @@ export async function About() {
                   and mission and text", and a paragraph that arrives after the
                   heading reads as the section assembling itself. */}
               <div className="flex max-w-[68ch] flex-col gap-4 text-body leading-body text-[color:var(--color-ink-body)]">
-                {paragraphs.slice(0, 2).map((p, i) => (
-                  <LineReveal key={i} delay={0.1 + i * 0.1}>
+                {/*
+                  THE ACRONYM IS DRAWN OUT OF THE SENTENCE, the way the company
+                  profile does it (p6: a large S/T/A/R/K over the rest of each
+                  word). The client asked for the five letters bold and a little
+                  bigger, and this is the only place on the site where the full
+                  legal name is written out — so it is the only place that can
+                  show where "STARK" comes from.
+
+                  ⚠ THE `k` TAG BELONGS TO THE MESSAGE, NOT THE MARKUP, and it
+                  has to: the letters sit INSIDE words, so no amount of wrapping
+                  in JSX can bold the S of "Strategic" without the copy deck
+                  saying which S. `t.rich` keeps that decision in the
+                  translation, which matters more than it looks — the Arabic
+                  string embeds the same English phrase verbatim (a legal name
+                  is not translated), so the identical tags apply and both
+                  locales get the treatment from one component.
+
+                  It is `lead`, a key of its own, rather than `paragraphs[0]`:
+                  `t.rich` addresses a key, and reaching into an array for the
+                  one entry with different rendering rules is how the two
+                  quietly drift apart later.
+                */}
+                <LineReveal delay={0.1}>
+                  <p>
+                    {t.rich("lead", {
+                      k: (chunks) => (
+                        <span className="text-[1.18em] font-bold text-[color:var(--color-ink)]">
+                          {chunks}
+                        </span>
+                      ),
+                    })}
+                  </p>
+                </LineReveal>
+                {paragraphs.slice(0, 1).map((p, i) => (
+                  <LineReveal key={i} delay={0.2}>
                     <p>{p}</p>
                   </LineReveal>
                 ))}
@@ -81,7 +114,7 @@ export async function About() {
                     className="h-full border-t pt-4 [border-color:var(--color-line)]"
                   >
                     <dt className="flex items-center gap-2.5 font-display text-h4 font-semibold text-[color:var(--color-ink)]">
-                      <MarkGlyph division="stark" size={20} color="var(--color-accent)" />
+                      <MarkGlyph division="stark" whole size={30} color="var(--color-accent)" />
                       {p.title}
                     </dt>
                     <dd className="mt-1.5 text-body-sm leading-body text-[color:var(--color-ink-body)]">

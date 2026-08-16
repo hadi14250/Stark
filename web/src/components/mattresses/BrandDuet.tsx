@@ -1,4 +1,3 @@
-import { Pill } from "@/components/ui/Pill";
 import { Photo } from "@/components/ui/Photo";
 import { Reveal } from "@/components/motion/Reveal";
 
@@ -22,7 +21,6 @@ export type BrandPanel = {
   tagline: string;
   body: string;
   points: string[];
-  cta: string;
   alt: string;
   image: string;
   /** Which `[data-brand]` subtree this panel opens. */
@@ -161,18 +159,25 @@ export function BrandDuet({ panels }: { panels: BrandPanel[] }) {
               ))}
             </ul>
 
-            <div className="mt-7">
-              {/*
-                `tan`, not the brand colour. The CTA is STARK asking for the
-                conversation, and it is the same offer on both panels — giving
-                each one its own button colour would make them look like two
-                different companies' websites sitting next to each other, which
-                is the exact confusion the containment rule exists to prevent.
-              */}
-              <Pill variant="tan" href="/#contact">
-                {p.cta}
-              </Pill>
-            </div>
+            {/*
+              ⚠ NO CTA ON EITHER PANEL. The client asked for both buttons off —
+              blue's "Let's talk" and siesta's "Request a specification".
+
+              What that costs, so it is a decision rather than an accident: this
+              was the only place on the route where the two audiences could
+              take DIFFERENT next steps, which is the distinction the whole
+              section exists to draw (a family buying one bed, a hotel buying
+              two hundred). Every remaining route to a conversation on this page
+              is the shared one — the hero pill and the contact section — so a
+              hospitality buyer and a retail buyer now arrive at the same form.
+
+              The `cta` field is gone from `mattresses.brands.items` in both
+              locales too. If it comes back, it comes back as `Pill variant="tan"`
+              on both panels: sand, never the brand colour. Two differently
+              coloured buttons made the pair look like two companies' websites
+              side by side, which is the confusion the containment rule on the
+              tint span exists to prevent.
+            */}
 
             <span className="sr-only">{p.alt}</span>
           </article>
