@@ -15,6 +15,7 @@ import {
   type SubCategoryId,
 } from "@/lib/gallery/images";
 import "@/styles/gallery-chrome.css";
+import "@/styles/gallery-stage.css";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));

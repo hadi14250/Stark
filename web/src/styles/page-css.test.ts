@@ -78,13 +78,16 @@ describe("route-scoped stylesheets", () => {
   it("finds the route-scoped sheets at all", () => {
     // A rename that emptied this list would turn every check below into a
     // vacuous pass — the classic way a guard stops guarding.
-    // `gallery-stage.css` was the third of these and went with the bento slide
-    // stage the gallery rebuild replaced. Its layer argument did not go with
-    // it — gallery-chrome.css still cites it, because the `.grid` name
-    // collision with Tailwind's utility is what made the layer necessary in the
-    // first place and that has not changed.
+    // All three are here again. `gallery-stage.css` was briefly dropped with
+    // the bento stage, and came back with it — its `.grid` collides by name
+    // with Tailwind's `.grid` utility, which is the whole reason the `gallery`
+    // layer has to be declared after `utilities`.
     expect(sheets.map((s) => s.name).sort()).toEqual(
-      expect.arrayContaining(["gallery-chrome.css", "woodworks.css"]),
+      expect.arrayContaining([
+        "gallery-chrome.css",
+        "gallery-stage.css",
+        "woodworks.css",
+      ]),
     );
   });
 

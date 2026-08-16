@@ -1,0 +1,1413 @@
+/* =============================================================================
+   GALLERY STAGE — ported from the push-slitra handoff (app/globals.css).
+   =============================================================================
+
+   Three changes were required to make this coexist with Tailwind 4. All three
+   are load-bearing — the stage renders wrong or the rest of the site breaks
+   without them. Verified in the Phase A0a spike.
+
+   1. THE HANDOFF'S GLOBAL RESET IS GONE (its lines 1-58).
+      That stylesheet was UNLAYERED, and an unlayered normal declaration
+      outranks EVERY layered one regardless of specificity. Tailwind 4 emits
+      everything into `@layer theme, base, components, utilities`, so importing
+      the handoff as-is meant `* { margin: 0; padding: 0 }` silently killed
+      every spacing utility on all four routes, its bare `button` rule beat the
+      site's button styles, and `body { background: #000 }` blacked out the
+      whole site. Tailwind's preflight already covers box-sizing and margin
+      reset; only the stage subtree needs the rest, so what survives of the
+      reset is re-declared below, scoped.
+
+   2. EVERY SELECTOR IS SCOPED TO `.stage-viewport`.
+      Not just hygiene — the handoff's `.grid` collides by name with Tailwind's
+      `.grid` utility, which Stark uses. In the spike this collapsed the entire
+      bento to a 44px-tall stack while everything else looked fine, because
+      `@layer utilities` beat the gallery's rules. Today `.grid` is the only
+      collision, but Tailwind generates utilities on demand, so that set grows
+      silently every time someone adds a class in Stark markup. Scoping makes
+      the collision structurally impossible rather than currently-absent.
+
+   3. IT LIVES IN ITS OWN LAYER, ORDERED AFTER `utilities`.
+      Scoping alone does NOT fix the collision: layer order beats specificity,
+      so `.stage-viewport .grid` in `components` still loses to `.grid` in
+      `utilities`. The `gallery` layer is declared last so the stage wins
+      inside its own subtree — and, because of (2), nowhere else.
+
+   The handoff's `:root` block moved onto `.stage` (custom properties compute
+   at the element that declares them, so a `:root`-level
+   `--gap: var(--gap-base)` would freeze the fallback before `.stage`'s inline
+   `--gap-base` could participate). `body`'s background/color/Poppins are
+   dropped outright — Stark owns the page.
+
+   Everything else is VERBATIM from the handoff. The bento geometry, the
+   container queries, the transition timings and the inset-ring treatments are
+   not ours to restyle.
+   ========================================================================== */
+
+/* Declared after Tailwind's four layers — see (3) above. */
+@layer theme, base, components, utilities, gallery;
+
+@layer gallery {
+  /* ---------- what survives of the handoff's reset, scoped ---------- */
+  .stage-viewport *,
+  .stage-viewport *::before,
+  .stage-viewport *::after {
+    box-sizing: border-box;
+  }
+  .stage-viewport * {
+    margin: 0;
+    padding: 0;
+  }
+  .stage-viewport img {
+    display: block;
+    max-width: 100%;
+    /* photos are decor, not content — no ghost-drag (Firefox also needs
+       draggable={false} on the elements, see cards.tsx / DetailOverlay) */
+    -webkit-user-drag: none;
+  }
+  .stage-viewport button {
+    font: inherit;
+    color: inherit;
+    border: none;
+    background: none;
+    cursor: pointer;
+  }
+
+  /* ---------- structural defaults (was `:root` in the handoff) ---------- */
+  .stage-viewport .stage {
+    --gap-base: 16px;
+    --radius-base: 10px; /* card / image corner radius */
+    --btn-radius-base: 6px; /* buttons: tighter than cards */
+    --pad-base: 26px;
+    /* the push transition's one ease + the enter duration (power3.inOut,
+       1200ms) — theme colors fade on the same clock as the cards arriving */
+    --ease: cubic-bezier(0.77, 0, 0.175, 1);
+    --dur: 1.2s;
+    /* cursor-follow glow tint — warm light on the page background only */
+    --glow: rgba(255, 236, 210, 0.42);
+    /* radius of the cursor torch. Keep it well under the viewport width or the
+       glow stops reading as a torch and just tints the whole background. */
+    --glow-size: 620px;
+  }
+
+  /* ============================================================
+  STAGE — the themed wrapper. Colors transition with the slide.
+  ============================================================ */
+  /* The design's QUERY CONTAINER — the box the design treats as its viewport.
+  It must wrap the stage at exactly the stage's size (EditorShell's canvas div
+  carries this class). Every breakpoint and cqw/cqh unit below responds to
+  THIS box, not the browser viewport — so when the editor panel squeezes the
+  canvas, the design rescales exactly as if the window were narrower.
+  It cannot be the stage itself: an element's own @container rules query its
+  ANCESTOR container, so `.stage { --gap: … }` inside a stage-named query
+  would never match. Side effect (wanted): size containment makes this box
+  the containing block for fixed-position descendants, so the detail overlay
+  fills the canvas, not the screen, leaving the editor panel usable. */
+  .stage-viewport {
+    container: stage / size;
+    /* Size comes from the chrome's .canvas, which fills the shell. The
+       container query root MUST have a definite size or `container: stage /
+       size` never resolves and every cqw/cqh inside collapses to zero. */
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+  .stage-viewport .stage {
+    position: relative;
+    /* derive the structural vars HERE so the editor's inline *-base overrides
+    (same element) take effect; the mobile block re-derives them as fractions */
+    --gap: var(--gap-base, 16px);
+    --radius: var(--radius-base, 10px);
+    --btn-radius: var(--btn-radius-base, 6px);
+    --pad: var(--pad-base, 26px);
+    /* body typeface for the whole slider — the editor stamps --font-body inline
+    (points at a self-hosted next/font var); standalone falls back to Poppins */
+    font-family: var(--font-body, var(--font-poppins)), system-ui, sans-serif;
+    /* fill the stage-viewport (the editor shell owns the viewport height now) */
+    height: 100%;
+    overflow: hidden;
+    /* a slider is a surface, not a document: nothing on it is selectable, so
+    clicks and drags never leave blue highlight smears. Buttons still click
+    fine — user-select has no effect on interactivity. */
+    -webkit-user-select: none;
+    user-select: none;
+    background: var(--bg);
+    padding: var(--gap);
+    transition: background-color var(--dur) var(--ease);
+    /* cursor position for the background glow (set by GlowLayer) */
+    --mx: 50%;
+    --my: 50%;
+    --mon: 0;
+  }
+  /* Background "torch" glow: a large soft radial highlight that follows the
+  cursor. It lives on the PAGE BACKGROUND ONLY — it sits behind the grid, so
+  it lightens the background (the gaps and the bg colour) near the cursor and
+  NEVER touches the images or card faces. */
+  .stage-viewport .stage::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: radial-gradient(
+    var(--glow-size) circle at var(--mx) var(--my),
+    var(--glow) 0%,
+    transparent 70%
+    );
+    opacity: var(--mon);
+    transition: opacity 0.4s ease;
+  }
+  .stage-viewport .stage > * {
+    position: relative;
+    z-index: 1;
+  }
+  /* the deck holds stacked slide layers for crossfade/restage.
+  Full-bleed like the original — no max-width cap, so it fills the viewport
+  edge-to-edge (only the stage's --gap padding frames it). It fills the stage
+  height at every breakpoint so the grid can size to one viewport. */
+  .stage-viewport .deck {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+  /* ============================================================
+  GRID — mobile first (two-column bento), then 3-col desktop
+  ------------------------------------------------------------
+  Mobile matches the original exactly:
+  • hero spans the full width
+  • intro paragraph (left) + landscape image (right) on one row
+  • DISCOVER MORE (left) + PREVIOUS | NEXT (right) on one row
+  • below that, two INDEPENDENT masonry stacks (Explore/cabin/Stay on the
+  left, puffin/Cuisine on the right) that flow at their own heights.
+  ============================================================ */
+  .stage-viewport .grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
+    /* mobile: fill exactly one viewport so nothing scrolls */
+    height: 100%;
+    min-height: 0;
+  }
+  .stage-viewport .col {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
+    min-width: 0;
+  }
+  /* the lower two-column region (Explore/cabin/Stay | puffin/Cuisine).
+  Two equal columns; each column is its own vertical flex stack. On desktop the
+  wrapper dissolves (display:contents) so col1/col2/col3 are three flex siblings
+  again — see the min-width:1000px block. The col1/masonry flex shares that make
+  this fit one viewport live in the mobile (max-width:999px) block at the end. */
+  .stage-viewport .masonry {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gap);
+    align-items: stretch;
+    min-height: 0;
+  }
+  .stage-viewport .masonry .col {
+    min-height: 0;
+  }
+  /* the controls bar wrapper (grid cell). Its two halves — the CTA and the
+  prev/next pair — are each their OWN PushCard so they can slide from different
+  directions. This wrapper just holds them and pins the bar to the bottom. */
+  .stage-viewport .cell-controls {
+    flex: 0 0 auto;
+  }
+  /* One PushCard frame PER BUTTON (the CTA, and Previous/Next individually).
+  Each frame must clip so its button slides cleanly, and each is rounded to the
+  BUTTON's radius rather than being square. A square clip shears the button's
+  leading corners flat while it crosses the frame edge — they only look round
+  once the button settles and its own radius lines up with the edge. Matching
+  the radii keeps the clip rounded at every point in the slide, so the button
+  reads as round throughout. At rest the two radii coincide, so this changes
+  nothing about the settled layout.
+  This is also why Previous/Next are NOT wrapped in a single shared frame: one
+  frame around the pair can only round its outer corners, leaving the two
+  corners either side of the gap to be sheared flat mid-slide. */
+  .stage-viewport .cell-cta.pushcard,
+  .stage-viewport .cell-prev.pushcard,
+  .stage-viewport .cell-next.pushcard {
+    border-radius: var(--btn-radius);
+    overflow: hidden;
+    min-height: 0;
+  }
+  /* the button inside must fill its pushcard so it keeps full height */
+  .stage-viewport .cell-cta .push-layer,
+  .stage-viewport .cell-prev .push-layer,
+  .stage-viewport .cell-next .push-layer {
+    justify-content: stretch;
+  }
+  .stage-viewport .cell-prev .btn,
+  .stage-viewport .cell-next .btn {
+    height: 100%;
+  }
+  /* the prev/next wrapper is a plain grid cell now (not a pushcard) — its two
+  children are the per-button frames above. */
+  .stage-viewport .cell-prevnext {
+    min-width: 0;
+    min-height: 0;
+  }
+  /* ---------- PUSH CARD (fixed frame + sliding content) ---------- */
+  .stage-viewport .pushcard {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius);
+    min-width: 0;
+    display: flex; /* the in-flow layer stretches this to its height */
+  }
+  .stage-viewport .push-layer {
+    position: relative;
+    width: 100%;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    will-change: transform;
+  }
+  /* the actual card fills its push layer (and thus the whole frame) */
+  .stage-viewport .push-layer > .card {
+    flex: 1 1 auto;
+    width: 100%;
+    height: 100%;
+    border-radius: var(--radius);
+  }
+  /*
+  * During a push there are two layers. The EXITING layer (popLayout gives it
+  * data-motion-pop-id) is taken out of flow and absolutely fills the frame, so
+  * it can't resize it. The ENTERING layer also fills the frame height (100%),
+  * so the frame's height stays exactly what it was — no reflow, no font/size
+  * jump — while both slide across.
+  */
+  .stage-viewport .pushcard > .push-layer[data-motion-pop-id] {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+  }
+  .stage-viewport .pushcard > .push-layer {
+    height: 100%;
+  }
+  /* Each animated text line's own little mask — the line slides ±100% of its
+  OWN box inside this (see textMotion.ts), emerging from its own edge the way
+  the card emerges from the grid's. Plain block: it takes the text element's
+  place in the layout, and being a BFC it contains the line's margin-top, so
+  spacing is unchanged. */
+  .stage-viewport .tmask {
+    /* The text mini-push hides each line before it slides in. `clip` +
+    clip-margin lets ink paint a little beyond the box WITHOUT changing layout
+    (unlike padding/negative-margin, which collapse in this block flow) — so
+    tall ascenders and script/serif descenders are no longer sheared off when a
+    custom heading/body font is applied. Falls back to a tight `hidden` clip on
+    engines without overflow-clip-margin. */
+    overflow: hidden;
+    overflow: clip;
+    overflow-clip-margin: 0.32em;
+  }
+  /* ---------- TRANSITION-ENGINE EXTRAS ----------
+  fx-main/fx-clone: flair effects render extra copies of the EXITING content
+  (doors halves, shatter tiles, glitch slices) — hidden at rest, revealed by
+  their exit targets. fx-shader: the WebGL crossfade canvas over photo cells.
+  gridframe/grid-layer: the whole-deck frame for grid-scope transitions. */
+  .stage-viewport .push-layer > .fx-main {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    width: 100%;
+    min-width: 0;
+    height: 100%;
+  }
+  .stage-viewport .push-layer > .fx-main > .card {
+    flex: 1 1 auto;
+    width: 100%;
+    height: 100%;
+    border-radius: var(--radius);
+  }
+  .stage-viewport .push-layer > .fx-clone {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    pointer-events: none;
+    visibility: hidden;
+    overflow: hidden;
+  }
+  .stage-viewport .push-layer > .fx-clone > .card {
+    flex: 1 1 auto;
+    width: 100%;
+    height: 100%;
+    border-radius: var(--radius);
+  }
+  .stage-viewport .fx-shader {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    pointer-events: none;
+  }
+  .stage-viewport .fx-shader canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .stage-viewport .gridframe {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+  /* ALL grid layers are absolute (the frame is the sizing box) — the frame's
+  AnimatePresence runs in sync mode, so entering and exiting layers coexist
+  as siblings and stack purely by the zIndex their transition targets set. */
+  .stage-viewport .gridframe > .grid-layer {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    will-change: transform;
+  }
+  .stage-viewport .grid-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    pointer-events: none;
+  }
+  /* rows that hold two items side by side */
+  .stage-viewport .introrow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gap);
+  }
+  /* controls — mobile: DISCOVER MORE fills the LEFT column; PREVIOUS | NEXT
+  split the RIGHT column (mirrors the two-column bento above). */
+  .stage-viewport .controls-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gap);
+    align-items: stretch;
+  }
+  .stage-viewport .controls-wrap .cell-cta {
+    grid-column: 1; /* full left column */
+    min-width: 0;
+  }
+  .stage-viewport .controls-wrap .cell-prevnext {
+    grid-column: 2; /* right column */
+    min-width: 0;
+  }
+  .stage-viewport .controls-wrap .prevnext {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gap);
+    min-width: 0;
+    height: 100%;
+  }
+  /* the CTA button fills its pushcard half */
+  .stage-viewport .controls-wrap .cell-cta .btn.cta {
+    height: 100%;
+  }
+  /* buttons must be allowed to shrink below their text's intrinsic width so the
+  PREVIOUS | NEXT pair never overflows the column (text stays centered). */
+  .stage-viewport .controls-wrap .btn {
+    min-width: 0;
+  }
+  /* NOTE: the mobile-fit container query (max-width: 999px) lives at the END of
+  this file so its rules win over the base card/hero/font rules by source
+  order. ALL breakpoints below query the STAGE container, not the viewport. */
+  /* Desktop grid: three columns of differing widths, fits one viewport */
+  @container stage (min-width: 1000px) {
+    .stage-viewport .grid {
+      flex-direction: row;
+      align-items: stretch;
+      height: 100%; /* fill the .deck / 100vh stage */
+      min-height: 0;
+    }
+    /* on desktop the masonry wrapper dissolves so col1/col2/col3 are three
+    siblings of the flex row again (the 3-column bento). */
+    .stage-viewport .masonry {
+      display: contents;
+    }
+    .stage-viewport .col {
+      min-height: 0; /* let flex children shrink to fit the column height */
+    }
+    /* original column ratio ≈ 2.06 : 1 : 1 (hero column is ~2× the others) */
+    .stage-viewport .col1 {
+      flex: 2.06;
+    }
+    .stage-viewport .col2 {
+      flex: 1;
+    }
+    .stage-viewport .col3 {
+      flex: 1;
+    }
+    /* intro row: the text card and the image get EQUAL columns, so the two cards
+    are the same size — same width as well as the same height. */
+    .stage-viewport .introrow {
+      grid-template-columns: 1fr 1fr;
+    }
+    /* Controls pinned to bottom of col1, aligned to the introrow ABOVE them:
+    - DISCOVER MORE fills the whole text-card column (1fr) — same width as the
+    intro text card directly above it.
+    - PREVIOUS | NEXT split the image column into two equal halves — together
+    they span exactly the width of the portraitA image above.
+    The columns MUST stay identical to .introrow's, or the buttons stop lining
+    up with the cards they sit under. */
+    .stage-viewport .cell-controls {
+      margin-top: auto;
+    }
+    .stage-viewport .controls-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr; /* identical to .introrow columns */
+      gap: var(--gap);
+      align-items: stretch;
+    }
+    .stage-viewport .controls-wrap .cell-cta {
+      grid-column: 1; /* spans the full text-card column */
+    }
+    .stage-viewport .controls-wrap .cell-prevnext {
+      grid-column: 2; /* sits under the image */
+    }
+    .stage-viewport .controls-wrap .prevnext {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--gap);
+      height: 100%;
+    }
+  }
+  /* ============================================================
+  CARD base
+  ============================================================ */
+  .stage-viewport .card {
+    position: relative;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--card-bg);
+    color: var(--text);
+    transition: background-color var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+    min-height: 0;
+  }
+  /* image cards — fully OPAQUE so the background glow never touches the photos */
+  .stage-viewport .card.image {
+    background: var(--card-dark);
+  }
+  /* Text cards are slightly translucent so the cursor's BACKGROUND glow shows
+  THROUGH them near the pointer — this is how the nearby cards appear to
+  lighten (as in the original) without any glow being painted on the cards or
+  the images themselves. */
+  .stage-viewport .card.textcard,
+  .stage-viewport .card.cuisine {
+    background: color-mix(in srgb, var(--card-bg) 78%, transparent);
+  }
+  .stage-viewport .card .photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  /* CUT-OUT PRODUCTS ARE NOT PHOTOGRAPHS.
+     `cover` is right for a bedroom — it can lose its edges and still be a
+     bedroom. Applied to a mattress masked out of its background it scaled the
+     product up until it bled past the card on all four sides, slicing off the
+     corners and the `blue` logo: the subject was the first thing cropped.
+     `contain` keeps the whole product in frame, and because these files are
+     transparent the card's own colour fills the rest, so it reads as a product
+     sitting on a surface rather than as a letterboxed photo. The inset gives
+     it the breathing room a product shot needs. */
+  .stage-viewport .card .photo.contain {
+    object-fit: contain;
+    inset: clamp(8px, 2cqw, 22px);
+    width: auto;
+    height: auto;
+  }
+  /* A CUT-OUT HERO IS NOT A PHOTOGRAPH.
+     The hero's title is white over a dark bottom-gradient scrim, which works
+     when the cell is filled edge to edge by a photo. A cut-out product leaves
+     the card's own surface showing, so under the linen theme "Sky" was white
+     type on a cream card — invisible. Here the scrim inherits the card colour
+     instead of black, and the type takes the theme's ink. Scoped to `.cutout`,
+     so the woodworks heroes are untouched. */
+  .stage-viewport .hero.cutout .scrim {
+    background: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--card-bg) 88%, transparent) 0%,
+    transparent 58%
+    );
+  }
+  .stage-viewport .hero.cutout .hero-title {
+    color: var(--text);
+  }
+  .stage-viewport .hero.cutout .hero-sub {
+    color: var(--text);
+    opacity: 0.86;
+  }
+  /* NOTE: the original does NOT zoom images on hover — the hover feedback is the
+  cursor-follow glow (see .card::before). Zoom intentionally removed. */
+  /* subtle bottom gradient for text over photos */
+  .stage-viewport .scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.72) 0%,
+    rgba(0, 0, 0, 0.28) 34%,
+    rgba(0, 0, 0, 0) 60%
+    );
+  }
+  /* ---------- HERO ---------- */
+  /* the hero fills its pushcard frame (which is sized by aspect-ratio on mobile,
+  by flex on desktop) — no own min-height, or it would overflow the frame and
+  clip the title. */
+  .stage-viewport .hero {
+    height: 100%;
+  }
+  @container stage (min-width: 1000px) {
+    .stage-viewport .hero {
+      /* hero fills the tall top block of column 1 */
+      flex: 1 1 auto;
+      /**
+       * THE MIN-HEIGHT THAT USED TO LIVE HERE IS GONE — see .cell-hero below.
+       *
+       * The comment four lines above this rule spelled out the rule it broke:
+       * "no own min-height, or it would overflow the frame and clip the title".
+       * A `min-height: 360px` was added here anyway, and did exactly that. On a
+       * short stage the hero grew past its pushcard frame, the frame clipped
+       * the overflow, and the subtitle under the project name was sliced off at
+       * the card's bottom edge — while the layout below it lost the whole
+       * View details / Previous / Next row.
+       *
+       * Verified against production before touching it: the OLD chrome clipped
+       * here too, so this is pre-existing rather than a cost of the new strips.
+       * The strips took 100px of stage height, which is what made it visible.
+       *
+       * There is no replacement floor. `.cell-hero` is `flex: 1 1 auto`, so it
+       * already claims every pixel column 1 has spare — a floor could only ever
+       * fire when there was no room, which is precisely when honouring it
+       * pushes the View details / Previous / Next row off the bottom edge.
+       * Tried that first; it traded a clipped subtitle for clipped controls.
+       */
+    }
+  }
+  .stage-viewport .hero .photo {
+    position: absolute;
+  }
+  .stage-viewport .hero-copy {
+    position: absolute;
+    left: var(--pad);
+    bottom: 22px;
+    right: var(--pad);
+    z-index: 2;
+  }
+  /*
+    THE PROJECT NAME, over the establishing shot.
+
+    IT WAS clamp(2.4rem, 5cqw, 4.1rem) AND IT CLIPPED. At the ceiling a
+    two-word project name ("Hospitality Fit-Out") set at ~66px is wider than
+    the hero cell on a 1440x900 laptop, so it wrapped to two lines, and the
+    second line ran out of the bottom of the card — the client saw it cut off
+    on a reviewer's machine. This card sits inside a pushcard frame with its
+    own overflow clipping, so type that outgrows the cell does not push the
+    layout, it just disappears.
+
+    The ceiling comes down to 3rem and the growth rate with it (5cqw -> 3.6cqw,
+    so the title stops chasing the container as hard). That leaves the longest
+    name on one line at every desktop width the bento is laid out for, with the
+    subtitle still under it.
+  */
+  .stage-viewport .hero-title {
+    font-family: var(--font-heading, var(--font-poppins)), system-ui, sans-serif;
+    font-weight: 700;
+    font-size: calc(clamp(1.9rem, 3.6cqw, 3rem) * var(--fs-heading, 1));
+    line-height: 1.04;
+    letter-spacing: -0.01em;
+    color: #fff;
+    /* Belt and braces: if a translation is longer than anything measured
+       here, balance the wrap rather than stranding one word on line two. */
+    text-wrap: balance;
+  }
+  .stage-viewport .hero-sub {
+    margin-top: 8px;
+    font-size: calc(clamp(0.95rem, 1.3cqw, 1.15rem) * var(--fs-body, 1));
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.92);
+  }
+  /* ---------- TEXT CARD (intro / explore / stay / cuisine) ---------- */
+  .stage-viewport .textcard {
+    padding: var(--pad);
+    display: flex;
+    flex-direction: column;
+  }
+  @container stage (min-width: 1000px) and (max-height: 800px) {
+    /* tighten padding on short canvases so longer copy fits without clipping */
+    .stage-viewport .textcard {
+      padding: 20px 22px;
+    }
+  }
+  .stage-viewport .textcard .label,
+  .stage-viewport .textcard .headline {
+    color: var(--text);
+  }
+  .stage-viewport .card-label {
+    font-family: var(--font-heading, var(--font-poppins)), system-ui, sans-serif;
+    font-weight: 700;
+    font-size: calc(clamp(1.5rem, 2.3cqw, 2rem) * var(--fs-heading, 1));
+    line-height: 1.05;
+  }
+  .stage-viewport .card-headline {
+    font-family: var(--font-heading, var(--font-poppins)), system-ui, sans-serif;
+    font-weight: 700;
+    font-size: calc(clamp(1.4rem, 2.1cqw, 2.05rem) * var(--fs-heading, 1));
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+  .stage-viewport .card-body {
+    margin-top: 12px;
+    font-size: calc(clamp(0.86rem, 1.05cqw, 1rem) * var(--fs-body, 1));
+    line-height: 1.45;
+    color: var(--subtext);
+    font-weight: 300;
+  }
+  .stage-viewport .card-line {
+    margin-top: 8px;
+    font-size: calc(clamp(0.9rem, 1.15cqw, 1rem) * var(--fs-body, 1));
+    line-height: 1.45;
+    color: var(--subtext);
+    font-weight: 300;
+  }
+  /* ---------- PUSHCARD SIZING (wrappers carry height, not inner cards) ---------- */
+  /* MOBILE sizing — image cells use aspect-ratio so they scale with the column
+  width (matches the original's proportions at any phone size); text cells are
+  content-driven. Ratios measured from the reference (658×1416).
+  Hero spans the full width; the rest live in two ~equal columns. */
+  .stage-viewport .cell-hero {
+    aspect-ratio: 623 / 323; /* full-width hero ≈ 1.93:1 */
+  }
+  /* intro row: paragraph (left) beside a landscape image (right), equal height.
+  The image matches the paragraph card's height (align-items: stretch). */
+  .stage-viewport .introrow {
+    align-items: stretch;
+  }
+  /* on mobile the intro card shows ONLY the paragraph (the original omits the
+  headline here); the headline returns on desktop. */
+  .stage-viewport .introcard .card-headline {
+    display: none;
+  }
+  .stage-viewport .introcard .card-body {
+    margin-top: 0;
+  }
+  .stage-viewport .introrow .cell-intro {
+    min-height: 0; /* the paragraph text drives the row height */
+  }
+  .stage-viewport .introrow .cell-portraitA {
+    min-height: 0;
+  }
+  /* the landscape image in the intro row fills the row height set by the text */
+  .stage-viewport .cell-portraitA .card.image {
+    height: 100%;
+  }
+  /* left masonry column: cabin image is a landscape (wider than tall) */
+  .stage-viewport .cell-blossom {
+    aspect-ratio: 305 / 182; /* ≈ 1.68:1 (measured from the original) */
+  }
+  /* right masonry column: puffin image is nearly square */
+  .stage-viewport .cell-portraitB {
+    aspect-ratio: 305 / 249; /* ≈ 1.22:1 */
+  }
+  /* Cuisine cell height is driven by the mobile flex budget / desktop flex —
+  no intrinsic min-height (it would break the one-viewport fit). */
+  @container stage (min-width: 1000px) {
+    /*
+    * Everything below sizes by PROPORTION of the column height so the whole
+    * grid fits one viewport (buttons always visible, no scroll). flex-basis
+    * percentages set the shares; min-height:0 lets them shrink on short screens.
+    */
+    /* drop the mobile aspect-ratios — desktop sizes by flex/height instead */
+    .stage-viewport .cell-hero,
+    .stage-viewport .cell-blossom,
+    .stage-viewport .cell-portraitB,
+    .stage-viewport .cell-portraitA {
+      aspect-ratio: auto;
+    }
+    /* the intro headline returns on desktop (hidden on mobile) */
+    .stage-viewport .introcard .card-headline {
+      display: block;
+    }
+    .stage-viewport .introcard .card-body {
+      margin-top: 12px;
+    }
+    /* COL 1: hero (grows) — intro row (fixed share) — controls (pinned bottom) */
+    .stage-viewport .cell-hero {
+      /**
+       * `flex: 1 1 auto` with `min-height: 0` is the whole sizing rule for the
+       * hero, and it always was. The cell takes every pixel column 1 has left
+       * after the intro row and the controls, and gives it back on a short
+       * stage instead of pushing the controls off the bottom.
+       *
+       * The `min-height: 360px` that used to sit on `.hero` INSIDE this frame
+       * was not a second opinion about that — it was a floor on a child of a
+       * box that had already been sized, so all it could do was overflow and
+       * get clipped. It is gone; see the note on `.hero` above.
+       */
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+    .stage-viewport .col1 .introrow {
+      flex: 0 0 auto;
+      min-height: 0;
+    }
+    /* intro cells share a stable height so the push frame doesn't resize */
+    .stage-viewport .col1 .introrow .cell-intro,
+    .stage-viewport .col1 .introrow .cell-portraitA {
+      height: clamp(260px, 36cqh, 340px);
+      min-height: 0;
+    }
+    /* COL 2: explore (~30% share) — blossom (grows, biggest) — stay (~17% share).
+    Matches original: Explore is a roomy card, Blossom dominates, Stay is compact. */
+    .stage-viewport .col2 .cell-explore {
+      flex: 0 0 auto;
+      height: clamp(150px, 22cqh, 200px);
+      min-height: 0;
+    }
+    .stage-viewport .col2 .cell-stay {
+      flex: 0 0 auto;
+      height: clamp(120px, 16cqh, 150px);
+      min-height: 0;
+    }
+    .stage-viewport .col2 .cell-blossom {
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+    /* COL 3: portraitB bottom aligns with the hero bottom (~51%) — cuisine fills the rest */
+    .stage-viewport .col3 .cell-portraitB {
+      flex: 0 0 51%;
+      min-height: 0;
+    }
+    .stage-viewport .col3 .cell-cuisine {
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+  }
+  /* CUISINE — colored text card with a photo pinned to its bottom */
+  .stage-viewport .cuisine {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  .stage-viewport .cuisine .cuisine-text {
+    padding: var(--pad);
+    flex: 0 0 auto;
+  }
+  .stage-viewport .cuisine .cuisine-photo {
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+  }
+  .stage-viewport .cuisine .cuisine-photo .photo {
+    position: absolute;
+  }
+  /* ============================================================
+  BUTTONS (CTA + prev/next)
+  ============================================================ */
+  .stage-viewport .btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-radius: var(--btn-radius);
+    padding: 26px 28px;
+    font-weight: 600;
+    font-size: calc(0.82rem * var(--fs-body, 1));
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: background-color 0.3s ease, color 0.3s ease, filter 0.2s ease,
+    transform 0.15s ease;
+    /* The buttons are a deliberate block, not a thin strip — the bar reads as the
+    fourth row of the bento rather than a footer stuck under it. min-height is
+    what actually sets the row height (the label is only ~18px tall), so this is
+    the knob; the mobile block below overrides it, where the vertical budget is
+    tight. */
+    min-height: 84px;
+  }
+  /* the CTA label is plain text now — the WHOLE controls bar slides (see the
+  PushCard wrapping .cell-controls), not the label inside the button. */
+  .stage-viewport .btn:active {
+    transform: scale(0.98);
+  }
+  .stage-viewport .btn.cta {
+    background: linear-gradient(180deg, var(--accent) 0%, var(--accent2) 100%);
+    color: var(--accent-text);
+  }
+  .stage-viewport .btn.cta:hover {
+    filter: brightness(1.06);
+  }
+  .stage-viewport .btn.ghost {
+    background: var(--card-dark);
+    color: var(--text);
+  }
+  /* Previous/Next take on the CTA's accent fill on hover — same color, same
+  label contrast, so the three buttons read as one family. Solid var(--accent)
+  rather than the CTA's gradient: background-image can't transition, and the
+  accent→accent2 gradient is subtle enough that the solid reads identical. */
+  .stage-viewport .btn.ghost:hover {
+    background-color: var(--accent);
+    color: var(--accent-text);
+  }
+  /* loop=off bounds: the dead-end button reads inert and can't be clicked */
+  .stage-viewport .btn:disabled {
+    opacity: 0.45;
+    pointer-events: none;
+  }
+  /* ============================================================
+  DETAIL OVERLAY
+  ============================================================ */
+  .stage-viewport .overlay-root {
+    /* absolute, not fixed: it fills the STAGE (which standalone is the whole
+    viewport — identical to the old fixed behavior). Inside the editor the
+    stage is the canvas, so the overlay previews within it and never covers
+    the panel. (Fixed can't be trusted here anyway: size containment is
+    supposed to contain fixed descendants, but browsers disagree.) */
+    position: absolute;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+  }
+  .stage-viewport .overlay-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(7px);
+  }
+  .stage-viewport .overlay-panel {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    will-change: transform, opacity;
+  }
+  .stage-viewport .overlay-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.04);
+    animation: kenburns 12s ease-out forwards;
+  }
+  @keyframes kenburns {
+    .stage-viewport from {
+      transform: scale(1.04);
+    }
+    .stage-viewport to {
+      transform: scale(1.16);
+    }
+  }
+  .stage-viewport .overlay-scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.55) 0%,
+    rgba(0, 0, 0, 0.2) 45%,
+    rgba(0, 0, 0, 0.35) 100%
+    ),
+    linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 55%);
+  }
+  /* THE OVERLAY MUST FIT THE STAGE IT COVERS.
+     It used to be `height:100%` with `overflow:hidden` at desktop, which is a
+     promise the content could not keep: a three-line title plus five stacked
+     spec cards is taller than a stage that is only ever viewport-height minus
+     the nav and the tab bar. Everything past the fold was simply clipped —
+     the heading cut mid-word, the CTA gone, and the control row (the only
+     visible way out) gone with it.
+
+     Now the panel is a two-row grid whose columns are each allowed to shrink
+     (`min-height: 0` — without it a grid item refuses to go below its content
+     height and overflows anyway) and to scroll INSIDE themselves. Nothing is
+     clipped, the page behind never scrolls, and the exit is always on screen. */
+  .stage-viewport .overlay-inner {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, 1fr);
+    gap: clamp(12px, 2cqw, 28px);
+    padding: clamp(16px, 3cqw, 48px);
+    overflow: hidden;
+  }
+  @container stage (min-width: 1000px) {
+    .stage-viewport .overlay-inner {
+      grid-template-columns: 1fr minmax(340px, 34%);
+      align-items: stretch;
+    }
+  }
+  /* left side: eyebrow + big title + controls */
+  .stage-viewport .overlay-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    order: 2;
+    min-height: 0;
+    overflow: hidden;
+  }
+  @container stage (min-width: 1000px) {
+    .stage-viewport .overlay-left {
+      order: 0;
+      justify-content: flex-end;
+    }
+  }
+  .stage-viewport .overlay-eyebrow {
+    /* Was var(--font-dancing-script) — one of the handoff editor's 13-font
+       catalog, which Stark does not ship. Left as-is it fell through to the
+       browser's generic `cursive` (Apple Chancery / Comic Sans depending on
+       platform) at 25-38px, which is both broken and off-brand: Stark has no
+       script face and the brand personality is "professional, precise,
+       structured". Re-pointed at the display face. */
+    font-family: var(--font-display), sans-serif;
+    font-size: calc(clamp(1.6rem, 3cqw, 2.4rem) * var(--fs-heading, 1));
+    /* Sand, fixed. This line lies on the overlay's photo scrim, which is dark
+       under every theme, so it cannot take --accent: that is sand for the
+       three greens but dark green under linen, where it disappeared. */
+    color: #dbcaad;
+    line-height: 1;
+  }
+  .stage-viewport .overlay-eyebrow.plain {
+    color: #fff;
+  }
+  .stage-viewport .overlay-title {
+    font-family: var(--font-heading, var(--font-poppins)), system-ui, sans-serif;
+    font-weight: 700;
+    /* Ceiling dropped from 5rem to 3.4rem and tied to the stage's HEIGHT as
+       well as its width. At 5rem a title of any real length ran to three lines
+       and ate the column the controls live in; `cqh` means a short stage gets
+       a smaller headline instead of a clipped one. */
+    font-size: calc(clamp(1.8rem, min(4.4cqw, 7cqh), 3.4rem) * var(--fs-heading, 1));
+    line-height: 1.04;
+    letter-spacing: -0.01em;
+    color: #fff;
+    margin-top: 6px;
+    /* Long titles taper rather than shove the controls off the panel. */
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+  .stage-viewport .overlay-controls {
+    display: flex;
+    gap: 12px;
+    margin-top: clamp(12px, 2cqh, 22px);
+    flex: 0 0 auto;
+  }
+  .stage-viewport .octl {
+    width: 62px;
+    height: 56px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--card-dark);
+    color: var(--text);
+    font-size: 1.3rem;
+    transition: background-color 0.2s ease, transform 0.15s ease;
+  }
+  .stage-viewport .octl:hover {
+    background: var(--card-bg);
+  }
+  .stage-viewport .octl:active {
+    transform: scale(0.94);
+  }
+  .stage-viewport .octl.close {
+    background: var(--accent);
+    color: var(--accent-text);
+  }
+  /* right side: info panels.
+     Scrolls INSIDE its own column when a project has more specs than the stage
+     is tall, instead of pushing the layout past the panel's edge. `min-height:
+     0` is what makes that work at all inside a grid item. */
+  .stage-viewport .overlay-right {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(8px, 1.4cqh, 14px);
+    justify-content: flex-start;
+    order: 1;
+    padding-top: 8px;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
+  /* An always-visible dismiss, pinned to the panel's top corner so it survives
+     any amount of content below it. */
+  .stage-viewport .overlay-dismiss {
+    position: absolute;
+    top: clamp(12px, 2cqw, 24px);
+    inset-inline-end: clamp(12px, 2cqw, 24px);
+    z-index: 4;
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    line-height: 1;
+    background: var(--accent);
+    color: var(--accent-text);
+    box-shadow: 0 6px 20px -8px rgba(0, 0, 0, 0.55);
+    transition: transform 0.15s ease, filter 0.2s ease;
+  }
+  .stage-viewport .overlay-dismiss:hover {
+    filter: brightness(1.08);
+  }
+  .stage-viewport .overlay-dismiss:active {
+    transform: scale(0.94);
+  }
+  @container stage (min-width: 1000px) {
+    .stage-viewport .overlay-right {
+      order: 0;
+    }
+  }
+  .stage-viewport .ov-label {
+    font-size: calc(0.78rem * var(--fs-body, 1));
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 600;
+    margin-top: 6px;
+  }
+  .stage-viewport .ov-specs {
+    display: grid;
+    gap: clamp(8px, 1.4cqh, 12px);
+    grid-template-columns: 1fr;
+  }
+  @container stage (min-width: 1000px) {
+    .stage-viewport .ov-specs {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .stage-viewport .ov-card {
+    background: var(--overlay-card);
+    border-radius: 9px;
+    /* Padding tracks the stage's height so a short viewport tightens the cards
+       instead of overflowing the column. */
+    padding: clamp(10px, 1.6cqh, 18px) clamp(12px, 1.6cqw, 20px);
+    backdrop-filter: blur(2px);
+  }
+  /* THEME COLOURS, NOT WHITE. These three rules assumed every stage was dark.
+     The linen theme's cards are cream, so hardcoded white text rendered the
+     whole detail panel invisible — legible only because the photo behind it
+     happened to be dark. Card text follows the card. */
+  .stage-viewport .ov-card .ov-act-title {
+    font-weight: 700;
+    color: var(--text);
+    font-size: calc(1.02rem * var(--fs-body, 1));
+  }
+  .stage-viewport .ov-card .ov-act-desc {
+    color: var(--subtext);
+    font-weight: 300;
+    font-size: calc(0.95rem * var(--fs-body, 1));
+    line-height: 1.4;
+    margin-top: 3px;
+  }
+  .stage-viewport .ov-card.info {
+    color: var(--text);
+    font-weight: 300;
+    line-height: 1.45;
+  }
+  .stage-viewport .ov-cta {
+    margin-top: 6px;
+    background: linear-gradient(
+    180deg,
+    var(--overlay-accent) 0%,
+    var(--accent2) 100%
+    );
+    color: var(--accent-text);
+    border-radius: 9px;
+    padding: 20px;
+    text-align: center;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-size: calc(0.85rem * var(--fs-body, 1));
+    transition: filter 0.2s ease, transform 0.15s ease;
+  }
+  .stage-viewport .ov-cta:hover {
+    filter: brightness(1.06);
+  }
+  .stage-viewport .ov-cta:active {
+    transform: scale(0.99);
+  }
+  /* ============================================================
+  Reduced motion
+  ============================================================ */
+  @media (prefers-reduced-motion: reduce) {
+    .stage-viewport *,
+    .stage-viewport *::before,
+    .stage-viewport *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+    .stage-viewport .overlay-bg {
+      animation: none;
+    }
+  }
+  /* ============================================================
+  MOBILE FIT (placed LAST so it overrides the base card/hero/font rules).
+  The whole slide fits in ONE viewport — no scrolling — with compact type,
+  matching the original's mobile layout:
+  • hero (full width) → intro paragraph + landscape image → controls
+  • then two masonry stacks: Explore/cabin/Stay | puffin/Cuisine
+  ============================================================ */
+  @container stage (max-width: 999px) {
+    /* NOTE: was :root — a container query can't restyle :root (it sits outside
+    the container), so the overrides live on .stage itself. Everything that
+    consumes these vars is inside the stage, so inheritance is identical. */
+    .stage-viewport .stage {
+      /* fractions of the desktop base (12/16, 14/26, 8/10, 5/6) so LIVE-edited
+      values keep the same responsive scaling as the shipped defaults */
+      --gap: calc(var(--gap-base, 16px) * 12 / 16);
+      --pad: calc(var(--pad-base, 26px) * 14 / 26);
+      /* The corner radius is NOT scale-free: the same 16px eats a much bigger
+      fraction of a phone-sized card than of a desktop one, so the identical
+      value that reads as a crisp corner on desktop reads as a pill on a phone.
+      Scale it down with the cards. Every card/image/button radius derives from
+      these two vars, so this covers the whole grid. */
+      --radius: calc(var(--radius-base, 10px) * 8 / 10);
+      --btn-radius: calc(var(--btn-radius-base, 6px) * 5 / 6);
+    }
+    /* — vertical budget: the four bands share exactly one viewport (dvh) — */
+    .stage-viewport .grid {
+      height: 100%;
+    }
+    /* col1 (hero + intro + controls) is the top band; the masonry fills the rest */
+    .stage-viewport .grid > .col1 {
+      flex: 0 0 auto;
+      min-height: 0;
+    }
+    .stage-viewport .grid > .masonry {
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+    .stage-viewport .col1 {
+      display: flex;
+      flex-direction: column;
+      gap: var(--gap);
+    }
+    .stage-viewport .cell-hero {
+      aspect-ratio: auto;
+      flex: 0 0 auto;
+      height: 21cqh;
+      min-height: 0;
+    }
+    .stage-viewport .col1 .introrow {
+      flex: 0 0 auto;
+      height: 22cqh;
+      min-height: 0;
+      align-items: stretch;
+    }
+    .stage-viewport .col1 .introrow .cell-intro,
+    .stage-viewport .col1 .introrow .cell-portraitA {
+      height: 100%;
+      min-height: 0;
+    }
+    .stage-viewport .introcard {
+      overflow: hidden; /* clip the paragraph to its box, no scroll */
+    }
+    .stage-viewport .cell-controls {
+      flex: 0 0 auto;
+    }
+    /* each masonry column shares its band among its cards */
+    .stage-viewport .masonry .col {
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+    .stage-viewport .col2 .cell-explore,
+    .stage-viewport .col2 .cell-stay {
+      flex: 1 1 0;
+      min-height: 0;
+      overflow: hidden;
+    }
+    .stage-viewport .col2 .cell-blossom {
+      aspect-ratio: auto;
+      flex: 1.2 1 0;
+      min-height: 0;
+    }
+    .stage-viewport .col3 .cell-portraitB {
+      aspect-ratio: auto;
+      flex: 1 1 0;
+      min-height: 0;
+    }
+    .stage-viewport .col3 .cell-cuisine {
+      flex: 1.6 1 0;
+      min-height: 0;
+    }
+    /* — compact type — */
+    .stage-viewport .hero-title {
+      font-size: calc(clamp(1.15rem, 5.2cqw, 1.55rem) * var(--fs-heading, 1));
+      line-height: 1;
+    }
+    .stage-viewport .hero-sub {
+      font-size: calc(clamp(0.56rem, 2.4cqw, 0.68rem) * var(--fs-body, 1));
+      margin-top: 3px;
+    }
+    .stage-viewport .hero-copy {
+      bottom: 12px;
+      left: 14px;
+      right: 14px;
+    }
+    .stage-viewport .card-label {
+      font-size: calc(clamp(0.78rem, 3.4cqw, 0.95rem) * var(--fs-heading, 1));
+      line-height: 1.05;
+    }
+    .stage-viewport .card-body,
+    .stage-viewport .card-line {
+      font-size: calc(clamp(0.58rem, 2.5cqw, 0.7rem) * var(--fs-body, 1));
+      line-height: 1.3;
+      margin-top: 0;
+    }
+    .stage-viewport .card-line {
+      margin-top: 3px;
+    }
+    .stage-viewport .btn {
+      font-size: calc(clamp(0.56rem, 2.5cqw, 0.7rem) * var(--fs-body, 1));
+      letter-spacing: 0.04em;
+      padding: 10px 6px;
+      min-height: 0;
+    }
+    /* PREVIOUS / NEXT stay on one line; only the multi-word CTA may wrap */
+    .stage-viewport .prevnext .btn {
+      white-space: nowrap;
+    }
+    .stage-viewport .textcard {
+      padding: var(--pad);
+    }
+    .stage-viewport .cuisine .cuisine-text {
+      padding: var(--pad);
+    }
+    /* the detail overlay's own boxes don't run off --radius; bring them down too,
+    so the whole app is consistently less rounded on a phone */
+    .stage-viewport .octl {
+      border-radius: 7px;
+    }
+    .stage-viewport .ov-card,
+    .stage-viewport .ov-cta {
+      border-radius: 8px;
+    }
+  }
+  .stage-viewport .stage-empty {
+    display: grid;
+    place-items: center;
+    height: 100%;
+    padding: 24px;
+    text-align: center;
+    color: var(--subtext, #bac4bf);
+    font-size: 14px;
+  }
+}
+
+/* =============================================================================
+   THE THREE TEXT CELLS ARE PICTURES NOW
+   =============================================================================
+
+   Appended as a second `@layer gallery` block rather than edited in place: the
+   rules above are the handoff's, kept diffable against it, and everything here
+   is Stark's answer to the client review ("if there's only a text container
+   replace it with a picture that's the same size"). Same layer, later source
+   order, so these win over the base rules they correct.
+   ========================================================================== */
+@layer gallery {
+  /* --------------------------------------------------------------------------
+     1 · MOBILE HEIGHT
+     Text cells used to be CONTENT-DRIVEN: the paragraph set the intro row's
+     height, and the label + line set explore/stay/cuisine. A photograph is
+     `position: absolute; inset: 0`, so it contributes NO height at all — every
+     one of these cells collapsed to zero on a phone the moment its copy left.
+     Desktop was unaffected (it sizes by flex and cqh below 1000px), which is
+     exactly the kind of bug that ships.
+
+     Ratios follow the cells that were always pictures: 305/249 for the squarish
+     pair, a taller box for cuisine, which held the column's long card.
+     -------------------------------------------------------------------------- */
+  .stage-viewport .introrow .cell-intro {
+    aspect-ratio: 305 / 249;
+    min-height: 0;
+  }
+  .stage-viewport .cell-explore,
+  .stage-viewport .cell-stay {
+    aspect-ratio: 305 / 208;
+  }
+  .stage-viewport .cell-cuisine {
+    aspect-ratio: 305 / 348;
+  }
+  @container stage (min-width: 1000px) {
+    /* desktop sizes by flex share, as it always did — drop them again */
+    .stage-viewport .introrow .cell-intro,
+    .stage-viewport .cell-explore,
+    .stage-viewport .cell-stay,
+    .stage-viewport .cell-cuisine {
+      aspect-ratio: auto;
+    }
+  }
+
+  /* --------------------------------------------------------------------------
+     2 · THE CUISINE CELL IS A PLAIN PICTURE
+     It was a hybrid — a translucent coloured card with copy on top and a photo
+     pinned beneath — so it carried `.card.cuisine`'s 78% mix and a column flex
+     layout for its two halves. Both now sit under a full-bleed photograph: the
+     mix let the cursor glow bleed through the image (the one thing `.card.image`
+     is opaque to prevent), and the flex layout had no children left to lay out.
+     -------------------------------------------------------------------------- */
+  .stage-viewport .card.image.cuisine {
+    display: block;
+    background: var(--card-dark);
+  }
+
+  /* --------------------------------------------------------------------------
+     3 · THE CONTROL BAR LOST ITS LEFT HALF
+     `.controls-wrap` is a two-column grid: DISCOVER MORE filled column 1 and
+     PREVIOUS | NEXT split column 2. The review removed the CTA ("remove the view
+     details button"), which left column 1 empty — a hole the width of the intro
+     card, directly under it, reading as a card that failed to load.
+
+     So the pair spans the whole bar instead. The row keeps its height and its
+     alignment with the grid above, and the two buttons simply get wider, which
+     is the least surprising thing that can happen when a third button leaves.
+     -------------------------------------------------------------------------- */
+  .stage-viewport .controls-wrap--nav {
+    grid-template-columns: 1fr;
+  }
+  .stage-viewport .controls-wrap--nav .cell-prevnext {
+    grid-column: 1;
+  }
+
+  /* --------------------------------------------------------------------------
+     4 · EVERY CELL IS A BUTTON NOW
+     `.card` was a div. As a <button> it inherits the UA's centred text, its own
+     font and a border, none of which the bento ever accounted for. `display`
+     stays whatever the cell's own rule sets it to.
+     -------------------------------------------------------------------------- */
+  .stage-viewport button.card {
+    appearance: none;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    color: inherit;
+    text-align: inherit;
+    width: 100%;
+    cursor: pointer;
+  }
+  /* The picture is the only thing that moves; the frame stays put. `.hoverable`
+     already carries the original's lift, so this is only the focus affordance —
+     a keyboard user tabbing the grid must be able to see where they are. */
+  .stage-viewport button.card:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+}

@@ -1,53 +1,64 @@
 "use client";
 
-import { useCallback, useEffect, useId, useRef, useState } from "react";
-import Image from "next/image";
-import { motion } from "framer-motion";
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { Link } from "@/i18n/navigation";
 import { MarkGlyph } from "@/components/brand/geometry";
-import { useMotionConfig } from "@/components/motion/useMotionConfig";
-import { isCutout } from "@/components/mattresses/assets";
 import { Lightbox } from "./Lightbox";
+import PushSlider from "./PushSlider";
+import { slidesForSubs } from "@/lib/gallery/toSlide";
 import type { DivisionId, GalleryImage, SubCategoryId } from "@/lib/gallery/images";
 
 export type ShellSub = { id: SubCategoryId; label: string };
 export type ShellDivision = { id: DivisionId; label: string; subs: ShellSub[] };
 
 /**
- * The gallery: two levels of tabs over a grid of pictures, and nothing else.
+ * The gallery: two levels of tabs over the bento stage.
  *
  * ===========================================================================
- * WHAT THE REVIEW CHANGED, AND WHY IT IS A REBUILD
+ * WHAT THE REVIEW CHANGED — AND, JUST AS IMPORTANTLY, WHAT IT DID NOT
  * ===========================================================================
  *
- * This was a three-level browser (division → product type → project) over a
- * bento slide stage with a push-transition engine and a ten-field detail
- * overlay. The client's notes removed the reason for every part of it:
+ * This was a THREE-level browser (division → product type → project) over the
+ * bento stage. The review changed what the stage holds and how you move through
+ * it. It did not ask for a different stage:
  *
- *   "remove all text and put pictures"          → no headline, paragraph, spec
- *                                                 lines or overlay copy
- *   "if there's only a text container replace    → the text cards in the bento
- *    it with a picture that's the same size"       layout have no equivalent
- *   "remove the view details button"             → no overlay to open
+ *   "remove all text and put pictures"          → the cards lose their copy
+ *   "if there's only a text container replace    → the three text cells become
+ *    it with a picture that's the same size"       picture cells, same slots
+ *   "remove the view details button"             → the CTA and its overlay go
  *   "only two levels of tabs not 3"              → the project level goes
- *   "next and previous will move us through      → paging is sub-categories,
- *    the subtab"                                    not projects
- *   "when I click on a picture it should         → a lightbox, which the stage
- *    become bigger to preview it"                   had no concept of
+ *   "next and previous will move us through      → Prev/Next page sub-tabs
+ *    the subtab"                                    instead of projects
+ *   "when I click on a picture it should         → the lightbox, which the
+ *    become bigger to preview it"                   stage had no concept of
+ *
+ * ⚠ A PREVIOUS PASS READ THIS AS "REPLACE THE STAGE" AND WAS WRONG. It swapped
+ * the bento for a flat uniform tile grid, which threw away the layout, the push
+ * transition between slides and the Previous/Next buttons — none of which
+ * anybody asked to remove. The client's correction was explicit: keep the grid
+ * design exactly as it was, keep the buttons, keep the transition. So the stage
+ * below is the original engine, with pictures in the cells that used to hold
+ * copy. Do not "simplify" it away again.
  *
  * ===========================================================================
- * STATE IS TWO VARIABLES, AND SELECTION ONLY EVER TRAVELS DOWN
+ * STATE IS THREE VARIABLES, AND SELECTION ONLY EVER TRAVELS DOWN
  * ===========================================================================
  *
  *   division   always set
  *   subId      always set, always within the active division
+ *   lightbox   an index into the ACTIVE sub-category's pictures, or null
  *
  * Picking a division resets the sub-category, because a division that kept the
- * old one would leave the grid holding images from a sub-category it does not
- * contain. The grid is KEYED by the sub-category so an open lightbox index can
+ * old one would leave the stage holding pictures from a sub-category it does
+ * not contain. Every selection change closes the lightbox, so an open index can
  * never outlive the array it indexes — the three-level version crashed the
- * route exactly this way before it was keyed, and the failure mode survives
- * the rebuild even though the level that caused it did not.
+ * route exactly this way, and the failure mode survives the rework even though
+ * the level that caused it did not.
+ *
+ * THE STAGE SHOWS EIGHT, THE LIGHTBOX SHOWS ALL OF THEM. The bento has eight
+ * slots and blue alone resolves to seventy-five pictures. Clicking any tile
+ * opens the full list at that tile's index, so the grid is the way in rather
+ * than the whole of it.
  */
 export function GalleryShell({
   divisions,
@@ -77,7 +88,6 @@ export function GalleryShell({
   const [division, setDivision] = useState<DivisionId>(initialDivision);
   const [subId, setSubId] = useState<SubCategoryId>(initialSub);
   const [lightbox, setLightbox] = useState<number | null>(null);
-  const { reduce } = useMotionConfig();
   const uid = useId();
   const gridId = `${uid}-grid`;
 
@@ -85,6 +95,32 @@ export function GalleryShell({
   const activeSub =
     activeDivision.subs.find((s) => s.id === subId) ?? activeDivision.subs[0];
   const images = imagesBySub[activeSub.id] ?? [];
+
+  /**
+   * One slide per sub-category of the active division.
+   *
+   * MEMOISED ON THE DIVISION, not rebuilt every render: `PushSlider` holds the
+   * array in a `useMemo` dependency and diffs `slides` to decide whether the
+   * index is still valid. A fresh array identity on every keystroke of parent
+   * state would churn that and can re-enter the bounds clamp mid-transition.
+   */
+  const slides = useMemo(() => {
+    /*
+      THE SUB-CATEGORY'S OWN LABEL IS THE PICTURES' ACCESSIBLE NAME.
+
+      "Interior & Exterior Cladding" is already localised, already on screen as
+      the selected tab, and already the most accurate thing anyone has written
+      about what is in these frames. Inventing eight per-picture descriptions
+      would mean either writing captions the client did not supply or, worse,
+      asserting to exactly the readers who cannot check that a placeholder is a
+      photograph of the factory's own cladding.
+    */
+    const names = Object.fromEntries(activeDivision.subs.map((s) => [s.id, s.label]));
+    return slidesForSubs(
+      activeDivision.subs.map((s) => s.id),
+      names,
+    );
+  }, [activeDivision]);
 
   /**
    * Remember which tile opened the lightbox, so focus can go back to it.
@@ -130,26 +166,19 @@ export function GalleryShell({
   }, []);
 
   /**
-   * PREV / NEXT PAGE THE SUB-CATEGORIES, which is what the client asked for
-   * ("the next and previous will move us through the subtab"). They wrap, and
-   * they wrap ACROSS divisions — running off the end of Woodworks' eight lands
-   * on blue rather than dead-ending, so the arrows are a way to see everything
-   * rather than a way to reach the end of one list.
+   * ⚠ THE SUB-STRIP'S OWN CHEVRONS WERE HERE AND WERE REMOVED.
+   *
+   * They paged the sub-categories across division boundaries. The stage's own
+   * PREVIOUS / NEXT buttons are what the client meant by "the next and previous
+   * will move us through the subtab", and they were the ones asked for back by
+   * name — so two pagers now sat within 200px of each other, wrapping over
+   * different ranges (the chevrons across all thirteen sub-categories, the
+   * buttons around the active division's own). Two controls that look
+   * equivalent and are not is worse than one.
+   *
+   * The buttons in the bento win because they are the design; the chevrons were
+   * scaffolding added when the bento was gone.
    */
-  const flatSubs = divisions.flatMap((d) => d.subs.map((s) => ({ ...s, division: d.id })));
-  const flatIndex = flatSubs.findIndex((s) => s.id === activeSub.id);
-
-  const stepSub = useCallback(
-    (delta: number) => {
-      const next = flatSubs[(flatIndex + delta + flatSubs.length) % flatSubs.length];
-      if (!next) return;
-      setDivision(next.division);
-      setSubId(next.id);
-      setLightbox(null);
-    },
-    [flatSubs, flatIndex],
-  );
-
   const closeLightbox = useCallback(() => {
     setLightbox(null);
     openerRef.current?.focus();
@@ -259,23 +288,6 @@ export function GalleryShell({
 
       {/* ---------- level 2: what the division makes ---------- */}
       <div className="gl-strip gl-strip--subs">
-        <button
-          type="button"
-          className="gl-step"
-          onClick={() => stepSub(-1)}
-          aria-label={labels.prev}
-        >
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden>
-            <path
-              d="M15 5l-7 7 7 7"
-              stroke="currentColor"
-              strokeWidth="2.2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </button>
-
         <div
           ref={subsRef}
           className="gl-subs"
@@ -307,69 +319,50 @@ export function GalleryShell({
             </button>
           ))}
         </div>
-
-        <button
-          type="button"
-          className="gl-step"
-          onClick={() => stepSub(1)}
-          aria-label={labels.next}
-        >
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden>
-            <path
-              d="M9 5l7 7-7 7"
-              stroke="currentColor"
-              strokeWidth="2.2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </button>
       </div>
 
-      {/* ---------- the pictures ---------- */}
+      {/* ---------- the stage ---------- */}
       <div
+        className="gl-stage"
         id={gridId}
         role="tabpanel"
-        aria-label={activeSub.label}
-        className="gl-grid-scroll"
-        /* KEYED BY SUB-CATEGORY. Remounting on every switch is what guarantees
-           no lightbox index, scroll offset or in-flight layout animation
-           outlives the array it belongs to. */
-        key={activeSub.id}
+        aria-label={`${activeDivision.label}, ${activeSub.label}`}
       >
-        {images.length === 0 ? (
-          <p className="gl-empty">{labels.empty}</p>
-        ) : (
-          <ul className="gl-grid">
-            {images.map((img, i) => (
-              <li key={img.src} className="gl-tile">
-                <button
-                  type="button"
-                  className="gl-tile-button"
-                  onClick={(e) => {
-                    openerRef.current = e.currentTarget;
-                    setLightbox(i);
-                  }}
-                >
-                  <span className="sr-only">{alts[img.altKey] ?? ""}</span>
-                  <motion.span
-                    // Paired with the lightbox figure — this is the expansion.
-                    layoutId={reduce ? undefined : `gl-${img.src}`}
-                    className="gl-tile-frame"
-                  >
-                    <Image
-                      src={img.src}
-                      alt=""
-                      fill
-                      sizes="(max-width: 700px) 50vw, (max-width: 1100px) 33vw, 25vw"
-                      className={isCutout(img.src) ? "object-contain" : "object-cover"}
-                    />
-                  </motion.span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
+        {/* stage-viewport = the design's query container. It must have a
+            definite size or `container: stage / size` never resolves and every
+            cqw/cqh inside collapses. */}
+        <div className="stage-viewport">
+          {/*
+            KEYED BY THE DIVISION, AND ONLY THE DIVISION.
+
+            It used to be `${division}:${sub}` because a slide was a PROJECT and
+            the slide list belonged to the sub-category — so moving between two
+            sub-categories handed the slider a different array while it held an
+            index into the old one, and it had to remount to stay honest.
+
+            A slide is a sub-category now, so the array belongs to the DIVISION.
+            Keeping the sub-category in this key would remount the slider on
+            every Previous / Next — which is precisely the transition the client
+            asked to have back, destroyed by its own guard. Changing division
+            still swaps the array wholesale, so that half of the key stays.
+
+            Within a division, `activeId` moves the selection and `PushSlider`
+            derives its index from it during render.
+          */}
+          <PushSlider
+            key={division}
+            slides={slides}
+            activeId={activeSub.id}
+            onActiveChange={(id) => selectSub(id as SubCategoryId)}
+            emptyLabel={labels.empty}
+            labels={{ prev: labels.prev, next: labels.next }}
+            paused={lightbox !== null}
+            onOpen={(index, el) => {
+              openerRef.current = el;
+              setLightbox(index);
+            }}
+          />
+        </div>
       </div>
 
       <Lightbox
