@@ -30,7 +30,6 @@ export default function SlideGrid({
   controls,
   reverse = false,
   onOpen,
-  reduce,
 }: {
   slide: Slide;
   controls: React.ReactNode;
@@ -38,7 +37,6 @@ export default function SlideGrid({
   reverse?: boolean;
   /** Opens the lightbox at the given index within the sub-category. */
   onOpen?: (index: number, el: HTMLButtonElement) => void;
-  reduce?: boolean;
 }) {
   const key = slide.id;
   // Per-card push direction. The slide's palette rides each moving layer
@@ -76,7 +74,6 @@ export default function SlideGrid({
       src={src}
       alt={slide.alt}
       className={className}
-      reduce={reduce}
       onOpen={(el) => onOpen?.(i, el)}
     />
   );

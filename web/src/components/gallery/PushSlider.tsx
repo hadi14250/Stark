@@ -391,7 +391,6 @@ export default function PushSlider({
       slide={active}
       reverse={legacyReverse}
       onOpen={onOpen}
-      reduce={reduced}
       controls={
         <SliderControls
           slide={active}

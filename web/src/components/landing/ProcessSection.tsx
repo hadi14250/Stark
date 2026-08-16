@@ -22,9 +22,9 @@ type Step = { title: string; body: string };
 /**
  * "Our Process" — a pinned, scroll-scrubbed chapter.
  *
- * The section holds the viewport for six screens' worth of scroll while the
+ * The section holds the viewport for five screens' worth of scroll while the
  * mark is DRAWN and the highlight walks down a permanently-visible list of the
- * six steps. Every piece of motion is SCRUBBED to scroll position rather than
+ * five steps. Every piece of motion is SCRUBBED to scroll position rather than
  * triggered, so it responds continuously to the wheel instead of firing once
  * and going still.
  *
@@ -40,8 +40,10 @@ type Step = { title: string; body: string };
  * that handoff; several of them look arbitrary and are not.
  *
  * WHAT SURVIVED UNCHANGED, because it is the part the client asked to keep:
- * the section pins for six steps, one part of the mark completes per step, and
- * the core lands last. `STEP_PARTS` and `stepIndexAt` are untouched.
+ * the section pins for one screen per step, the mark completes as the list
+ * does, and the core lands last. `stepIndexAt` is untouched; `STEP_PARTS` now
+ * groups its parts by step, because the chain is five steps and the mark is six
+ * parts (see STEP_PARTS).
  *
  * WHAT CHANGED:
  *
@@ -58,7 +60,7 @@ type Step = { title: string; body: string };
  *   - THE LIST BECAME A RAIL: a hairline track, a sand fill that grows
  *     CONTINUOUSLY with scroll, and a marker that glides between titles. The
  *     fill is the important one — it is the only element in the section that
- *     reports progress smoothly rather than in six jumps, so it is what tells
+ *     reports progress smoothly rather than in five jumps, so it is what tells
  *     you the wheel is still connected to something between steps.
  *   - TITLES INK IN behind a clip-path wipe instead of crossfading, and
  *     inactive ones are solid ink at 26% instead of hollow stroked type. See
@@ -78,40 +80,45 @@ type Step = { title: string; body: string };
 /* ------------------------------------------------------------------ */
 
 /**
- * Which part of the mark each step completes.
+ * Which parts of the mark each step completes. ONE GROUP PER STEP.
  *
- * SIX STEPS, SIX PARTS, ONE-TO-ONE. The four-step version needed a separate
- * `CLOSING_PARTS` pair, because four steps could not consume six parts:
- * `#lg-b5` and `#lg-core` had to land together, two parts arriving on one step
- * because the arithmetic demanded it rather than because anything happened
- * there.
+ * FIVE STEPS, SIX PARTS, and the last step closes with two of them. The client
+ * removed Value Engineering from the chain (2026-08-16) and said exactly how the
+ * mark should absorb it: "the last step will form not only the last step of the
+ * logo (the pentagon), it will also form and animate the 5th logo part."
  *
- * The client's own chain has exactly six stages, and the brand book (p.8) has
- * exactly five blades closing around a core. So every step completes precisely
- * one part, and the core — the moment the parts become a whole — lands on
- * Delivery & Installation, which is where the thing actually becomes whole.
+ * ⚠ THE SHAPE IS A LIST OF GROUPS, NOT A SEPARATE `CLOSING_PARTS` ARRAY. The old
+ * four-step version had one, fired at a hard-coded scroll position beside the
+ * general mapping, and it is the thing the six-step rewrite was pleased to
+ * delete. A group expresses the same fact inside the one structure: a step owns
+ * the parts it draws, however many that is, and `partWindow` splits its scroll
+ * window between them. Add a step back and `#lg-b5` moves into a group of its
+ * own — nothing else in this file changes.
+ *
+ * The brand book (p.8) has five blades closing around a core, and the core — the
+ * moment the parts become a whole — still lands last, on Delivery & Installation,
+ * which is where the thing actually becomes whole.
  */
 export const STEP_PARTS = [
-  "#lg-b1",
-  "#lg-b2",
-  "#lg-b3",
-  "#lg-b4",
-  "#lg-b5",
-  "#lg-core",
+  ["#lg-b1"],
+  ["#lg-b2"],
+  ["#lg-b3"],
+  ["#lg-b4"],
+  ["#lg-b5", "#lg-core"],
 ] as const;
 
 /**
  * Which step a scroll progress of `p` (0-1) lands on.
  *
- * Pure and exported because the clamp is the whole thing: `Math.floor(1 * 6)`
- * is 6, and a scroll that reaches the very end of the track therefore indexes
- * one past the last step. Unclamped, `steps[6]` is undefined and the copy
+ * Pure and exported because the clamp is the whole thing: `Math.floor(1 * 5)`
+ * is 5, and a scroll that reaches the very end of the track therefore indexes
+ * one past the last step. Unclamped, `steps[5]` is undefined and the copy
  * column renders blank at exactly the moment the reader finishes the section —
  * a bug that only appears at the bottom of the scrub, which is the hardest
  * place to catch by looking.
  *
- * `count`-generic on purpose, which is why going from four steps to six needed
- * no change here at all.
+ * `count`-generic on purpose, which is why four steps, then six, then five have
+ * all needed no change here at all.
  */
 export function stepIndexAt(p: number, count: number): number {
   return Math.min(count - 1, Math.max(0, Math.floor(p * count)));
@@ -138,6 +145,27 @@ const clamp01 = (n: number) => (n < 0 ? 0 : n > 1 ? 1 : n);
  */
 function windowFor(i: number, count: number) {
   return { w0: i / count + 0.008, w1: (i + 0.88) / count };
+}
+
+/**
+ * The window for part `k` of the `n` parts step `i` draws.
+ *
+ * AT n = 1 THIS IS `windowFor` EXACTLY — stride is span/1.5 and the single part
+ * runs 1.5 strides, so it spans w0 to w1 unchanged. Steps 01-04 therefore scrub
+ * byte-for-byte as they did when every step owned one part, and the only step
+ * whose timing is new is the one that gained a second part.
+ *
+ * At n = 2 the fifth blade traces over the first 60% of the last step and the
+ * core starts at 40% and lands on w1. They OVERLAP BY A FIFTH on purpose: the
+ * core closing strictly after the blade lifted reads as two separate events,
+ * and the point of putting them on one step is that they are one gesture. The
+ * mark still completes at p = 0.976 — whole just before the section releases the
+ * page, which is the property `windowFor`'s 0.88 exists to protect.
+ */
+function partWindow(i: number, count: number, k: number, n: number) {
+  const { w0, w1 } = windowFor(i, count);
+  const stride = (w1 - w0) / (n + 0.5);
+  return { w0: w0 + k * stride, w1: w0 + k * stride + stride * 1.5 };
 }
 
 /**
@@ -204,8 +232,8 @@ export function ProcessSection() {
       <div
         ref={trackRef}
         // Under reduced motion the track collapses to its content: there is no
-        // scrub to perform, so holding the viewport for six screens would be
-        // six screens of a section that never moves.
+        // scrub to perform, so holding the viewport for five screens would be
+        // five screens of a section that never moves.
         //
         // `--process-step` is a token because it differs by breakpoint AND by
         // unit — 52svh on a phone, 58vh on a desktop. See tokens.css.
@@ -304,11 +332,11 @@ export function ProcessSection() {
 /* ------------------------------------------------------------------ */
 
 /**
- * `02 / 06` and the current step's name, under the mark.
+ * `02 / 05` and the current step's name, under the mark.
  *
- * ARIA-HIDDEN, DELIBERATELY. Every one of these six titles is already in the
+ * ARIA-HIDDEN, DELIBERATELY. Every one of these five titles is already in the
  * list beside it, in a real `<ol>`, announced once. A live region repeating
- * whichever one is current would read the same six strings a second time, in an
+ * whichever one is current would read the same five strings a second time, in an
  * order driven by scroll position — which is noise to a screen reader and
  * useless to anyone who cannot perceive the scrub in the first place.
  *
@@ -364,11 +392,11 @@ function Readout({
 }
 
 /* ------------------------------------------------------------------ */
-/* The step index — all six steps, always visible                       */
+/* The step index — all five steps, always visible                      */
 /* ------------------------------------------------------------------ */
 
 /**
- * The six steps as a permanent list, with the current one inked in.
+ * The five steps as a permanent list, with the current one inked in.
  *
  * WHY THE WHOLE LIST IS ON SCREEN. An earlier version showed ONE step at a
  * time, sliding through a masked slot with a 210px numeral behind it and a
@@ -425,7 +453,7 @@ function StepIndex({
   /**
    * The rail fill: the ONE element in the section that moves continuously.
    *
-   * Everything else advances in six jumps, so between steps there is nothing to
+   * Everything else advances in five jumps, so between steps there is nothing to
    * confirm the wheel is still attached to anything. This is what fills that
    * gap, and it is why it is scrubbed off raw progress rather than off `index`.
    */
@@ -459,7 +487,7 @@ function StepIndex({
   /**
    * `index` is a real dependency rather than a ref read during render, which
    * costs nothing here: `useAnimationFrame` re-registers whenever the callback
-   * identity changes, and the callback changes six times in a section — once
+   * identity changes, and the callback changes five times in a section — once
    * per step — not once per frame. A ref would have been a lint error and a
    * frame of staleness in exchange for nothing.
    */
@@ -524,7 +552,7 @@ function StepIndex({
         to point at: the scrub never advances, so `index` stays 0 forever, and a
         bar parked on step one would state something false about where the
         reader is. Withheld entirely — every title is at full ink in that mode,
-        which says "all six, all readable" rather than "you are here".
+        which says "all five, all readable" rather than "you are here".
       */}
       {!reduce && (
         <motion.span
@@ -568,10 +596,10 @@ function StepRow({
    *
    * Not a nicety — an earlier version rendered the non-current steps at
    * `opacity: 0`, and under reduced motion the scrub never advances, so the
-   * index stayed at 0 forever and five sixths of the section's copy was
+   * index stayed at 0 forever and most of the section's copy was
    * permanently invisible. A preference for less motion is not a request for
    * less content. With no scrub to perform this degrades to what it should
-   * always have been: a plain, complete, six-item list.
+   * always have been: a plain, complete, five-item list.
    */
   const open = reduce || active;
 
@@ -621,7 +649,7 @@ function StepRow({
 
       So the rows render plainly and are visible always. That is the one part of
       the design's choreography this stage cannot support, and a missing
-      entrance is a fair price for six titles that are actually on screen.
+      entrance is a fair price for five titles that are actually on screen.
   */
   return (
     <li data-step-row className="relative">
@@ -692,7 +720,7 @@ function StepRow({
         copy wraps to.
 
         DELIBERATELY LEFT IN THE ACCESSIBILITY TREE when collapsed. A screen
-        reader user cannot perceive a scroll scrub at all, so gating five sixths
+        reader user cannot perceive a scroll scrub at all, so gating four fifths
         of the copy behind one would make the section unreadable to them;
         leaving it exposed means they get the whole process in one pass. There
         is nothing focusable inside, so no keyboard trap comes with that.
@@ -748,7 +776,7 @@ function StepRow({
  * and two full screens from any lockup.
  *
  * SIZED OFF `svh` AS WELL AS `vw`. On a phone the mark shares a fixed-height
- * pinned stage with the heading, the readout and six steps, so a purely
+ * pinned stage with the heading, the readout and five steps, so a purely
  * width-derived size pushes the last step off the bottom of a short screen.
  * Taking the min of a viewport-width, a viewport-height and an absolute ceiling
  * means it shrinks on whichever axis is actually scarce.
@@ -841,16 +869,17 @@ function AssemblingMark({
             strokeDasharray: "1.4 2",
           }}
         />
-        {STEP_PARTS.map((href, i) => (
-          <MarkPart
-            key={href}
-            href={href}
-            progress={progress}
-            i={i}
-            count={stepCount}
-            reduce={reduce}
-          />
-        ))}
+        {STEP_PARTS.map((group, i) =>
+          group.map((href, k) => (
+            <MarkPart
+              key={href}
+              href={href}
+              progress={progress}
+              window={partWindow(i, stepCount, k, group.length)}
+              reduce={reduce}
+            />
+          )),
+        )}
       </svg>
     </div>
   );
@@ -859,18 +888,15 @@ function AssemblingMark({
 function MarkPart({
   href,
   progress,
-  i,
-  count,
+  window: { w0, w1 },
   reduce,
 }: {
   href: string;
   progress: MotionValue<number>;
-  i: number;
-  count: number;
+  /** Resolved by `partWindow` — this part's own slice of the scrub. */
+  window: { w0: number; w1: number };
   reduce: boolean;
 }) {
-  const { w0, w1 } = windowFor(i, count);
-
   // The outline LEADS and the ink follows into it: the trace completes at 62%
   // of the part's window, the fill starts at 52% and finishes with it. They
   // overlap by ten points on purpose — the ink arriving strictly after the pen

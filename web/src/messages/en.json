@@ -364,7 +364,7 @@
     "process": {
       "eyebrow": "How we work",
       "heading": "Our Process",
-      "sub": "From the first drawing to the installed room, the same six steps, inside one company.",
+      "sub": "From the first drawing to the installed room, the same five steps, inside one company.",
       "steps": [
         {
           "title": "Design",
@@ -373,10 +373,6 @@
         {
           "title": "Engineering",
           "body": "Shop drawings and technical detail: the design resolved into parts, fixings and tolerances a machine can run."
-        },
-        {
-          "title": "Value Engineering",
-          "body": "Alternatives costed against the specification, so savings come out of the method and not out of the approved finish."
         },
         {
           "title": "Manufacturing",
@@ -406,7 +402,7 @@
         },
         {
           "title": "Made to measure",
-          "body": "Every piece is drawn for the room it will stand in, and built to those dimensions. The furniture fits the space, not the other way round."
+          "body": "Every piece is built to the room's exact measurements, not adapted from a standard size."
         },
         {
           "title": "One quality standard",

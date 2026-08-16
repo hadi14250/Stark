@@ -368,7 +368,7 @@ disagree:
 | `200+` specialists | 6 | Unchanged |
 | `3` mega-projects a year, SAR 100M annual value | 6 | **Was 2.** The SAR value is available and not yet printed |
 | `500+` projects completed | 6 | New fifth stat |
-| Six-step process | 6 | Design, Engineering, Value Engineering, Manufacturing, Quality Assurance, Delivery & Installation |
+| Six-step process | 6 | Design, Engineering, Value Engineering, Manufacturing, Quality Assurance, Delivery & Installation. ⚠ **The site now shows FIVE** — the client deleted Value Engineering on 2026-08-16. See below. |
 | Six wood product types | 14 | Replaces the substrate list |
 | Woodworks annual capacity | 12 | 75M SAR, 1,500 hotel rooms, 30,000 doors, 90,000 m² wardrobes, 150,000 m² cladding, 35,000 LM kitchens |
 | 60,000 mattresses a year | 15 | |
@@ -654,8 +654,23 @@ written, not sourced**, and each clause was kept to something already evidenced
 elsewhere in this file: the written quality plan with stated tolerances (TW),
 installation by STARK's own teams and finishing on automated lines in its own
 factories (both already live and unchallenged). No digit appears in any of the
-six bodies, deliberately, because slide 6 supplies none for the chain and a
-number here would need a `facts.ts` entry it cannot have.
+bodies, deliberately, because slide 6 supplies none for the chain and a number
+here would need a `facts.ts` entry it cannot have.
+
+### ⚠ THE CLIENT THEN CUT IT TO FIVE (2026-08-16)
+
+> "Delete the value engineering and make it 5 steps."
+
+So the site is now **deliberately one step shorter than the profile it was taken
+from**. Design → Engineering → Manufacturing → Quality Assurance → Delivery &
+Installation. This is a client instruction against their own deck, not a
+transcription error and not drift: **do not restore Value Engineering by checking
+the site against slide 6.**
+
+The phrase survives elsewhere, correctly and untouched: `landing.categories`
+lists "value engineering" inside the Engineering & Technical Services
+description, which is p8's own wording for a service rather than a stage in the
+manufacturing chain.
 
 ### What was replaced, and the one claim that moved
 
@@ -672,20 +687,29 @@ certificate actually applies — it is Trust Wood's, not a group-wide mark. So
 the claim did not leave the site, it stopped being made in the one place it was
 least anchored. Nothing else in the four old bodies was unique to them.
 
-### Why six steps made the animation more correct rather than less
+### How the mark absorbs a changing number of steps
 
-The mark has six parts: five blades closing around a core (brand book p.8). The
-four-step version could not consume them one-to-one, so it carried a separate
-`CLOSING_PARTS` array that fired `#lg-b5` and `#lg-core` together on the last
-step — two parts landing at once because four does not divide six, not because
-anything happened there. The client's chain has exactly six stages. Every step
-now completes exactly one part and the core lands on Delivery & Installation,
+The mark has six parts: five blades closing around a core (brand book p.8), and
+the chain has been four steps, then six, then five. Only six divided evenly.
+
+The four-step version carried a separate `CLOSING_PARTS` array that fired
+`#lg-b5` and `#lg-core` together on the last step, at a hard-coded scroll
+position beside the general mapping. The six-step version deleted it and mapped
+one part per step. **The five-step version needs the same "two parts on the last
+step" behaviour back** — the client asked for it by name: *"the last step will
+form not only the last step of the logo (the pentagon), it will also form and
+animate the 5th logo part … this is how it was before anyway."*
+
+It is not `CLOSING_PARTS` again. `STEP_PARTS` is now a list of GROUPS, one per
+step, and `partWindow` splits a step's scroll window between however many parts
+that step owns — at one part it returns `windowFor` unchanged, so steps 01-04
+scrub exactly as they did. The core still lands last, on Delivery & Installation,
 which is the step at which the parts genuinely become a whole.
 
-`CLOSING_PARTS` is deleted. A new test asserts the step count and the part count
-are equal in both locales, because adding a seventh step is otherwise a silent
-failure: the extra step would scrub with no part of its own, and TypeScript
-cannot see it, since the steps come out of a JSON file.
+A test asserts the step count matches the copy deck in both locales, because
+adding a step is otherwise a silent failure: the extra step would scrub with no
+part of its own, and TypeScript cannot see it, since the steps come out of a
+JSON file.
 
 ### The height budget, which broke on laptops rather than phones
 

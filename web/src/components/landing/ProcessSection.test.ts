@@ -12,18 +12,18 @@ const divisionIndex = readFileSync(join(here, "../home/DivisionIndex.tsx"), "utf
 const divisions = readFileSync(join(here, "../home/Divisions.tsx"), "utf8");
 
 describe("the pinned process's scrub-to-step mapping", () => {
-  const COUNT = 6;
+  const COUNT = 5;
 
   it("gives each step an equal, ordered slice", () => {
     expect(stepIndexAt(0, COUNT)).toBe(0);
-    expect(stepIndexAt(0.16, COUNT)).toBe(0);
-    expect(stepIndexAt(0.17, COUNT)).toBe(1);
-    expect(stepIndexAt(0.5, COUNT)).toBe(3);
-    expect(stepIndexAt(0.84, COUNT)).toBe(5);
+    expect(stepIndexAt(0.19, COUNT)).toBe(0);
+    expect(stepIndexAt(0.21, COUNT)).toBe(1);
+    expect(stepIndexAt(0.5, COUNT)).toBe(2);
+    expect(stepIndexAt(0.84, COUNT)).toBe(4);
   });
 
   it("does not run off the end of the array at full scroll", () => {
-    // `Math.floor(1 * 6)` is 6. Unclamped this indexes past the last step and
+    // `Math.floor(1 * 5)` is 5. Unclamped this indexes past the last step and
     // the copy column goes blank exactly as the reader finishes the section.
     expect(stepIndexAt(1, COUNT)).toBe(COUNT - 1);
   });
@@ -37,12 +37,14 @@ describe("the pinned process's scrub-to-step mapping", () => {
 });
 
 describe("the mark assembles completely and without repeats", () => {
+  const FLAT = STEP_PARTS.flat();
+
   it("uses every part of the mark exactly once", () => {
     // The idea only lands if the logo is WHOLE at the end. A missing part
     // reads as a rendering fault rather than as completion, and a repeated
     // one wastes a step.
-    expect(new Set(STEP_PARTS).size).toBe(STEP_PARTS.length);
-    expect(new Set(STEP_PARTS)).toEqual(
+    expect(new Set(FLAT).size).toBe(FLAT.length);
+    expect(new Set(FLAT)).toEqual(
       new Set(["#lg-b1", "#lg-b2", "#lg-b3", "#lg-b4", "#lg-b5", "#lg-core"]),
     );
   });
@@ -50,25 +52,35 @@ describe("the mark assembles completely and without repeats", () => {
   it("lands the core LAST, because that is the step that means something", () => {
     // Five blades closing around a core (brand book p.8). The core is the
     // moment the parts become a whole, so it belongs on Delivery &
-    // Installation and nowhere else. Reordering the array would still pass
-    // the completeness check above while destroying the only bit of the
-    // sequence that carries meaning.
-    expect(STEP_PARTS[STEP_PARTS.length - 1]).toBe("#lg-core");
+    // Installation and nowhere else. Reordering would still pass the
+    // completeness check above while destroying the only bit of the sequence
+    // that carries meaning — so this pins the LAST part of the LAST group.
+    expect(FLAT[FLAT.length - 1]).toBe("#lg-core");
   });
 
-  it("gives every step exactly one part, in both locales", () => {
+  it("gives every step at least one part, and no empty groups", () => {
     /**
-     * THE INVARIANT THE SIX-STEP VERSION BOUGHT, and the one most likely to be
-     * broken by someone editing copy rather than code.
+     * FIVE STEPS AGAINST SIX PARTS. The client removed Value Engineering from
+     * the chain, so the one-to-one mapping the six-step version bought is gone
+     * and the last step closes with `#lg-b5` AND `#lg-core` — which is how the
+     * four-step version behaved, and what the client asked for by name.
      *
-     * The four-step version could not hold this: four steps against six parts
-     * meant `#lg-b5` and `#lg-core` had to be fired together on the last step,
-     * via a separate `CLOSING_PARTS` array, purely to use up the leftovers.
-     * Now the counts match exactly.
-     *
-     * Adding a seventh step in the copy deck is therefore a SILENT failure:
-     * `AssemblingMark` maps over STEP_PARTS, so the extra step scrubs with no
-     * part of its own and the mark finishes assembling before the list does.
+     * The shape is a list of GROUPS rather than a flat list plus a separate
+     * `CLOSING_PARTS` array, so the arithmetic stays inside one structure and
+     * `partWindow` splits a step's window between whatever it owns. An empty
+     * group would be a step that draws nothing — the scrub would stall on it.
+     */
+    for (const group of STEP_PARTS) {
+      expect(group.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("keeps the step count matching the copy deck, in both locales", () => {
+    /**
+     * The invariant most likely to be broken by someone editing copy rather
+     * than code, and it is a SILENT failure: `AssemblingMark` maps over
+     * STEP_PARTS, so a sixth step added to the JSON would scrub with no part of
+     * its own and the mark would finish assembling before the list did.
      * TypeScript cannot see it, because the steps come out of a JSON file.
      */
     for (const [locale, msgs] of [["en", en], ["ar", ar]] as const) {
@@ -89,15 +101,20 @@ describe("the mark assembles completely and without repeats", () => {
 
   it("does not let the intro count a different number of steps than it shows", () => {
     /**
-     * A REAL DEFECT THIS ROUND, caught by reading rather than by any test: the
-     * intro said "the same four steps, inside one company" and the list below
-     * it had six. The number is spelled out in words in both locales, so no
-     * digit-level check (facts.test.ts) can see it, and both files stayed
-     * perfectly parallel while both were wrong together.
+     * A REAL DEFECT ONCE, caught by reading rather than by any test: the intro
+     * said "the same four steps, inside one company" and the list below it had
+     * six. The number is spelled out in words in both locales, so no digit-level
+     * check (facts.test.ts) can see it, and both files stayed perfectly parallel
+     * while both were wrong together.
+     *
+     * ⚠ THE BANNED LIST IS "EVERY COUNT EXCEPT THE REAL ONE", so it has to be
+     * edited whenever the chain changes length. It banned `five` while the list
+     * had six steps; the client's removal of Value Engineering made five the
+     * right answer and `six` the wrong one.
      */
     const banned: Record<string, RegExp> = {
-      en: /\b(three|four|five|seven|eight)\b/i,
-      ar: /الأربع|الثلاث|الخمس|السبع/,
+      en: /\b(three|four|six|seven|eight)\b/i,
+      ar: /الأربع|الثلاث|الست|السبع/,
     };
     for (const [locale, msgs] of [["en", en], ["ar", ar]] as const) {
       expect(

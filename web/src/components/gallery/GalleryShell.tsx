@@ -370,6 +370,8 @@ export function GalleryShell({
         index={lightbox}
         alts={alts}
         labels={{ close: labels.close, prev: labels.prev, next: labels.next }}
+        // The same ref that restores focus is the box the picture grows out of.
+        opener={openerRef}
         onClose={closeLightbox}
         onStep={stepImage}
       />

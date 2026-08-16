@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { isCutout } from "@/components/mattresses/assets";
 
 /**
@@ -32,25 +31,44 @@ import { isCutout } from "@/components/mattresses/assets";
  * and Space, and announces itself as actionable — the lightbox is the only way
  * to see a picture at size, so keyboard users cannot be locked out of it.
  *
- * `layoutId` pairs the tile with the lightbox figure, which is what makes the
- * picture grow out of its own slot instead of fading in over the middle of the
- * screen. It is dropped under reduced motion: a full-screen shared-layout
- * animation is exactly the kind of large-area movement that setting asks for
- * less of.
+ * ===========================================================================
+ * ⚠ THE PICTURE IS A PLAIN <img> AND MUST STAY ONE. NO FRAMER IN THIS TILE.
+ * ===========================================================================
+ *
+ * It was briefly a `motion.img` carrying `layoutId={`gl-${src}`}`, so the tile
+ * could pair with the lightbox figure and grow out of its own slot. That shipped
+ * and the client reported the push transition as broken within the day: "they
+ * shrink to the corner and the new picture slides in from a fucked up place
+ * slowly", and — the detail that gives it away — "not all pictures are the same
+ * animation".
+ *
+ * WHY ONLY SOME. The layoutId was keyed on the image URL, and the placeholder
+ * pool is shared between sub-categories by a rotating offset: loose-furniture is
+ * POOL[0..7], doors is POOL[3..10]. So every adjacent woodworks tab shares FIVE
+ * of its eight pictures with its neighbour, AT DIFFERENT SLOT POSITIONS. On Next,
+ * Framer sees one layoutId unmount at `cell-explore` and mount at `cell-hero`,
+ * and runs a shared-layout transition across the grid on its own spring — while
+ * the 1.2s quartic push is running underneath it. The three tiles with no
+ * counterpart pushed correctly, which is exactly what the client described, and
+ * blue↔siesta (no shared URLs anywhere) looked right throughout.
+ *
+ * A layout-projected node inside a card that is itself being translated ±100% is
+ * a fight this cannot win, and re-keying the layoutId per slot would only make
+ * the collision rarer. So the expansion moved to `Lightbox`, which does the same
+ * FLIP against this button's own rect from outside the stage, where it cannot
+ * touch the push. See the note there before reintroducing anything animated here.
  */
 export function ImageCard({
   src,
   alt,
   className,
   onOpen,
-  reduce,
 }: {
   src: string;
   alt: string;
   /** The bento slot — `hero`, `blossom`, `portraitA` … Drives the CSS. */
   className: string;
   onOpen?: (el: HTMLButtonElement) => void;
-  reduce?: boolean;
 }) {
   // A cut-out is a product on a flat ground, not a photograph: it must be
   // contained inside the slot rather than cropped to fill it, or the mattress
@@ -65,8 +83,7 @@ export function ImageCard({
     >
       {/* The accessible name. Not rendered — see the note on `alt` in types.ts. */}
       <span className="sr-only">{alt}</span>
-      <motion.img
-        layoutId={reduce ? undefined : `gl-${src}`}
+      <img
         draggable={false}
         className={`photo${cut ? " contain" : ""}`}
         src={src}
