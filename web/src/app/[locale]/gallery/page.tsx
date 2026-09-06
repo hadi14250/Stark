@@ -131,7 +131,17 @@ export default async function GalleryPage({
    * that these strings are translated at all.
    */
   const alts = {
-    placeholder: t("alts.placeholder"),
+    looseFurniture: t("alts.looseFurniture"),
+    doors: t("alts.doors"),
+    builtInJoinery: t("alts.builtInJoinery"),
+    cladding: t("alts.cladding"),
+    kitchensWardrobes: t("alts.kitchensWardrobes"),
+    outdoorStructures: t("alts.outdoorStructures"),
+    retailStands: t("alts.retailStands"),
+    craftsmanship: t("alts.craftsmanship"),
+    renders: t("alts.renders"),
+    moodBoards: t("alts.moodBoards"),
+    materialBoards: t("alts.materialBoards"),
     blueProduct: t("alts.blueProduct"),
     blueRoom: t("alts.blueRoom"),
     siestaProduct: t("alts.siestaProduct"),

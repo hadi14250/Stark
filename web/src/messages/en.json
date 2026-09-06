@@ -809,7 +809,17 @@
       "material-boards": "Material boards"
     },
     "alts": {
-      "placeholder": "A finished interior.",
+      "looseFurniture": "Custom loose furniture and upholstery.",
+      "doors": "A manufactured wooden door.",
+      "builtInJoinery": "Built-in furniture and architectural joinery.",
+      "cladding": "Interior or exterior wood cladding.",
+      "kitchensWardrobes": "A fitted kitchen, wardrobe or vanity.",
+      "outdoorStructures": "An outdoor wooden structure.",
+      "retailStands": "A retail stand or display unit.",
+      "craftsmanship": "Handcrafted and artistic woodwork.",
+      "renders": "A design visualisation of an interior.",
+      "moodBoards": "Concept imagery from a design study.",
+      "materialBoards": "Wood finishes and material samples.",
       "blueProduct": "A blue mattress, photographed by the manufacturer.",
       "blueRoom": "A bedroom with a blue mattress.",
       "siestaProduct": "A siesta mattress, photographed by the manufacturer.",

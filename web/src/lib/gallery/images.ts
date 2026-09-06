@@ -6,51 +6,67 @@ import {
 } from "@/components/mattresses/assets";
 
 /**
- * THE GALLERY IS A PHOTO MANIFEST NOW, AND THAT IS THE WHOLE MODEL.
+ * THE GALLERY IS A PHOTO MANIFEST, AND THAT IS THE WHOLE MODEL.
  *
  * ===========================================================================
- * WHAT THIS REPLACED
+ * THE CLIENT'S PHOTO FOLDER LANDED, AND THIS IS WHERE IT LANDED
  * ===========================================================================
  *
- * `projects.ts` — a 780-line data model in which every gallery entry carried
- * six named photo cells, ten i18n keys, a palette name and a full-bleed overlay
- * background, feeding a bento stage, a push-transition engine and a detail
- * overlay (~3,000 lines of TSX and CSS between them).
+ * Every woodworks picture below is now STARK's own work, out of the client's
+ * `Website Gallery` folder, which arrives foldered by exactly the product types
+ * in `SUB_CATEGORIES`. The recoloured furniture-template stock that used to
+ * fill this file is gone from the repository, and so is the rotating-offset
+ * `POOL` that shared eight pictures between neighbouring tabs.
  *
- * The client's review removed the reason for all of it: "remove all text and
- * put pictures … if there's only a text container replace it with a picture …
- * remove the view details button … only make it two levels of tabs not 3". The
- * headline, the paragraph, the three spec lines, the ten-field overlay and the
- * project level itself are gone. What is left is pictures, in two levels of
- * grouping — which is a list of files.
+ * The files are written under `/public/work/<sub-category>/NN.jpg`, numbered in
+ * display order: the first eight of each list are what the bento shows, and the
+ * rest are reachable through the lightbox. Re-ordering a list re-orders the
+ * grid and nothing else, which is the reason this stayed a plain manifest.
  *
- * Stripping the old stage back to that would have cost more than replacing it
- * and left the machinery of a slide engine behind a picture grid.
+ * WHERE A CATEGORY FOLDER WAS THIN, the shortfall was made up from the client's
+ * `Extra Pictures` project folders (Al Badiya Palace, Waad Academy, the Golf
+ * Club, Sendalla Island, the Private Camp, Al Haram, Mogaider Mosque, the
+ * profile set), classified by what is actually in the frame. `Int./Ext.
+ * Cladding` shipped three files, `Retail Stands` four and `Craftsmanship` four,
+ * none of which fills a bento on its own.
  *
  * ===========================================================================
  * WHY `alt` SURVIVED THE "REMOVE ALL TEXT"
  * ===========================================================================
  *
  * Because it is not text on the page. Nothing here renders as a caption, a
- * heading or a label — it is what a screen reader says instead of the picture,
+ * heading or a label, it is what a screen reader says instead of the picture,
  * and it is what a search engine indexes. Dropping it would make the route
  * invisible to both. "No visible text" and "no accessible name" are different
  * instructions and only the first one was given.
  *
+ * The alt keys are per sub-category now rather than one shared "placeholder".
+ * They can describe the subject honestly because the subject is real: a door
+ * folder holds doors. They stay generic WITHIN a category, because no per-photo
+ * captions were supplied and inventing a project name for a photograph is the
+ * one thing worse than a general description.
+ *
  * ===========================================================================
- * ⚠ THE WOODWORKS AND DESIGN IMAGES ARE PLACEHOLDERS
+ * ⚠ DESIGN IS THE ONE TAB STILL SHORT OF ITS OWN MATERIAL
  * ===========================================================================
  *
- * Every file under `/landing/` is recoloured furniture-template stock: there is
- * no door, no cladding run, no pergola, no retail podium and no drawing in the
- * entire set. The client is supplying a real photo folder, foldered by the
- * product types below; when it lands, this file is the ONLY thing that changes.
- * That is the reason the manifest exists as its own module rather than being
- * inlined into the component.
+ * The client chose renders, mood boards and material boards for this tab. The
+ * folder contains no drawing sets and no boards as such, so:
  *
- * The mattress halves are real: the manufacturer's own product photography,
- * resolved through the same `blueShot` / `siestaShot` helpers the mattresses
- * route uses, so the gallery and the page can never drift apart.
+ *   renders          the visualisations that ARE in the set: the yacht club
+ *                    interiors, the wardrobe studies and the studio-rendered
+ *                    furniture. Every one of these is a render, not a photo.
+ *   material-boards  finish and pattern samples photographed flat: the veneer
+ *                    sample board, the CNC pattern lay-ups, the oak decappe
+ *                    finish. These are what a material board is made of.
+ *   mood-boards      ⚠ THE WEAKEST OF THE THREE. Concept imagery and pattern
+ *                    studies, standing in for boards nobody has supplied. If a
+ *                    real set never arrives, hiding the sub-category is better
+ *                    than dressing this up: it is one entry in SUB_CATEGORIES.
+ *
+ * The mattress halves are the manufacturer's own product photography, resolved
+ * through the same `blueShot` / `siestaShot` helpers the mattresses route uses,
+ * so the gallery and the page can never drift apart.
  */
 
 export type DivisionId = "woodworks" | "mattresses" | "design";
@@ -59,11 +75,11 @@ export type DivisionId = "woodworks" | "mattresses" | "design";
  * The sub-categories, and the ONLY place the division relation is written down.
  *
  * Woodworks' eight are the company profile's own product list (p15), in its
- * order. The client asked for the gallery's woodworks tab to carry exactly
- * these, and for the old top-level "Furniture" tab to become one of them —
- * "the furniture … will be the loose furniture as in company profile" — which
- * is also how p8 files it: loose furniture sits INSIDE custom wood works, not
- * beside it.
+ * order, and they are also the folder names in the client's photo delivery.
+ * The client asked for the gallery's woodworks tab to carry exactly these, and
+ * for the old top-level "Furniture" tab to become one of them, "the furniture
+ * … will be the loose furniture as in company profile", which is also how p8
+ * files it: loose furniture sits INSIDE custom wood works, not beside it.
  */
 export const SUB_CATEGORIES = [
   { id: "loose-furniture", division: "woodworks" },
@@ -89,63 +105,25 @@ export const DIVISIONS: readonly DivisionId[] = ["woodworks", "mattresses", "des
 export type GalleryImage = {
   src: string;
   /**
-   * Deliberately GENERIC for the placeholder sets.
-   *
-   * A shared alt reading "a fire-rated door" would state, to exactly the
-   * readers who cannot check, that the factory's own work is on screen. These
-   * describe what is in the frame and nothing more, and they are keyed into the
-   * message deck so both locales get them.
+   * Describes what is in the frame, at the level the client's own foldering
+   * describes it. No photograph here is captioned with a project, a client or a
+   * specification, because none was supplied with the files.
    */
   altKey: string;
 };
 
-const land = (name: string) => `/landing/${name}`;
-
 /**
- * The placeholder pool, split so no two sub-categories show an identical run.
+ * `n` numbered files from one sub-category's folder, in display order.
  *
- * ⚠ THIS IS THE LEAST-BAD ASSIGNMENT, NOT A MAPPING. Every one of these is a
- * domestic interior. Card 05 on the old product strip showed an indoor room
- * under "Outdoor Wooden Structures" and no reordering could fix it, because the
- * set contains nothing outdoor. The same is true here. Treat any woodworks
- * grouping below as "some pictures, pending the real ones".
+ * The files are written by the import step as `01.jpg`, `02.jpg` … under
+ * `/public/work/<sub>/`, so the manifest is a count rather than a list of
+ * names. Adding photographs to a category means dropping them in the folder,
+ * renumbering, and raising the count here.
  */
-const POOL = [
-  "08f1f8d97cb5f63f.jpg",
-  "301336c2a6f33570.jpg",
-  "42737a5b8707da10.jpg",
-  "44e767d2df80b104.png",
-  "46cb9cc7e202b440.jpg",
-  "5d5c40ccbb6b257b.jpg",
-  "6ef0b9569b029eeb.png",
-  "763ba2c7f4c29838.jpg",
-  "815f8b5fd0db3732.png",
-  "8244b28836385a29.png",
-  "847c93f88825cbef.png",
-  "9147afdc9d8c4223.png",
-  "9bc56e8ed0aded95.jpg",
-  "bf46cb0e0db7539f.jpg",
-  "d1c0e28eb1c679aa.png",
-  "d41cceabf062f878.png",
-  "e84ce9bd89e1844a.png",
-  "f264f5dea2782694.jpg",
-  "f26d3ba55447fc47.jpg",
-  "f7965388e07b0b0c.jpg",
-] as const;
-
-/**
- * Eight from the pool, starting at `offset`, wrapping.
- *
- * EIGHT BECAUSE THE BENTO HAS EIGHT SLOTS. The grid fills every cell from this
- * list, so a sub-category with fewer than eight would repeat pictures inside a
- * single view — visible, and the kind of thing a client reads as a bug rather
- * than as missing assets. Twenty in the pool and a rotating offset means no two
- * sub-categories open on the same picture.
- */
-function placeholders(offset: number, count = 8): GalleryImage[] {
-  return Array.from({ length: count }, (_, i) => ({
-    src: land(POOL[(offset + i) % POOL.length]),
-    altKey: "placeholder",
+function work(sub: SubCategoryId, n: number, altKey: string): GalleryImage[] {
+  return Array.from({ length: n }, (_, i) => ({
+    src: `/work/${sub}/${String(i + 1).padStart(2, "0")}.jpg`,
+    altKey,
   }));
 }
 
@@ -169,30 +147,20 @@ const siestaImagesList: GalleryImage[] = SIESTA_MODELS.flatMap((m) => [
   { src: siestaShot(m, "room-b"), altKey: "siestaRoom" },
 ]);
 
-/**
- * ⚠ DESIGN HAS NO PICTURES OF ITS OWN AND IS SHOWN WITH PLACEHOLDERS.
- *
- * The client chose renders, mood boards and material boards for this tab and is
- * supplying them. There is no render, board or drawing anywhere in the
- * repository — the interiors below are the same furniture stock as everything
- * else, which under "Shop drawings" would be a straightforwardly false
- * illustration. If the folder is late, hiding the Design tab is better than
- * shipping this: `DIVISIONS` is the one line to edit.
- */
 export const IMAGES: Record<SubCategoryId, GalleryImage[]> = {
-  "loose-furniture": placeholders(0),
-  doors: placeholders(3),
-  "built-in-joinery": placeholders(6),
-  cladding: placeholders(9),
-  "kitchens-wardrobes": placeholders(12),
-  "outdoor-structures": placeholders(15),
-  "retail-stands": placeholders(18),
-  craftsmanship: placeholders(1),
+  "loose-furniture": work("loose-furniture", 25, "looseFurniture"),
+  doors: work("doors", 19, "doors"),
+  "built-in-joinery": work("built-in-joinery", 24, "builtInJoinery"),
+  cladding: work("cladding", 16, "cladding"),
+  "kitchens-wardrobes": work("kitchens-wardrobes", 15, "kitchensWardrobes"),
+  "outdoor-structures": work("outdoor-structures", 19, "outdoorStructures"),
+  "retail-stands": work("retail-stands", 8, "retailStands"),
+  craftsmanship: work("craftsmanship", 18, "craftsmanship"),
   blue: blueImages,
   siesta: siestaImagesList,
-  renders: placeholders(4),
-  "mood-boards": placeholders(8),
-  "material-boards": placeholders(11),
+  renders: work("renders", 8, "renders"),
+  "mood-boards": work("mood-boards", 8, "moodBoards"),
+  "material-boards": work("material-boards", 8, "materialBoards"),
 };
 
 export function subsOf(d: DivisionId): SubCategoryId[] {
