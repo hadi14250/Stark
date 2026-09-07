@@ -180,8 +180,8 @@ export async function About() {
           */}
           <Reveal x={96} y={0} scale={0.97} blur={3} delay={0.12}>
             <AboutCluster
-              pentagon={{ src: landingImages.collage[0], alt: collageAlt[0] }}
-              card={{ src: landingImages.collage[1], alt: collageAlt[1] }}
+              pentagon={{ src: landingImages.collage[1], alt: collageAlt[1] }}
+              card={{ src: landingImages.collage[0], alt: collageAlt[0] }}
             />
           </Reveal>
         </div>
