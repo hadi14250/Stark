@@ -118,15 +118,10 @@ export function WoodworksHero({
               className="font-display leading-display tracking-display text-[color:var(--color-ink)]"
               style={{ fontSize: "clamp(40px, 5.2vw, 68px)" }}
             >
-              {/* Medium/bold rather than light/semibold: the client asked for
-                  a heavier headline, and Plex Arabic has no 300 face. The long
-                  version of the reasoning is in `home/HomeHero.tsx`. */}
-              <WordsReveal
-                as="span"
-                text={line1}
-                justify="flex-start"
-                className="font-medium"
-              />
+              {/* Medium/bold rather than light/semibold: the client asked for a heavier
+                  headline, and Plex Arabic has no 300 face. The long version of the
+                  reasoning is in `home/HomeHero.tsx`. */}
+              <WordsReveal as="span" text={line1} justify="flex-start" className="font-medium" />
               {/*
                 ⚠ THE SECOND LINE IS INK, NOT ACCENT, AND THAT IS A CONTRAST FIX
                 RATHER THAN A PREFERENCE.
@@ -186,10 +181,7 @@ export function WoodworksHero({
                     </span>
                     <span
                       className="font-mono text-[11px] tracking-eyebrow text-[color:var(--color-ink-muted)]"
-                      style={{
-                        textTransform:
-                          "var(--eyebrow-transform)" as "uppercase",
-                      }}
+                      style={{ textTransform: "var(--eyebrow-transform)" as "uppercase" }}
                     >
                       {m}
                     </span>

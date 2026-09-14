@@ -52,6 +52,7 @@ export function PageOpener({
           className="max-w-[14ch] font-display leading-display tracking-display text-[color:var(--color-ink)]"
           style={{ fontSize: "clamp(40px, 5.2vw, 68px)" }}
         >
+          {/* Medium/bold rather than light/semibold — see `home/HomeHero.tsx`. */}
           <span className="block font-medium">{line1}</span>
           {line2 && <span className="block font-bold">{line2}</span>}
         </h1>
@@ -87,9 +88,7 @@ export function PageOpener({
 
       {actions && (
         <Reveal y={20} delay={0.3}>
-          <div
-            className={`flex flex-wrap gap-3.5 ${axis === "center" ? "justify-center" : ""}`}
-          >
+          <div className={`flex flex-wrap gap-3.5 ${axis === "center" ? "justify-center" : ""}`}>
             {actions}
           </div>
         </Reveal>
@@ -99,32 +98,17 @@ export function PageOpener({
 
   if (axis === "center") {
     return (
-      <section
-        className="relative"
-        style={{ background: "var(--color-surface)" }}
-      >
+      <section className="relative" style={{ background: "var(--color-surface)" }}>
         <Container>
-          <div className="pt-[clamp(48px,7vw,88px)] pb-[clamp(40px,6vw,72px)]">
-            {copy}
-          </div>
+          <div className="pt-[clamp(48px,7vw,88px)] pb-[clamp(40px,6vw,72px)]">{copy}</div>
         </Container>
-        <Photo
-          src={image}
-          alt={imageAlt}
-          height="clamp(240px, 42vh, 460px)"
-          kenBurns
-          priority
-          sizes="100vw"
-        />
+        <Photo src={image} alt={imageAlt} height="clamp(240px, 42vh, 460px)" kenBurns priority sizes="100vw" />
       </section>
     );
   }
 
   return (
-    <section
-      className="relative overflow-hidden"
-      style={{ background: "var(--color-surface)" }}
-    >
+    <section className="relative overflow-hidden" style={{ background: "var(--color-surface)" }}>
       <Container>
         <div className="grid items-center gap-[clamp(32px,5vw,64px)] py-[clamp(44px,6vw,80px)] nav:grid-cols-[1fr_0.95fr]">
           {/* The standing rule. 2px in the accent for its first 64px, then the
@@ -148,18 +132,9 @@ export function PageOpener({
                 photograph, it runs it to the margin. */}
             <div
               className="overflow-hidden rounded-s-[var(--radius-card)]"
-              style={{
-                marginInlineEnd: "calc(-1 * var(--gutter))",
-                boxShadow: "var(--shadow-card)",
-              }}
+              style={{ marginInlineEnd: "calc(-1 * var(--gutter))", boxShadow: "var(--shadow-card)" }}
             >
-              <Photo
-                src={image}
-                alt={imageAlt}
-                height="clamp(280px, 52vh, 520px)"
-                priority
-                sizes="(max-width: 860px) 100vw, 46vw"
-              />
+              <Photo src={image} alt={imageAlt} height="clamp(280px, 52vh, 520px)" priority sizes="(max-width: 860px) 100vw, 46vw" />
             </div>
           </Reveal>
         </div>
