@@ -50,6 +50,72 @@ raised the first two as a fatal conflict and was wrong.
 | **TW** | Trust Wood Company Profile | 108 | ISO 9001, ISO 45001, FSC CoC, quality plan with tolerances, machinery list, 26 client marks, 3 named projects. |
 | **SIESTA** | Siesta Catalogue 2026 | 60 | SLIC's history, 16 models in 3 ranges, layer construction per model, warranties, fire-resistant hospitality range. |
 | **BLUE** | blue mattress dossier | 11 files | 8 products with base/firmness/height, 10-year warranty, 50-night trial, palette, Jeddah retail contact. |
+| **AR1** | `STARK-Approved-Arabic-Content-v1.xlsx` | 4 sheets | **The authority for Arabic copy.** The client hired a copywriter and had the site's Arabic redone: Home, Woodworks, Mattresses and Gallery, with the English it was translated from beside it. See below. |
+
+---
+
+## The Arabic is the client's own now (AR1, 2026-09-14)
+
+The client commissioned a copywriter and returned
+`content/STARK-Approved-Arabic-Content-v1.xlsx`: four sheets, one per page, three columns
+— Section Title, English Content, Arabic Translation.
+
+**From this round on, AR1 outranks `en.json` as the authority for Arabic.** Where the two
+disagree, the spreadsheet wins; translating fresh from the English is no longer the
+procedure.
+
+### How it was applied
+
+Joined on the **English column**, key by key, by a script rather than by hand — 195
+strings is too many to retype without putting a typo into copy nobody on the team reads
+natively. The sheet's English matches production almost exactly (it carries "the same
+five steps" and the current "Made to measure" line), which is what makes an exact-string
+join safe rather than a guess.
+
+`186` keys changed, `246` were written, `0` conflicts: no English string in the deck
+receives two different Arabic translations, which `messages.test.ts` independently
+enforces.
+
+### Four things the join must not do, all found by running it
+
+1. **Never write `landing.clients.logos[*].key`.** Those are image-file slugs
+   (`acciona`, `macc`, `sbcm`) and eight of them lowercase-match a client name in the
+   sheet. A naive join puts a display name in a slug and 404s the logo.
+2. **Never apply the sheet to the client-logo `alt` text.** The sheet's "Arabic" for the
+   logo wall is the Latin names unchanged; the site Arabises them for screen readers.
+   Left alone, and raised in `ARABIC-GAP.md`.
+3. **Strip the sheet's own annotations**, not copy: `CTAs:` / `Highlights:` / `Email:`
+   and their Arabic equivalents, and the `01 ` / `02 ` ordinals the components render.
+4. **Three strings are structural, not textual.** `credentials.output.label` takes
+   `مرتبة سنوياً` without the sheet's leading `60 الف`, because the 60,000 is a `CountUp`
+   driven by `facts.ts` and would otherwise print twice; and the three heroes split one
+   approved line across `line1` / `line2` at its own clause boundary.
+
+### Two edits to approved copy, both minimal and both recorded
+
+- **Two en-dashes removed** (`STARK – Strategic Trust…`, `السعودية – جميع المناطق`).
+  The whole-deck dash ban is the client's own earlier instruction — they read the site
+  aloud and the dashes kept stopping them — and `messages.test.ts` enforces it in both
+  locales. Punctuation only; not a word changed.
+- **`landing.stats.items[1]` in ENGLISH** became `Overall facilities (m²)`. The approved
+  Arabic carries `(م²)`, and without this the English is the vaguer of the two. The only
+  English change this round; everything else that looked like a delta was formatting the
+  sheet added for its reader (`→` on CTA rows, `60000` written out, heroes shown unsplit).
+
+### What AR1 does not cover
+
+The Section Title column is English-only, so ~70 eyebrows, item titles and quality-plan
+stage names have no approved Arabic, along with alt text, logo slugs and the site chrome.
+**All of it keeps the in-house Arabic it already had.** The full list is
+`content/ARABIC-GAP.md`, written to be pasted into a v2 of the spreadsheet.
+
+### One guard was widened, deliberately
+
+`messages.test.ts` asserts the woodworks hero still claims finishing happens *in our own
+factory* rather than being *interior* finishing — a real mistranslation that shipped once.
+The copywriter wrote `ضمن المصنع`, which makes the claim in a third phrasing. The
+accept-list grew by that one phrase; the ban on the bare `تشطيب داخلي` stands.
+
 
 ---
 

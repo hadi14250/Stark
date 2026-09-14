@@ -113,9 +113,17 @@ describe("arabic consistency", () => {
      * replaced by a different and much weaker claim about what kind of
      * finishing it is. The English sells the capability; the Arabic sold a
      * category.
+     *
+     * ⚠ THE ACCEPT-LIST GREW BY ONE, AND ONLY THE ACCEPT-LIST. The client's
+     * copywriter wrote ضمن المصنع ("within the factory"), which carries the
+     * claim this guard exists to protect but is not either of the two phrasings
+     * it happened to be written against. Widening the match is the correct
+     * response to approved copy that says the right thing a new way; deleting
+     * the guard is not, because the bare تشطيب داخلي below is still the
+     * mistranslation that shipped once and would ship again.
      */
     const meta = (ar as { woodworks: { hero: { meta: string[] } } }).woodworks.hero.meta;
-    expect(meta.join(" ")).toMatch(/مصنعنا|داخل المصنع/);
+    expect(meta.join(" ")).toMatch(/مصنعنا|داخل المصنع|ضمن المصنع/);
     expect(meta, "تشطيب داخلي means interior finishing, not in-house").not.toContain(
       "تشطيب داخلي",
     );
