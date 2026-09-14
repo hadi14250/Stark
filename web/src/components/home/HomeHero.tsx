@@ -74,8 +74,20 @@ export async function HomeHero() {
         weight="structural"
         color="rgb(219 202 173 / 0.22)"
         blades={[
-          { element: "interiors", width: 460, top: "-90px", start: "-140px", float: 11 },
-          { element: "woodworks", width: 520, bottom: "-160px", end: "-160px", float: 13 },
+          {
+            element: "interiors",
+            width: 460,
+            top: "-90px",
+            start: "-140px",
+            float: 11,
+          },
+          {
+            element: "woodworks",
+            width: 520,
+            bottom: "-160px",
+            end: "-160px",
+            float: 13,
+          },
         ]}
       />
 
@@ -109,6 +121,25 @@ export async function HomeHero() {
             whole composition (rule, two sub lines, two actions, scroll cue) now
             fits the viewport cap above without the hero scrolling.
           */}
+          {/*
+            MEDIUM / BOLD, NOT LIGHT / SEMIBOLD — AND ARABIC IS THE REASON IT
+            WAS WORTH DOING PROPERLY.
+
+            The client asked for a thicker hero headline, pointing at the
+            Arabic. On /ar the first line was worse than merely light: Plex
+            Arabic is loaded at 400-700 (see `styles/fonts.ts`), so `font-light`
+            had NO FACE TO USE and the browser fell back to 400 — a 400 line
+            sitting above a 600 one at 72px, which is why the pair looked
+            unbalanced rather than intentionally contrasted.
+
+            500 against 700 is two real faces in both scripts: Sora ships the
+            whole range, Plex Arabic ships both of these. The two-line
+            composition still turns on the weight step — it just steps between
+            weights that exist.
+
+            Every hero moved together (mattresses, woodworks, `PageOpener`),
+            because one page opening heavier than the others reads as a bug.
+          */}
           <h1
             className="font-display tracking-display text-[color:var(--white-500)]"
             style={{ fontSize: "clamp(36px, 5.2vw, 72px)", lineHeight: 1 }}
@@ -118,19 +149,22 @@ export async function HomeHero() {
               text={t("line1")}
               justify="center"
               delay={0.06}
-              className="font-light"
+              className="font-medium"
             />
             <WordsReveal
               as="span"
               text={t("line2")}
               justify="center"
               delay={0.28}
-              className="font-semibold"
+              className="font-bold"
             />
           </h1>
 
           <Reveal y={0} delay={0.5}>
-            <hr className="h-0.5 w-20 border-0" style={{ background: "var(--sand-500)" }} />
+            <hr
+              className="h-0.5 w-20 border-0"
+              style={{ background: "var(--sand-500)" }}
+            />
           </Reveal>
 
           {/*

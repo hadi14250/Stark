@@ -118,7 +118,15 @@ export function WoodworksHero({
               className="font-display leading-display tracking-display text-[color:var(--color-ink)]"
               style={{ fontSize: "clamp(40px, 5.2vw, 68px)" }}
             >
-              <WordsReveal as="span" text={line1} justify="flex-start" className="font-light" />
+              {/* Medium/bold rather than light/semibold: the client asked for
+                  a heavier headline, and Plex Arabic has no 300 face. The long
+                  version of the reasoning is in `home/HomeHero.tsx`. */}
+              <WordsReveal
+                as="span"
+                text={line1}
+                justify="flex-start"
+                className="font-medium"
+              />
               {/*
                 ⚠ THE SECOND LINE IS INK, NOT ACCENT, AND THAT IS A CONTRAST FIX
                 RATHER THAN A PREFERENCE.
@@ -130,7 +138,7 @@ export function WoodworksHero({
                 non-text marks, never mind the 4.5:1 for text, on the largest
                 type on the route.
 
-                The light/semibold pairing is what carried the two-line
+                The weight pairing is what carried the two-line
                 composition anyway; the colour was doing the smaller half of the
                 job, and DESIGN.md §1.5 already rules that on light surfaces the
                 affordance moves to weight rather than hue. Sand survives on this
@@ -142,7 +150,7 @@ export function WoodworksHero({
                 text={line2}
                 justify="flex-start"
                 delay={0.12}
-                className="font-semibold"
+                className="font-bold"
               />
             </h1>
 
@@ -178,7 +186,10 @@ export function WoodworksHero({
                     </span>
                     <span
                       className="font-mono text-[11px] tracking-eyebrow text-[color:var(--color-ink-muted)]"
-                      style={{ textTransform: "var(--eyebrow-transform)" as "uppercase" }}
+                      style={{
+                        textTransform:
+                          "var(--eyebrow-transform)" as "uppercase",
+                      }}
                     >
                       {m}
                     </span>

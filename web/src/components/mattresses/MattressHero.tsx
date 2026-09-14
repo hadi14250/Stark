@@ -80,8 +80,16 @@ export function MattressHero({
             className="font-display leading-display tracking-display text-[color:var(--color-ink)]"
             style={{ fontSize: "clamp(40px, 5.2vw, 68px)" }}
           >
-            <WordsReveal as="span" text={line1} className="font-light" />
-            <WordsReveal as="span" text={line2} delay={0.12} className="font-semibold" />
+            {/* Medium/bold rather than light/semibold: the client asked for a
+                heavier headline, and Plex Arabic has no 300 face. The long
+                version of the reasoning is in `home/HomeHero.tsx`. */}
+            <WordsReveal as="span" text={line1} className="font-medium" />
+            <WordsReveal
+              as="span"
+              text={line2}
+              delay={0.12}
+              className="font-bold"
+            />
           </h1>
 
           <LineReveal delay={0.24}>
